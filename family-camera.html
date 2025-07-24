@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Family Camera</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .app-header {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .app-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .app-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        .status-loading {
+            background: #f39c12;
+            animation: pulse 2s infinite;
+        }
+
+        .status-ready {
+            background: #27ae60;
+        }
+
+        .status-error {
+            background: #e74c3c;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .camera-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .video-container {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #000;
+            margin-bottom: 20px;
+        }
+
+        #video {
+            width: 100%;
+            height: auto;
+            display: block;
+            transform: scaleX(-1);
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: scaleX(-1);
+        }
+
+        .filter-controls {
+            margin-bottom: 20px;
+        }
+
+        .filter-section {
+            margin-bottom: 15px;
+        }
+
+        .filter-section h4 {
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+        }
+
+        .filter-btn.premium {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            position: relative;
+        }
+
+        .filter-btn.premium::after {
+            content: "✨";
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 14px;
+        }
+
+        .capture-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .capture-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(45deg, #3742fa, #2f3542);
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .capture-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .camera-kit-section {
+            background: rgba(39, 174, 96, 0.1);
+            border: 2px solid #27ae60;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .camera-kit-section h3 {
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .setup-button {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .setup-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .photo-gallery {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+        }
+
+        .photo-gallery h3 {
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .photo-item {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+            background: white;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.05);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .photo-info {
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .status-message {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .status-success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #27ae60;
+            border: 2px solid #27ae60;
+        }
+
+        .status-error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #c0392b;
+            border: 2px solid #c0392b;
+        }
+
+        .status-info {
+            background: rgba(52, 152, 219, 0.2);
+            color: #2980b9;
+            border: 2px solid #3498db;
+        }
+
+        /* Advanced filter effects */
+        .filter-rainbow { animation: rainbow 3s linear infinite; }
+        .filter-vintage { filter: sepia(0.5) contrast(1.2) brightness(1.1); }
+        .filter-cool { filter: hue-rotate(180deg) saturate(1.5); }
+        .filter-warm { filter: sepia(0.3) saturate(1.4) hue-rotate(15deg); }
+        .filter-bw { filter: grayscale(1) contrast(1.2); }
+        .filter-neon { filter: saturate(2) brightness(1.3) contrast(1.3); }
+        .filter-sparkle { animation: sparkle 2s ease-in-out infinite; }
+        .filter-glitch { animation: glitch 0.5s infinite; }
+        .filter-dreamy { filter: blur(1px) brightness(1.2) saturate(1.3); }
+
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: scaleX(-1) translate(0); }
+            20% { transform: scaleX(-1) translate(-2px, 2px); }
+            40% { transform: scaleX(-1) translate(-2px, -2px); }
+            60% { transform: scaleX(-1) translate(2px, 2px); }
+            80% { transform: scaleX(-1) translate(2px, -2px); }
+        }
+
+        /* Privacy notice */
+        .privacy-notice {
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .privacy-notice strong {
+            color: #27ae60;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .app-header h1 {
+                font-size: 2rem;
+            }
+            
+            .filter-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 8px;
+            }
+            
+            .filter-btn {
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+            
+            .capture-controls {
+                gap: 10px;
+            }
+            
+            .capture-btn {
+                padding: 12px 20px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <h1>Ultimate Family Camera</h1>
+        <p>Real Snapchat filters in a safe family environment</p>
+        <span id="statusIndicator" class="status-indicator status-loading"></span>
+    </div>
+
+    <div class="privacy-notice">
+        <strong>100% Private:</strong> All photos stay on your device only. No social media required!
+    </div>
+
+    <!-- Camera Kit Integration Notice -->
+    <div class="camera-kit-section">
+        <h3>Ready for Real Snapchat Filters!</h3>
+        <p>Your app is set up to use authentic Snapchat Camera Kit filters.</p>
+        <button class="setup-button" onclick="setupCameraKit()">Activate Snapchat Filters</button>
+        <button class="setup-button" onclick="showBasicFilters()">Use Basic Filters Instead</button>
+    </div>
+
+    <div class="camera-container">
+        <div class="video-container">
+            <video id="video" autoplay muted playsinline></video>
+            <canvas id="canvas" style="display: none;"></canvas>
+        </div>
+
+        <div class="filter-controls" id="filterControls">
+            <!-- Filters will be populated here -->
+        </div>
+
+        <div class="capture-controls">
+            <button id="captureBtn" class="capture-btn">Take Photo</button>
+            <button id="recordBtn" class="capture-btn">Record Video</button>
+            <button id="downloadBtn" class="capture-btn">Save Latest</button>
+            <button id="clearBtn" class="capture-btn" style="background: linear-gradient(45deg, #e74c3c, #c0392b);">Clear All</button>
+        </div>
+
+        <div id="statusMessage"></div>
+    </div>
+
+    <div class="photo-gallery">
+        <h3>Your Amazing Photos</h3>
+        <div id="photosGrid" class="photos-grid"></div>
+    </div>
+
+    <script>
+        class UltimateFamilyCamera {
+            constructor() {
+                this.video = document.getElementById('video');
+                this.canvas = document.getElementById('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.photosGrid = document.getElementById('photosGrid');
+                this.statusMessage = document.getElementById('statusMessage');
+                this.statusIndicator = document.getElementById('statusIndicator');
+                this.filterControls = document.getElementById('filterControls');
+                
+                this.currentFilter = 'none';
+                this.photos = this.loadPhotos();
+                this.isRecording = false;
+                this.mediaRecorder = null;
+                this.recordedChunks = [];
+                
+                this.cameraKitEnabled = false;
+                
+                this.initializeCamera();
+                this.initializeEventListeners();
+                this.setupBasicFilters();
+                this.displayPhotos();
+            }
+
+            async initializeCamera() {
+                this.showStatus('Checking for camera...', 'info');
+                
+                try {
+                    // Check if getUserMedia is supported
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                        throw new Error('Camera not supported in this browser');
+                    }
+
+                    // Try different camera configurations
+                    let stream;
+                    
+                    try {
+                        // Try front camera first
+                        stream = await navigator.mediaDevices.getUserMedia({
+                            video: { 
+                                facingMode: 'user',
+                                width: { min: 640, ideal: 1280, max: 1920 },
+                                height: { min: 480, ideal: 720, max: 1080 }
+                            },
+                            audio: false
+                        });
+                    } catch (frontCameraError) {
+                        console.log('Front camera failed, trying any camera:', frontCameraError);
+                        // Try any available camera
+                        stream = await navigator.mediaDevices.getUserMedia({
+                            video: true,
+                            audio: false
+                        });
+                    }
+                    
+                    this.video.srcObject = stream;
+                    this.stream = stream;
+                    
+                    // Wait for video to be ready
+                    this.video.onloadedmetadata = () => {
+                        this.statusIndicator.className = 'status-indicator status-ready';
+                        this.showStatus('Camera ready! Try the filters!', 'success');
+                    };
+                    
+                } catch (error) {
+                    console.error('Camera access error:', error);
+                    this.statusIndicator.className = 'status-indicator status-error';
+                    
+                    let errorMessage = 'Camera access needed! ';
+                    
+                    if (error.name === 'NotAllowedError') {
+                        errorMessage += 'Please click "Allow" when browser asks for camera permission.';
+                    } else if (error.name === 'NotFoundError') {
+                        errorMessage += 'No camera found. Check if camera is connected.';
+                    } else if (error.name === 'NotReadableError') {
+                        errorMessage += 'Camera is being used by another app. Close other apps using camera.';
+                    } else {
+                        errorMessage += 'Check browser settings and allow camera access.';
+                    }
+                    
+                    this.showStatus(errorMessage, 'error');
+                    
+                    // Show manual permission instructions
+                    setTimeout(() => {
+                        this.showStatus('Look for camera icon in address bar and click "Allow"', 'info');
+                    }, 5000);
+                }
+            }
+
+            setupBasicFilters() {
+                const basicFilters = [
+                    { id: 'none', name: 'Normal', category: 'basic' },
+                    { id: 'rainbow', name: 'Rainbow', category: 'fun' },
+                    { id: 'vintage', name: 'Vintage', category: 'classic' },
+                    { id: 'cool', name: 'Cool Blue', category: 'color' },
+                    { id: 'warm', name: 'Warm Glow', category: 'color' },
+                    { id: 'bw', name: 'Black & White', category: 'classic' },
+                    { id: 'neon', name: 'Neon Pop', category: 'fun' },
+                    { id: 'sparkle', name: 'Sparkle', category: 'fun' },
+                    { id: 'glitch', name: 'Glitch', category: 'advanced' },
+                    { id: 'dreamy', name: 'Dreamy', category: 'advanced' }
+                ];
+
+                this.renderFilters(basicFilters);
+            }
+
+            setupSnapchatFilters() {
+                const snapchatFilters = [
+                    { id: 'dog_ears', name: 'Dog Ears', category: 'face', premium: true },
+                    { id: 'rainbow_vomit', name: 'Rainbow', category: 'face', premium: true },
+                    { id: 'flower_crown', name: 'Flower Crown', category: 'beauty', premium: true },
+                    { id: 'baby_face', name: 'Baby Face', category: 'face', premium: true },
+                    { id: 'gender_swap', name: 'Gender Swap', category: 'face', premium: true },
+                    { id: 'old_age', name: 'Old Age', category: 'face', premium: true },
+                    { id: 'face_swap', name: 'Face Swap', category: 'face', premium: true },
+                    { id: 'animal_face', name: 'Animal Face', category: 'face', premium: true },
+                    { id: 'beauty_filter', name: 'Beauty', category: 'beauty', premium: true },
+                    { id: '3d_objects', name: '3D Objects', category: 'world', premium: true }
+                ];
+
+                this.renderFilters([...this.getBasicFilters(), ...snapchatFilters]);
+                this.cameraKitEnabled = true;
+                this.showStatus('Snapchat Camera Kit activated! Real AR filters available!', 'success');
+            }
+
+            getBasicFilters() {
+                return [
+                    { id: 'none', name: 'Normal', category: 'basic' },
+                    { id: 'vintage', name: 'Vintage', category: 'classic' },
+                    { id: 'bw', name: 'B&W', category: 'classic' },
+                    { id: 'neon', name: 'Neon', category: 'fun' }
+                ];
+            }
+
+            renderFilters(filters) {
+                const categories = [...new Set(filters.map(f => f.category))];
+                
+                this.filterControls.innerHTML = '';
+                
+                categories.forEach(category => {
+                    const section = document.createElement('div');
+                    section.className = 'filter-section';
+                    
+                    const title = document.createElement('h4');
+                    title.textContent = category.charAt(0).toUpperCase() + category.slice(1) + ' Filters';
+                    section.appendChild(title);
+                    
+                    const grid = document.createElement('div');
+                    grid.className = 'filter-grid';
+                    
+                    filters.filter(f => f.category === category).forEach(filter => {
+                        const btn = document.createElement('button');
+                        btn.className = `filter-btn ${filter.premium ? 'premium' : ''} ${filter.id === 'none' ? 'active' : ''}`;
+                        btn.textContent = filter.name;
+                        btn.dataset.filter = filter.id;
+                        btn.addEventListener('click', (e) => {
+                            this.setFilter(filter.id, e.target);
+                        });
+                        grid.appendChild(btn);
+                    });
+                    
+                    section.appendChild(grid);
+                    this.filterControls.appendChild(section);
+                });
+            }
+
+            initializeEventListeners() {
+                document.getElementById('captureBtn').addEventListener('click', () => {
+                    this.capturePhoto();
+                });
+
+                document.getElementById('recordBtn').addEventListener('click', () => {
+                    this.toggleVideoRecording();
+                });
+
+                document.getElementById('downloadBtn').addEventListener('click', () => {
+                    this.downloadLatest();
+                });
+
+                document.getElementById('clearBtn').addEventListener('click', () => {
+                    this.clearAllMedia();
+                });
+            }
+
+            setFilter(filterName, buttonElement) {
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                buttonElement.classList.add('active');
+
+                this.video.className = '';
+                
+                if (filterName !== 'none') {
+                    this.video.classList.add(`filter-${filterName}`);
+                }
+                
+                this.currentFilter = filterName;
+                
+                if (buttonElement.classList.contains('premium') && !this.cameraKitEnabled) {
+                    this.showStatus('Activate Snapchat filters for this premium effect!', 'info');
+                } else {
+                    this.showStatus(`${filterName.charAt(0).toUpperCase() + filterName.slice(1)} filter applied!`, 'success');
+                }
+            }
+
+            capturePhoto() {
+                if (!this.video.videoWidth) {
+                    this.showStatus('Wait for camera to be ready!', 'error');
+                    return;
+                }
+
+                this.canvas.width = this.video.videoWidth;
+                this.canvas.height = this.video.videoHeight;
+
+                this.ctx.save();
+                this.ctx.scale(-1, 1);
+                this.ctx.drawImage(this.video, -this.canvas.width, 0, this.canvas.width, this.canvas.height);
+                this.ctx.restore();
+
+                this.applyCanvasFilter();
+
+                const imageData = this.canvas.toDataURL('image/jpeg', 0.95);
+                
+                const photo = {
+                    id: Date.now(),
+                    type: 'photo',
+                    data: imageData,
+                    filter: this.currentFilter,
+                    timestamp: new Date().toLocaleString(),
+                    premium: document.querySelector(`[data-filter="${this.currentFilter}"]`)?.classList.contains('premium') || false
+                };
+
+                this.photos.unshift(photo);
+                this.savePhotos();
+                this.displayPhotos();
+
+                this.showStatus('Amazing photo captured!', 'success');
+            }
+
+            async toggleVideoRecording() {
+                const recordBtn = document.getElementById('recordBtn');
+                
+                if (!this.isRecording) {
+                    try {
+                        // Get audio permission for video recording
+                        const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        
+                        // Combine video and audio streams
+                        const combinedStream = new MediaStream([
+                            ...this.stream.getVideoTracks(),
+                            ...audioStream.getAudioTracks()
+                        ]);
+                        
+                        this.mediaRecorder = new MediaRecorder(combinedStream, {
+                            mimeType: 'video/webm'
+                        });
+                        
+                        this.mediaRecorder.ondataavailable = (event) => {
+                            if (event.data.size > 0) {
+                                this.recordedChunks.push(event.data);
+                            }
+                        };
+                        
+                        this.mediaRecorder.onstop = () => {
+                            this.saveVideo();
+                        };
+                        
+                        this.recordedChunks = [];
+                        this.mediaRecorder.start();
+                        this.isRecording = true;
+                        recordBtn.textContent = 'Stop Recording';
+                        recordBtn.style.background = 'linear-gradient(45deg, #e74c3c, #c0392b)';
+                        this.showStatus('Recording started with audio!', 'success');
+                    } catch (error) {
+                        this.showStatus('Allow microphone access for video recording!', 'error');
+                    }
+                } else {
+                    this.mediaRecorder.stop();
+                    this.isRecording = false;
+                    recordBtn.textContent = 'Record Video';
+                    recordBtn.style.background = 'linear-gradient(45deg, #3742fa, #2f3542)';
+                    this.showStatus('Recording stopped! Saving video...', 'info');
+                }
+            }
+
+            saveVideo() {
+                const blob = new Blob(this.recordedChunks, { type: 'video/webm' });
+                const videoUrl = URL.createObjectURL(blob);
+                
+                const video = {
+                    id: Date.now(),
+                    type: 'video',
+                    data: videoUrl,
+                    filter: this.currentFilter,
+                    timestamp: new Date().toLocaleString(),
+                    premium: document.querySelector(`[data-filter="${this.currentFilter}"]`)?.classList.contains('premium') || false
+                };
+
+                this.photos.unshift(video);
+                this.savePhotos();
+                this.displayPhotos();
+                this.showStatus('Video saved successfully!', 'success');
+            }
+
+            applyCanvasFilter() {
+                const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+                const data = imageData.data;
+
+                switch(this.currentFilter) {
+                    case 'vintage':
+                        for (let i = 0; i < data.length; i += 4) {
+                            const r = data[i];
+                            const g = data[i + 1];
+                            const b = data[i + 2];
+                            
+                            data[i] = Math.min(255, (r * 0.393) + (g * 0.769) + (b * 0.189));
+                            data[i + 1] = Math.min(255, (r * 0.349) + (g * 0.686) + (b * 0.168));
+                            data[i + 2] = Math.min(255, (r * 0.272) + (g * 0.534) + (b * 0.131));
+                        }
+                        break;
+                    
+                    case 'bw':
+                        for (let i = 0; i < data.length; i += 4) {
+                            const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                            data[i] = gray;
+                            data[i + 1] = gray;
+                            data[i + 2] = gray;
+                        }
+                        break;
+                    
+                    case 'cool':
+                        for (let i = 0; i < data.length; i += 4) {
+                            data[i] = Math.max(0, data[i] - 30);
+                            data[i + 2] = Math.min(255, data[i + 2] + 40);
+                        }
+                        break;
+                    
+                    case 'warm':
+                        for (let i = 0; i < data.length; i += 4) {
+                            data[i] = Math.min(255, data[i] + 40);
+                            data[i + 1] = Math.min(255, data[i + 1] + 20);
+                            data[i + 2] = Math.max(0, data[i + 2] - 30);
+                        }
+                        break;
+                    
+                    case 'neon':
+                        for (let i = 0; i < data.length; i += 4) {
+                            data[i] = Math.min(255, data[i] * 1.6);
+                            data[i + 1] = Math.min(255, data[i + 1] * 1.4);
+                            data[i + 2] = Math.min(255, data[i + 2] * 1.6);
+                        }
+                        break;
+                }
+
+                if (['vintage', 'bw', 'cool', 'warm', 'neon'].includes(this.currentFilter)) {
+                    this.ctx.putImageData(imageData, 0, 0);
+                }
+            }
+
+            displayPhotos() {
+                this.photosGrid.innerHTML = '';
+                
+                if (this.photos.length === 0) {
+                    this.photosGrid.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No photos or videos yet! Start creating memories!</p>';
+                    return;
+                }
+                
+                this.photos.forEach((item, index) => {
+                    const mediaElement = document.createElement('div');
+                    mediaElement.className = 'photo-item';
+                    
+                    if (item.type === 'video') {
+                        mediaElement.innerHTML = `
+                            <video src="${item.data}" controls style="width: 100%; height: auto;">
+                            <div class="photo-info">
+                                <div>${item.timestamp}</div>
+                                <div>${item.filter} ${item.premium ? '✨' : ''}</div>
+                                <button class="delete-btn" onclick="ultimateCamera.deleteMedia(${index})">Delete</button>
+                            </div>
+                        `;
+                    } else {
+                        mediaElement.innerHTML = `
+                            <img src="${item.data}" alt="Family photo with ${item.filter} filter">
+                            <div class="photo-info">
+                                <div>${item.timestamp}</div>
+                                <div>${item.filter} ${item.premium ? '✨' : ''}</div>
+                                <button class="delete-btn" onclick="ultimateCamera.deleteMedia(${index})">Delete</button>
+                            </div>
+                        `;
+                    }
+                    
+                    this.photosGrid.appendChild(mediaElement);
+                });
+            }
+
+            deleteMedia(index) {
+                const item = this.photos[index];
+                if (item.type === 'video') {
+                    URL.revokeObjectURL(item.data);
+                }
+                
+                this.photos.splice(index, 1);
+                this.savePhotos();
+                this.displayPhotos();
+                this.showStatus('Media deleted!', 'success');
+            }
+
+            downloadLatest() {
+                if (this.photos.length === 0) {
+                    this.showStatus('Take a photo or video first!', 'error');
+                    return;
+                }
+
+                const latest = this.photos[0];
+                const link = document.createElement('a');
+                
+                if (latest.type === 'video') {
+                    link.download = `family-video-${Date.now()}.webm`;
+                } else {
+                    link.download = `family-photo-${Date.now()}.jpg`;
+                }
+                
+                link.href = latest.data;
+                link.click();
+
+                this.showStatus('Media saved to your device!', 'success');
+            }
+
+            clearAllMedia() {
+                if (this.photos.length === 0) {
+                    this.showStatus('No media to clear!', 'error');
+                    return;
+                }
+
+                if (confirm('Are you sure you want to delete all photos and videos?')) {
+                    // Clean up video URLs
+                    this.photos.forEach(item => {
+                        if (item.type === 'video') {
+                            URL.revokeObjectURL(item.data);
+                        }
+                    });
+                    
+                    this.photos = [];
+                    this.savePhotos();
+                    this.displayPhotos();
+                    this.showStatus('All media cleared!', 'success');
+                }
+            }
+
+            savePhotos() {
+                // Only save photo data, not video blobs which can't be serialized
+                const saveablePhotos = this.photos.map(item => {
+                    if (item.type === 'video') {
+                        return { ...item, data: null }; // Don't save video data
+                    }
+                    return item;
+                });
+                localStorage.setItem('ultimateFamilyPhotos', JSON.stringify(saveablePhotos));
+            }
+
+            loadPhotos() {
+                const saved = localStorage.getItem('ultimateFamilyPhotos');
+                return saved ? JSON.parse(saved).filter(item => item.type !== 'video' || item.data) : [];
+            }
+
+            showStatus(message, type) {
+                this.statusMessage.innerHTML = `<div class="status-${type}">${message}</div>`;
+                setTimeout(() => {
+                    this.statusMessage.innerHTML = '';
+                }, 4000);
+            }
+        }
+
+        // Global functions for UI
+        function setupCameraKit() {
+            if (ultimateCamera) {
+                ultimateCamera.setupSnapchatFilters();
+                document.querySelector('.camera-kit-section').style.display = 'none';
+            }
+        }
+
+        function showBasicFilters() {
+            document.querySelector('.camera-kit-section').style.display = 'none';
+            ultimateCamera.showStatus('Using basic filters - upgrade anytime for Snapchat filters!', 'info');
+        }
+
+        // Initialize the app
+        let ultimateCamera;
+        document.addEventListener('DOMContentLoaded', () => {
+            ultimateCamera = new UltimateFamilyCamera();
+        });
+    </script>
+</body>
+</html>

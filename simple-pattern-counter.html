@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 Pattern Challenge Dashboard - Savo Mode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        /* Professional Challenge Dashboard */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a3d0a, #2d5016, #4a7c28);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .main-counter {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .challenge-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #7cff50, #44ff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .counter-display {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #7cff50;
+            margin: 20px 0;
+            text-shadow: 0 0 20px rgba(124, 255, 80, 0.6);
+            font-family: 'Bebas Neue', cursive;
+        }
+
+        .goal-fraction {
+            font-size: 1.5rem;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #7cff50, #44ff00);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 15px rgba(124, 255, 80, 0.5);
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .button {
+            background: #7cff50;
+            color: #2d5016;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .button:hover {
+            background: #9fff70;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(124, 255, 80, 0.4);
+        }
+
+        .reset-button {
+            background: #ff4757;
+            color: white;
+        }
+
+        .reset-button:hover {
+            background: #ff6b7a;
+            box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #7cff50;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .milestone-list {
+            text-align: left;
+        }
+
+        .milestone {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .milestone.completed {
+            color: #7cff50;
+            background: rgba(124, 255, 80, 0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-bottom: none;
+            margin-bottom: 10px;
+        }
+
+        .motivation-message {
+            font-size: 1.3rem;
+            font-style: italic;
+            margin: 20px 0;
+            text-align: center;
+            opacity: 0.9;
+        }
+
+        .daily-target {
+            background: linear-gradient(45deg, rgba(124, 255, 80, 0.2), rgba(68, 255, 0, 0.2));
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid rgba(124, 255, 80, 0.3);
+            margin: 20px 0;
+        }
+
+        .challenge-date {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .counter-display {
+                font-size: 3rem;
+            }
+            
+            .challenge-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 500 Pattern Challenge Dashboard -->
+    <div class="dashboard">
+        <!-- Main Counter Section -->
+        <div class="main-counter">
+            <div class="challenge-date">Challenge Started: January 1, 2025</div>
+            <h1 class="challenge-title">500 Pattern Challenge</h1>
+            <div class="counter-display" id="counterDisplay">0</div>
+            <div class="goal-fraction">
+                <span id="currentCount">0</span> / 500 Patterns
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            
+            <div class="buttons-grid">
+                <button class="button" onclick="addPattern()">+1 Pattern</button>
+                <button class="button" onclick="addFive()">+5 Patterns</button>
+                <button class="button" onclick="addTen()">Great Day (+10)</button>
+                <button class="button reset-button" onclick="resetCounter()">Reset</button>
+            </div>
+            
+            <div class="motivation-message" id="motivationMessage">
+                Ready to build your pattern empire!
+            </div>
+            
+            <div style="background: rgba(255, 255, 80, 0.1); padding: 20px; border-radius: 10px; margin: 20px 0; border: 1px solid rgba(255, 255, 80, 0.3);">
+                <h4 style="margin: 0 0 10px 0; color: #ffff50;">How This Works:</h4>
+                <p style="margin: 0; font-size: 0.9rem; line-height: 1.5;">
+                    This counter tracks your progress toward 500 patterns. When you create patterns in the 
+                    <strong>Forest Generator</strong>, they're automatically saved to your Pattern Library. 
+                    Use the buttons above to manually track patterns created elsewhere or offline.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Progress Stats -->
+        <div class="card">
+            <h3>Progress Stats</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" id="percentComplete">0%</span>
+                    <span class="stat-label">Complete</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="remainingPatterns">500</span>
+                    <span class="stat-label">Remaining</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="dailyAverage">0</span>
+                    <span class="stat-label">Daily Average</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="daysLeft">90</span>
+                    <span class="stat-label">Days Left</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Daily Target -->
+        <div class="card">
+            <h3>Daily Target</h3>
+            <div class="daily-target">
+                <div style="font-size: 2rem; font-weight: bold; margin-bottom: 10px;">
+                    <span id="dailyTarget">5.6</span> patterns/day
+                </div>
+                <div style="opacity: 0.8;">
+                    To reach 500 patterns in 90 days
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9rem;">
+                    <strong>Strategy:</strong> 3-5 patterns on weekdays, 8-10 on weekends
+                </div>
+            </div>
+        </div>
+        
+        <!-- Milestones -->
+        <div class="card">
+            <h3>Milestones</h3>
+            <div class="milestone-list">
+                <div class="milestone" id="milestone-50">
+                    <span>50 Patterns</span>
+                    <span>🎯 Foundation</span>
+                </div>
+                <div class="milestone" id="milestone-100">
+                    <span>100 Patterns</span>
+                    <span>🚀 Momentum</span>
+                </div>
+                <div class="milestone" id="milestone-250">
+                    <span>250 Patterns</span>
+                    <span>⚡ Halfway Point</span>
+                </div>
+                <div class="milestone" id="milestone-400">
+                    <span>400 Patterns</span>
+                    <span>🔥 Final Push</span>
+                </div>
+                <div class="milestone" id="milestone-500">
+                    <span>500 Patterns</span>
+                    <span>👑 GOAL ACHIEVED!</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pattern Categories -->
+        <div class="card">
+            <h3>Pattern Focus Areas</h3>
+            <div style="text-align: left; line-height: 1.8;">
+                <div><strong>🌲 Forest Ecosystems:</strong> 150 patterns</div>
+                <div><strong>🏔️ Mountain Terrain:</strong> 100 patterns</div>
+                <div><strong>🌊 Ocean/Water:</strong> 75 patterns</div>
+                <div><strong>🏜️ Desert/Arid:</strong> 75 patterns</div>
+                <div><strong>❄️ Arctic/Snow:</strong> 50 patterns</div>
+                <div><strong>🌆 Urban/Tech:</strong> 50 patterns</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 500 Pattern Challenge Dashboard Logic
+        
+        // Load saved progress or start at 0
+        let patternCount = parseInt(localStorage.getItem('savoModePatternCount') || '0');
+        let challengeStartDate = localStorage.getItem('challengeStartDate') || new Date().toISOString().split('T')[0];
+        
+        // Initialize dashboard on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAllDisplays();
+            localStorage.setItem('challengeStartDate', challengeStartDate);
+        });
+        
+        // Add pattern functions
+        function addPattern() {
+            patternCount += 1;
+            updateAllDisplays();
+            saveProgress();
+            showMotivationalMessage();
+        }
+        
+        function addFive() {
+            patternCount += 5;
+            updateAllDisplays();
+            saveProgress();
+            showMotivationalMessage();
+        }
+        
+        function addTen() {
+            patternCount += 10;
+            updateAllDisplays();
+            saveProgress();
+            showMotivationalMessage();
+        }
+        
+        // Reset counter
+        function resetCounter() {
+            if (confirm('Are you sure you want to reset your progress? This cannot be undone.')) {
+                patternCount = 0;
+                challengeStartDate = new Date().toISOString().split('T')[0];
+                localStorage.setItem('challengeStartDate', challengeStartDate);
+                updateAllDisplays();
+                saveProgress();
+                document.getElementById('motivationMessage').textContent = 'Fresh start! Ready to build your pattern empire!';
+            }
+        }
+        
+        // Update all dashboard displays
+        function updateAllDisplays() {
+            // Main counter
+            document.getElementById('counterDisplay').textContent = patternCount;
+            document.getElementById('currentCount').textContent = patternCount;
+            
+            // Progress bar
+            const progressPercent = Math.min((patternCount / 500) * 100, 100);
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+            
+            // Stats
+            document.getElementById('percentComplete').textContent = Math.round(progressPercent) + '%';
+            document.getElementById('remainingPatterns').textContent = Math.max(500 - patternCount, 0);
+            
+            // Calculate days elapsed and daily average
+            const startDate = new Date(challengeStartDate);
+            const today = new Date();
+            const daysElapsed = Math.max(Math.ceil((today - startDate) / (1000 * 60 * 60 * 24)), 1);
+            const dailyAverage = daysElapsed > 0 ? (patternCount / daysElapsed).toFixed(1) : '0';
+            
+            document.getElementById('dailyAverage').textContent = dailyAverage;
+            
+            // Days left (assuming 90-day challenge)
+            const daysLeft = Math.max(90 - daysElapsed, 0);
+            document.getElementById('daysLeft').textContent = daysLeft;
+            
+            // Update daily target based on remaining patterns and days
+            if (daysLeft > 0) {
+                const dailyTarget = ((500 - patternCount) / daysLeft).toFixed(1);
+                document.getElementById('dailyTarget').textContent = dailyTarget;
+            } else {
+                document.getElementById('dailyTarget').textContent = '0.0';
+            }
+            
+            // Update milestones
+            updateMilestones();
+        }
+        
+        // Update milestone completion status
+        function updateMilestones() {
+            const milestones = [
+                { count: 50, id: 'milestone-50' },
+                { count: 100, id: 'milestone-100' },
+                { count: 250, id: 'milestone-250' },
+                { count: 400, id: 'milestone-400' },
+                { count: 500, id: 'milestone-500' }
+            ];
+            
+            milestones.forEach(milestone => {
+                const element = document.getElementById(milestone.id);
+                if (patternCount >= milestone.count) {
+                    element.classList.add('completed');
+                } else {
+                    element.classList.remove('completed');
+                }
+            });
+        }
+        
+        // Show motivational messages
+        function showMotivationalMessage() {
+            const messageElement = document.getElementById('motivationMessage');
+            const messages = {
+                1: "🎯 First pattern created! The journey begins.",
+                10: "🚀 10 patterns complete! You're building momentum.",
+                25: "⚡ 25 patterns! You're on fire!",
+                50: "🎉 50 patterns! Foundation is solid - 10% complete!",
+                100: "🔥 100 patterns! You've hit serious momentum - 20% complete!",
+                150: "🌟 150 patterns! You're becoming unstoppable!",
+                200: "💪 200 patterns! Almost halfway there!",
+                250: "⚡ HALFWAY POINT! 250 patterns complete!",
+                300: "🚀 300 patterns! You're in the zone now!",
+                350: "🔥 350 patterns! The finish line is in sight!",
+                400: "💎 400 patterns! Final push time - 80% complete!",
+                450: "🏆 450 patterns! You're almost there!",
+                500: "👑 GOAL ACHIEVED! 500 patterns complete! You're a pattern creation legend!"
+            };
+            
+            if (messages[patternCount]) {
+                messageElement.textContent = messages[patternCount];
+            } else if (patternCount > 500) {
+                messageElement.textContent = `🌟 ${patternCount} patterns! You've exceeded your goal!`;
+            } else {
+                // Show progress-based encouragement
+                const remaining = 500 - patternCount;
+                if (remaining > 100) {
+                    messageElement.textContent = `${patternCount} patterns created. ${remaining} to go!`;
+                } else if (remaining > 50) {
+                    messageElement.textContent = `${patternCount} patterns! Less than ${remaining} remaining!`;
+                } else if (remaining > 0) {
+                    messageElement.textContent = `${patternCount} patterns! Final sprint - only ${remaining} left!`;
+                }
+            }
+        }
+        
+        // Save progress to localStorage
+        function saveProgress() {
+            localStorage.setItem('savoModePatternCount', patternCount.toString());
+        }
+        
+        // Export progress data
+        function exportProgress() {
+            const data = {
+                patternCount: patternCount,
+                challengeStartDate: challengeStartDate,
+                exportDate: new Date().toISOString(),
+                progressPercent: Math.round((patternCount / 500) * 100)
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'savo-mode-500-pattern-progress.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

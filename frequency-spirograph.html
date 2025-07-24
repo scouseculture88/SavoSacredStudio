@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frequency Spirograph - Savo Studio</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/frequency-spirograph.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-text">SAVO STUDIO</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Design Tools</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="frequency-analyzer.html">Frequency Analyzer</a></li>
+                        <li><a href="frequency-spirograph.html" class="active">Frequency Spirograph</a></li>
+                        <li><a href="pattern-mathematics.html">Pattern Mathematics</a></li>
+                        <li><a href="shape-logo-creator.html">Shape Creator</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- Mobile Navigation Menu -->
+            <div class="mobile-nav-menu">
+                <div class="nav-list">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="frequency-analyzer.html" class="nav-link">Frequency Analyzer</a>
+                    <a href="frequency-spirograph.html" class="nav-link active">Frequency Spirograph</a>
+                    <a href="pattern-mathematics.html" class="nav-link">Pattern Mathematics</a>
+                    <a href="shape-logo-creator.html" class="nav-link">Shape Creator</a>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="accessibility-toggle" id="accessibilityToggle">
+        <i data-feather="settings"></i>
+    </div>
+
+    <main class="spirograph-main">
+        <div class="spirograph-header">
+            <h1>Frequency Spirograph</h1>
+            <p>Generate geometric Spirograph patterns controlled by audio frequencies and vibrations</p>
+        </div>
+
+        <div class="spirograph-container">
+            <!-- Frequency Control Section -->
+            <div class="spirograph-section">
+                <h2>🎵 Frequency Control</h2>
+                <div class="frequency-inputs">
+                    <div class="freq-control-group">
+                        <h3>Primary Frequency (Outer Circle)</h3>
+                        <div class="control-row">
+                            <label>Frequency:</label>
+                            <input type="range" id="freq1" min="0.1" max="20" step="0.1" value="1">
+                            <span id="freq1Value">1.0 Hz</span>
+                            <button id="playFreq1" class="play-btn">
+                                <i data-feather="play"></i>
+                            </button>
+                        </div>
+                        <div class="control-row">
+                            <label>Amplitude:</label>
+                            <input type="range" id="amp1" min="10" max="200" value="100">
+                            <span id="amp1Value">100</span>
+                        </div>
+                    </div>
+                    
+                    <div class="freq-control-group">
+                        <h3>Secondary Frequency (Inner Circle)</h3>
+                        <div class="control-row">
+                            <label>Frequency:</label>
+                            <input type="range" id="freq2" min="0.1" max="20" step="0.1" value="3">
+                            <span id="freq2Value">3.0 Hz</span>
+                            <button id="playFreq2" class="play-btn">
+                                <i data-feather="play"></i>
+                            </button>
+                        </div>
+                        <div class="control-row">
+                            <label>Amplitude:</label>
+                            <input type="range" id="amp2" min="10" max="200" value="50">
+                            <span id="amp2Value">50</span>
+                        </div>
+                    </div>
+                    
+                    <div class="freq-control-group">
+                        <h3>Modulation Frequency (Pen Position)</h3>
+                        <div class="control-row">
+                            <label>Frequency:</label>
+                            <input type="range" id="freq3" min="0.1" max="20" step="0.1" value="7">
+                            <span id="freq3Value">7.0 Hz</span>
+                            <button id="playFreq3" class="play-btn">
+                                <i data-feather="play"></i>
+                            </button>
+                        </div>
+                        <div class="control-row">
+                            <label>Pen Distance:</label>
+                            <input type="range" id="penDistance" min="5" max="100" value="30">
+                            <span id="penDistanceValue">30</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="frequency-presets">
+                    <h3>Tesla 3-6-9 Presets</h3>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" data-preset="369">3-6-9 Divine</button>
+                        <button class="preset-btn" data-preset="triangle">Triangle Pattern</button>
+                        <button class="preset-btn" data-preset="fibonacci">Fibonacci Spiral</button>
+                        <button class="preset-btn" data-preset="golden">Golden Ratio</button>
+                        <button class="preset-btn" data-preset="solfeggio">Solfeggio Harmony</button>
+                        <button class="preset-btn" data-preset="torus">Torus Field</button>
+                        <button class="preset-btn" data-preset="galaxy">Galaxy Spiral</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pattern Display -->
+            <div class="spirograph-section">
+                <h2>🌀 Pattern Generation</h2>
+                <div class="pattern-controls">
+                    <div class="control-row">
+                        <label>Pattern Type:</label>
+                        <select id="patternType">
+                            <option value="hypotrochoid">Hypotrochoid (Inner Rolling)</option>
+                            <option value="epitrochoid">Epitrochoid (Outer Rolling)</option>
+                            <option value="lissajous">Lissajous Curves</option>
+                            <option value="torus">Torus Energy Field</option>
+                            <option value="galaxy">Galaxy Spiral</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-row">
+                        <label>Drawing Speed:</label>
+                        <input type="range" id="drawSpeed" min="1" max="50" value="10">
+                        <span id="drawSpeedValue">10</span>
+                    </div>
+                    
+                    <div class="control-row">
+                        <label>Trail Length:</label>
+                        <input type="range" id="trailLength" min="100" max="2000" value="500">
+                        <span id="trailLengthValue">500</span>
+                    </div>
+                    
+                    <div class="control-row">
+                        <label>Color Mode:</label>
+                        <select id="colorMode">
+                            <option value="frequency">Frequency Based</option>
+                            <option value="rainbow">Rainbow Trail</option>
+                            <option value="tesla">Tesla 3-6-9</option>
+                            <option value="cosmic">Cosmic Energy</option>
+                            <option value="solfeggio">Solfeggio Colors</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="drawing-controls">
+                    <button id="startDrawing" class="control-btn primary">
+                        <i data-feather="play"></i>
+                        Start Drawing
+                    </button>
+                    <button id="pauseDrawing" class="control-btn">
+                        <i data-feather="pause"></i>
+                        Pause
+                    </button>
+                    <button id="clearCanvas" class="control-btn">
+                        <i data-feather="trash-2"></i>
+                        Clear
+                    </button>
+                    <button id="savePattern" class="control-btn">
+                        <i data-feather="download"></i>
+                        Save Pattern
+                    </button>
+                </div>
+                
+                <canvas id="spirographCanvas" width="800" height="800"></canvas>
+            </div>
+
+            <!-- Audio Input -->
+            <div class="spirograph-section">
+                <h2>🎤 Audio-Controlled Drawing</h2>
+                <div class="audio-controls">
+                    <button id="startAudioDraw" class="control-btn primary">
+                        <i data-feather="mic"></i>
+                        Draw from Microphone
+                    </button>
+                    <button id="uploadAudio" class="control-btn">
+                        <i data-feather="upload"></i>
+                        Upload Audio File
+                    </button>
+                    <input type="file" id="audioFile" accept="audio/*" hidden>
+                    
+                    <div class="audio-settings">
+                        <div class="control-row">
+                            <label>Frequency Sensitivity:</label>
+                            <input type="range" id="audioSensitivity" min="1" max="100" value="50">
+                            <span id="audioSensitivityValue">50</span>
+                        </div>
+                        <div class="control-row">
+                            <label>Frequency Range:</label>
+                            <select id="freqRange">
+                                <option value="low">Low (20-200 Hz)</option>
+                                <option value="mid" selected>Mid (200-2000 Hz)</option>
+                                <option value="high">High (2000-20000 Hz)</option>
+                                <option value="full">Full Spectrum</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="frequency-display">
+                    <canvas id="frequencyDisplay" width="400" height="200"></canvas>
+                    <div class="audio-status">
+                        <div id="audioStatus">Audio analysis will appear here</div>
+                        <div id="dominantFrequencies"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mathematical Analysis -->
+            <div class="spirograph-section">
+                <h2>📐 Mathematical Analysis</h2>
+                <div class="math-display">
+                    <div class="equation-display">
+                        <h3>Current Equations</h3>
+                        <div id="currentEquations">
+                            <div class="equation">x = (R-r) × cos(θ) + d × cos(θ×(R-r)/r)</div>
+                            <div class="equation">y = (R-r) × sin(θ) - d × sin(θ×(R-r)/r)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="parameter-display">
+                        <h3>Parameters</h3>
+                        <div id="parameterValues">
+                            <div class="param">R (Outer radius): <span id="outerRadius">100</span></div>
+                            <div class="param">r (Inner radius): <span id="innerRadius">50</span></div>
+                            <div class="param">d (Pen distance): <span id="penParam">30</span></div>
+                            <div class="param">θ (Angle): <span id="currentAngle">0°</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="frequency-analysis">
+                        <h3>Frequency Relationships</h3>
+                        <div id="freqRelationships">
+                            <div class="relationship">Frequency Ratio: <span id="freqRatio">1:3</span></div>
+                            <div class="relationship">Tesla Number: <span id="teslaNumber">3</span></div>
+                            <div class="relationship">Pattern Complexity: <span id="complexity">Medium</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script src="js/accessibility.js"></script>
+    <script src="js/frequency-spirograph.js"></script>
+    <script>feather.replace();</script>
+</body>
+</html>

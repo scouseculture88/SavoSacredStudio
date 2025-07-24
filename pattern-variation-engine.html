@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Variation Engine - Savo Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="css/pattern-variation-engine.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="variation-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <h1 class="logo">Savo Studio</h1>
+                    <span class="tagline">Pattern Variation Engine</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="loadExistingPattern()">
+                        <i data-feather="upload"></i>
+                        Load Pattern
+                    </button>
+                    <button class="btn btn-secondary" onclick="randomizeAll()">
+                        <i data-feather="shuffle"></i>
+                        Randomize
+                    </button>
+                    <a href="index.html" class="btn btn-outline">
+                        <i data-feather="home"></i>
+                        Back to Studio
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Source Pattern Section -->
+            <div class="source-section">
+                <h2>Source Pattern</h2>
+                <div class="source-pattern">
+                    <div class="pattern-preview" id="source-preview">
+                        <div class="placeholder">
+                            <i data-feather="plus"></i>
+                            <p>Load a pattern from your library or create a new one</p>
+                        </div>
+                    </div>
+                    <div class="pattern-info">
+                        <h3 id="source-title">No Pattern Loaded</h3>
+                        <p id="source-description">Load a pattern to start generating variations</p>
+                        <div class="pattern-details">
+                            <span class="detail-item">
+                                <i data-feather="layers"></i>
+                                <span id="source-type">--</span>
+                            </span>
+                            <span class="detail-item">
+                                <i data-feather="palette"></i>
+                                <span id="source-colors">--</span>
+                            </span>
+                            <span class="detail-item">
+                                <i data-feather="grid"></i>
+                                <span id="source-density">--</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Variation Controls -->
+            <div class="controls-section">
+                <h2>Variation Controls</h2>
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <label for="density-variation">Density Variation</label>
+                        <div class="control-wrapper">
+                            <input type="range" id="density-variation" min="0" max="100" value="20">
+                            <span class="control-value">20%</span>
+                        </div>
+                        <p class="control-description">Adjust pattern element density</p>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="scale-variation">Scale Variation</label>
+                        <div class="control-wrapper">
+                            <input type="range" id="scale-variation" min="0" max="100" value="30">
+                            <span class="control-value">30%</span>
+                        </div>
+                        <p class="control-description">Modify element sizes</p>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="color-variation">Color Variation</label>
+                        <div class="control-wrapper">
+                            <input type="range" id="color-variation" min="0" max="100" value="15">
+                            <span class="control-value">15%</span>
+                        </div>
+                        <p class="control-description">Alter color tones and saturation</p>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="rotation-variation">Rotation Variation</label>
+                        <div class="control-wrapper">
+                            <input type="range" id="rotation-variation" min="0" max="100" value="25">
+                            <span class="control-value">25%</span>
+                        </div>
+                        <p class="control-description">Randomize element rotations</p>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="position-variation">Position Variation</label>
+                        <div class="control-wrapper">
+                            <input type="range" id="position-variation" min="0" max="100" value="20">
+                            <span class="control-value">20%</span>
+                        </div>
+                        <p class="control-description">Adjust element positioning</p>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="opacity-variation">Opacity Variation</label>
+                        <div class="control-wrapper">
+                            <input type="range" id="opacity-variation" min="0" max="100" value="10">
+                            <span class="control-value">10%</span>
+                        </div>
+                        <p class="control-description">Vary element transparency</p>
+                    </div>
+                </div>
+
+                <div class="preset-controls">
+                    <h3>Variation Presets</h3>
+                    <div class="preset-buttons">
+                        <button class="btn btn-preset" onclick="applyPreset('subtle')">
+                            <i data-feather="minimize"></i>
+                            Subtle
+                        </button>
+                        <button class="btn btn-preset" onclick="applyPreset('moderate')">
+                            <i data-feather="circle"></i>
+                            Moderate
+                        </button>
+                        <button class="btn btn-preset" onclick="applyPreset('dramatic')">
+                            <i data-feather="maximize"></i>
+                            Dramatic
+                        </button>
+                        <button class="btn btn-preset" onclick="applyPreset('experimental')">
+                            <i data-feather="zap"></i>
+                            Experimental
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Variations Grid -->
+            <div class="variations-section">
+                <div class="variations-header">
+                    <h2>Generated Variations</h2>
+                    <div class="variation-actions">
+                        <button class="btn btn-secondary" onclick="generateVariations()">
+                            <i data-feather="refresh-cw"></i>
+                            Generate New Set
+                        </button>
+                        <button class="btn btn-secondary" onclick="saveAllVariations()">
+                            <i data-feather="save"></i>
+                            Save All
+                        </button>
+                    </div>
+                </div>
+
+                <div class="variations-grid" id="variations-grid">
+                    <!-- Variations will be generated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Pattern Loader Modal -->
+        <div class="modal-overlay" id="pattern-loader-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Load Pattern</h3>
+                    <button class="close-btn" onclick="hidePatternLoader()">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="loader-tabs">
+                        <button class="tab-btn active" data-tab="library">From Library</button>
+                        <button class="tab-btn" data-tab="upload">Upload File</button>
+                        <button class="tab-btn" data-tab="generator">From Generator</button>
+                    </div>
+
+                    <div class="tab-content active" id="library-tab">
+                        <div class="pattern-library-grid" id="library-patterns">
+                            <!-- Library patterns will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="upload-tab">
+                        <div class="upload-area">
+                            <i data-feather="upload"></i>
+                            <p>Upload a pattern image file</p>
+                            <input type="file" id="pattern-upload" accept="image/*">
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="generator-tab">
+                        <div class="generator-link">
+                            <i data-feather="external-link"></i>
+                            <p>Create a new pattern in the Forest Generator</p>
+                            <a href="forest-pattern-generator.html" class="btn btn-primary" target="_blank">
+                                Open Forest Generator
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Variation Detail Modal -->
+        <div class="modal-overlay" id="variation-detail-modal">
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h3>Variation Details</h3>
+                    <div class="detail-actions">
+                        <button class="btn btn-secondary" onclick="exportVariation()">
+                            <i data-feather="download"></i>
+                            Export
+                        </button>
+                        <button class="btn btn-primary" onclick="saveVariation()">
+                            <i data-feather="save"></i>
+                            Save to Library
+                        </button>
+                    </div>
+                    <button class="close-btn" onclick="hideVariationDetail()">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="detail-content">
+                        <div class="detail-preview">
+                            <canvas id="detail-canvas" width="400" height="300"></canvas>
+                        </div>
+                        <div class="detail-info">
+                            <div class="info-section">
+                                <h4>Variation Properties</h4>
+                                <div class="property-list" id="variation-properties">
+                                    <!-- Properties will be populated here -->
+                                </div>
+                            </div>
+                            <div class="info-section">
+                                <h4>Differences from Original</h4>
+                                <div class="difference-list" id="variation-differences">
+                                    <!-- Differences will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/pattern-variation-engine.js"></script>
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+    </script>
+</body>
+</html>

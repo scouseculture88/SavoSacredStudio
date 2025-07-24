@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Blank Manager - Savo Mode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #2d5016;
+            --accent-green: #7cff50;
+            --dark-bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --border-color: #333;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            background: linear-gradient(45deg, var(--accent-green), #9fd66b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .upload-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px dashed var(--border-color);
+            text-align: center;
+        }
+
+        .upload-area {
+            padding: 40px;
+            border-radius: 10px;
+            background: rgba(124, 255, 80, 0.05);
+            border: 2px dashed var(--accent-green);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background: rgba(124, 255, 80, 0.1);
+            border-color: #9fd66b;
+        }
+
+        .upload-area.dragover {
+            background: rgba(124, 255, 80, 0.15);
+            border-color: var(--accent-green);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary-green);
+        }
+
+        .blank-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .blank-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .blank-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(124, 255, 80, 0.1);
+        }
+
+        .blank-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .blank-info h3 {
+            color: var(--accent-green);
+            margin-bottom: 10px;
+        }
+
+        .blank-specs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .spec-item {
+            background: rgba(124, 255, 80, 0.1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .blank-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .use-btn {
+            background: var(--accent-green);
+            color: var(--primary-green);
+        }
+
+        .use-btn:hover {
+            background: #9fd66b;
+            transform: translateY(-2px);
+        }
+
+        .edit-btn {
+            background: rgba(124, 255, 80, 0.2);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+
+        .edit-btn:hover {
+            background: rgba(124, 255, 80, 0.3);
+        }
+
+        .delete-btn {
+            background: rgba(255, 80, 80, 0.2);
+            color: #ff5050;
+            border: 1px solid #ff5050;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 80, 80, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 2px rgba(124, 255, 80, 0.2);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            color: var(--accent-green);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background: var(--accent-green);
+            color: var(--primary-green);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .save-btn:hover {
+            background: #9fd66b;
+        }
+
+        .preset-blanks {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .preset-blank {
+            background: rgba(124, 255, 80, 0.1);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .preset-blank:hover {
+            border-color: var(--accent-green);
+            background: rgba(124, 255, 80, 0.2);
+        }
+
+        .preset-blank.selected {
+            border-color: var(--accent-green);
+            background: rgba(124, 255, 80, 0.25);
+        }
+
+        @media (max-width: 768px) {
+            .blank-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .blank-specs {
+                grid-template-columns: 1fr;
+            }
+            
+            .blank-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏭 Product Blank Manager</h1>
+            <p>Upload and manage real product blanks for authentic manufacturing previews</p>
+        </div>
+
+        <!-- Storage Info -->
+        <div class="upload-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Add New Product Blank</h2>
+                <button class="action-btn delete-btn" onclick="blankManager.clearAllBlanks()" style="padding: 8px 15px;">
+                    Clear All Blanks
+                </button>
+            </div>
+            
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📸</div>
+                <h3>Drop product photos here or click to upload</h3>
+                <p>Support JPG, PNG - Images automatically compressed for storage</p>
+                <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+            </div>
+            
+            <div class="preset-blanks">
+                <div class="preset-blank" data-type="t-shirt">
+                    <div>👕</div>
+                    <div>T-Shirt</div>
+                </div>
+                <div class="preset-blank" data-type="hoodie">
+                    <div>🧥</div>
+                    <div>Hoodie</div>
+                </div>
+                <div class="preset-blank" data-type="hat">
+                    <div>🧢</div>
+                    <div>Hat</div>
+                </div>
+                <div class="preset-blank" data-type="tank">
+                    <div>👔</div>
+                    <div>Tank Top</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Blanks Grid -->
+        <div class="blank-grid" id="blankGrid">
+            <!-- Product blanks will be populated here -->
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+            <h2 class="modal-title">Edit Product Blank</h2>
+            
+            <form id="editForm">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="editName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Brand</label>
+                    <select id="editBrand">
+                        <option value="bella-canvas">Bella + Canvas</option>
+                        <option value="gildan">Gildan</option>
+                        <option value="champion">Champion</option>
+                        <option value="yupoong">Yupoong</option>
+                        <option value="american-apparel">American Apparel</option>
+                        <option value="custom">Custom Brand</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Product Type</label>
+                    <select id="editType">
+                        <option value="t-shirt">T-Shirt</option>
+                        <option value="hoodie">Hoodie</option>
+                        <option value="tank">Tank Top</option>
+                        <option value="hat">Hat/Cap</option>
+                        <option value="sweatshirt">Sweatshirt</option>
+                        <option value="polo">Polo</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Material</label>
+                    <input type="text" id="editMaterial" placeholder="e.g., 100% Cotton, 50/50 Blend">
+                </div>
+                
+                <div class="form-group">
+                    <label>Base Price ($)</label>
+                    <input type="number" id="editPrice" step="0.01" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label>Available Colors</label>
+                    <input type="text" id="editColors" placeholder="Black, White, Navy, Forest Green">
+                </div>
+                
+                <div class="form-group">
+                    <label>Print Areas</label>
+                    <input type="text" id="editPrintAreas" placeholder="Front Chest, Full Back, Sleeve">
+                </div>
+                
+                <button type="submit" class="save-btn">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        class ProductBlankManager {
+            constructor() {
+                this.blanks = this.loadBlanks();
+                this.currentEditId = null;
+                this.initializeEventListeners();
+                this.renderBlanks();
+            }
+
+            initializeEventListeners() {
+                const uploadArea = document.getElementById('uploadArea');
+                const fileInput = document.getElementById('fileInput');
+                
+                // Upload area events
+                uploadArea.addEventListener('click', () => fileInput.click());
+                uploadArea.addEventListener('dragover', this.handleDragOver.bind(this));
+                uploadArea.addEventListener('drop', this.handleDrop.bind(this));
+                uploadArea.addEventListener('dragleave', this.handleDragLeave.bind(this));
+                
+                // File input change
+                fileInput.addEventListener('change', this.handleFileSelect.bind(this));
+                
+                // Preset blank selection
+                document.querySelectorAll('.preset-blank').forEach(preset => {
+                    preset.addEventListener('click', this.selectPreset.bind(this));
+                });
+                
+                // Edit form submission
+                document.getElementById('editForm').addEventListener('submit', this.saveEdit.bind(this));
+            }
+
+            handleDragOver(e) {
+                e.preventDefault();
+                e.currentTarget.classList.add('dragover');
+            }
+
+            handleDragLeave(e) {
+                e.currentTarget.classList.remove('dragover');
+            }
+
+            handleDrop(e) {
+                e.preventDefault();
+                e.currentTarget.classList.remove('dragover');
+                const files = Array.from(e.dataTransfer.files);
+                this.processFiles(files);
+            }
+
+            handleFileSelect(e) {
+                const files = Array.from(e.target.files);
+                this.processFiles(files);
+            }
+
+            processFiles(files) {
+                files.forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        this.addBlankFromFile(file);
+                    }
+                });
+            }
+
+            addBlankFromFile(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    // Compress image to reduce storage usage
+                    this.compressImage(e.target.result, 0.7, (compressedImage) => {
+                        const blank = {
+                            id: Date.now() + Math.random(),
+                            name: file.name.replace(/\.[^/.]+$/, ""),
+                            brand: 'custom',
+                            type: 'hat',
+                            material: '100% Cotton',
+                            price: 15.00,
+                            colors: 'Multiple Colors Available',
+                            printAreas: 'Front Panel, Side Panels',
+                            image: compressedImage,
+                            dateAdded: new Date().toISOString()
+                        };
+                        
+                        try {
+                            this.blanks.push(blank);
+                            this.saveBlanks();
+                            this.renderBlanks();
+                            this.showNotification(`✅ Added ${blank.name} to product blanks`);
+                        } catch (error) {
+                            if (error.name === 'QuotaExceededError') {
+                                this.showNotification('❌ Storage full. Try reducing image size or clearing old blanks.', 'error');
+                            } else {
+                                this.showNotification('❌ Failed to save product blank', 'error');
+                            }
+                        }
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+
+            compressImage(base64, quality, callback) {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = () => {
+                    // Resize to max 600px width while maintaining aspect ratio
+                    const maxWidth = 600;
+                    const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+                    canvas.width = img.width * ratio;
+                    canvas.height = img.height * ratio;
+                    
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    callback(canvas.toDataURL('image/jpeg', quality));
+                };
+                
+                img.src = base64;
+            }
+
+            selectPreset(e) {
+                // Remove previous selection
+                document.querySelectorAll('.preset-blank').forEach(p => p.classList.remove('selected'));
+                // Add selection to clicked preset
+                e.currentTarget.classList.add('selected');
+                
+                const type = e.currentTarget.dataset.type;
+                this.showNotification(`📸 Take a photo of your ${type} blank to upload`);
+            }
+
+            renderBlanks() {
+                const grid = document.getElementById('blankGrid');
+                
+                if (this.blanks.length === 0) {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                            <h3>No Product Blanks Yet</h3>
+                            <p>Upload photos of your actual product blanks to get started</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                grid.innerHTML = this.blanks.map(blank => `
+                    <div class="blank-card">
+                        <img src="${blank.image}" alt="${blank.name}" class="blank-image">
+                        <div class="blank-info">
+                            <h3>${blank.name}</h3>
+                            <p><strong>${this.getBrandName(blank.brand)}</strong> - ${this.getTypeName(blank.type)}</p>
+                            
+                            <div class="blank-specs">
+                                <div class="spec-item">
+                                    <strong>Material:</strong><br>${blank.material}
+                                </div>
+                                <div class="spec-item">
+                                    <strong>Price:</strong><br>$${blank.price}
+                                </div>
+                                <div class="spec-item">
+                                    <strong>Colors:</strong><br>${blank.colors}
+                                </div>
+                                <div class="spec-item">
+                                    <strong>Print Areas:</strong><br>${blank.printAreas}
+                                </div>
+                            </div>
+                            
+                            <div class="blank-actions">
+                                <button class="action-btn use-btn" onclick="blankManager.useBlank('${blank.id}')">
+                                    Use in 3D Viewer
+                                </button>
+                                <button class="action-btn edit-btn" onclick="blankManager.editBlank('${blank.id}')">
+                                    Edit
+                                </button>
+                                <button class="action-btn delete-btn" onclick="blankManager.deleteBlank('${blank.id}')">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            getBrandName(brand) {
+                const brands = {
+                    'bella-canvas': 'Bella + Canvas',
+                    'gildan': 'Gildan',
+                    'champion': 'Champion',
+                    'yupoong': 'Yupoong',
+                    'american-apparel': 'American Apparel',
+                    'custom': 'Custom'
+                };
+                return brands[brand] || brand;
+            }
+
+            getTypeName(type) {
+                const types = {
+                    't-shirt': 'T-Shirt',
+                    'hoodie': 'Hoodie',
+                    'tank': 'Tank Top',
+                    'hat': 'Hat/Cap',
+                    'sweatshirt': 'Sweatshirt',
+                    'polo': 'Polo Shirt'
+                };
+                return types[type] || type;
+            }
+
+            useBlank(id) {
+                const blank = this.blanks.find(b => b.id == id);
+                if (blank) {
+                    // Store selected blank for 3D viewer
+                    localStorage.setItem('selectedProductBlank', JSON.stringify(blank));
+                    this.showNotification(`✅ ${blank.name} selected for 3D viewer`);
+                    
+                    // Navigate to 3D viewer
+                    setTimeout(() => {
+                        window.location.href = '3d-previewer.html';
+                    }, 1000);
+                }
+            }
+
+            editBlank(id) {
+                const blank = this.blanks.find(b => b.id == id);
+                if (blank) {
+                    this.currentEditId = id;
+                    this.populateEditForm(blank);
+                    document.getElementById('editModal').style.display = 'block';
+                }
+            }
+
+            populateEditForm(blank) {
+                document.getElementById('editName').value = blank.name;
+                document.getElementById('editBrand').value = blank.brand;
+                document.getElementById('editType').value = blank.type;
+                document.getElementById('editMaterial').value = blank.material;
+                document.getElementById('editPrice').value = blank.price;
+                document.getElementById('editColors').value = blank.colors;
+                document.getElementById('editPrintAreas').value = blank.printAreas;
+            }
+
+            saveEdit(e) {
+                e.preventDefault();
+                
+                const blankIndex = this.blanks.findIndex(b => b.id == this.currentEditId);
+                if (blankIndex !== -1) {
+                    this.blanks[blankIndex] = {
+                        ...this.blanks[blankIndex],
+                        name: document.getElementById('editName').value,
+                        brand: document.getElementById('editBrand').value,
+                        type: document.getElementById('editType').value,
+                        material: document.getElementById('editMaterial').value,
+                        price: parseFloat(document.getElementById('editPrice').value),
+                        colors: document.getElementById('editColors').value,
+                        printAreas: document.getElementById('editPrintAreas').value
+                    };
+                    
+                    this.saveBlanks();
+                    this.renderBlanks();
+                    this.closeModal();
+                    this.showNotification('✅ Product blank updated successfully');
+                }
+            }
+
+            deleteBlank(id) {
+                if (confirm('Are you sure you want to delete this product blank?')) {
+                    this.blanks = this.blanks.filter(b => b.id != id);
+                    this.saveBlanks();
+                    this.renderBlanks();
+                    this.showNotification('✅ Product blank deleted');
+                }
+            }
+
+            loadBlanks() {
+                const saved = localStorage.getItem('savoModeProductBlanks');
+                return saved ? JSON.parse(saved) : [];
+            }
+
+            saveBlanks() {
+                localStorage.setItem('savoModeProductBlanks', JSON.stringify(this.blanks));
+            }
+
+            showNotification(message, type = 'success') {
+                // Create notification element
+                const notification = document.createElement('div');
+                const bgColor = type === 'error' ? '#ff5050' : 'var(--accent-green)';
+                const textColor = type === 'error' ? 'white' : 'var(--primary-green)';
+                
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${bgColor};
+                    color: ${textColor};
+                    padding: 15px 20px;
+                    border-radius: 10px;
+                    font-weight: 600;
+                    z-index: 10000;
+                    animation: slideIn 0.3s ease;
+                    max-width: 300px;
+                `;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, type === 'error' ? 5000 : 3000);
+            }
+
+            clearAllBlanks() {
+                if (confirm('⚠️ This will delete all product blanks. Are you sure?')) {
+                    this.blanks = [];
+                    this.saveBlanks();
+                    this.renderBlanks();
+                    this.showNotification('✅ All product blanks cleared');
+                }
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        // Initialize the manager
+        const blankManager = new ProductBlankManager();
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

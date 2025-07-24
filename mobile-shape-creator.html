@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Shape Creator - Tesla 369 Diamond | Savo Studio</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            touch-action: manipulation;
+        }
+
+        .mobile-header {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .mobile-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .mobile-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .mobile-canvas-container {
+            background: white;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: #fff;
+            border-bottom: 2px solid #eee;
+        }
+
+        #mobile-canvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        .mobile-tools {
+            padding: 20px;
+            background: white;
+        }
+
+        .tool-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .mobile-tool-btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 12px 8px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            background: white;
+            color: #2c3e50;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .mobile-tool-btn:hover,
+        .mobile-tool-btn.active {
+            border-color: #f39c12;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .mobile-tool-btn i {
+            width: 20px;
+            height: 20px;
+        }
+
+        .tesla-template-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tesla-template-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.3);
+        }
+
+        .style-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .control-group {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .control-group input[type="color"] {
+            width: 100%;
+            height: 40px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-clear {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-save {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-export {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-undo {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .tesla-info {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .tesla-info h4 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: #e74c3c;
+        }
+
+        .tesla-info p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .shape-preview {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 480px) {
+            .mobile-canvas-container {
+                margin: 10px;
+            }
+            
+            .canvas-wrapper {
+                height: 300px;
+            }
+            
+            .tool-row {
+                gap: 8px;
+            }
+            
+            .mobile-tool-btn {
+                min-width: 70px;
+                padding: 10px 6px;
+                font-size: 0.75rem;
+            }
+            
+            .style-controls {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="mobile-header">
+        <h1 class="mobile-title">SHAPE CREATOR</h1>
+        <p class="mobile-subtitle">Mobile Tesla 369 Diamond Designer</p>
+    </div>
+
+    <!-- Canvas Container -->
+    <div class="mobile-canvas-container">
+        <div class="canvas-wrapper">
+            <canvas id="mobile-canvas"></canvas>
+            <div class="grid-overlay" id="grid-overlay"></div>
+            <div class="shape-preview" id="shape-preview">Select Tool</div>
+        </div>
+
+        <div class="mobile-tools">
+            <!-- Tesla Template Button -->
+            <button class="tesla-template-btn" onclick="loadTeslaDiamond()">
+                <i data-feather="zap"></i>
+                TESLA 369 DIAMOND
+            </button>
+
+            <!-- Drawing Tools -->
+            <div class="tool-row">
+                <button class="mobile-tool-btn active" data-tool="point" onclick="selectTool('point')">
+                    <i data-feather="crosshair"></i>
+                    Point
+                </button>
+                <button class="mobile-tool-btn" data-tool="line" onclick="selectTool('line')">
+                    <i data-feather="minus"></i>
+                    Line
+                </button>
+                <button class="mobile-tool-btn" data-tool="rectangle" onclick="selectTool('rectangle')">
+                    <i data-feather="square"></i>
+                    Rectangle
+                </button>
+                <button class="mobile-tool-btn" data-tool="triangle" onclick="selectTool('triangle')">
+                    <i data-feather="triangle"></i>
+                    Triangle
+                </button>
+            </div>
+
+            <div class="tool-row">
+                <button class="mobile-tool-btn" data-tool="circle" onclick="selectTool('circle')">
+                    <i data-feather="circle"></i>
+                    Circle
+                </button>
+                <button class="mobile-tool-btn" data-tool="star" onclick="selectTool('star')">
+                    <i data-feather="star"></i>
+                    Star
+                </button>
+                <button class="mobile-tool-btn" data-tool="polygon" onclick="selectTool('polygon')">
+                    <i data-feather="hexagon"></i>
+                    Polygon
+                </button>
+                <button class="mobile-tool-btn" data-tool="select" onclick="selectTool('select')">
+                    <i data-feather="move"></i>
+                    Select
+                </button>
+            </div>
+
+            <!-- Style Controls -->
+            <div class="style-controls">
+                <div class="control-group">
+                    <label for="fill-color">Fill Color</label>
+                    <input type="color" id="fill-color" value="#e74c3c">
+                </div>
+                <div class="control-group">
+                    <label for="stroke-color">Stroke Color</label>
+                    <input type="color" id="stroke-color" value="#2c3e50">
+                </div>
+                <div class="control-group">
+                    <label for="stroke-width">Line Width: <span id="width-value">3</span>px</label>
+                    <input type="range" id="stroke-width" min="1" max="10" value="3">
+                </div>
+                <div class="control-group">
+                    <label for="opacity">Opacity: <span id="opacity-value">100</span>%</label>
+                    <input type="range" id="opacity" min="10" max="100" value="100">
+                </div>
+            </div>
+
+            <!-- Grid Controls -->
+            <div class="grid-controls" style="margin: 15px 0; padding: 12px; background: #f8f9fa; border-radius: 8px;">
+                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: #2c3e50; margin-bottom: 8px;">
+                    Pixel Grid: <span id="grid-size-value">20</span>px
+                </label>
+                <input type="range" id="grid-size" min="10" max="100" value="20" style="width: 100%; margin-bottom: 8px;">
+                <button class="action-btn" onclick="toggleCoordinates()" style="width: 100%; background: #9b59b6; color: white;">
+                    <i data-feather="crosshair"></i>
+                    Show Pixel Coordinates
+                </button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-btn btn-undo" onclick="undo()">
+                    <i data-feather="rotate-ccw"></i>
+                    Undo
+                </button>
+                <button class="action-btn btn-clear" onclick="clearCanvas()">
+                    <i data-feather="trash-2"></i>
+                    Clear
+                </button>
+                <button class="action-btn btn-save" onclick="saveToLibrary()">
+                    <i data-feather="save"></i>
+                    Save
+                </button>
+                <button class="action-btn btn-export" onclick="exportDesign()">
+                    <i data-feather="download"></i>
+                    Export
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tesla Info -->
+    <div class="tesla-info">
+        <h4>Authentic Tesla 369 Energy Diamond</h4>
+        <p>The true Tesla Diamond: 2 diamonds (rectangles on their side) + 1 triangle, following the 9 numbered energy points. Tesla's key numbers 3, 6, 9 form the energy vortex pattern that controls frequency and vibration.</p>
+    </div>
+
+    <script>
+        // Mobile Shape Creator JavaScript
+        let canvas, ctx, currentTool = 'point', shapes = [], isDrawing = false;
+        let startX, startY, currentShape, undoStack = [];
+        let touchStartTime, touchStartPos;
+        let gridSize = 20, showCoordinates = false;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            canvas = document.getElementById('mobile-canvas');
+            if (!canvas) return;
+            
+            ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Touch events for mobile
+            canvas.addEventListener('touchstart', handleTouchStart, {passive: false});
+            canvas.addEventListener('touchmove', handleTouchMove, {passive: false});
+            canvas.addEventListener('touchend', handleTouchEnd, {passive: false});
+            
+            // Mouse events for desktop testing
+            canvas.addEventListener('mousedown', handleMouseStart);
+            canvas.addEventListener('mousemove', handleMouseMove);
+            canvas.addEventListener('mouseup', handleMouseEnd);
+            
+            // Style control updates
+            setupStyleControls();
+            setupGridControls();
+            
+            // Initial draw
+            drawGrid();
+            feather.replace();
+            
+            console.log('📱 Mobile Shape Creator initialized');
+        });
+
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            const rect = container.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            redraw();
+        }
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = (touch.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (touch.clientY - rect.top) * (canvas.height / rect.height);
+            
+            touchStartTime = Date.now();
+            touchStartPos = {x, y};
+            
+            startDrawing(x, y);
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            if (!isDrawing) return;
+            
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = (touch.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (touch.clientY - rect.top) * (canvas.height / rect.height);
+            
+            updateDrawing(x, y);
+        }
+
+        function handleTouchEnd(e) {
+            e.preventDefault();
+            endDrawing();
+        }
+
+        function handleMouseStart(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+            startDrawing(x, y);
+        }
+
+        function handleMouseMove(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+            updateDrawing(x, y);
+        }
+
+        function handleMouseEnd(e) {
+            endDrawing();
+        }
+
+        function startDrawing(x, y) {
+            saveState();
+            isDrawing = true;
+            startX = x;
+            startY = y;
+            
+            if (currentTool === 'point') {
+                // Add point immediately
+                addPoint(x, y);
+                isDrawing = false;
+                return;
+            }
+            
+            // Create new shape
+            currentShape = {
+                type: currentTool,
+                x: x,
+                y: y,
+                width: 0,
+                height: 0,
+                fillColor: document.getElementById('fill-color').value,
+                strokeColor: document.getElementById('stroke-color').value,
+                strokeWidth: parseInt(document.getElementById('stroke-width').value),
+                opacity: parseInt(document.getElementById('opacity').value) / 100,
+                points: []
+            };
+            
+            shapes.push(currentShape);
+        }
+
+        function updateDrawing(x, y) {
+            if (!currentShape) return;
+            
+            const width = x - startX;
+            const height = y - startY;
+            
+            currentShape.width = width;
+            currentShape.height = height;
+            
+            // Update shape-specific properties
+            if (currentTool === 'triangle') {
+                currentShape.points = [
+                    {x: startX, y: startY + Math.abs(height)},
+                    {x: startX + width/2, y: startY},
+                    {x: startX + width, y: startY + Math.abs(height)}
+                ];
+            } else if (currentTool === 'star') {
+                currentShape.points = createStarPoints(startX, startY, Math.abs(width/2), Math.abs(height/2));
+            } else if (currentTool === 'polygon') {
+                currentShape.points = createPolygonPoints(startX, startY, Math.abs(width/2), 6);
+            }
+            
+            redraw();
+        }
+
+        function endDrawing() {
+            isDrawing = false;
+            currentShape = null;
+        }
+
+        function addPoint(x, y) {
+            saveState();
+            
+            // Snap to grid if coordinates are shown
+            if (showCoordinates) {
+                x = Math.round(x / gridSize) * gridSize;
+                y = Math.round(y / gridSize) * gridSize;
+            }
+            
+            const point = {
+                type: 'point',
+                x: x,
+                y: y,
+                fillColor: document.getElementById('fill-color').value,
+                strokeColor: document.getElementById('stroke-color').value,
+                strokeWidth: parseInt(document.getElementById('stroke-width').value),
+                opacity: parseInt(document.getElementById('opacity').value) / 100
+            };
+            shapes.push(point);
+            
+            // Show coordinates in preview
+            document.getElementById('shape-preview').textContent = `Point (${Math.round(x)}, ${Math.round(y)})`;
+            setTimeout(() => {
+                document.getElementById('shape-preview').textContent = currentTool.charAt(0).toUpperCase() + currentTool.slice(1);
+            }, 2000);
+            
+            redraw();
+        }
+
+        function createStarPoints(centerX, centerY, outerRadius, innerRadius) {
+            const points = [];
+            const spikes = 5;
+            const step = Math.PI / spikes;
+            
+            for (let i = 0; i < spikes * 2; i++) {
+                const radius = i % 2 === 0 ? outerRadius : innerRadius * 0.5;
+                const angle = i * step - Math.PI / 2;
+                points.push({
+                    x: centerX + radius * Math.cos(angle),
+                    y: centerY + radius * Math.sin(angle)
+                });
+            }
+            return points;
+        }
+
+        function createPolygonPoints(centerX, centerY, radius, sides) {
+            const points = [];
+            for (let i = 0; i < sides; i++) {
+                const angle = (i * 2 * Math.PI) / sides - Math.PI / 2;
+                points.push({
+                    x: centerX + radius * Math.cos(angle),
+                    y: centerY + radius * Math.sin(angle)
+                });
+            }
+            return points;
+        }
+
+        function drawShape(shape) {
+            ctx.save();
+            ctx.globalAlpha = shape.opacity;
+            ctx.fillStyle = shape.fillColor;
+            ctx.strokeStyle = shape.strokeColor;
+            ctx.lineWidth = shape.strokeWidth;
+            
+            switch (shape.type) {
+                case 'point':
+                    ctx.beginPath();
+                    ctx.arc(shape.x, shape.y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+                    
+                case 'line':
+                    ctx.beginPath();
+                    ctx.moveTo(shape.x, shape.y);
+                    ctx.lineTo(shape.x + shape.width, shape.y + shape.height);
+                    ctx.stroke();
+                    break;
+                    
+                case 'rectangle':
+                    ctx.fillRect(shape.x, shape.y, shape.width, shape.height);
+                    ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
+                    break;
+                    
+                case 'circle':
+                    const radius = Math.abs(shape.width / 2);
+                    ctx.beginPath();
+                    ctx.arc(shape.x + shape.width/2, shape.y + shape.height/2, radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    break;
+                    
+                case 'triangle':
+                case 'star':
+                case 'polygon':
+                    if (shape.points.length > 0) {
+                        ctx.beginPath();
+                        ctx.moveTo(shape.points[0].x, shape.points[0].y);
+                        for (let i = 1; i < shape.points.length; i++) {
+                            ctx.lineTo(shape.points[i].x, shape.points[i].y);
+                        }
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+                    }
+                    break;
+                    
+                case 'tesla-diamond':
+                    drawTeslaDiamond(shape);
+                    break;
+            }
+            
+            ctx.restore();
+        }
+
+        function drawTeslaDiamond(shape) {
+            const centerX = shape.x;
+            const centerY = shape.y;
+            const size = shape.size || 80;
+            
+            // Authentic Tesla 369 Diamond points as shown in user's image
+            const points = [
+                {x: centerX, y: centerY - size*1.2, label: '1', key: false},        // Top
+                {x: centerX + size*0.8, y: centerY - size*0.4, label: '2', key: false}, // Top-right
+                {x: centerX + size*0.8, y: centerY + size*0.4, label: '3', key: true},  // Bottom-right
+                {x: centerX, y: centerY + size*0.8, label: '4', key: false},        // Bottom center
+                {x: centerX, y: centerY + size*1.6, label: '5', key: false},        // Bottom tip
+                {x: centerX - size*0.8, y: centerY + size*0.4, label: '6', key: true}, // Bottom-left
+                {x: centerX - size*0.8, y: centerY - size*0.4, label: '7', key: false}, // Top-left
+                {x: centerX + size*0.4, y: centerY - size*0.8, label: '8', key: false}, // Upper right
+                {x: centerX, y: centerY, label: '9', key: true}                      // Center
+            ];
+            
+            ctx.strokeStyle = shape.strokeColor;
+            ctx.lineWidth = shape.strokeWidth;
+            
+            // Draw the authentic Tesla structure: 2 diamonds + triangle
+            
+            // Upper diamond (rectangle on its side)
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y); // 1 (top)
+            ctx.lineTo(points[1].x, points[1].y); // 2 (top-right)
+            ctx.lineTo(points[8].x, points[8].y); // 9 (center)
+            ctx.lineTo(points[6].x, points[6].y); // 7 (top-left)
+            ctx.closePath();
+            ctx.stroke();
+            
+            // Lower diamond (rectangle on its side)
+            ctx.beginPath();
+            ctx.moveTo(points[8].x, points[8].y); // 9 (center)
+            ctx.lineTo(points[2].x, points[2].y); // 3 (bottom-right)
+            ctx.lineTo(points[3].x, points[3].y); // 4 (bottom center)
+            ctx.lineTo(points[5].x, points[5].y); // 6 (bottom-left)
+            ctx.closePath();
+            ctx.stroke();
+            
+            // Triangle at bottom
+            ctx.beginPath();
+            ctx.moveTo(points[2].x, points[2].y); // 3 (bottom-right)
+            ctx.lineTo(points[4].x, points[4].y); // 5 (bottom tip)
+            ctx.lineTo(points[5].x, points[5].y); // 6 (bottom-left)
+            ctx.closePath();
+            ctx.stroke();
+            
+            // Energy connecting lines (from image pattern)
+            const energyConnections = [
+                [0, 7], [7, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 0], // Outer connections
+                [8, 0], [8, 1], [8, 2], [8, 3], [8, 4], [8, 5], [8, 6], [8, 7]  // Center connections
+            ];
+            
+            ctx.strokeStyle = '#00ff88'; // Tesla energy green
+            ctx.lineWidth = 2;
+            energyConnections.forEach(([start, end]) => {
+                ctx.beginPath();
+                ctx.moveTo(points[start].x, points[start].y);
+                ctx.lineTo(points[end].x, points[end].y);
+                ctx.stroke();
+            });
+            
+            // Draw numbered points with Tesla colors
+            points.forEach(point => {
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 14, 0, Math.PI * 2);
+                
+                // Tesla key numbers (3, 6, 9) in red, others in blue
+                ctx.fillStyle = point.key ? '#e74c3c' : '#3498db';
+                ctx.fill();
+                ctx.strokeStyle = '#2c3e50';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Number labels
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 14px Inter';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(point.label, point.x, point.y);
+            });
+        }
+
+        function drawGrid() {
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 0.5;
+            ctx.globalAlpha = 0.3;
+            
+            // Draw grid lines
+            for (let x = 0; x <= canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            
+            for (let y = 0; y <= canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            
+            // Draw coordinate labels if enabled
+            if (showCoordinates) {
+                ctx.fillStyle = '#666';
+                ctx.font = '10px Inter';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.globalAlpha = 0.6;
+                
+                // X coordinates (top)
+                for (let x = gridSize; x < canvas.width; x += gridSize * 2) {
+                    ctx.fillText(x.toString(), x, 10);
+                }
+                
+                // Y coordinates (left)
+                ctx.textAlign = 'left';
+                for (let y = gridSize; y < canvas.height; y += gridSize * 2) {
+                    ctx.fillText(y.toString(), 5, y);
+                }
+            }
+            
+            ctx.globalAlpha = 1;
+        }
+
+        function redraw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawGrid();
+            shapes.forEach(shape => drawShape(shape));
+        }
+
+        function selectTool(tool) {
+            currentTool = tool;
+            
+            // Update UI
+            document.querySelectorAll('.mobile-tool-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tool="${tool}"]`).classList.add('active');
+            
+            // Update preview
+            document.getElementById('shape-preview').textContent = tool.charAt(0).toUpperCase() + tool.slice(1);
+        }
+
+        function loadTeslaDiamond() {
+            saveState();
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            const diamond = {
+                type: 'tesla-diamond',
+                x: centerX,
+                y: centerY,
+                size: 80,
+                fillColor: document.getElementById('fill-color').value,
+                strokeColor: document.getElementById('stroke-color').value,
+                strokeWidth: parseInt(document.getElementById('stroke-width').value),
+                opacity: parseInt(document.getElementById('opacity').value) / 100
+            };
+            
+            shapes.push(diamond);
+            redraw();
+            
+            // Show success message
+            document.getElementById('shape-preview').textContent = 'Tesla 369 Diamond Loaded!';
+            setTimeout(() => {
+                document.getElementById('shape-preview').textContent = currentTool.charAt(0).toUpperCase() + currentTool.slice(1);
+            }, 2000);
+        }
+
+        function saveState() {
+            undoStack.push(JSON.stringify(shapes));
+            if (undoStack.length > 20) undoStack.shift();
+        }
+
+        function undo() {
+            if (undoStack.length > 0) {
+                const previousState = undoStack.pop();
+                shapes = JSON.parse(previousState);
+                redraw();
+            }
+        }
+
+        function clearCanvas() {
+            if (confirm('Clear all shapes?')) {
+                saveState();
+                shapes = [];
+                redraw();
+            }
+        }
+
+        function saveToLibrary() {
+            const designData = {
+                shapes: shapes,
+                timestamp: Date.now(),
+                name: 'Mobile Tesla Design',
+                type: 'shape-design'
+            };
+            
+            const savedDesigns = JSON.parse(localStorage.getItem('savedDesigns') || '[]');
+            savedDesigns.push(designData);
+            localStorage.setItem('savedDesigns', JSON.stringify(savedDesigns));
+            
+            document.getElementById('shape-preview').textContent = 'Saved to Library!';
+            setTimeout(() => {
+                document.getElementById('shape-preview').textContent = currentTool.charAt(0).toUpperCase() + currentTool.slice(1);
+            }, 2000);
+        }
+
+        function exportDesign() {
+            const link = document.createElement('a');
+            link.download = 'tesla-diamond-mobile.png';
+            link.href = canvas.toDataURL();
+            link.click();
+            
+            document.getElementById('shape-preview').textContent = 'Exported!';
+            setTimeout(() => {
+                document.getElementById('shape-preview').textContent = currentTool.charAt(0).toUpperCase() + currentTool.slice(1);
+            }, 2000);
+        }
+
+        function setupStyleControls() {
+            // Stroke width
+            document.getElementById('stroke-width').addEventListener('input', function() {
+                document.getElementById('width-value').textContent = this.value;
+            });
+            
+            // Opacity
+            document.getElementById('opacity').addEventListener('input', function() {
+                document.getElementById('opacity-value').textContent = this.value;
+            });
+        }
+
+        function setupGridControls() {
+            // Grid size control
+            document.getElementById('grid-size').addEventListener('input', function() {
+                gridSize = parseInt(this.value);
+                document.getElementById('grid-size-value').textContent = gridSize;
+                redraw();
+            });
+        }
+
+        function toggleCoordinates() {
+            showCoordinates = !showCoordinates;
+            const btn = event.target.closest('button');
+            if (showCoordinates) {
+                btn.innerHTML = '<i data-feather="eye-off"></i> Hide Coordinates';
+                btn.style.background = '#e74c3c';
+            } else {
+                btn.innerHTML = '<i data-feather="crosshair"></i> Show Pixel Coordinates';
+                btn.style.background = '#9b59b6';
+            }
+            feather.replace();
+            redraw();
+        }
+    </script>
+</body>
+</html>

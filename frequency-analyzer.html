@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frequency Analyzer - Savo Studio</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/frequency-analyzer.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-text">SAVO STUDIO</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Design Tools</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="forest-pattern-generator.html">Forest Generator</a></li>
+                        <li><a href="advanced-color-studio.html">Color Studio</a></li>
+                        <li><a href="pattern-library.html">Pattern Library</a></li>
+                        <li><a href="pattern-mathematics.html">Pattern Mathematics</a></li>
+                        <li><a href="shape-logo-creator.html">Shape Creator</a></li>
+                        <li><a href="frequency-analyzer.html" class="active">Frequency Analyzer</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="my-patterns.html" class="nav-link">My Patterns</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="accessibility-toggle" id="accessibilityToggle">
+        <i data-feather="settings"></i>
+    </div>
+
+    <main class="frequency-main">
+        <div class="frequency-header">
+            <h1>Frequency Analyzer</h1>
+            <p>Analyze audio frequencies, discover healing patterns, and convert sound into visual geometry</p>
+        </div>
+
+        <div class="frequency-container">
+            <!-- Audio Input Section -->
+            <div class="frequency-section">
+                <h2>Audio Input</h2>
+                <div class="audio-input-controls">
+                    <div class="input-method">
+                        <button id="recordBtn" class="record-btn">
+                            <i data-feather="mic"></i>
+                            <span>Record Audio</span>
+                        </button>
+                        <button id="stopBtn" class="stop-btn" disabled>
+                            <i data-feather="square"></i>
+                            <span>Stop Recording</span>
+                        </button>
+                    </div>
+                    
+                    <div class="input-method">
+                        <label for="audioUpload" class="upload-btn">
+                            <i data-feather="upload"></i>
+                            <span>Upload Audio File</span>
+                        </label>
+                        <input type="file" id="audioUpload" accept="audio/*" hidden>
+                    </div>
+
+                    <div class="input-method">
+                        <button id="playTestBtn" class="test-btn">
+                            <i data-feather="play"></i>
+                            <span>Play Test Tone</span>
+                        </button>
+                        <select id="testFrequency">
+                            <option value="174">174 Hz - Foundation</option>
+                            <option value="285">285 Hz - Transformation</option>
+                            <option value="396">396 Hz - Liberation</option>
+                            <option value="528" selected>528 Hz - Love & DNA Repair</option>
+                            <option value="639">639 Hz - Relationships</option>
+                            <option value="741">741 Hz - Expression</option>
+                            <option value="852">852 Hz - Intuition</option>
+                            <option value="963">963 Hz - Divine Connection</option>
+                        </select>
+                    </div>
+                </div>
+
+                <audio id="audioPlayer" controls style="width: 100%; margin-top: 20px; display: none;"></audio>
+                <div id="recordingStatus" class="recording-status"></div>
+            </div>
+
+            <!-- Frequency Analysis Display -->
+            <div class="frequency-section">
+                <h2>Frequency Analysis</h2>
+                <div class="analysis-display">
+                    <canvas id="frequencyCanvas" width="800" height="400"></canvas>
+                    <div class="frequency-info">
+                        <div class="dominant-frequencies">
+                            <h3>Dominant Frequencies</h3>
+                            <div id="dominantFreqs" class="freq-list"></div>
+                        </div>
+                        <div class="tesla-analysis">
+                            <h3>Tesla 3-6-9 Analysis</h3>
+                            <div id="teslaAnalysis" class="tesla-results"></div>
+                        </div>
+                        <div class="solfeggio-detection">
+                            <h3>Solfeggio Frequencies</h3>
+                            <div id="solfeggioDetection" class="solfeggio-results"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pattern Generation -->
+            <div class="frequency-section">
+                <h2>Frequency to Pattern Conversion</h2>
+                <div class="pattern-controls">
+                    <div class="control-group">
+                        <label>Pattern Type:</label>
+                        <select id="patternType">
+                            <option value="cymatics">Cymatics Patterns</option>
+                            <option value="geometric">Geometric Shapes</option>
+                            <option value="fractal">Fractal Generation</option>
+                            <option value="tesla">Tesla Energy Fields</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Sensitivity:</label>
+                        <input type="range" id="sensitivity" min="1" max="100" value="50">
+                        <span id="sensitivityValue">50</span>
+                    </div>
+                    <div class="control-group">
+                        <label>Pattern Size:</label>
+                        <input type="range" id="patternSize" min="20" max="200" value="100">
+                        <span id="patternSizeValue">100</span>
+                    </div>
+                    <button id="generatePattern" class="generate-btn">
+                        <i data-feather="zap"></i>
+                        Generate Visual Pattern
+                    </button>
+                </div>
+                <canvas id="patternCanvas" width="600" height="600"></canvas>
+            </div>
+
+            <!-- Plant Bioacoustics -->
+            <div class="frequency-section plant-bioacoustics">
+                <h2>🌲 Plant Bioacoustics - Listen to Nature</h2>
+                <p style="text-align: center; margin-bottom: 25px; opacity: 0.9;">
+                    Analyze the electrical signals and vibrations that plants produce. Trees communicate through bioelectric frequencies!
+                </p>
+                
+                <div class="plant-controls">
+                    <div class="control-group">
+                        <label>Plant Type Analysis:</label>
+                        <div class="plant-type-selector">
+                            <button class="plant-btn active" data-plant="trees">🌳 Trees</button>
+                            <button class="plant-btn" data-plant="flowers">🌸 Flowers</button>
+                            <button class="plant-btn" data-plant="grass">🌱 Grass</button>
+                            <button class="plant-btn" data-plant="fungi">🍄 Fungi</button>
+                            <button class="plant-btn" data-plant="moss">🌿 Moss</button>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Expected Frequency Range:</label>
+                        <div id="plantFreqRange" style="font-weight: 600; color: #32cd32;">0.1 - 1.5 Hz (Ancient wisdom vibrations)</div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Bioelectric Sensitivity:</label>
+                        <input type="range" id="bioSensitivity" min="1" max="100" value="75">
+                        <span id="bioSensitivityValue">75</span>
+                    </div>
+                    
+                    <button id="startPlantAnalysis" class="generate-btn" style="background: linear-gradient(45deg, #32cd32, #228b22);">
+                        <i data-feather="activity"></i>
+                        Start Plant Listening
+                    </button>
+                </div>
+                
+                <div class="plant-analysis-results">
+                    <div class="plant-signals">
+                        <h3>Detected Plant Signals</h3>
+                        <div id="plantSignals" class="freq-list">
+                            <div style="opacity: 0.7; text-align: center; padding: 20px;">
+                                Connect to plant and start analysis to see bioelectric signals
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-health-indicators">
+                        <h3>Plant Health Indicators</h3>
+                        <div id="plantHealth" class="freq-list">
+                            <div style="opacity: 0.7; text-align: center; padding: 20px;">
+                                Health analysis will appear here
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="plant-communication" style="margin-top: 25px; padding: 20px; background: rgba(50, 205, 50, 0.1); border-radius: 12px; border: 1px solid rgba(50, 205, 50, 0.3);">
+                    <h4 style="color: #32cd32; margin-bottom: 15px;">🌍 How Plant Communication Works</h4>
+                    <ul style="list-style: none; padding: 0; opacity: 0.9; line-height: 1.6;">
+                        <li>🔌 <strong>Bioelectric Signals:</strong> Plants generate electrical impulses like neurons</li>
+                        <li>🌐 <strong>Root Networks:</strong> Underground mycelium networks carry information</li>
+                        <li>⚡ <strong>Stress Responses:</strong> Damaged plants emit specific frequency patterns</li>
+                        <li>🎵 <strong>Growth Rhythms:</strong> Healthy plants have consistent frequency signatures</li>
+                        <li>🌳 <strong>Tree Networks:</strong> Forest trees share nutrients and warnings through roots</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Healing Frequency Database -->
+            <div class="frequency-section">
+                <h2>Healing Frequency Database</h2>
+                <div class="frequency-database">
+                    <div class="frequency-categories">
+                        <button class="category-btn active" data-category="solfeggio">Solfeggio</button>
+                        <button class="category-btn" data-category="chakra">Chakra Frequencies</button>
+                        <button class="category-btn" data-category="binaural">Binaural Beats</button>
+                        <button class="category-btn" data-category="nature">Nature Frequencies</button>
+                        <button class="category-btn" data-category="planetary">Planetary Frequencies</button>
+                    </div>
+                    <div id="frequencyList" class="frequency-list-container"></div>
+                </div>
+            </div>
+
+            <!-- Export Options -->
+            <div class="frequency-section">
+                <h2>Export & Save</h2>
+                <div class="export-controls">
+                    <button id="saveAnalysis" class="export-btn">
+                        <i data-feather="save"></i>
+                        Save Analysis
+                    </button>
+                    <button id="exportPattern" class="export-btn">
+                        <i data-feather="download"></i>
+                        Export Pattern
+                    </button>
+                    <button id="shareResults" class="export-btn">
+                        <i data-feather="share-2"></i>
+                        Share Results
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script src="js/accessibility.js"></script>
+    <script src="js/frequency-analyzer.js"></script>
+    <script>feather.replace();</script>
+</body>
+</html>

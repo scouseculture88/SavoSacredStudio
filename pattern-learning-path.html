@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Learning Path - Savo Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/pattern-learning-path.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="assets/savo-logo.jpg" alt="Savo Studio Logo" class="logo">
+                <span class="brand-name">SΛVO STUDIO</span>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="btn btn-secondary">← Back to Studio</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="learning-main">
+        <div class="container">
+            <header class="learning-header">
+                <h1 class="learning-title">Pattern Learning Path</h1>
+                <p class="learning-subtitle">Master the mathematics behind pattern creation through structured lessons and interactive exercises</p>
+                
+                <div class="progress-overview">
+                    <div class="progress-stats">
+                        <div class="stat">
+                            <span class="stat-number" id="completed-lessons">0</span>
+                            <span class="stat-label">Lessons Completed</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" id="total-lessons">20</span>
+                            <span class="stat-label">Total Lessons</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" id="current-level">Beginner</span>
+                            <span class="stat-label">Current Level</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="learning-content">
+                <!-- Learning Modules -->
+                <section class="learning-section">
+                    <h2 class="section-title">📚 Learning Modules</h2>
+                    <div class="modules-grid">
+                        <!-- Module 1: Basic Mathematics -->
+                        <div class="module-card" data-module="basic">
+                            <div class="module-header">
+                                <div class="module-icon">🔢</div>
+                                <h3>Basic Mathematics</h3>
+                                <div class="module-progress">
+                                    <span class="progress-text">0/5 lessons</span>
+                                    <div class="progress-mini">
+                                        <div class="progress-mini-fill" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="module-description">
+                                <p>Foundation concepts: coordinates, distance, angles, and basic trigonometry for pattern creation.</p>
+                            </div>
+                            <div class="module-lessons">
+                                <div class="lesson-item" data-lesson="coordinates">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Coordinate Systems</span>
+                                    <span class="lesson-duration">15 min</span>
+                                </div>
+                                <div class="lesson-item" data-lesson="distance">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Distance Calculations</span>
+                                    <span class="lesson-duration">20 min</span>
+                                </div>
+                                <div class="lesson-item" data-lesson="angles">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Angles & Rotation</span>
+                                    <span class="lesson-duration">25 min</span>
+                                </div>
+                                <div class="lesson-item" data-lesson="trigonometry">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Basic Trigonometry</span>
+                                    <span class="lesson-duration">30 min</span>
+                                </div>
+                                <div class="lesson-item" data-lesson="vectors">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Vector Mathematics</span>
+                                    <span class="lesson-duration">35 min</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 2: Golden Ratio & Nature -->
+                        <div class="module-card" data-module="golden">
+                            <div class="module-header">
+                                <div class="module-icon">🌿</div>
+                                <h3>Golden Ratio & Nature</h3>
+                                <div class="module-progress">
+                                    <span class="progress-text">0/4 lessons</span>
+                                    <div class="progress-mini">
+                                        <div class="progress-mini-fill" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="module-description">
+                                <p>Explore the mathematical beauty of the golden ratio and its appearance in natural patterns.</p>
+                            </div>
+                            <div class="module-lessons">
+                                <div class="lesson-item" data-lesson="fibonacci">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Fibonacci Sequence</span>
+                                    <span class="lesson-duration">20 min</span>
+                                </div>
+                                <div class="lesson-item" data-lesson="golden-ratio">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Golden Ratio Explained</span>
+                                    <span class="lesson-duration">25 min</span>
+                                </div>
+                                <div class="lesson-item" data-lesson="spirals">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Natural Spirals</span>
+                                    <span class="lesson-duration">30 min</span>
+                                </div>
+                                <div class="lesson-item" data-lesson="plant-patterns">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Plant Growth Patterns</span>
+                                    <span class="lesson-duration">35 min</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 3: Fractal Geometry -->
+                        <div class="module-card" data-module="fractals">
+                            <div class="module-header">
+                                <div class="module-icon">🔄</div>
+                                <h3>Fractal Geometry</h3>
+                                <div class="module-progress">
+                                    <span class="progress-text">0/5 lessons</span>
+                                    <div class="progress-mini">
+                                        <div class="progress-mini-fill" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="module-description">
+                                <p>Understanding self-similar patterns and how they create complex, natural-looking structures.</p>
+                            </div>
+                            <div class="module-lessons">
+                                <div class="lesson-item" data-lesson="fractal-basics">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">What Are Fractals?</span>
+                                    <span class="lesson-duration">15 min</span>
+                                </div>
+                                <div class="lesson-item" data-lesson="fractal-dimension">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Fractal Dimension</span>
+                                    <span class="lesson-duration">25 min</span>
+                                </div>
+                                <div class="lesson-item" data-lesson="tree-fractals">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Tree Structure Fractals</span>
+                                    <span class="lesson-duration">30 min</span>
+                                </div>
+                                <div class="lesson-item" data-lesson="mandelbrot">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Mandelbrot Set</span>
+                                    <span class="lesson-duration">40 min</span>
+                                </div>
+                                <div class="lesson-item" data-lesson="fractal-camo">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Fractals in Camouflage</span>
+                                    <span class="lesson-duration">35 min</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 4: Noise & Randomness -->
+                        <div class="module-card" data-module="noise">
+                            <div class="module-header">
+                                <div class="module-icon">🌊</div>
+                                <h3>Noise & Randomness</h3>
+                                <div class="module-progress">
+                                    <span class="progress-text">0/3 lessons</span>
+                                    <div class="progress-mini">
+                                        <div class="progress-mini-fill" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="module-description">
+                                <p>Learn how controlled randomness creates natural-looking textures and organic patterns.</p>
+                            </div>
+                            <div class="module-lessons">
+                                <div class="lesson-item" data-lesson="perlin-noise">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Perlin Noise Algorithm</span>
+                                    <span class="lesson-duration">30 min</span>
+                                </div>
+                                <div class="lesson-item" data-lesson="simplex-noise">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Simplex Noise</span>
+                                    <span class="lesson-duration">25 min</span>
+                                </div>
+                                <div class="lesson-item" data-lesson="turbulence">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Turbulence & Octaves</span>
+                                    <span class="lesson-duration">35 min</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 5: Color Mathematics -->
+                        <div class="module-card" data-module="color">
+                            <div class="module-header">
+                                <div class="module-icon">🎨</div>
+                                <h3>Color Mathematics</h3>
+                                <div class="module-progress">
+                                    <span class="progress-text">0/3 lessons</span>
+                                    <div class="progress-mini">
+                                        <div class="progress-mini-fill" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="module-description">
+                                <p>Mathematical principles behind color theory, harmony, and effective pattern coloring.</p>
+                            </div>
+                            <div class="module-lessons">
+                                <div class="lesson-item" data-lesson="color-spaces">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Color Spaces (RGB, HSL)</span>
+                                    <span class="lesson-duration">20 min</span>
+                                </div>
+                                <div class="lesson-item" data-lesson="color-harmony">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Color Harmony Math</span>
+                                    <span class="lesson-duration">25 min</span>
+                                </div>
+                                <div class="lesson-item" data-lesson="color-mixing">
+                                    <span class="lesson-status">🔒</span>
+                                    <span class="lesson-title">Color Mixing Algorithms</span>
+                                    <span class="lesson-duration">30 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Interactive Lesson Viewer -->
+                <section class="learning-section">
+                    <h2 class="section-title">📖 Lesson Viewer</h2>
+                    <div class="lesson-viewer" id="lesson-viewer">
+                        <div class="lesson-placeholder">
+                            <div class="placeholder-icon">📚</div>
+                            <h3>Select a lesson to begin</h3>
+                            <p>Click on any lesson from the modules above to start learning about pattern mathematics.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Practice Exercises -->
+                <section class="learning-section">
+                    <h2 class="section-title">🏃‍♂️ Practice Exercises</h2>
+                    <div class="exercises-grid">
+                        <div class="exercise-card">
+                            <div class="exercise-header">
+                                <h3>🎯 Pattern Recognition</h3>
+                                <span class="difficulty">Easy</span>
+                            </div>
+                            <p>Identify mathematical patterns in nature images and classify their geometric properties.</p>
+                            <button class="btn btn-primary exercise-btn" onclick="startExercise('recognition')">Start Exercise</button>
+                        </div>
+                        
+                        <div class="exercise-card">
+                            <div class="exercise-header">
+                                <h3>📐 Geometry Calculator</h3>
+                                <span class="difficulty">Medium</span>
+                            </div>
+                            <p>Calculate distances, angles, and proportions in pattern designs using mathematical formulas.</p>
+                            <button class="btn btn-primary exercise-btn" onclick="startExercise('calculator')">Start Exercise</button>
+                        </div>
+                        
+                        <div class="exercise-card">
+                            <div class="exercise-header">
+                                <h3>🌀 Fractal Builder</h3>
+                                <span class="difficulty">Hard</span>
+                            </div>
+                            <p>Create your own fractal patterns by adjusting mathematical parameters and iteration counts.</p>
+                            <button class="btn btn-primary exercise-btn" onclick="startExercise('fractal')">Start Exercise</button>
+                        </div>
+                        
+                        <div class="exercise-card">
+                            <div class="exercise-header">
+                                <h3>🎨 Color Theory Quiz</h3>
+                                <span class="difficulty">Medium</span>
+                            </div>
+                            <p>Test your understanding of color mathematics and harmony relationships.</p>
+                            <button class="btn btn-primary exercise-btn" onclick="startExercise('color')">Start Exercise</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Achievement System -->
+                <section class="learning-section">
+                    <h2 class="section-title">🏆 Achievements</h2>
+                    <div class="achievements-grid">
+                        <div class="achievement-card locked">
+                            <div class="achievement-icon">🎯</div>
+                            <h3>First Steps</h3>
+                            <p>Complete your first lesson</p>
+                        </div>
+                        
+                        <div class="achievement-card locked">
+                            <div class="achievement-icon">🌿</div>
+                            <h3>Nature's Mathematician</h3>
+                            <p>Master the Golden Ratio module</p>
+                        </div>
+                        
+                        <div class="achievement-card locked">
+                            <div class="achievement-icon">🔄</div>
+                            <h3>Fractal Explorer</h3>
+                            <p>Complete all fractal lessons</p>
+                        </div>
+                        
+                        <div class="achievement-card locked">
+                            <div class="achievement-icon">🎨</div>
+                            <h3>Color Master</h3>
+                            <p>Perfect score on color theory quiz</p>
+                        </div>
+                        
+                        <div class="achievement-card locked">
+                            <div class="achievement-icon">🧠</div>
+                            <h3>Pattern Genius</h3>
+                            <p>Complete all modules</p>
+                        </div>
+                        
+                        <div class="achievement-card locked">
+                            <div class="achievement-icon">⚡</div>
+                            <h3>Speed Learner</h3>
+                            <p>Complete 5 lessons in one day</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Study Notes -->
+                <section class="learning-section">
+                    <h2 class="section-title">📝 Study Notes</h2>
+                    <div class="notes-container">
+                        <div class="notes-editor">
+                            <textarea id="study-notes" placeholder="Take notes while learning..."></textarea>
+                            <div class="notes-actions">
+                                <button class="btn btn-primary" onclick="saveNotes()">Save Notes</button>
+                                <button class="btn btn-secondary" onclick="exportNotes()">Export PDF</button>
+                            </div>
+                        </div>
+                        <div class="notes-suggestions">
+                            <h3>💡 Study Tips</h3>
+                            <ul>
+                                <li>Focus on understanding concepts before memorizing formulas</li>
+                                <li>Practice with the interactive exercises regularly</li>
+                                <li>Take notes on key mathematical relationships</li>
+                                <li>Connect mathematical concepts to real pattern examples</li>
+                                <li>Review previous lessons before advancing</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/pattern-learning-path.js"></script>
+</body>
+</html>

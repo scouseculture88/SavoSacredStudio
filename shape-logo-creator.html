@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shape & Logo Creator - Savo Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/shape-logo-creator.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">SM</span>
+                <span class="logo-text">Savo Studio</span>
+            </div>
+            
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="index.html#savo-mode" class="nav-link">Savo Mode</a>
+                <a href="index.html#portfolio" class="nav-link">Portfolio</a>
+                <a href="forest-pattern-generator.html" class="nav-link">Forest Generator</a>
+                <a href="pattern-mathematics.html" class="nav-link">Pattern Mathematics</a>
+                <a href="advanced-color-studio.html" class="nav-link">Color Studio</a>
+                <a href="pattern-library.html" class="nav-link">Pattern Library</a>
+                <a href="shape-logo-creator.html" class="nav-link active">Shape Creator</a>
+                <a href="#" class="nav-link newsletter-link">Join</a>
+            </div>
+            
+            <div class="hamburger" id="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <section class="creator-header">
+        <div class="container">
+            <h1 class="creator-title">Shape & Logo Creator</h1>
+            <p class="creator-subtitle">Professional vector graphics, custom shapes, and tactical logos with mathematical precision</p>
+        </div>
+    </section>
+
+    <!-- Main Creator Interface -->
+    <section class="creator-interface">
+        <div class="container">
+            <div class="creator-layout">
+                <!-- Tools Panel -->
+                <div class="tools-panel">
+                    <h3>Creation Tools</h3>
+                    
+                    <!-- Shape Tools -->
+                    <div class="tool-section">
+                        <h4>Basic Shapes</h4>
+                        <div class="shape-tools">
+                            <button class="tool-btn" data-shape="rectangle">
+                                <i data-feather="square"></i>
+                                Rectangle
+                            </button>
+                            <button class="tool-btn" data-shape="circle">
+                                <i data-feather="circle"></i>
+                                Circle
+                            </button>
+                            <button class="tool-btn" data-shape="triangle">
+                                <i data-feather="triangle"></i>
+                                Triangle
+                            </button>
+                            <button class="tool-btn" data-shape="polygon">
+                                <i data-feather="hexagon"></i>
+                                Polygon
+                            </button>
+                            <button class="tool-btn" data-shape="star">
+                                <i data-feather="star"></i>
+                                Star
+                            </button>
+                            <button class="tool-btn" data-shape="arrow">
+                                <i data-feather="arrow-right"></i>
+                                Arrow
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tactical Shapes -->
+                    <div class="tool-section">
+                        <h4>Tactical Shapes</h4>
+                        <div class="shape-tools">
+                            <button class="tool-btn" data-shape="shield">
+                                <i data-feather="shield"></i>
+                                Shield
+                            </button>
+                            <button class="tool-btn" data-shape="compass">
+                                <i data-feather="compass"></i>
+                                Compass
+                            </button>
+                            <button class="tool-btn" data-shape="target">
+                                <i data-feather="target"></i>
+                                Target
+                            </button>
+                            <button class="tool-btn" data-shape="gear">
+                                <i data-feather="settings"></i>
+                                Gear
+                            </button>
+                            <button class="tool-btn" data-shape="lightning">
+                                <i data-feather="zap"></i>
+                                Lightning
+                            </button>
+                            <button class="tool-btn" data-shape="mountain">
+                                <i data-feather="mountain"></i>
+                                Mountain
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pattern Integration -->
+                    <div class="tool-section">
+                        <h4>Pattern Integration</h4>
+                        <div class="pattern-tools">
+                            <button class="tool-btn" data-tool="fractal-fill">
+                                <i data-feather="grid"></i>
+                                Fractal Fill
+                            </button>
+                            <button class="tool-btn" data-tool="camo-texture">
+                                <i data-feather="layers"></i>
+                                Camo Texture
+                            </button>
+                            <button class="tool-btn" data-tool="sacred-geometry">
+                                <i data-feather="aperture"></i>
+                                Sacred Geometry
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Style Controls -->
+                    <div class="tool-section">
+                        <h4>Style Controls</h4>
+                        <div class="style-controls">
+                            <div class="control-group">
+                                <label>Fill Color</label>
+                                <input type="color" id="fill-color" value="#27ae60">
+                            </div>
+                            <div class="control-group">
+                                <label>Stroke Color</label>
+                                <input type="color" id="stroke-color" value="#2c3e50">
+                            </div>
+                            <div class="control-group">
+                                <label>Stroke Width</label>
+                                <input type="range" id="stroke-width" min="0" max="20" value="2">
+                                <span class="value-display">2px</span>
+                            </div>
+                            <div class="control-group">
+                                <label>Opacity</label>
+                                <input type="range" id="opacity" min="0" max="100" value="100">
+                                <span class="value-display">100%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Geometry Tools -->
+                    <div class="tool-section">
+                        <h4>Geometry Tools</h4>
+                        <div class="geometry-tools">
+                            <button class="geometry-tool" data-tool="protractor">
+                                <i data-feather="rotate-cw"></i>
+                                Protractor
+                            </button>
+                            <button class="geometry-tool" data-tool="ruler">
+                                <i data-feather="maximize"></i>
+                                Ruler
+                            </button>
+                            <button class="geometry-tool" data-tool="compass">
+                                <i data-feather="circle"></i>
+                                Compass
+                            </button>
+                            <button class="geometry-tool" data-tool="angle-measure">
+                                <i data-feather="triangle"></i>
+                                Angle Measure
+                            </button>
+                            <button class="geometry-tool" data-tool="point-plot">
+                                <i data-feather="crosshair"></i>
+                                Plot Points
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Transform Controls -->
+                    <div class="tool-section">
+                        <h4>Transform</h4>
+                        <div class="transform-controls">
+                            <div class="control-group">
+                                <label>Scale</label>
+                                <input type="range" id="scale" min="10" max="300" value="100">
+                                <span class="value-display">100%</span>
+                            </div>
+                            <div class="control-group">
+                                <label>Rotation</label>
+                                <input type="range" id="rotation" min="0" max="360" value="0">
+                                <span class="value-display">0°</span>
+                            </div>
+                            <div class="control-group">
+                                <label>X Position</label>
+                                <input type="range" id="x-position" min="0" max="800" value="400">
+                                <span class="value-display">400px</span>
+                            </div>
+                            <div class="control-group">
+                                <label>Y Position</label>
+                                <input type="range" id="y-position" min="0" max="600" value="300">
+                                <span class="value-display">300px</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="tool-section">
+                        <h4>Actions</h4>
+                        <div class="action-buttons">
+                            <button class="action-btn duplicate-btn">
+                                <i data-feather="copy"></i>
+                                Duplicate
+                            </button>
+                            <button class="action-btn delete-btn">
+                                <i data-feather="trash-2"></i>
+                                Delete
+                            </button>
+                            <button class="action-btn clear-btn">
+                                <i data-feather="x-circle"></i>
+                                Clear All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Canvas Area -->
+                <div class="canvas-area">
+                    <div class="canvas-header">
+                        <h3>Design Canvas</h3>
+                        <div class="canvas-tools">
+                            <button class="canvas-tool" id="grid-toggle">
+                                <i data-feather="grid"></i>
+                                Grid
+                            </button>
+                            <button class="canvas-tool" id="snap-toggle">
+                                <i data-feather="move"></i>
+                                Snap
+                            </button>
+                            <button class="canvas-tool" id="zoom-in">
+                                <i data-feather="zoom-in"></i>
+                            </button>
+                            <button class="canvas-tool" id="zoom-out">
+                                <i data-feather="zoom-out"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="canvas-container">
+                        <svg id="design-canvas" width="800" height="600" viewBox="0 0 800 600">
+                            <!-- Grid Pattern -->
+                            <defs>
+                                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" stroke-width="0.5"/>
+                                </pattern>
+                            </defs>
+                            <rect width="100%" height="100%" fill="url(#grid)" opacity="0.3"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Export Panel -->
+                <div class="export-panel">
+                    <h3>Export & Save</h3>
+                    
+                    <div class="export-options">
+                        <h4>Format Options</h4>
+                        <div class="format-buttons">
+                            <button class="format-btn" data-format="svg">
+                                <i data-feather="file-text"></i>
+                                SVG Vector
+                            </button>
+                            <button class="format-btn" data-format="png">
+                                <i data-feather="image"></i>
+                                PNG Image
+                            </button>
+                            <button class="format-btn" data-format="jpeg">
+                                <i data-feather="camera"></i>
+                                JPEG Photo
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="export-settings">
+                        <h4>Export Settings</h4>
+                        <div class="setting-group">
+                            <label>Resolution</label>
+                            <select id="export-resolution">
+                                <option value="800x600">800x600 (Web)</option>
+                                <option value="1200x900">1200x900 (HD)</option>
+                                <option value="1920x1440">1920x1440 (Full HD)</option>
+                                <option value="3840x2880">3840x2880 (4K)</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>Background</label>
+                            <select id="export-background">
+                                <option value="transparent">Transparent</option>
+                                <option value="white">White</option>
+                                <option value="black">Black</option>
+                                <option value="custom">Custom Color</option>
+                            </select>
+                        </div>
+                        <div class="setting-group" id="custom-bg-color" style="display: none;">
+                            <label>Background Color</label>
+                            <input type="color" id="bg-color" value="#ffffff">
+                        </div>
+                    </div>
+
+                    <div class="export-actions">
+                        <button class="export-btn primary" id="download-design">
+                            <i data-feather="download"></i>
+                            Download Design
+                        </button>
+                        <button class="export-btn secondary" id="save-to-library">
+                            <i data-feather="save"></i>
+                            Save to Library
+                        </button>
+                        <button class="export-btn secondary" id="share-design">
+                            <i data-feather="share-2"></i>
+                            Share Design
+                        </button>
+                    </div>
+
+                    <!-- Design Templates -->
+                    <div class="templates-section">
+                        <h4>Logo Templates</h4>
+                        <div class="template-grid">
+                            <div class="template-card" data-template="tesla-diamond">
+                                <div class="template-preview">💎</div>
+                                <span>Tesla 369 Diamond</span>
+                            </div>
+                            <div class="template-card" data-template="savo-logo">
+                                <div class="template-preview">SM</div>
+                                <span>Savo Mode</span>
+                            </div>
+                            <div class="template-card" data-template="tactical-badge">
+                                <div class="template-preview">⬢</div>
+                                <span>Tactical Badge</span>
+                            </div>
+                            <div class="template-card" data-template="mountain-emblem">
+                                <div class="template-preview">▲</div>
+                                <span>Mountain Emblem</span>
+                            </div>
+                            <div class="template-card" data-template="gear-logo">
+                                <div class="template-preview">⚙</div>
+                                <span>Gear Logo</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Layer Manager -->
+    <section class="layer-manager">
+        <div class="container">
+            <h3>Layer Manager</h3>
+            <div class="layers-list" id="layers-list">
+                <!-- Layers will be populated here -->
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/shape-logo-creator.js"></script>
+    <script>
+        feather.replace();
+        
+        // Initialize the shape creator
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof ShapeCreator !== 'undefined') {
+                ShapeCreator.init();
+            }
+        });
+    </script>
+</body>
+</html>

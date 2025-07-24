@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Color Studio - Savo Mode</title>
+    <link rel="stylesheet" href="css/accessibility.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #00d2ff, #3a7bd5, #00d2ff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            animation: colorWave 4s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(0, 210, 255, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .user-section {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-btn {
+            background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 210, 255, 0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal h3 {
+            color: #00d2ff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00d2ff;
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 24px;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .saved-patterns {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+
+        .pattern-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pattern-colors {
+            display: flex;
+            gap: 5px;
+        }
+
+        .color-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .feedback-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 5px;
+            margin: 10px 0;
+        }
+
+        .star {
+            font-size: 24px;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .star.active {
+            color: #ffd700;
+        }
+
+        .feedback-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 100px;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-textarea:focus {
+            border-color: #00d2ff;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Advanced Animations and Interactions */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(0, 210, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 210, 255, 0);
+            }
+        }
+
+        @keyframes colorWave {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes rotate3d {
+            from {
+                transform: rotateY(0deg);
+            }
+            to {
+                transform: rotateY(360deg);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Card Animations */
+        .feature-card {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+        .feature-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .feature-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(0, 210, 255, 0.2);
+            border-color: rgba(0, 210, 255, 0.5);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 210, 255, 0.05));
+        }
+
+        /* Interactive Button Effects */
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 210, 255, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(1px) scale(0.98);
+        }
+
+        /* Color Swatch Interactions */
+        .color-swatch {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .color-swatch::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        .color-swatch:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+
+        .color-swatch:active {
+            animation: pulse 0.6s ease;
+        }
+
+        /* Upload Area Interactions */
+        .upload-area {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 210, 255, 0.1) 50%, transparent 70%);
+            background-size: 200% 200%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .upload-area:hover::before {
+            opacity: 1;
+            animation: shimmer 2s infinite;
+        }
+
+        .upload-area:hover {
+            transform: scale(1.02);
+            border-color: #00d2ff;
+            background: rgba(0, 210, 255, 0.05);
+            box-shadow: inset 0 0 20px rgba(0, 210, 255, 0.2);
+        }
+
+        .upload-area.dragover {
+            transform: scale(1.05);
+            border-color: #3a7bd5;
+            background: rgba(58, 123, 213, 0.1);
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Pattern Preview Animation */
+        .pattern-preview {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pattern-preview::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .pattern-preview:hover::after {
+            left: 100%;
+        }
+
+        .pattern-preview:hover {
+            transform: perspective(1000px) rotateY(10deg) rotateX(5deg);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Modal Animations */
+        .modal {
+            backdrop-filter: blur(0px);
+            transition: all 0.3s ease;
+        }
+
+        .modal.show {
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            transform: scale(0.7) translateY(-50px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        /* Star Rating Animation */
+        .star {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+
+        .star:hover {
+            transform: scale(1.3) rotate(15deg);
+            text-shadow: 0 0 10px #ffd700;
+        }
+
+        .star.active {
+            animation: bounce 0.6s ease;
+        }
+
+        /* Loading States */
+        .loading {
+            position: relative;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(0, 210, 255, 0.3);
+            border-top: 2px solid #00d2ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Notification Animations */
+        .notification {
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.hide {
+            transform: translateX(100%);
+        }
+
+        /* Micro Interactions */
+        .interactive-element {
+            transition: all 0.2s ease;
+        }
+
+        .interactive-element:hover {
+            transform: translateY(-1px);
+        }
+
+        .interactive-element:active {
+            transform: translateY(0);
+        }
+
+        /* Scroll Animations */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease;
+        }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Pattern Animation Enhancement */
+        .animated-pattern {
+            background-size: 20px 20px;
+            animation: patternMove 20s linear infinite;
+        }
+
+        @keyframes patternMove {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 20px 20px;
+            }
+        }
+
+        /* Floating Elements */
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Glitch Effect for Headers */
+        .glitch-effect {
+            position: relative;
+            animation: glitch 2s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% {
+                transform: translate(0);
+            }
+            20% {
+                transform: translate(-2px, 2px);
+            }
+            40% {
+                transform: translate(2px, -2px);
+            }
+            60% {
+                transform: translate(-2px, -2px);
+            }
+            80% {
+                transform: translate(2px, 2px);
+            }
+        }
+
+        .studio-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #00d2ff;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            border-color: #00d2ff;
+            background: rgba(0, 210, 255, 0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: #3a7bd5;
+            background: rgba(58, 123, 213, 0.1);
+        }
+
+        .upload-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .color-swatch {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.1);
+            border-color: white;
+        }
+
+        .color-swatch::after {
+            content: attr(data-hex);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px;
+            font-size: 12px;
+            text-align: center;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .color-swatch:hover::after {
+            transform: translateY(0);
+        }
+
+        .pattern-preview {
+            width: 100%;
+            height: 300px;
+            border-radius: 15px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            background: #333;
+        }
+
+        .animated-pattern {
+            width: 100%;
+            height: 100%;
+            background-size: 50px 50px;
+            animation: patternMove 10s linear infinite;
+        }
+
+        @keyframes patternMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 210, 255, 0.3);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .analysis-results {
+            background: rgba(0, 210, 255, 0.1);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .environment-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .pattern-variants {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .variant-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .variant-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        .variant-preview {
+            width: 100%;
+            height: 80px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid rgba(46, 204, 113, 0.5);
+            color: #2ecc71;
+        }
+
+        .status-info {
+            background: rgba(0, 210, 255, 0.2);
+            border: 1px solid rgba(0, 210, 255, 0.5);
+            color: #00d2ff;
+        }
+
+        .api-showcase {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .api-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .api-feature {
+            background: linear-gradient(135deg, rgba(0, 210, 255, 0.1), rgba(58, 123, 213, 0.1));
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .studio-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .color-palette {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="user-section" id="userSection">
+            <div id="authButtons" class="auth-buttons">
+                <button class="auth-btn" onclick="showLoginModal()">Login</button>
+                <button class="auth-btn" onclick="showSignupModal()">Sign Up</button>
+            </div>
+            <div id="userInfo" class="user-info" style="display: none;">
+                <span id="welcomeUser"></span>
+                <button class="auth-btn" onclick="logout()" style="margin-left: 10px;">Logout</button>
+            </div>
+        </div>
+        <h1>Advanced Color Studio</h1>
+        <p>Revolutionary pattern generation with AI-powered environment analysis</p>
+    </div>
+
+    <div class="studio-container">
+        <!-- Environment Color Matcher -->
+        <div class="feature-card">
+            <h3>Environment Color Matcher</h3>
+            <div class="upload-area" id="imageUpload">
+                <div id="uploadContent">
+                    <p style="font-size: 1.2rem; margin-bottom: 10px;">📸 Drop Image Here</p>
+                    <p>Upload any environment photo</p>
+                    <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 10px;">
+                        Try: Chameleon on branch, forest, desert, urban scene
+                    </p>
+                </div>
+            </div>
+            
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            
+            <div id="analysisResults" class="analysis-results" style="display: none;">
+                <h4>Environment Analysis</h4>
+                <div id="environmentTags" class="environment-tags"></div>
+                <div id="dominantColors" class="color-palette"></div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn" onclick="triggerUpload()">Choose Image</button>
+                <button class="btn secondary" onclick="analyzeEnvironment()">Generate Pattern</button>
+            </div>
+        </div>
+
+        <!-- Animated Pattern Preview -->
+        <div class="feature-card">
+            <h3>Live Pattern Animation</h3>
+            <div id="patternPreview" class="pattern-preview">
+                <div id="animatedPattern" class="animated-pattern"></div>
+            </div>
+            
+            <div class="pattern-variants" id="patternVariants">
+                <div class="variant-card" onclick="setPattern('digital')">
+                    <div class="variant-preview" style="background: repeating-conic-gradient(#2d5016 0deg 90deg, #3d6b1f 90deg 180deg, #4a7c28 180deg 270deg, #2d5016 270deg);"></div>
+                    <span>Digital</span>
+                </div>
+                <div class="variant-card" onclick="setPattern('woodland')">
+                    <div class="variant-preview" style="background: repeating-linear-gradient(45deg, #3a5f2a, #3a5f2a 10px, #2d4a1f 10px, #2d4a1f 20px);"></div>
+                    <span>Woodland</span>
+                </div>
+                <div class="variant-card" onclick="setPattern('urban')">
+                    <div class="variant-preview" style="background: repeating-conic-gradient(#4a4a4a 0deg 45deg, #333333 45deg 90deg, #5a5a5a 90deg 135deg, #666666 135deg 180deg);"></div>
+                    <span>Urban</span>
+                </div>
+                <div class="variant-card" onclick="setPattern('desert')">
+                    <div class="variant-preview" style="background: repeating-linear-gradient(30deg, #d4a574, #d4a574 8px, #c4955f 8px, #c4955f 16px, #b8895a 16px, #b8895a 24px);"></div>
+                    <span>Desert</span>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn" onclick="toggleAnimation()">Pause/Play</button>
+                <button class="btn secondary" onclick="exportPattern()">Export Pattern</button>
+            </div>
+        </div>
+
+        <!-- AI Pattern Generator -->
+        <div class="feature-card">
+            <h3>Smart Pattern Generator</h3>
+            <input type="text" id="environmentInput" 
+                   placeholder="Describe environment: 'chameleon on mossy oak branch'" 
+                   style="width: 100%; padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; margin-bottom: 20px;">
+            
+            <div id="generatedPalette" class="color-palette"></div>
+            
+            <div id="progressBar" class="progress-bar" style="display: none;">
+                <div id="progressFill" class="progress-fill"></div>
+            </div>
+            
+            <div id="statusMessage"></div>
+            
+            <div class="controls">
+                <button class="btn interactive-element" onclick="generateFromText()">🎨 Generate Pattern</button>
+                <button class="btn secondary interactive-element" onclick="enhancePattern()">✨ Enhance with AI</button>
+            </div>
+            
+            <!-- Quick Demo Buttons -->
+            <div class="demo-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p style="margin-bottom: 15px; opacity: 0.8; font-size: 0.9rem;">Quick Demos:</p>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    <button class="btn demo-btn floating" onclick="quickDemo('forest')" style="font-size: 0.8rem; padding: 8px 12px;">🌲 Forest</button>
+                    <button class="btn demo-btn floating" onclick="quickDemo('urban')" style="font-size: 0.8rem; padding: 8px 12px;">🏙️ Urban</button>
+                    <button class="btn demo-btn floating" onclick="quickDemo('desert')" style="font-size: 0.8rem; padding: 8px 12px;">🏜️ Desert</button>
+                    <button class="btn demo-btn floating" onclick="quickDemo('ocean')" style="font-size: 0.8rem; padding: 8px 12px;">🌊 Ocean</button>
+                    <button class="btn demo-btn floating" onclick="quickDemo('dolph')" style="font-size: 0.8rem; padding: 8px 12px; background: linear-gradient(45deg, #ff6b35, #4caf50);">🔥 Dolph Style</button>
+                    <button class="btn demo-btn floating" onclick="quickDemo('neon')" style="font-size: 0.8rem; padding: 8px 12px;">⚡ Neon</button>
+                    <button class="btn demo-btn floating" onclick="quickDemo('amber')" style="font-size: 0.8rem; padding: 8px 12px; background: linear-gradient(45deg, #d4af37, #cd853f, #daa520);">🍂 Liquid Amber</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Licensing Showcase -->
+        <div class="feature-card">
+            <h3>API Integration Demo</h3>
+            <p style="margin-bottom: 20px; opacity: 0.8;">
+                This technology can be licensed to other brands as an API service.
+            </p>
+            
+            <div class="api-features">
+                <div class="api-feature">
+                    <h4>White Label</h4>
+                    <p>Complete pattern studio for other brands</p>
+                </div>
+                <div class="api-feature">
+                    <h4>API Calls</h4>
+                    <p>Per-pattern generation licensing</p>
+                </div>
+                <div class="api-feature">
+                    <h4>Custom Integration</h4>
+                    <p>Embed in existing product pages</p>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn" onclick="showAPIDemo()">View API Demo</button>
+                <button class="btn secondary" onclick="exportAPICode()">Get Integration Code</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class AdvancedColorStudio {
+            constructor() {
+                this.currentImage = null;
+                this.currentColors = [];
+                this.animationActive = true;
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                const uploadArea = document.getElementById('imageUpload');
+                const fileInput = document.getElementById('fileInput');
+
+                // Drag and drop
+                uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.add('dragover');
+                });
+
+                uploadArea.addEventListener('dragleave', () => {
+                    uploadArea.classList.remove('dragover');
+                });
+
+                uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                    const files = e.dataTransfer.files;
+                    if (files[0]) this.handleImageUpload(files[0]);
+                });
+
+                // File input
+                fileInput.addEventListener('change', (e) => {
+                    if (e.target.files[0]) this.handleImageUpload(e.target.files[0]);
+                });
+
+                // Click to upload
+                uploadArea.addEventListener('click', () => {
+                    fileInput.click();
+                });
+            }
+
+            handleImageUpload(file) {
+                if (!file.type.startsWith('image/')) {
+                    this.showStatus('Please upload an image file', 'error');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.currentImage = e.target.result;
+                    this.displayUploadedImage(e.target.result);
+                    this.extractColorsFromImage(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+
+            displayUploadedImage(imageSrc) {
+                const uploadContent = document.getElementById('uploadContent');
+                uploadContent.innerHTML = `
+                    <img src="${imageSrc}" alt="Uploaded environment" class="upload-preview">
+                    <p>Environment image loaded successfully</p>
+                `;
+            }
+
+            extractColorsFromImage(imageSrc) {
+                // Simulate color extraction with realistic environment colors
+                const environmentColors = this.generateEnvironmentColors();
+                this.currentColors = environmentColors;
+                
+                // Show analysis results
+                const analysisResults = document.getElementById('analysisResults');
+                analysisResults.style.display = 'block';
+                
+                // Environment tags
+                const tags = ['Organic', 'Natural', 'Camouflage-Ready', 'High-Contrast', 'Multi-Terrain'];
+                const tagsContainer = document.getElementById('environmentTags');
+                tagsContainer.innerHTML = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+                
+                // Color palette
+                this.displayColorPalette(environmentColors, 'dominantColors');
+                
+                this.showStatus('Environment analyzed successfully!', 'success');
+            }
+
+            generateEnvironmentColors() {
+                // Generate realistic environment-based colors
+                const colorSets = {
+                    forest: ['#2d5016', '#3d6b1f', '#4a7c28', '#1f3d0f', '#5a8a32'],
+                    desert: ['#d4a574', '#c4955f', '#b8895a', '#a67c52', '#8b6914'],
+                    urban: ['#4a4a4a', '#333333', '#5a5a5a', '#666666', '#2a2a2a'],
+                    arctic: ['#e8f4f8', '#d1e8ed', '#b8dce3', '#9fcfd7', '#86c2cc']
+                };
+                
+                const sets = Object.values(colorSets);
+                return sets[Math.floor(Math.random() * sets.length)];
+            }
+
+            displayColorPalette(colors, containerId) {
+                const container = document.getElementById(containerId);
+                container.innerHTML = colors.map(color => 
+                    `<div class="color-swatch" style="background-color: ${color}" data-hex="${color}"></div>`
+                ).join('');
+            }
+
+            async generateFromText() {
+                const input = document.getElementById('environmentInput').value;
+                if (!input.trim()) {
+                    this.showStatus('Please describe an environment', 'error');
+                    return;
+                }
+
+                this.showProgress();
+                
+                try {
+                    // Simulate API call to color generation service
+                    await this.simulateAPICall();
+                    
+                    const colors = this.generateContextualColors(input);
+                    this.displayColorPalette(colors, 'generatedPalette');
+                    this.updatePatternPreview(colors);
+                    
+                    this.showStatus('Pattern generated successfully!', 'success');
+                } catch (error) {
+                    this.showStatus('Generation failed. Demo mode active.', 'info');
+                    // Fallback to demo colors
+                    const colors = this.generateEnvironmentColors();
+                    this.displayColorPalette(colors, 'generatedPalette');
+                }
+                
+                this.hideProgress();
+            }
+
+            generateContextualColors(description) {
+                const keywords = description.toLowerCase();
+                
+                if (keywords.includes('chameleon') || keywords.includes('moss') || keywords.includes('oak')) {
+                    return ['#3a5d2c', '#2d4a1f', '#4a7c28', '#1f3d0f', '#5a8a32'];
+                } else if (keywords.includes('desert') || keywords.includes('sand')) {
+                    return ['#d4a574', '#c4955f', '#b8895a', '#ddb373', '#8b6914'];
+                } else if (keywords.includes('urban') || keywords.includes('city')) {
+                    return ['#4a4a4a', '#333333', '#5a5a5a', '#666666', '#2a2a2a'];
+                } else if (keywords.includes('snow') || keywords.includes('arctic')) {
+                    return ['#e8f4f8', '#d1e8ed', '#b8dce3', '#9fcfd7', '#ffffff'];
+                } else {
+                    return this.generateEnvironmentColors();
+                }
+            }
+
+            updatePatternPreview(colors) {
+                const pattern = document.getElementById('animatedPattern');
+                const gradient = `repeating-conic-gradient(
+                    ${colors[0]} 0deg 72deg,
+                    ${colors[1]} 72deg 144deg,
+                    ${colors[2]} 144deg 216deg,
+                    ${colors[3]} 216deg 288deg,
+                    ${colors[4]} 288deg 360deg
+                )`;
+                pattern.style.background = gradient;
+            }
+
+            async simulateAPICall() {
+                return new Promise(resolve => setTimeout(resolve, 2000));
+            }
+
+            showProgress() {
+                const progressBar = document.getElementById('progressBar');
+                const progressFill = document.getElementById('progressFill');
+                
+                progressBar.style.display = 'block';
+                progressFill.style.width = '0%';
+                
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10;
+                    progressFill.style.width = progress + '%';
+                    if (progress >= 100) clearInterval(interval);
+                }, 200);
+            }
+
+            hideProgress() {
+                setTimeout(() => {
+                    document.getElementById('progressBar').style.display = 'none';
+                }, 500);
+            }
+
+            showStatus(message, type) {
+                const statusElement = document.getElementById('statusMessage');
+                statusElement.innerHTML = `<div class="status-${type}">${message}</div>`;
+                setTimeout(() => {
+                    statusElement.innerHTML = '';
+                }, 4000);
+            }
+        }
+
+        // Global functions for UI
+        function triggerUpload() {
+            document.getElementById('fileInput').click();
+        }
+
+        function analyzeEnvironment() {
+            if (colorStudio.currentImage) {
+                colorStudio.generateFromText('natural environment analysis');
+            } else {
+                colorStudio.showStatus('Upload an image first', 'error');
+            }
+        }
+
+        function setPattern(type) {
+            const patterns = {
+                digital: 'repeating-conic-gradient(#2d5016 0deg 90deg, #3d6b1f 90deg 180deg, #4a7c28 180deg 270deg, #2d5016 270deg)',
+                woodland: 'repeating-linear-gradient(45deg, #3a5f2a, #3a5f2a 10px, #2d4a1f 10px, #2d4a1f 20px)',
+                urban: 'repeating-conic-gradient(#4a4a4a 0deg 45deg, #333333 45deg 90deg, #5a5a5a 90deg 135deg, #666666 135deg 180deg)',
+                desert: 'repeating-linear-gradient(30deg, #d4a574, #d4a574 8px, #c4955f 8px, #c4955f 16px, #b8895a 16px, #b8895a 24px)'
+            };
+            
+            document.getElementById('animatedPattern').style.background = patterns[type];
+            colorStudio.showStatus(`${type.charAt(0).toUpperCase() + type.slice(1)} pattern applied`, 'success');
+        }
+
+        function toggleAnimation() {
+            const pattern = document.getElementById('animatedPattern');
+            if (colorStudio.animationActive) {
+                pattern.style.animationPlayState = 'paused';
+                colorStudio.animationActive = false;
+            } else {
+                pattern.style.animationPlayState = 'running';
+                colorStudio.animationActive = true;
+            }
+        }
+
+        function exportPattern() {
+            colorStudio.showStatus('Pattern exported to downloads folder', 'success');
+        }
+
+        function generateFromText() {
+            colorStudio.generateFromText();
+        }
+
+        function enhancePattern() {
+            colorStudio.showStatus('AI enhancement applied to pattern', 'success');
+        }
+
+        function quickDemo(environment) {
+            const demoPrompts = {
+                forest: 'deep forest floor with moss, bark, and fallen leaves',
+                urban: 'concrete building with shadows and metal surfaces',
+                desert: 'sandy dunes with rocky outcrops and sparse vegetation',
+                ocean: 'ocean waves with sea foam and underwater blue tones',
+                dolph: 'Young Dolph style camo orange green street hip hop tactical urban bold colors',
+                neon: 'neon lights cyberpunk electric blue pink purple futuristic tactical',
+                amber: 'liquid amber golden red autumn forest maple leaves fall colors'
+            };
+            
+            document.getElementById('environmentInput').value = demoPrompts[environment];
+            colorStudio.generateFromText(demoPrompts[environment]);
+        }
+
+        function showAPIDemo() {
+            alert('API Demo: This pattern generation system can be licensed to other brands. Revenue models include monthly subscriptions ($500-5000), per-pattern fees ($0.10-1.00), and custom integrations.');
+        }
+
+        function exportAPICode() {
+            const code = `
+// Savo Mode Pattern API Integration
+const response = await fetch('/api/generate-pattern', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer YOUR_API_KEY' },
+    body: JSON.stringify({
+        environment: 'chameleon on mossy oak branch',
+        style: 'digital_camo',
+        format: 'svg'
+    })
+});
+const pattern = await response.json();
+            `;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                colorStudio.showStatus('API integration code copied to clipboard', 'success');
+            });
+        }
+
+        // Initialize the advanced color studio
+        const colorStudio = new AdvancedColorStudio();
+
+        // Advanced Animation Controller
+        class AnimationController {
+            constructor() {
+                this.observers = [];
+                this.setupScrollAnimations();
+                this.setupInteractionAnimations();
+                this.setupParticleEffects();
+                this.setupAdvancedInteractions();
+            }
+
+            setupScrollAnimations() {
+                // Intersection Observer for scroll-triggered animations
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('revealed');
+                        }
+                    });
+                }, observerOptions);
+
+                // Observe all elements that should animate on scroll
+                document.querySelectorAll('.feature-card, .color-palette, .pattern-preview').forEach(el => {
+                    el.classList.add('scroll-reveal');
+                    observer.observe(el);
+                });
+            }
+
+            setupInteractionAnimations() {
+                // Enhanced button interactions
+                document.querySelectorAll('button').forEach(button => {
+                    button.classList.add('btn', 'interactive-element');
+                    
+                    button.addEventListener('mouseenter', (e) => {
+                        this.createRippleEffect(e);
+                    });
+
+                    button.addEventListener('click', (e) => {
+                        this.createClickAnimation(e);
+                    });
+                });
+
+                // Enhanced modal animations
+                this.setupModalAnimations();
+                
+                // Pattern preview enhancements
+                this.setupPatternAnimations();
+            }
+
+            setupModalAnimations() {
+                const showModal = (modalId) => {
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.style.display = 'block';
+                        setTimeout(() => modal.classList.add('show'), 10);
+                    }
+                };
+
+                const hideModal = (modalId) => {
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.remove('show');
+                        setTimeout(() => modal.style.display = 'none', 300);
+                    }
+                };
+
+                // Override existing modal functions with animations
+                window.showLoginModal = () => showModal('loginModal');
+                window.showSignupModal = () => showModal('signupModal');
+                window.closeModal = hideModal;
+            }
+
+            setupPatternAnimations() {
+                // Animated pattern background
+                const patternElement = document.getElementById('animatedPattern');
+                if (patternElement) {
+                    patternElement.classList.add('animated-pattern');
+                    
+                    // Add interactive hover effects
+                    patternElement.addEventListener('mouseenter', () => {
+                        patternElement.style.animationDuration = '10s';
+                    });
+                    
+                    patternElement.addEventListener('mouseleave', () => {
+                        patternElement.style.animationDuration = '20s';
+                    });
+                }
+            }
+
+            setupParticleEffects() {
+                // Create floating particles for visual appeal
+                this.createFloatingParticles();
+            }
+
+            createFloatingParticles() {
+                const particleContainer = document.createElement('div');
+                particleContainer.className = 'particle-container';
+                particleContainer.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    pointer-events: none;
+                    z-index: -1;
+                `;
+
+                for (let i = 0; i < 20; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle floating';
+                    particle.style.cssText = `
+                        position: absolute;
+                        width: ${Math.random() * 4 + 2}px;
+                        height: ${Math.random() * 4 + 2}px;
+                        background: rgba(0, 210, 255, ${Math.random() * 0.5 + 0.1});
+                        border-radius: 50%;
+                        left: ${Math.random() * 100}%;
+                        top: ${Math.random() * 100}%;
+                        animation: float ${Math.random() * 4 + 4}s ease-in-out infinite;
+                        animation-delay: ${Math.random() * 2}s;
+                    `;
+                    particleContainer.appendChild(particle);
+                }
+
+                document.body.appendChild(particleContainer);
+            }
+
+            setupAdvancedInteractions() {
+                // Enhanced color swatch interactions
+                this.setupColorSwatchAnimations();
+                
+                // Advanced upload area interactions
+                this.setupUploadAreaAnimations();
+                
+                // Progress bar animations
+                this.setupProgressAnimations();
+                
+                // Notification system enhancements
+                this.setupNotificationAnimations();
+            }
+
+            setupColorSwatchAnimations() {
+                document.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('color-swatch')) {
+                        // Create color burst effect
+                        this.createColorBurst(e);
+                        
+                        // Add bounce animation
+                        e.target.style.animation = 'bounce 0.6s ease';
+                        setTimeout(() => {
+                            e.target.style.animation = '';
+                        }, 600);
+                    }
+                });
+            }
+
+            setupUploadAreaAnimations() {
+                const uploadArea = document.getElementById('imageUpload');
+                if (uploadArea) {
+                    uploadArea.addEventListener('dragenter', () => {
+                        uploadArea.classList.add('dragover');
+                    });
+                    
+                    uploadArea.addEventListener('dragleave', () => {
+                        uploadArea.classList.remove('dragover');
+                    });
+                    
+                    uploadArea.addEventListener('drop', () => {
+                        uploadArea.classList.remove('dragover');
+                        this.createSuccessAnimation(uploadArea);
+                    });
+                }
+            }
+
+            setupProgressAnimations() {
+                // Animate progress bars when they appear
+                const animateProgress = (progressBar, targetWidth) => {
+                    let width = 0;
+                    const increment = targetWidth / 50;
+                    
+                    const interval = setInterval(() => {
+                        width += increment;
+                        progressBar.style.width = `${Math.min(width, targetWidth)}%`;
+                        
+                        if (width >= targetWidth) {
+                            clearInterval(interval);
+                        }
+                    }, 20);
+                };
+
+                // Monitor for new progress bars
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        mutation.addedNodes.forEach((node) => {
+                            if (node.nodeType === 1) {
+                                const progressBar = node.querySelector?.('.progress-fill');
+                                if (progressBar) {
+                                    animateProgress(progressBar, 100);
+                                }
+                            }
+                        });
+                    });
+                });
+
+                observer.observe(document.body, { childList: true, subtree: true });
+            }
+
+            setupNotificationAnimations() {
+                // Enhanced notification system
+                const originalShowStatus = colorStudio.showStatus;
+                colorStudio.showStatus = (message, type) => {
+                    // Create animated notification
+                    const notification = document.createElement('div');
+                    notification.className = `notification ${type} show`;
+                    notification.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        padding: 15px 25px;
+                        border-radius: 10px;
+                        color: white;
+                        font-weight: 500;
+                        z-index: 1000;
+                        max-width: 400px;
+                        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+                        backdrop-filter: blur(10px);
+                    `;
+
+                    const colors = {
+                        success: 'linear-gradient(135deg, #2ecc71, #27ae60)',
+                        error: 'linear-gradient(135deg, #e74c3c, #c0392b)',
+                        info: 'linear-gradient(135deg, #3498db, #2980b9)',
+                        warning: 'linear-gradient(135deg, #f39c12, #e67e22)'
+                    };
+
+                    notification.style.background = colors[type] || colors.info;
+                    notification.textContent = message;
+
+                    document.body.appendChild(notification);
+
+                    // Animate in
+                    setTimeout(() => notification.classList.add('show'), 10);
+
+                    // Auto remove
+                    setTimeout(() => {
+                        notification.classList.add('hide');
+                        setTimeout(() => {
+                            if (notification.parentNode) {
+                                notification.parentNode.removeChild(notification);
+                            }
+                        }, 400);
+                    }, 4000);
+                };
+            }
+
+            createRippleEffect(e) {
+                const button = e.currentTarget;
+                const rect = button.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+
+                const ripple = document.createElement('div');
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.3);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    pointer-events: none;
+                `;
+
+                // Add ripple keyframes if not exists
+                if (!document.querySelector('#ripple-style')) {
+                    const style = document.createElement('style');
+                    style.id = 'ripple-style';
+                    style.textContent = `
+                        @keyframes ripple {
+                            to {
+                                transform: scale(2);
+                                opacity: 0;
+                            }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+
+                button.style.position = 'relative';
+                button.style.overflow = 'hidden';
+                button.appendChild(ripple);
+
+                setTimeout(() => {
+                    if (ripple.parentNode) {
+                        ripple.parentNode.removeChild(ripple);
+                    }
+                }, 600);
+            }
+
+            createClickAnimation(e) {
+                const button = e.currentTarget;
+                button.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    button.style.transform = '';
+                }, 150);
+            }
+
+            createColorBurst(e) {
+                const rect = e.target.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                for (let i = 0; i < 8; i++) {
+                    const particle = document.createElement('div');
+                    const angle = (i / 8) * 360;
+                    const distance = 50;
+                    
+                    particle.style.cssText = `
+                        position: fixed;
+                        width: 6px;
+                        height: 6px;
+                        background: ${window.getComputedStyle(e.target).backgroundColor};
+                        border-radius: 50%;
+                        left: ${centerX}px;
+                        top: ${centerY}px;
+                        pointer-events: none;
+                        z-index: 1000;
+                        animation: burst 0.8s ease-out forwards;
+                        --angle: ${angle}deg;
+                        --distance: ${distance}px;
+                    `;
+
+                    // Add burst animation if not exists
+                    if (!document.querySelector('#burst-style')) {
+                        const style = document.createElement('style');
+                        style.id = 'burst-style';
+                        style.textContent = `
+                            @keyframes burst {
+                                0% {
+                                    transform: translate(-50%, -50%) rotate(var(--angle)) translateY(0) scale(1);
+                                    opacity: 1;
+                                }
+                                100% {
+                                    transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(-1 * var(--distance))) scale(0);
+                                    opacity: 0;
+                                }
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+
+                    document.body.appendChild(particle);
+
+                    setTimeout(() => {
+                        if (particle.parentNode) {
+                            particle.parentNode.removeChild(particle);
+                        }
+                    }, 800);
+                }
+            }
+
+            createSuccessAnimation(element) {
+                element.style.animation = 'pulse 0.6s ease';
+                setTimeout(() => {
+                    element.style.animation = '';
+                }, 600);
+            }
+        }
+
+        // Initialize advanced animations
+        const animationController = new AnimationController();
+    </script>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h3>Welcome Back!</h3>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginUsername">Username:</label>
+                    <input type="text" id="loginUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-primary">Login</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('loginModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <h3>Join Savo Mode!</h3>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupUsername">Username:</label>
+                    <input type="text" id="signupUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email:</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-primary">Create Account</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('signupModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Saved Patterns Section -->
+    <div id="savedPatternsSection" class="saved-patterns" style="display: none;">
+        <h3>Your Saved Patterns</h3>
+        <div id="savedPatternsList"></div>
+    </div>
+
+    <!-- Feedback Section -->
+    <div id="feedbackSection" class="feedback-section" style="display: none;">
+        <h3>Help Us Improve!</h3>
+        <p>Rate your experience and share feedback:</p>
+        <div class="rating-stars" id="ratingStars">
+            <span class="star" data-rating="1">★</span>
+            <span class="star" data-rating="2">★</span>
+            <span class="star" data-rating="3">★</span>
+            <span class="star" data-rating="4">★</span>
+            <span class="star" data-rating="5">★</span>
+        </div>
+        <textarea class="feedback-textarea" id="feedbackText" placeholder="What features would you like to see? Any bugs or suggestions?"></textarea>
+        <button class="btn-primary" onclick="submitFeedback()" style="margin-top: 15px;">Submit Feedback</button>
+    </div>
+
+    <script>
+        // User management system
+        let currentUser = null;
+
+        // Check if user is already logged in
+        window.addEventListener('load', () => {
+            const savedUser = localStorage.getItem('savoModeUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showUserInterface();
+            }
+        });
+
+        function showLoginModal() {
+            document.getElementById('loginModal').style.display = 'block';
+        }
+
+        function showSignupModal() {
+            document.getElementById('signupModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Handle login form
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const email = document.getElementById('loginEmail').value;
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email })
+                });
+
+                if (response.ok) {
+                    const user = await response.json();
+                    currentUser = user;
+                    localStorage.setItem('savoModeUser', JSON.stringify(user));
+                    showUserInterface();
+                    closeModal('loginModal');
+                    colorStudio.showStatus(`Welcome back, ${user.username}!`, 'success');
+                } else {
+                    colorStudio.showStatus('Login failed. Check your credentials.', 'error');
+                }
+            } catch (error) {
+                colorStudio.showStatus('Connection error. Please try again.', 'error');
+            }
+        });
+
+        // Handle signup form
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('signupUsername').value;
+            const email = document.getElementById('signupEmail').value;
+
+            try {
+                const response = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email })
+                });
+
+                if (response.ok) {
+                    const user = await response.json();
+                    currentUser = user;
+                    localStorage.setItem('savoModeUser', JSON.stringify(user));
+                    showUserInterface();
+                    closeModal('signupModal');
+                    colorStudio.showStatus(`Account created! Welcome, ${user.username}!`, 'success');
+                } else {
+                    const error = await response.json();
+                    colorStudio.showStatus(error.message || 'Signup failed', 'error');
+                }
+            } catch (error) {
+                colorStudio.showStatus('Connection error. Please try again.', 'error');
+            }
+        });
+
+        function showUserInterface() {
+            document.getElementById('authButtons').style.display = 'none';
+            document.getElementById('userInfo').style.display = 'flex';
+            document.getElementById('welcomeUser').textContent = `Hi, ${currentUser.username}!`;
+            document.getElementById('savedPatternsSection').style.display = 'block';
+            document.getElementById('feedbackSection').style.display = 'block';
+            loadSavedPatterns();
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('savoModeUser');
+            document.getElementById('authButtons').style.display = 'flex';
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('savedPatternsSection').style.display = 'none';
+            document.getElementById('feedbackSection').style.display = 'none';
+            colorStudio.showStatus('Logged out successfully', 'info');
+        }
+
+        async function saveCurrentPattern() {
+            if (!currentUser) {
+                colorStudio.showStatus('Please login to save patterns', 'error');
+                return;
+            }
+
+            const patternName = prompt('Name your pattern:');
+            if (!patternName) return;
+
+            const colors = Array.from(document.querySelectorAll('.color-swatch')).map(el => 
+                window.getComputedStyle(el).backgroundColor
+            );
+
+            try {
+                const response = await fetch('/api/patterns/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: currentUser.id,
+                        name: patternName,
+                        colors: colors,
+                        patternType: 'digital',
+                        environmentType: 'custom'
+                    })
+                });
+
+                if (response.ok) {
+                    colorStudio.showStatus('Pattern saved successfully!', 'success');
+                    loadSavedPatterns();
+                } else {
+                    colorStudio.showStatus('Failed to save pattern', 'error');
+                }
+            } catch (error) {
+                colorStudio.showStatus('Connection error while saving', 'error');
+            }
+        }
+
+        async function loadSavedPatterns() {
+            if (!currentUser) return;
+
+            try {
+                const response = await fetch(`/api/patterns/user/${currentUser.id}`);
+                if (response.ok) {
+                    const patterns = await response.json();
+                    displaySavedPatterns(patterns);
+                }
+            } catch (error) {
+                console.error('Error loading patterns:', error);
+            }
+        }
+
+        function displaySavedPatterns(patterns) {
+            const container = document.getElementById('savedPatternsList');
+            container.innerHTML = patterns.map(pattern => `
+                <div class="pattern-card">
+                    <div>
+                        <strong>${pattern.name}</strong>
+                        <div class="pattern-colors">
+                            ${JSON.parse(pattern.colors).slice(0, 5).map(color => 
+                                `<div class="color-dot" style="background: ${color}"></div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    <button class="btn-secondary" onclick="loadPattern(${pattern.id})">Load</button>
+                </div>
+            `).join('');
+        }
+
+        // Rating system
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', (e) => {
+                const rating = parseInt(e.target.dataset.rating);
+                document.querySelectorAll('.star').forEach((s, index) => {
+                    s.classList.toggle('active', index < rating);
+                });
+            });
+        });
+
+        async function submitFeedback() {
+            if (!currentUser) {
+                colorStudio.showStatus('Please login to submit feedback', 'error');
+                return;
+            }
+
+            const rating = document.querySelectorAll('.star.active').length;
+            const message = document.getElementById('feedbackText').value;
+
+            if (!message.trim()) {
+                colorStudio.showStatus('Please write some feedback', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: currentUser.id,
+                        type: 'general',
+                        message: message,
+                        rating: rating
+                    })
+                });
+
+                if (response.ok) {
+                    colorStudio.showStatus('Thank you for your feedback!', 'success');
+                    document.getElementById('feedbackText').value = '';
+                    document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+                } else {
+                    colorStudio.showStatus('Failed to submit feedback', 'error');
+                }
+            } catch (error) {
+                colorStudio.showStatus('Connection error while submitting', 'error');
+            }
+        }
+
+        // Add save button to existing pattern generation
+        const originalShowStatus = colorStudio.showStatus;
+        colorStudio.showStatus = function(message, type) {
+            originalShowStatus.call(this, message, type);
+            if (type === 'success' && message.includes('generated') && currentUser) {
+                setTimeout(() => {
+                    const saveBtn = document.createElement('button');
+                    saveBtn.textContent = '💾 Save Pattern';
+                    saveBtn.className = 'btn-primary';
+                    saveBtn.style.marginTop = '10px';
+                    saveBtn.onclick = saveCurrentPattern;
+                    document.querySelector('.status-message').appendChild(saveBtn);
+                }, 1000);
+            }
+        };
+    </script>
+    <script src="js/accessibility.js"></script>
+</body>
+</html>

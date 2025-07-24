@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Mathematics - Savo Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/pattern-mathematics.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="assets/savo-logo.jpg" alt="Savo Studio Logo" class="logo">
+                <span class="brand-name">SΛVO STUDIO</span>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="btn btn-secondary">← Back to Studio</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="mathematics-main">
+        <div class="container">
+            <header class="mathematics-header">
+                <h1 class="mathematics-title">Pattern Mathematics</h1>
+                <p class="mathematics-subtitle">Explore the geometric foundations and algorithmic principles behind tactical pattern creation</p>
+            </header>
+
+            <div class="mathematics-content">
+                <!-- Golden Ratio & Nature -->
+                <section class="math-section">
+                    <h2 class="section-title">🌿 Golden Ratio in Nature Patterns</h2>
+                    <div class="golden-ratio-demo">
+                        <div class="demo-controls">
+                            <canvas id="golden-canvas" width="400" height="400"></canvas>
+                            <div class="controls">
+                                <button class="btn btn-primary" onclick="drawFibonacciSpiral()">Fibonacci Spiral</button>
+                                <button class="btn btn-secondary" onclick="drawPineconePattern()">Pinecone Pattern</button>
+                                <button class="btn btn-success" onclick="drawLeafVenation()">Leaf Venation</button>
+                                <div class="ratio-display">
+                                    <span>Golden Ratio: φ = <span id="phi-value">1.618...</span></span>
+                                </div>
+                                
+
+                            </div>
+                        </div>
+                        <div class="explanation">
+                            <h3>Mathematical Foundation</h3>
+                            <p>The golden ratio (φ = 1.618...) appears throughout nature and creates the most aesthetically pleasing proportions. Forest patterns that incorporate these ratios feel more natural and harmonious.</p>
+                            <div class="formula">
+                                <strong>φ = (1 + √5) / 2</strong>
+                            </div>
+                            <div class="applications">
+                                <h4>Applications in Tactical Patterns:</h4>
+                                <ul>
+                                    <li>Leaf spacing in forest camouflage</li>
+                                    <li>Branch angles and growth patterns</li>
+                                    <li>Scale ratios in organic shapes</li>
+                                    <li>Color gradient progressions</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tesla 3-6-9 Energy Theory -->
+                <section class="math-section tesla-section">
+                    <h2 class="section-title">⚡ Tesla's 3-6-9 Energy Theory</h2>
+                    <div class="tesla-demo">
+                        <div class="tesla-explanation">
+                            <div class="tesla-quote">
+                                <h3>Tesla's Famous Quote</h3>
+                                <blockquote>
+                                    "If you only knew the magnificence of the 3, 6 and 9, then you would have the key to the universe."
+                                    <cite>— Nikola Tesla</cite>
+                                </blockquote>
+                            </div>
+                            
+                            <div class="tesla-theory">
+                                <h3>The Mathematical Foundation</h3>
+                                <p>Tesla's "369" concept refers to his belief that the numbers 3, 6, and 9 hold special significance in the universe, potentially unlocking its secrets. This theory is based on several key mathematical principles:</p>
+                                
+                                <div class="tesla-concepts">
+                                    <div class="concept-card">
+                                        <h4>🔄 Vortex Mathematics</h4>
+                                        <p>The vortex math diagram involves arranging numbers 1-9 around a circle, where 3, 6, and 9 form an equilateral triangle with specific connection patterns creating universal energy flows.</p>
+                                    </div>
+                                    
+                                    <div class="concept-card">
+                                        <h4>🧮 Digital Roots & Doubling</h4>
+                                        <p>When repeatedly doubling numbers and taking their digital roots (adding digits until a single digit remains), 3, 6, and 9 appear to be excluded from repeating sequences, suggesting their special nature.</p>
+                                        <div class="formula">
+                                            <strong>3 × 3 = 9 | 6 × 6 = 36 → 3+6 = 9 | 9 × 9 = 81 → 8+1 = 9</strong>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="concept-card">
+                                        <h4>🔺 Geometric Interpretations</h4>
+                                        <p>Tesla's numbers have profound geometric meaning: Triangle (3), Hexagon (6), and their appearance in fractal patterns like the enneagram (9) create universal geometric harmony.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="tesla-meanings">
+                                    <h4>Numerological Significance</h4>
+                                    <div class="meaning-grid">
+                                        <div class="meaning-item">
+                                            <span class="number">3</span>
+                                            <div class="meaning-text">
+                                                <strong>Divine Creation</strong>
+                                                <p>Creativity, self-expression, and the trinity of universal forces</p>
+                                            </div>
+                                        </div>
+                                        <div class="meaning-item">
+                                            <span class="number">6</span>
+                                            <div class="meaning-text">
+                                                <strong>Harmony & Balance</strong>
+                                                <p>Responsibility, equilibrium, and the perfect geometric form</p>
+                                            </div>
+                                        </div>
+                                        <div class="meaning-item">
+                                            <span class="number">9</span>
+                                            <div class="meaning-text">
+                                                <strong>Universal Completion</strong>
+                                                <p>Wholeness, spiritual enlightenment, and the end of cycles</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="modern-applications">
+                                    <h4>Modern Applications</h4>
+                                    <ul>
+                                        <li><strong>369 Manifestation Method:</strong> Writing goals 3 times in morning, 6 times in afternoon, 9 times at night</li>
+                                        <li><strong>Energy Healing:</strong> Using 3-6-9 frequencies in sound therapy and meditation</li>
+                                        <li><strong>Pattern Design:</strong> Creating tactical patterns based on Tesla's energy principles</li>
+                                        <li><strong>Architectural Design:</strong> Incorporating 3-6-9 proportions in sacred geometry</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pineal Gland Sacred Geometry -->
+                <section class="math-section pineal-section">
+                    <h2 class="section-title">👁️ Pineal Gland Sacred Geometry</h2>
+                    <div class="pineal-demo">
+                        <div class="pineal-explanation">
+                            <div class="pineal-intro">
+                                <h3>The Third Eye & Sacred Mathematics</h3>
+                                <p>The pineal gland, often called the "third eye," is a small endocrine gland that has captivated mystics and mathematicians for centuries. Its unique geometric structure and spiritual significance connect deeply with the mathematical patterns found in nature and Tesla's energy theories.</p>
+                            </div>
+                            
+                            <div class="pineal-geometry">
+                                <h3>Geometric Properties of the Pineal Gland</h3>
+                                <div class="geometry-concepts">
+                                    <div class="geometry-card">
+                                        <h4>🔮 Pinecone Structure</h4>
+                                        <p>The pineal gland's name comes from its resemblance to a pinecone. Pinecones follow perfect Fibonacci spiral patterns, with each scale positioned according to the golden ratio (φ = 1.618). This mathematical precision appears throughout nature's design.</p>
+                                        <div class="formula">
+                                            <strong>Fibonacci Spiral: F(n) = F(n-1) + F(n-2)</strong>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="geometry-card">
+                                        <h4>⚡ Tesla Connection</h4>
+                                        <p>Tesla's 3-6-9 theory relates to the pineal gland's role in consciousness. The gland operates on circadian rhythms (24-hour cycles), where 24 = 2+4 = 6. Tesla believed 3, 6, and 9 were the keys to universal consciousness - exactly what the pineal gland is thought to regulate.</p>
+                                        <div class="formula">
+                                            <strong>Circadian Cycle: 24 hours → 2+4 = 6 (Tesla's sacred number)</strong>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="geometry-card">
+                                        <h4>🌙 Melatonin & DMT Sacred Geometry</h4>
+                                        <p>The pineal gland produces melatonin and potentially DMT (dimethyltryptamine). DMT's molecular structure follows precise geometric patterns, and its effects are often described in terms of sacred geometric visions and fractal patterns.</p>
+                                        <div class="formula">
+                                            <strong>DMT Formula: C₁₂H₁₆N₂ (12+16 = 28 → 2+8 = 10 → 1+0 = 1)</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="consciousness-mathematics">
+                                <h3>Consciousness & Mathematical Patterns</h3>
+                                <div class="consciousness-grid">
+                                    <div class="consciousness-item">
+                                        <span class="symbol">🔺</span>
+                                        <div class="consciousness-text">
+                                            <strong>Third Eye Activation</strong>
+                                            <p>Ancient traditions describe the pineal gland as the seat of the soul, operating through geometric meditation patterns including triangles, spirals, and the Flower of Life.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="consciousness-item">
+                                        <span class="symbol">🌀</span>
+                                        <div class="consciousness-text">
+                                            <strong>Torus Energy Field</strong>
+                                            <p>The pineal gland is thought to generate a torus-shaped energy field around the head, following mathematical torus equations and creating the "halo" effect seen in spiritual art.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="consciousness-item">
+                                        <span class="symbol">🔮</span>
+                                        <div class="consciousness-text">
+                                            <strong>Crystalline Structure</strong>
+                                            <p>The pineal gland contains calcite crystals that form geometric patterns. These crystals may act as natural piezoelectric resonators, responding to electromagnetic frequencies.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="spiritual-applications">
+                                <h3>Spiritual & Practical Applications</h3>
+                                <div class="applications-list">
+                                    <div class="application-item">
+                                        <h4>🧘 Meditation Geometry</h4>
+                                        <p>Use sacred geometric patterns (Flower of Life, Sri Yantra, Merkaba) during meditation to stimulate pineal gland activation through visual mathematical harmonics.</p>
+                                    </div>
+                                    
+                                    <div class="application-item">
+                                        <h4>🎵 Sound Frequency Healing</h4>
+                                        <p>Specific frequencies (432 Hz, 528 Hz, 741 Hz) are believed to resonate with pineal gland crystals, following mathematical harmonic ratios that Tesla explored in his work.</p>
+                                    </div>
+                                    
+                                    <div class="application-item">
+                                        <h4>🌙 Circadian Optimization</h4>
+                                        <p>Optimize pineal gland function through mathematical light cycles, using the golden ratio to time light exposure and darkness for maximum melatonin production.</p>
+                                    </div>
+                                    
+                                    <div class="application-item">
+                                        <h4>🎨 Pattern Design for Consciousness</h4>
+                                        <p>Create tactical patterns incorporating pineal-activating geometries: spiral arrangements, triangular matrices, and fractal designs that stimulate higher consciousness states.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="research-connections">
+                                <h3>Scientific & Mystical Research</h3>
+                                <div class="research-note">
+                                    <p><strong>Modern Research:</strong> Scientists have discovered that the pineal gland contains photoreceptive cells similar to those in the retina, supporting ancient claims about its role as a "third eye." Its calcite crystals exhibit piezoelectric properties, potentially making it sensitive to electromagnetic fields and geometric resonance patterns.</p>
+                                    
+                                    <p><strong>Ancient Wisdom:</strong> From Egyptian symbolism to Hindu chakra systems, the pineal gland appears in sacred geometry across cultures. The Eye of Horus, with its mathematical proportions, directly maps to pineal gland anatomy and function.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Fractal Geometry -->
+                <section class="math-section">
+                    <h2 class="section-title">🔄 Fractal Geometry in Camouflage</h2>
+                    <div class="fractal-demo">
+                        <div class="demo-controls">
+                            <div class="canvas-container" style="position: relative;">
+                                <canvas id="fractal-canvas" width="500" height="400"></canvas>
+                                <div id="fractal-loading" class="loading-indicator" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;">
+                                    Generating fractal...
+                                </div>
+
+                            </div>
+                            <div class="controls">
+
+                                <label>Fractal Type:</label>
+                                <select id="fractal-type">
+                                    <option value="none">None (Clean Canvas)</option>
+                                    <option value="tree">Tree Structure</option>
+                                    <option value="fern">Barnsley Fern</option>
+                                    <option value="spiral">Spiral Fractals</option>
+                                    <option value="penrose">Penrose Tiling</option>
+                                    <option value="fungus">Fungal Network</option>
+                                    <option value="constellation">Star Constellations</option>
+                                    <option value="neural">Neural Networks</option>
+                                    <option value="seed-of-life">Seed of Life</option>
+                                    <option value="flower-of-life">Flower of Life</option>
+                                    <option value="merkaba">Merkaba</option>
+                                    <option value="sri-yantra">Sri Yantra</option>
+                                    <option value="tesla-coil">Tesla Coil Resonance</option>
+                                    <option value="tesla-spiral">Tesla Vortex Spiral</option>
+                                    <option value="sacred-diamond">Sacred Geometry Diamond</option>
+                                    <option value="universal-eye">Universal Eye</option>
+                                    <option value="torus-field">3D Torus Field</option>
+                                </select>
+                                <label>Iterations: <span id="iteration-count">15</span></label>
+                                <input type="range" id="iterations" min="1" max="50" value="15">
+                                
+                                <div class="scaling-controls" style="margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.1); border-radius: 8px;">
+                                    <h4 style="margin: 0 0 10px 0; color: #00d2ff;">📏 Scaling Controls</h4>
+                                    <div class="control-row">
+                                        <label>Scale: <span id="fractal-scale-value">1.0</span>x</label>
+                                        <input type="range" id="fractal-scale" min="0.3" max="2.0" step="0.1" value="1.0">
+                                    </div>
+                                    <div class="control-row">
+                                        <label>Count: <span id="fractal-count-value">1</span></label>
+                                        <input type="range" id="fractal-count" min="1" max="9" value="1">
+                                    </div>
+                                    <small style="color: #888; font-style: italic;">Large logo to small multiples</small>
+                                    
+                                    <div class="color-palette-selector">
+                                        <label>Color Palette:</label>
+                                        <div class="palette-options">
+                                            <div class="palette-option active" data-palette="default" title="Default Rainbow">
+                                                <div class="palette-preview">
+                                                    <div class="color-dot" style="background: #00d2ff"></div>
+                                                    <div class="color-dot" style="background: #7cff50"></div>
+                                                    <div class="color-dot" style="background: #ff6b35"></div>
+                                                    <div class="color-dot" style="background: #e74c3c"></div>
+                                                </div>
+                                                <span>Default</span>
+                                            </div>
+                                            
+                                            <div class="palette-option" data-palette="forest" title="Forest Greens">
+                                                <div class="palette-preview">
+                                                    <div class="color-dot" style="background: #2d5016"></div>
+                                                    <div class="color-dot" style="background: #4a7c28"></div>
+                                                    <div class="color-dot" style="background: #7cff50"></div>
+                                                    <div class="color-dot" style="background: #1a3d0a"></div>
+                                                </div>
+                                                <span>Forest</span>
+                                            </div>
+                                            
+                                            <div class="palette-option" data-palette="ocean" title="Ocean Blues">
+                                                <div class="palette-preview">
+                                                    <div class="color-dot" style="background: #003366"></div>
+                                                    <div class="color-dot" style="background: #0066cc"></div>
+                                                    <div class="color-dot" style="background: #00ccff"></div>
+                                                    <div class="color-dot" style="background: #66ffff"></div>
+                                                </div>
+                                                <span>Ocean</span>
+                                            </div>
+                                            
+                                            <div class="palette-option" data-palette="sunset" title="Sunset Warmth">
+                                                <div class="palette-preview">
+                                                    <div class="color-dot" style="background: #ff4500"></div>
+                                                    <div class="color-dot" style="background: #ff6b35"></div>
+                                                    <div class="color-dot" style="background: #ffa500"></div>
+                                                    <div class="color-dot" style="background: #ffff00"></div>
+                                                </div>
+                                                <span>Sunset</span>
+                                            </div>
+                                            
+                                            <div class="palette-option" data-palette="cosmic" title="Cosmic Emission">
+                                                <div class="palette-preview">
+                                                    <div class="color-dot" style="background: #9b59b6"></div>
+                                                    <div class="color-dot" style="background: #3498db"></div>
+                                                    <div class="color-dot" style="background: #e67e22"></div>
+                                                    <div class="color-dot" style="background: #f39c12"></div>
+                                                </div>
+                                                <span>Cosmic</span>
+                                            </div>
+                                            
+                                            <div class="palette-option" data-palette="neon" title="Neon Energy">
+                                                <div class="palette-preview">
+                                                    <div class="color-dot" style="background: #ff0080"></div>
+                                                    <div class="color-dot" style="background: #00ff80"></div>
+                                                    <div class="color-dot" style="background: #8000ff"></div>
+                                                    <div class="color-dot" style="background: #ffff00"></div>
+                                                </div>
+                                                <span>Neon</span>
+                                            </div>
+                                            
+                                            <div class="palette-option" data-palette="fire" title="Fire & Ice">
+                                                <div class="palette-preview">
+                                                    <div class="color-dot" style="background: #ff4757"></div>
+                                                    <div class="color-dot" style="background: #ff7675"></div>
+                                                    <div class="color-dot" style="background: #74b9ff"></div>
+                                                    <div class="color-dot" style="background: #0984e3"></div>
+                                                </div>
+                                                <span>Fire & Ice</span>
+                                            </div>
+                                        </div>
+                                        
+
+                                        
+                                        <!-- Cosmic Particle Emission Animation Controls -->
+                                        <div class="cosmic-animation-controls" style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; color: white;">
+                                            <h4 style="margin: 0 0 15px 0; text-align: center; font-size: 16px;">✨ Cosmic Particle Emission Animation</h4>
+                                            
+                                            <div class="animation-toggles" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" id="cosmic-particles-toggle">
+                                                    <span class="slider">Cosmic Particles</span>
+                                                </label>
+                                                
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" id="energy-waves-toggle">
+                                                    <span class="slider">Energy Waves</span>
+                                                </label>
+                                                
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" id="stellar-trails-toggle">
+                                                    <span class="slider">Stellar Trails</span>
+                                                </label>
+                                                
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" id="quantum-foam-toggle">
+                                                    <span class="slider">Quantum Foam</span>
+                                                </label>
+                                                
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" id="cosmic-storms-toggle">
+                                                    <span class="slider">Cosmic Storms</span>
+                                                </label>
+                                                
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" id="dimensional-rifts-toggle">
+                                                    <span class="slider">Dimensional Rifts</span>
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="cosmic-themes">
+                                                <div class="theme-selector">
+                                                    <label>Cosmic Theme:</label>
+                                                    <select id="cosmic-theme">
+                                                        <option value="galaxy">Galaxy Nebula</option>
+                                                        <option value="supernova">Supernova Burst</option>
+                                                        <option value="aurora">Aurora Borealis</option>
+                                                        <option value="stardust">Stardust Spiral</option>
+                                                        <option value="blackhole">Black Hole Accretion</option>
+                                                        <option value="tesla">Tesla Energy Field</option>
+                                                        <option value="quantum">Quantum Dimensions</option>
+                                                        <option value="pulsar">Pulsar Emissions</option>
+                                                        <option value="wormhole">Wormhole Portal</option>
+                                                        <option value="cosmic-web">Cosmic Web</option>
+                                                        <option value="dark-matter">Dark Matter Flow</option>
+                                                        <option value="solar-flare">Solar Flare Storm</option>
+                                                        <option value="neutron-star">Neutron Star Magnetosphere</option>
+                                                        <option value="plasma-field">Plasma Energy Field</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div style="margin-top: 15px; padding: 10px; background: rgba(124, 255, 80, 0.1); border: 1px solid rgba(124, 255, 80, 0.3); border-radius: 8px;">
+                                                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center;">
+                                                    <button class="btn btn-primary" onclick="generateFractal()">Generate Fractal</button>
+                                                    <button class="btn btn-success" onclick="saveFractalToLibrary()">Save to Pattern Library</button>
+                                                    <button class="btn btn-magic" onclick="animateFractalGrowth()" style="background: linear-gradient(45deg, #7cff50, #00d2ff); color: #000; font-weight: bold; border: none; animation: glow 2s ease-in-out infinite alternate;">🎬 Animate Growth</button>
+                                                    <button class="btn btn-secondary" onclick="checkStorageSpace()">Storage Info</button>
+                                                    <button class="btn btn-warning" onclick="patternMath.showStorageManagementModal()" style="background: #f39c12; color: white;">Manage Storage</button>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Advanced Particle Options -->
+                                            <div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 5px;">
+                                                <h5 style="margin: 0 0 10px 0; font-size: 14px; color: #fff;">🔬 Advanced Particle Options</h5>
+                                                
+                                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                                                    <div>
+                                                        <label style="font-size: 12px; opacity: 0.8;">Particle Size: <span id="particle-size-value">2</span>px</label>
+                                                        <input type="range" id="particle-size" min="1" max="8" value="2" style="width: 100%;">
+                                                    </div>
+                                                    <div>
+                                                        <label style="font-size: 12px; opacity: 0.8;">Trail Length: <span id="trail-length-value">5</span></label>
+                                                        <input type="range" id="trail-length" min="1" max="20" value="5" style="width: 100%;">
+                                                    </div>
+                                                </div>
+                                                
+                                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                                                    <div>
+                                                        <label style="font-size: 12px; opacity: 0.8;">Bounce Force: <span id="bounce-force-value">0.8</span></label>
+                                                        <input type="range" id="bounce-force" min="0.1" max="1.5" step="0.1" value="0.8" style="width: 100%;">
+                                                    </div>
+                                                    <div>
+                                                        <label style="font-size: 12px; opacity: 0.8;">Gravity: <span id="gravity-strength-value">0.1</span></label>
+                                                        <input type="range" id="gravity-strength" min="0" max="0.5" step="0.05" value="0.1" style="width: 100%;">
+                                                    </div>
+                                                </div>
+                                                
+                                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                                    <label class="toggle-switch">
+                                                        <input type="checkbox" id="particle-collision-toggle">
+                                                        <span class="slider" style="font-size: 11px;">Particle Collision</span>
+                                                    </label>
+                                                    <label class="toggle-switch">
+                                                        <input type="checkbox" id="dvd-bounce-toggle">
+                                                        <span class="slider" style="font-size: 11px;">DVD Bounce Mode</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="cosmic-controls">
+                                                <div class="control-row">
+                                                    <label>Particle Density: <span id="particle-density-value">50</span></label>
+                                                    <input type="range" id="particle-density" min="10" max="200" value="50">
+                                                </div>
+                                                
+                                                <div class="control-row">
+                                                    <label>Emission Speed: <span id="emission-speed-value">2</span></label>
+                                                    <input type="range" id="emission-speed" min="0.5" max="10" step="0.5" value="2">
+                                                </div>
+                                                
+                                                <div class="control-row">
+                                                    <label>Cosmic Glow: <span id="cosmic-glow-value">15</span></label>
+                                                    <input type="range" id="cosmic-glow" min="5" max="50" value="15">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="fractal-overlay-section" style="margin-top: 15px; padding: 12px; background: rgba(124, 255, 80, 0.1); border: 1px solid rgba(124, 255, 80, 0.3); border-radius: 8px;">
+                                                <h5 style="margin: 0 0 10px 0; color: #7cff50; font-size: 14px; text-align: center;">✨ Fractal Overlay</h5>
+                                                
+                                                <div class="animation-toggles">
+                                                    <label class="toggle-switch">
+                                                        <input type="checkbox" id="fractal-overlay-toggle">
+                                                        <span class="slider">Enable Fractal Overlay</span>
+                                                    </label>
+                                                </div>
+                                                
+                                                <div class="fractal-type-selector" style="margin-top: 10px;">
+                                                    <label>Fractal Type:</label>
+                                                    <select id="fractal-overlay-type" style="margin-left: 10px; padding: 3px; border-radius: 3px; border: none;">
+                                                        <option value="fern">Barnsley Fern</option>
+
+                                                        <option value="spiral">Golden Spiral</option>
+                                                        <option value="seed-of-life">Seed of Life</option>
+                                                        <option value="flower-of-life">Flower of Life</option>
+                                                        <option value="merkaba">Merkaba</option>
+                                                        <option value="tesla-diamond">Tesla Diamond</option>
+                                                        <option value="universal-eye">Universal Eye</option>
+                                                        <option value="torus-field">3D Torus Field</option>
+                                                    </select>
+                                                </div>
+                                                
+                                                <div class="fractal-overlay-controls-sliders">
+                                                    <div class="control-row">
+                                                        <label>Fractal Opacity: <span id="fractal-opacity-value">70%</span></label>
+                                                        <input type="range" id="fractal-opacity" min="10" max="100" value="70">
+                                                    </div>
+                                                    
+                                                    <div class="control-row">
+                                                        <label>Fractal Size: <span id="fractal-overlay-size-value">80%</span></label>
+                                                        <input type="range" id="fractal-overlay-size" min="30" max="150" value="80">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                            
+
+                                        </div>
+                                        
+                                        <div class="custom-colors">
+                                            <label>Custom Colors:</label>
+                                            <div class="color-inputs">
+                                                <input type="color" id="custom-color-1" value="#00d2ff" title="Color 1">
+                                                <input type="color" id="custom-color-2" value="#7cff50" title="Color 2">
+                                                <input type="color" id="custom-color-3" value="#ff6b35" title="Color 3">
+                                                <input type="color" id="custom-color-4" value="#e74c3c" title="Color 4">
+                                                <input type="color" id="custom-color-5" value="#9b59b6" title="Color 5">
+                                                <input type="color" id="custom-color-6" value="#f39c12" title="Color 6">
+                                                <input type="color" id="custom-color-7" value="#1abc9c" title="Color 7">
+                                                <input type="color" id="custom-color-8" value="#34495e" title="Color 8">
+                                            </div>
+                                            <button class="btn btn-small" onclick="applyCustomColors()">Apply Custom</button>
+                                            <button class="btn btn-small" onclick="randomizeColors()">Randomize</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                
+                                <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                                    <p style="margin: 0; font-size: 12px; opacity: 0.9;">
+                                        💡 <strong>Tip:</strong> Enable "Cosmic Particles" first to see the different theme behaviors. 
+                                        Each theme (Galaxy, Black Hole, Tesla, etc.) has unique particle movement patterns!
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="explanation">
+                            <h3>Fractal Principles</h3>
+                            <p>Fractals are self-similar patterns that repeat at different scales. They're perfect for creating natural-looking camouflage because most natural forms are fractal.</p>
+                            <div class="fractal-math">
+                                <strong>Fractal Dimension = log(N) / log(S)</strong>
+                                <br><small>Where N = number of copies, S = scaling factor</small>
+                            </div>
+                            <div class="applications">
+                                <h4>Camouflage Applications:</h4>
+                                <ul>
+                                    <li>Tree branch structures</li>
+                                    <li>Leaf edge patterns</li>
+                                    <li>Rock and terrain textures</li>
+                                    <li>Multi-scale disruption patterns</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cymatics - Sound Frequency Patterns -->
+                <section class="math-section cymatics-section">
+                    <h2 class="section-title">🎵 Cymatics: Sound Creates Sacred Geometry</h2>
+                    <div class="cymatics-demo">
+                        <div class="demo-controls">
+                            <canvas id="cymatics-canvas" width="400" height="400"></canvas>
+                            <div class="controls">
+                                <label>Frequency (Hz): <span id="frequency-hz-value">440</span></label>
+                                <input type="range" id="frequency-hz" min="100" max="1000" value="440">
+                                
+                                <label>Amplitude: <span id="amplitude-value">0.8</span></label>
+                                <input type="range" id="amplitude" min="0.1" max="1" step="0.1" value="0.8">
+                                
+                                <label>Harmonics: <span id="harmonics-value">3</span></label>
+                                <input type="range" id="harmonics" min="1" max="7" value="3">
+                                
+                                <div class="frequency-presets" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px;">
+                                    <button class="btn btn-small frequency-btn" onclick="toggleFrequencySound(174)" style="font-size: 11px; padding: 6px 8px;">174Hz (Pain Relief)</button>
+                                    <button class="btn btn-small frequency-btn" onclick="toggleFrequencySound(285)" style="font-size: 11px; padding: 6px 8px;">285Hz (Healing)</button>
+                                    <button class="btn btn-small frequency-btn" onclick="toggleFrequencySound(396)" style="font-size: 11px; padding: 6px 8px;">396Hz (Liberation)</button>
+                                    <button class="btn btn-small frequency-btn" onclick="toggleFrequencySound(528)" style="font-size: 11px; padding: 6px 8px;">528Hz (Love)</button>
+                                    <button class="btn btn-small frequency-btn" onclick="toggleFrequencySound(639)" style="font-size: 11px; padding: 6px 8px;">639Hz (Connection)</button>
+                                    <button class="btn btn-small frequency-btn" onclick="toggleFrequencySound(741)" style="font-size: 11px; padding: 6px 8px;">741Hz (Intuition)</button>
+                                    <button class="btn btn-small frequency-btn" onclick="toggleFrequencySound(852)" style="font-size: 11px; padding: 6px 8px;">852Hz (Spiritual)</button>
+                                    <button class="btn btn-small frequency-btn" onclick="toggleFrequencySound(963)" style="font-size: 11px; padding: 6px 8px;">963Hz (Divine)</button>
+                                </div>
+                                
+                                <div class="audio-controls">
+                                    <button class="btn btn-primary" onclick="playCurrentFrequency()">🔊 Play Current Frequency</button>
+                                    <button class="btn btn-secondary" onclick="stopCurrentFrequency()">⏹️ Stop Sound</button>
+                                    <div class="volume-control">
+                                        <label>Volume:</label>
+                                        <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.3">
+                                        <span id="volume-value">30%</span>
+                                    </div>
+                                </div>
+                                
+                                <button class="btn btn-primary" onclick="generateCymaticsPattern()">Generate Sound Pattern</button>
+                                <button class="btn btn-success" onclick="animateCymaticsFrequency()">Animate Frequency</button>
+                                <button class="btn btn-magic" onclick="saveCymaticsToLibrary()">Save to Library</button>
+                            </div>
+                        </div>
+                        <div class="explanation">
+                            <h3>Cymatics: The Science of Sound Made Visible</h3>
+                            <p>Cymatics proves that sound frequencies create geometric patterns in physical matter. This is the missing link between Tesla's frequency theories and the patterns we see in nature.</p>
+                            
+                            <div class="cymatics-science">
+                                <h4>Scientific Foundation:</h4>
+                                <ul>
+                                    <li><strong>Standing Waves:</strong> Sound creates interference patterns that form geometric shapes</li>
+                                    <li><strong>Resonance:</strong> Specific frequencies create specific geometric patterns</li>
+                                    <li><strong>Harmonics:</strong> Multiple frequencies create complex sacred geometry</li>
+                                    <li><strong>Physical Manifestation:</strong> Vibrations literally shape matter into patterns</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="tesla-connection">
+                                <h4>Tesla's Frequency Connection:</h4>
+                                <p>"If you want to find the secrets of the universe, think in terms of energy, frequency, and vibration." - Nikola Tesla</p>
+                                <ul>
+                                    <li>Tesla's 3-6-9 theory relates to frequency harmonics</li>
+                                    <li>Universal patterns emerge from specific frequency ratios</li>
+                                    <li>Sacred geometry is the visual representation of sound frequencies</li>
+                                    <li>Natural patterns are frequency patterns made visible</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solfeggio-frequencies">
+                                <h4>Solfeggio Frequencies - Tesla's 3-6-9 Mathematical Proof:</h4>
+                                <div class="tesla-proof">
+                                    <p><strong>Digital Root Reduction (Add digits until single number):</strong></p>
+                                    <ul>
+                                        <li><strong>174Hz:</strong> 1+7+4 = 12 → 1+2 = <span class="tesla-number">3</span> ⚡</li>
+                                        <li><strong>285Hz:</strong> 2+8+5 = 15 → 1+5 = <span class="tesla-number">6</span> ⚡</li>
+                                        <li><strong>396Hz:</strong> 3+9+6 = 18 → 1+8 = <span class="tesla-number">9</span> ⚡</li>
+                                        <li><strong>528Hz:</strong> 5+2+8 = 15 → 1+5 = <span class="tesla-number">6</span> ⚡</li>
+                                        <li><strong>639Hz:</strong> 6+3+9 = 18 → 1+8 = <span class="tesla-number">9</span> ⚡</li>
+                                        <li><strong>741Hz:</strong> 7+4+1 = 12 → 1+2 = <span class="tesla-number">3</span> ⚡</li>
+                                        <li><strong>852Hz:</strong> 8+5+2 = 15 → 1+5 = <span class="tesla-number">6</span> ⚡</li>
+                                        <li><strong>963Hz:</strong> 9+6+3 = 18 → 1+8 = <span class="tesla-number">9</span> ⚡</li>
+                                    </ul>
+                                    <div class="tesla-revelation">
+                                        <h4>🌟 Tesla's Universal Truth Revealed:</h4>
+                                        <p>ALL healing frequencies reduce to 3, 6, or 9 - proving Tesla's theory that these numbers are the mathematical foundation of universal energy!</p>
+                                        <div class="frequency-pattern">
+                                            <strong>Pattern: 3-6-9-6-9-3-6-9</strong><br>
+                                            <small>The sacred frequencies follow Tesla's divine sequence perfectly</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <h4>Frequency Pattern Effects:</h4>
+                                <ul>
+                                    <li><strong>174Hz (3):</strong> Foundation - triangular patterns, physical healing</li>
+                                    <li><strong>285Hz (6):</strong> Harmony - healing spiral patterns, tissue regeneration</li>
+                                    <li><strong>396Hz (9):</strong> Liberation - wave patterns, fear release</li>
+                                    <li><strong>528Hz (6):</strong> Love - perfect hexagonal patterns, DNA repair</li>
+                                    <li><strong>639Hz (9):</strong> Connection - interwoven patterns, relationships</li>
+                                    <li><strong>741Hz (3):</strong> Intuition - complex geometries, awakening</li>
+                                    <li><strong>852Hz (6):</strong> Spiritual - mandala formations, third eye</li>
+                                    <li><strong>963Hz (9):</strong> Divine - crown patterns, universal connection</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="nature-applications">
+                                <h4>How This Applies to Your Patterns:</h4>
+                                <ul>
+                                    <li><strong>Tree Growth:</strong> Branch patterns follow frequency-based geometries</li>
+                                    <li><strong>Leaf Structures:</strong> Venation patterns match sound wave interference</li>
+                                    <li><strong>Pine Cone Spirals:</strong> Golden ratio spirals match harmonic frequencies</li>
+                                    <li><strong>Flower Petals:</strong> Arranged according to frequency ratios</li>
+                                    <li><strong>Crystal Formation:</strong> Molecular patterns follow vibrational frequencies</li>
+                                    <li><strong>Water Patterns:</strong> Ripples and waves create cymantic geometries</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Perlin Noise -->
+                <section class="math-section">
+                    <h2 class="section-title">🌊 Perlin Noise for Organic Patterns</h2>
+                    <div class="perlin-demo">
+                        <div class="demo-controls">
+                            <canvas id="perlin-canvas" width="400" height="400"></canvas>
+                            <div class="controls">
+                                <label>Frequency: <span id="frequency-value">0.01</span></label>
+                                <input type="range" id="frequency" min="0.005" max="0.05" step="0.001" value="0.01">
+                                <label>Octaves: <span id="octaves-value">4</span></label>
+                                <input type="range" id="octaves" min="1" max="8" value="4">
+                                <label>Persistence: <span id="persistence-value">0.5</span></label>
+                                <input type="range" id="persistence" min="0.1" max="1" step="0.1" value="0.5">
+                                <button class="btn btn-primary" onclick="generatePerlinNoise()">Generate Noise</button>
+                            </div>
+                        </div>
+                        <div class="explanation">
+                            <h3>Perlin Noise Algorithm</h3>
+                            <p>Perlin noise creates naturally random patterns that avoid the artificial look of pure randomness. It's essential for generating organic-looking camouflage textures.</p>
+                            <div class="algorithm">
+                                <strong>noise(x) = Σ(amplitude × noise(frequency × x))</strong>
+                            </div>
+                            <div class="applications">
+                                <h4>Pattern Applications:</h4>
+                                <ul>
+                                    <li>Terrain height maps</li>
+                                    <li>Cloud and smoke patterns</li>
+                                    <li>Organic texture generation</li>
+                                    <li>Natural color variations</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Color Theory Mathematics -->
+                <section class="math-section">
+                    <h2 class="section-title">🎨 Color Theory Mathematics</h2>
+                    <div class="color-math-demo">
+                        <div class="demo-controls">
+                            <canvas id="color-wheel-canvas" width="400" height="400"></canvas>
+                            <div class="controls">
+                                <label>Base Hue: <span id="base-hue-value">120</span>°</label>
+                                <input type="range" id="base-hue" min="0" max="360" value="120">
+                                <label>Harmony Type:</label>
+                                <select id="harmony-type">
+                                    <option value="complementary">Complementary</option>
+                                    <option value="triadic">Triadic</option>
+                                    <option value="analogous">Analogous</option>
+                                    <option value="tetradic">Tetradic</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="generateColorHarmony()">Generate Harmony</button>
+                            </div>
+                        </div>
+                        <div class="explanation">
+                            <h3>Color Harmony Mathematics</h3>
+                            <p>Color harmonies are based on mathematical relationships between hue positions on the color wheel. These relationships create visually pleasing and effective camouflage palettes.</p>
+                            <div class="color-formulas">
+                                <div class="formula-item">
+                                    <strong>Complementary:</strong> H₂ = (H₁ + 180°) mod 360°
+                                </div>
+                                <div class="formula-item">
+                                    <strong>Triadic:</strong> H₂ = (H₁ + 120°) mod 360°, H₃ = (H₁ + 240°) mod 360°
+                                </div>
+                                <div class="formula-item">
+                                    <strong>Analogous:</strong> H₂ = (H₁ ± 30°) mod 360°
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pattern Analysis Tools -->
+                <section class="math-section">
+                    <h2 class="section-title">📊 Pattern Analysis & Metrics</h2>
+                    <div class="analysis-tools">
+                        <div class="tool-grid">
+                            <div class="analysis-tool">
+                                <h3>🔍 Complexity Measurement</h3>
+                                <canvas id="complexity-canvas" width="200" height="200"></canvas>
+                                <div class="metrics">
+                                    <div class="metric">
+                                        <label>Edge Density:</label>
+                                        <span id="edge-density">0</span>
+                                    </div>
+                                    <div class="metric">
+                                        <label>Color Variance:</label>
+                                        <span id="color-variance">0</span>
+                                    </div>
+                                    <div class="metric">
+                                        <label>Fractal Dimension:</label>
+                                        <span id="fractal-dimension">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="analysis-tool">
+                                <h3>📏 Symmetry Analysis</h3>
+                                <canvas id="symmetry-canvas" width="200" height="200"></canvas>
+                                <div class="metrics">
+                                    <div class="metric">
+                                        <label>Rotational Symmetry:</label>
+                                        <span id="rotational-symmetry">0°</span>
+                                    </div>
+                                    <div class="metric">
+                                        <label>Reflection Symmetry:</label>
+                                        <span id="reflection-symmetry">None</span>
+                                    </div>
+                                    <div class="metric">
+                                        <label>Pattern Regularity:</label>
+                                        <span id="pattern-regularity">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="analysis-tool">
+                                <h3>🎯 Effectiveness Score</h3>
+                                <canvas id="effectiveness-canvas" width="200" height="200"></canvas>
+                                <div class="metrics">
+                                    <div class="metric">
+                                        <label>Camouflage Score:</label>
+                                        <span id="camouflage-score">0%</span>
+                                    </div>
+                                    <div class="metric">
+                                        <label>Visual Disruption:</label>
+                                        <span id="visual-disruption">0%</span>
+                                    </div>
+                                    <div class="metric">
+                                        <label>Natural Harmony:</label>
+                                        <span id="natural-harmony">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="upload-zone">
+                            <h3>Upload Pattern for Analysis</h3>
+                            <div class="upload-area" id="upload-area">
+                                <p>Drag & drop a pattern image here or click to browse</p>
+                                <input type="file" id="pattern-upload" accept="image/*" style="display: none;">
+                                <button class="btn btn-primary" onclick="document.getElementById('pattern-upload').click()">Choose File</button>
+                                <button class="btn" onclick="patternMath.showScoringGuide()" style="margin-left: 10px; background: #3498db; color: white;">📊 Scoring Guide</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Symmetry in Nature -->
+                <section class="math-section symmetry-section">
+                    <h2 class="section-title">🔄 Symmetry in Universal Patterns</h2>
+                    <div class="symmetry-demo">
+                        <div class="symmetry-explanation">
+                            <h3>The Foundation of All Patterns</h3>
+                            <p>Symmetry is the underlying mathematical principle that governs everything from Tesla's 3-6-9 energy patterns to the structure of galaxies. It's the language through which the universe organizes itself.</p>
+                            
+                            <div class="symmetry-types">
+                                <div class="symmetry-type">
+                                    <h4>🪞 Reflection Symmetry</h4>
+                                    <p>Mirror symmetry found in leaves, butterflies, and human faces. Creates balance and harmony in tactical patterns.</p>
+                                </div>
+                                
+                                <div class="symmetry-type">
+                                    <h4>🔄 Rotational Symmetry</h4>
+                                    <p>Patterns that look identical when rotated. Found in flowers, crystals, and Tesla's energy diagrams.</p>
+                                </div>
+                                
+                                <div class="symmetry-type">
+                                    <h4>📐 Translational Symmetry</h4>
+                                    <p>Repeating patterns that extend infinitely. The foundation of camouflage effectiveness and natural textures.</p>
+                                </div>
+                                
+                                <div class="symmetry-type">
+                                    <h4>🌀 Spiral Symmetry</h4>
+                                    <p>Growth patterns following mathematical spirals. Found in galaxies, shells, and pinecones.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="symmetry-controls">
+                            <canvas id="symmetry-main-canvas" width="500" height="500"></canvas>
+                            <div class="symmetry-buttons">
+                                <button class="btn btn-primary" onclick="drawReflectionSymmetry()">Reflection</button>
+                                <button class="btn btn-secondary" onclick="drawRotationalSymmetry()">Rotational</button>
+                                <button class="btn btn-success" onclick="drawTranslationalSymmetry()">Translational</button>
+                                <button class="btn btn-warning" onclick="drawSpiralSymmetry()">Spiral</button>
+                                <button class="btn btn-danger" onclick="drawTeslaSymmetry()">Tesla 3-6-9</button>
+                            </div>
+                            
+                            <div class="symmetry-controls-panel">
+                                <div class="control-group">
+                                    <label>Symmetry Order:</label>
+                                    <input type="range" id="symmetry-order" min="2" max="12" value="6">
+                                    <span id="symmetry-order-value">6</span>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label>Pattern Size:</label>
+                                    <input type="range" id="symmetry-size" min="20" max="150" value="80">
+                                    <span id="symmetry-size-value">80</span>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <label>Complexity:</label>
+                                    <input type="range" id="symmetry-complexity" min="1" max="10" value="5">
+                                    <span id="symmetry-complexity-value">5</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="symmetry-applications">
+                        <h3>Symmetry in Your Pattern System</h3>
+                        <div class="application-grid">
+                            <div class="application-card">
+                                <h4>🌲 Forest Patterns</h4>
+                                <p>Leaf arrangements follow bilateral symmetry, while tree branching exhibits fractal symmetry patterns.</p>
+                            </div>
+                            
+                            <div class="application-card">
+                                <h4>⚡ Tesla Energy</h4>
+                                <p>3-6-9 patterns create perfect rotational symmetry in energy diagrams and frequency visualizations.</p>
+                            </div>
+                            
+                            <div class="application-card">
+                                <h4>🔯 Sacred Geometry</h4>
+                                <p>Mandala patterns rely on radial symmetry, while the Flower of Life demonstrates perfect hexagonal symmetry.</p>
+                            </div>
+                            
+                            <div class="application-card">
+                                <h4>🌊 Cymatics</h4>
+                                <p>Sound frequencies create symmetrical standing wave patterns that mirror the mathematical order of the universe.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Mathematical Formulas Reference -->
+                <section class="math-section">
+                    <h2 class="section-title">📖 Mathematical Formulas Reference</h2>
+                    <div class="formulas-grid">
+                        <div class="formula-card">
+                            <h3>Distance Calculations</h3>
+                            <div class="formula-content">
+                                <strong>Euclidean Distance:</strong><br>
+                                d = √[(x₂-x₁)² + (y₂-y₁)²]
+                                <br><br>
+                                <strong>Manhattan Distance:</strong><br>
+                                d = |x₂-x₁| + |y₂-y₁|
+                                <br><br>
+                                <strong>Used for:</strong> Shape spacing, pattern distribution
+                            </div>
+                        </div>
+                        
+                        <div class="formula-card">
+                            <h3>Trigonometric Functions</h3>
+                            <div class="formula-content">
+                                <strong>Rotation Matrix:</strong><br>
+                                [cos θ  -sin θ]<br>
+                                [sin θ   cos θ]
+                                <br><br>
+                                <strong>Polar to Cartesian:</strong><br>
+                                x = r × cos(θ)<br>
+                                y = r × sin(θ)
+                                <br><br>
+                                <strong>Used for:</strong> Shape rotation, circular patterns
+                            </div>
+                        </div>
+                        
+                        <div class="formula-card">
+                            <h3>Interpolation</h3>
+                            <div class="formula-content">
+                                <strong>Linear Interpolation:</strong><br>
+                                f(x) = (1-t) × a + t × b
+                                <br><br>
+                                <strong>Bezier Curve:</strong><br>
+                                B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃
+                                <br><br>
+                                <strong>Used for:</strong> Smooth transitions, organic curves
+                            </div>
+                        </div>
+                        
+                        <div class="formula-card">
+                            <h3>Statistical Measures</h3>
+                            <div class="formula-content">
+                                <strong>Mean:</strong><br>
+                                μ = Σx / n
+                                <br><br>
+                                <strong>Standard Deviation:</strong><br>
+                                σ = √[Σ(x-μ)² / n]
+                                <br><br>
+                                <strong>Used for:</strong> Pattern randomness, color distribution
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/safe-fractal-animations.js"></script>
+    <script src="js/pattern-mathematics.js"></script>
+</body>
+</html>

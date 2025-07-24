@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Library Cleanup Tool - Savo Studio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f1f0f 0%, #1a3d0a 50%, #2d5016 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #4a7c28, #7cff50, #2d5016);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #a8c4a8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(26, 61, 10, 0.3);
+            border: 1px solid rgba(74, 124, 40, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #7cff50;
+        }
+
+        .stat-label {
+            color: #a8c4a8;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .action-panel {
+            background: rgba(26, 61, 10, 0.2);
+            border: 1px solid rgba(74, 124, 40, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .action-panel h2 {
+            color: #7cff50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #4a7c28, #7cff50);
+            border: none;
+            border-radius: 10px;
+            color: #1a3d0a;
+            padding: 12px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 124, 40, 0.4);
+        }
+
+        .action-btn.danger {
+            background: linear-gradient(135deg, #dc3545, #ff6b6b);
+            color: white;
+        }
+
+        .action-btn.warning {
+            background: linear-gradient(135deg, #ffc107, #ffeb3b);
+            color: #333;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .pattern-card {
+            background: rgba(26, 61, 10, 0.3);
+            border: 1px solid rgba(74, 124, 40, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .pattern-card.problematic {
+            border-color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .pattern-card.healthy {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        .pattern-preview {
+            width: 100%;
+            height: 150px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(74, 124, 40, 0.5);
+            background: #1a3d0a;
+        }
+
+        .pattern-info {
+            margin-bottom: 15px;
+        }
+
+        .pattern-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #7cff50;
+            margin-bottom: 5px;
+        }
+
+        .pattern-status {
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .status-healthy {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid #28a745;
+        }
+
+        .status-problematic {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+
+        .status-warning {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid #ffc107;
+        }
+
+        .pattern-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .pattern-btn {
+            background: rgba(74, 124, 40, 0.5);
+            border: 1px solid #4a7c28;
+            border-radius: 6px;
+            color: white;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pattern-btn:hover {
+            background: #4a7c28;
+        }
+
+        .pattern-btn.danger {
+            background: rgba(220, 53, 69, 0.5);
+            border-color: #dc3545;
+        }
+
+        .pattern-btn.danger:hover {
+            background: #dc3545;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(74, 124, 40, 0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4a7c28, #7cff50);
+            transition: width 0.3s ease;
+        }
+
+        .log-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(74, 124, 40, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            color: #a8c4a8;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .log-entry.success {
+            color: #28a745;
+        }
+
+        .log-entry.error {
+            color: #dc3545;
+        }
+
+        .log-entry.warning {
+            color: #ffc107;
+        }
+
+        .backup-panel {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid #28a745;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .backup-panel h3 {
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+
+        .backup-info {
+            color: #a8c4a8;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Pattern Library Cleanup Tool</h1>
+            <p>Organize, repair, and optimize your tactical pattern collection without losing your best combinations</p>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-card">
+                <div class="stat-number" id="totalPatterns">0</div>
+                <div class="stat-label">Total Patterns</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="healthyPatterns">0</div>
+                <div class="stat-label">Healthy Patterns</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="problematicPatterns">0</div>
+                <div class="stat-label">Problematic Patterns</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="duplicatePatterns">0</div>
+                <div class="stat-label">Duplicate Patterns</div>
+            </div>
+        </div>
+
+        <div class="backup-panel">
+            <h3>🛡️ Automatic Backup</h3>
+            <div class="backup-info">
+                Your patterns are automatically backed up before any cleanup operation. You can restore from backup if needed.
+                <br><strong>Last Backup:</strong> <span id="lastBackup">None</span>
+            </div>
+        </div>
+
+        <div class="action-panel">
+            <h2>Quick Actions</h2>
+            <div class="action-buttons">
+                <button class="action-btn" onclick="analyzePatterns()">📊 Analyze Collection</button>
+                <button class="action-btn" onclick="createBackup()">💾 Create Backup</button>
+                <button class="action-btn warning" onclick="fixProblematicPatterns()">🔧 Fix Problematic Patterns</button>
+                <button class="action-btn warning" onclick="removeDuplicates()">🗑️ Remove Duplicates</button>
+                <button class="action-btn" onclick="optimizeStorage()">⚡ Optimize Storage</button>
+                <button class="action-btn danger" onclick="confirmFullReset()">🔄 Fresh Start (Keep Backup)</button>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="pattern-grid" id="patternGrid">
+            <!-- Pattern cards will be dynamically generated -->
+        </div>
+
+        <div class="log-panel">
+            <h3>Activity Log</h3>
+            <div id="logContainer">
+                <div class="log-entry">Pattern Library Cleanup Tool initialized</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class PatternLibraryCleanup {
+            constructor() {
+                this.patterns = [];
+                this.backups = [];
+                this.init();
+            }
+
+            init() {
+                this.loadPatterns();
+                this.analyzePatterns();
+                this.updateDisplay();
+                this.log('Cleanup tool ready - Your patterns are safe!', 'success');
+            }
+
+            loadPatterns() {
+                try {
+                    this.patterns = JSON.parse(localStorage.getItem('savoModePatterns') || '[]');
+                    this.log(`Loaded ${this.patterns.length} patterns from library`);
+                } catch (error) {
+                    this.log('Error loading patterns: ' + error.message, 'error');
+                    this.patterns = [];
+                }
+            }
+
+            analyzePatterns() {
+                const analysis = {
+                    total: this.patterns.length,
+                    healthy: 0,
+                    problematic: 0,
+                    duplicates: 0,
+                    issues: []
+                };
+
+                const nameMap = new Map();
+                
+                this.patterns.forEach((pattern, index) => {
+                    let isHealthy = true;
+                    let issues = [];
+
+                    // Check for required fields
+                    if (!pattern.name || pattern.name.trim() === '') {
+                        issues.push('Missing name');
+                        isHealthy = false;
+                    }
+
+                    if (!pattern.colors || !Array.isArray(pattern.colors) || pattern.colors.length === 0) {
+                        issues.push('Missing colors');
+                        isHealthy = false;
+                    }
+
+                    // Check for duplicates
+                    const nameKey = pattern.name?.toLowerCase().trim();
+                    if (nameKey && nameMap.has(nameKey)) {
+                        issues.push('Duplicate name');
+                        analysis.duplicates++;
+                        isHealthy = false;
+                    } else if (nameKey) {
+                        nameMap.set(nameKey, index);
+                    }
+
+                    // Check for corrupted data
+                    if (pattern.preview && pattern.preview.startsWith('data:image') && pattern.preview.length < 100) {
+                        issues.push('Corrupted preview');
+                        isHealthy = false;
+                    }
+
+                    // Check for missing type
+                    if (!pattern.type) {
+                        issues.push('Missing type');
+                        isHealthy = false;
+                    }
+
+                    pattern._issues = issues;
+                    pattern._isHealthy = isHealthy;
+
+                    if (isHealthy) {
+                        analysis.healthy++;
+                    } else {
+                        analysis.problematic++;
+                    }
+                });
+
+                this.analysis = analysis;
+                this.updateStats();
+                this.log(`Analysis complete: ${analysis.healthy} healthy, ${analysis.problematic} problematic patterns`);
+            }
+
+            updateStats() {
+                document.getElementById('totalPatterns').textContent = this.analysis.total;
+                document.getElementById('healthyPatterns').textContent = this.analysis.healthy;
+                document.getElementById('problematicPatterns').textContent = this.analysis.problematic;
+                document.getElementById('duplicatePatterns').textContent = this.analysis.duplicates;
+            }
+
+            updateDisplay() {
+                const grid = document.getElementById('patternGrid');
+                grid.innerHTML = '';
+
+                this.patterns.forEach((pattern, index) => {
+                    const card = this.createPatternCard(pattern, index);
+                    grid.appendChild(card);
+                });
+            }
+
+            createPatternCard(pattern, index) {
+                const card = document.createElement('div');
+                card.className = `pattern-card ${pattern._isHealthy ? 'healthy' : 'problematic'}`;
+                
+                const statusClass = pattern._isHealthy ? 'status-healthy' : 'status-problematic';
+                const statusText = pattern._isHealthy ? 'Healthy' : 'Needs Repair';
+                
+                card.innerHTML = `
+                    <canvas class="pattern-preview" id="preview-${index}"></canvas>
+                    <div class="pattern-info">
+                        <div class="pattern-name">${pattern.name || 'Unnamed Pattern'}</div>
+                        <div class="pattern-status ${statusClass}">${statusText}</div>
+                        ${pattern._issues && pattern._issues.length > 0 ? 
+                            `<div style="font-size: 0.8rem; color: #dc3545;">Issues: ${pattern._issues.join(', ')}</div>` : ''}
+                    </div>
+                    <div class="pattern-actions">
+                        ${pattern._isHealthy ? 
+                            `<button class="pattern-btn" onclick="cleanupTool.keepPattern(${index})">✓ Keep</button>` :
+                            `<button class="pattern-btn" onclick="cleanupTool.repairPattern(${index})">🔧 Repair</button>`
+                        }
+                        <button class="pattern-btn danger" onclick="cleanupTool.removePattern(${index})">🗑️ Remove</button>
+                    </div>
+                `;
+
+                // Generate preview
+                setTimeout(() => {
+                    this.generatePreview(pattern, index);
+                }, 100);
+
+                return card;
+            }
+
+            generatePreview(pattern, index) {
+                const canvas = document.getElementById(`preview-${index}`);
+                if (!canvas) return;
+
+                const ctx = canvas.getContext('2d');
+                canvas.width = 300;
+                canvas.height = 150;
+
+                if (pattern.actualImage) {
+                    const img = new Image();
+                    img.onload = () => {
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    };
+                    img.src = pattern.actualImage;
+                } else if (pattern.preview) {
+                    const img = new Image();
+                    img.onload = () => {
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    };
+                    img.src = pattern.preview;
+                } else if (pattern.colors && pattern.colors.length > 0) {
+                    this.drawBasicPreview(ctx, pattern.colors, canvas.width, canvas.height);
+                } else {
+                    ctx.fillStyle = '#dc3545';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = 'white';
+                    ctx.font = '16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Corrupted Pattern', canvas.width / 2, canvas.height / 2);
+                }
+            }
+
+            drawBasicPreview(ctx, colors, width, height) {
+                ctx.fillStyle = colors[0] || '#1a3d0a';
+                ctx.fillRect(0, 0, width, height);
+                
+                const numShapes = 20;
+                for (let i = 0; i < numShapes; i++) {
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    const x = Math.random() * width;
+                    const y = Math.random() * height;
+                    const size = 10 + Math.random() * 20;
+                    
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            createBackup() {
+                const backup = {
+                    timestamp: new Date().toISOString(),
+                    patterns: JSON.parse(JSON.stringify(this.patterns)),
+                    count: this.patterns.length
+                };
+
+                const backups = JSON.parse(localStorage.getItem('savoModeBackups') || '[]');
+                backups.push(backup);
+                
+                // Keep only last 5 backups
+                if (backups.length > 5) {
+                    backups.shift();
+                }
+                
+                localStorage.setItem('savoModeBackups', JSON.stringify(backups));
+                
+                document.getElementById('lastBackup').textContent = new Date().toLocaleString();
+                this.log(`✅ Backup created with ${backup.count} patterns`, 'success');
+                this.updateProgress(100);
+            }
+
+            fixProblematicPatterns() {
+                this.createBackup();
+                
+                let fixed = 0;
+                const fixedPatterns = this.patterns.map(pattern => {
+                    if (pattern._isHealthy) return pattern;
+                    
+                    const fixedPattern = { ...pattern };
+                    
+                    // Fix missing name
+                    if (!fixedPattern.name || fixedPattern.name.trim() === '') {
+                        fixedPattern.name = `Pattern ${Date.now()}`;
+                    }
+                    
+                    // Fix missing type
+                    if (!fixedPattern.type) {
+                        fixedPattern.type = 'temperate';
+                    }
+                    
+                    // Fix missing colors
+                    if (!fixedPattern.colors || !Array.isArray(fixedPattern.colors) || fixedPattern.colors.length === 0) {
+                        fixedPattern.colors = ['#1a3d0a', '#2d5016', '#4a7c28', '#7cff50'];
+                    }
+                    
+                    // Add missing metadata
+                    if (!fixedPattern.created) {
+                        fixedPattern.created = new Date().toISOString();
+                    }
+                    
+                    fixed++;
+                    return fixedPattern;
+                });
+                
+                this.patterns = fixedPatterns;
+                this.savePatterns();
+                this.analyzePatterns();
+                this.updateDisplay();
+                
+                this.log(`🔧 Fixed ${fixed} problematic patterns`, 'success');
+                this.updateProgress(100);
+            }
+
+            removeDuplicates() {
+                this.createBackup();
+                
+                const nameMap = new Map();
+                const uniquePatterns = [];
+                let removed = 0;
+                
+                this.patterns.forEach(pattern => {
+                    const nameKey = pattern.name?.toLowerCase().trim();
+                    if (nameKey && !nameMap.has(nameKey)) {
+                        nameMap.set(nameKey, true);
+                        uniquePatterns.push(pattern);
+                    } else {
+                        removed++;
+                    }
+                });
+                
+                this.patterns = uniquePatterns;
+                this.savePatterns();
+                this.analyzePatterns();
+                this.updateDisplay();
+                
+                this.log(`🗑️ Removed ${removed} duplicate patterns`, 'success');
+                this.updateProgress(100);
+            }
+
+            optimizeStorage() {
+                this.createBackup();
+                
+                let optimized = 0;
+                const optimizedPatterns = this.patterns.map(pattern => {
+                    const optimizedPattern = { ...pattern };
+                    
+                    // Remove temporary analysis data
+                    delete optimizedPattern._issues;
+                    delete optimizedPattern._isHealthy;
+                    
+                    // Compress large preview images
+                    if (optimizedPattern.preview && optimizedPattern.preview.length > 100000) {
+                        // Keep only essential data
+                        delete optimizedPattern.preview;
+                        optimized++;
+                    }
+                    
+                    return optimizedPattern;
+                });
+                
+                this.patterns = optimizedPatterns;
+                this.savePatterns();
+                this.analyzePatterns();
+                this.updateDisplay();
+                
+                this.log(`⚡ Optimized ${optimized} patterns for better performance`, 'success');
+                this.updateProgress(100);
+            }
+
+            confirmFullReset() {
+                const confirmed = confirm(
+                    "Are you sure you want to start fresh? This will:\n\n" +
+                    "• Create a backup of all current patterns\n" +
+                    "• Clear your pattern library\n" +
+                    "• Reset pattern counter to 0\n\n" +
+                    "You can restore from backup if needed. Continue?"
+                );
+                
+                if (confirmed) {
+                    this.fullReset();
+                }
+            }
+
+            fullReset() {
+                this.createBackup();
+                
+                // Clear patterns
+                this.patterns = [];
+                localStorage.removeItem('savoModePatterns');
+                
+                // Reset counter
+                localStorage.setItem('patternCounter', '0');
+                
+                this.analyzePatterns();
+                this.updateDisplay();
+                
+                this.log('🔄 Fresh start complete - All patterns backed up safely', 'success');
+                this.updateProgress(100);
+            }
+
+            repairPattern(index) {
+                const pattern = this.patterns[index];
+                if (!pattern) return;
+                
+                // Create repair dialog or auto-repair
+                const repaired = { ...pattern };
+                
+                if (!repaired.name || repaired.name.trim() === '') {
+                    repaired.name = prompt('Enter pattern name:', `Pattern ${Date.now()}`);
+                }
+                
+                if (!repaired.type) {
+                    repaired.type = 'temperate';
+                }
+                
+                if (!repaired.colors || !Array.isArray(repaired.colors) || repaired.colors.length === 0) {
+                    repaired.colors = ['#1a3d0a', '#2d5016', '#4a7c28', '#7cff50'];
+                }
+                
+                this.patterns[index] = repaired;
+                this.savePatterns();
+                this.analyzePatterns();
+                this.updateDisplay();
+                
+                this.log(`🔧 Repaired pattern: ${repaired.name}`, 'success');
+            }
+
+            removePattern(index) {
+                const pattern = this.patterns[index];
+                if (!pattern) return;
+                
+                const confirmed = confirm(`Remove pattern "${pattern.name}"?`);
+                if (confirmed) {
+                    this.patterns.splice(index, 1);
+                    this.savePatterns();
+                    this.analyzePatterns();
+                    this.updateDisplay();
+                    
+                    this.log(`🗑️ Removed pattern: ${pattern.name}`, 'warning');
+                }
+            }
+
+            keepPattern(index) {
+                this.log(`✓ Pattern marked as good: ${this.patterns[index].name}`, 'success');
+            }
+
+            savePatterns() {
+                try {
+                    localStorage.setItem('savoModePatterns', JSON.stringify(this.patterns));
+                } catch (error) {
+                    this.log('Error saving patterns: ' + error.message, 'error');
+                }
+            }
+
+            updateProgress(percentage) {
+                const fill = document.getElementById('progressFill');
+                fill.style.width = percentage + '%';
+                
+                setTimeout(() => {
+                    fill.style.width = '0%';
+                }, 2000);
+            }
+
+            log(message, type = 'info') {
+                const container = document.getElementById('logContainer');
+                const entry = document.createElement('div');
+                entry.className = `log-entry ${type}`;
+                entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                container.appendChild(entry);
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+
+        // Initialize cleanup tool
+        let cleanupTool;
+        document.addEventListener('DOMContentLoaded', () => {
+            cleanupTool = new PatternLibraryCleanup();
+        });
+
+        // Global functions for buttons
+        function analyzePatterns() {
+            cleanupTool.analyzePatterns();
+            cleanupTool.updateDisplay();
+        }
+
+        function createBackup() {
+            cleanupTool.createBackup();
+        }
+
+        function fixProblematicPatterns() {
+            cleanupTool.fixProblematicPatterns();
+        }
+
+        function removeDuplicates() {
+            cleanupTool.removeDuplicates();
+        }
+
+        function optimizeStorage() {
+            cleanupTool.optimizeStorage();
+        }
+
+        function confirmFullReset() {
+            cleanupTool.confirmFullReset();
+        }
+    </script>
+</body>
+</html>

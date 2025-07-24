@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Design Process Visualizer - Savo Studio</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/design-process.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+    <!-- Accessibility Toggle -->
+    <button id="accessibility-toggle" class="accessibility-toggle" aria-label="Toggle accessibility panel">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 8v4M12 16h.01"/>
+        </svg>
+    </button>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" class="nav-logo">
+                    <span class="logo-text">SAVO STUDIO</span>
+                </a>
+            </div>
+            
+            <div class="nav-menu" id="nav-menu">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="forest-pattern-generator.html" class="nav-link">Forest Generator</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="advanced-color-studio.html" class="nav-link">Color Studio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pattern-library.html" class="nav-link">Pattern Library</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="design-process-visualizer.html" class="nav-link active">Design Process</a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="process-hero">
+        <div class="container">
+            <h1 class="process-hero-title">Interactive Design Process</h1>
+            <p class="process-hero-subtitle">
+                Explore the methodology behind Savo Studio's tactical pattern creation and design innovation
+            </p>
+            
+            <div class="process-stats">
+                <div class="stat-item">
+                    <span class="stat-number">5</span>
+                    <span class="stat-label">Design Phases</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">12</span>
+                    <span class="stat-label">Key Milestones</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">500+</span>
+                    <span class="stat-label">Pattern Target</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Process Flow -->
+    <section class="process-flow">
+        <div class="container">
+            <h2 class="section-title">Design Process Flow</h2>
+            
+            <div class="process-timeline">
+                <div class="timeline-line"></div>
+                
+                <!-- Phase 1: Discovery -->
+                <div class="process-phase" data-phase="discovery">
+                    <div class="phase-marker">
+                        <div class="phase-number">1</div>
+                        <div class="phase-pulse"></div>
+                    </div>
+                    <div class="phase-content">
+                        <h3 class="phase-title">Discovery & Research</h3>
+                        <p class="phase-description">
+                            Understanding user needs, market trends, and technical constraints through research and exploration.
+                        </p>
+                        <div class="phase-tools">
+                            <span class="tool-tag">User Research</span>
+                            <span class="tool-tag">Market Analysis</span>
+                            <span class="tool-tag">Technical Feasibility</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 2: Ideation -->
+                <div class="process-phase" data-phase="ideation">
+                    <div class="phase-marker">
+                        <div class="phase-number">2</div>
+                        <div class="phase-pulse"></div>
+                    </div>
+                    <div class="phase-content">
+                        <h3 class="phase-title">Ideation & Concept</h3>
+                        <p class="phase-description">
+                            Generating creative solutions through brainstorming, sketching, and exploring multiple design directions.
+                        </p>
+                        <div class="phase-tools">
+                            <span class="tool-tag">Brainstorming</span>
+                            <span class="tool-tag">Sketching</span>
+                            <span class="tool-tag">Mood Boards</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 3: Prototyping -->
+                <div class="process-phase" data-phase="prototyping">
+                    <div class="phase-marker">
+                        <div class="phase-number">3</div>
+                        <div class="phase-pulse"></div>
+                    </div>
+                    <div class="phase-content">
+                        <h3 class="phase-title">Prototyping & Testing</h3>
+                        <p class="phase-description">
+                            Creating functional prototypes and testing concepts with real users to validate design decisions.
+                        </p>
+                        <div class="phase-tools">
+                            <span class="tool-tag">Wireframing</span>
+                            <span class="tool-tag">Rapid Prototyping</span>
+                            <span class="tool-tag">User Testing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 4: Development -->
+                <div class="process-phase" data-phase="development">
+                    <div class="phase-marker">
+                        <div class="phase-number">4</div>
+                        <div class="phase-pulse"></div>
+                    </div>
+                    <div class="phase-content">
+                        <h3 class="phase-title">Development & Implementation</h3>
+                        <p class="phase-description">
+                            Building the final solution with attention to technical excellence and user experience quality.
+                        </p>
+                        <div class="phase-tools">
+                            <span class="tool-tag">Technical Implementation</span>
+                            <span class="tool-tag">Quality Assurance</span>
+                            <span class="tool-tag">Performance Optimization</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 5: Evolution -->
+                <div class="process-phase" data-phase="evolution">
+                    <div class="phase-marker">
+                        <div class="phase-number">5</div>
+                        <div class="phase-pulse"></div>
+                    </div>
+                    <div class="phase-content">
+                        <h3 class="phase-title">Evolution & Iteration</h3>
+                        <p class="phase-description">
+                            Continuously improving and evolving the design based on user feedback and changing requirements.
+                        </p>
+                        <div class="phase-tools">
+                            <span class="tool-tag">Analytics</span>
+                            <span class="tool-tag">User Feedback</span>
+                            <span class="tool-tag">Continuous Improvement</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Canvas -->
+    <section class="interactive-canvas">
+        <div class="container">
+            <h2 class="section-title">Interactive Design Canvas</h2>
+            <p class="section-description">
+                Click on different phases to explore specific methodologies and see real examples from Savo Studio projects.
+            </p>
+            
+            <div class="canvas-container">
+                <div class="canvas-content" id="canvas-content">
+                    <!-- Default state -->
+                    <div class="canvas-default active">
+                        <div class="canvas-icon">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <h3>Select a Phase</h3>
+                        <p>Choose a design phase from the timeline above to explore specific methodologies and see real project examples.</p>
+                    </div>
+
+                    <!-- Discovery Content -->
+                    <div class="canvas-phase" id="discovery-content">
+                        <div class="phase-showcase">
+                            <h3>Discovery & Research Phase</h3>
+                            <div class="methodology-grid">
+                                <div class="method-card">
+                                    <div class="method-icon">🔍</div>
+                                    <h4>User Research</h4>
+                                    <p>Understanding outdoor enthusiasts' needs through surveys and interviews</p>
+                                </div>
+                                <div class="method-card">
+                                    <div class="method-icon">📊</div>
+                                    <h4>Market Analysis</h4>
+                                    <p>Analyzing competitor patterns and identifying market gaps</p>
+                                </div>
+                                <div class="method-card">
+                                    <div class="method-icon">🧪</div>
+                                    <h4>Technical Research</h4>
+                                    <p>Exploring AI pattern generation and botanical accuracy</p>
+                                </div>
+                            </div>
+                            <div class="example-project">
+                                <h4>Project Example: Forest Pattern Generator</h4>
+                                <p>Research revealed need for botanically accurate camouflage patterns based on real forest ecosystems.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ideation Content -->
+                    <div class="canvas-phase" id="ideation-content">
+                        <div class="phase-showcase">
+                            <h3>Ideation & Concept Phase</h3>
+                            <div class="methodology-grid">
+                                <div class="method-card">
+                                    <div class="method-icon">💭</div>
+                                    <h4>Brainstorming</h4>
+                                    <p>Generating creative pattern concepts through mind mapping</p>
+                                </div>
+                                <div class="method-card">
+                                    <div class="method-icon">✏️</div>
+                                    <h4>Sketching</h4>
+                                    <p>Rapid ideation through visual exploration and concept sketches</p>
+                                </div>
+                                <div class="method-card">
+                                    <div class="method-icon">🎨</div>
+                                    <h4>Mood Boards</h4>
+                                    <p>Creating visual inspiration boards for different environments</p>
+                                </div>
+                            </div>
+                            <div class="example-project">
+                                <h4>Project Example: S.A.V.O. Brand Identity</h4>
+                                <p>Ideation process led to unique camo-filled icons representing Survive, Adapt, Venture, Outlast.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prototyping Content -->
+                    <div class="canvas-phase" id="prototyping-content">
+                        <div class="phase-showcase">
+                            <h3>Prototyping & Testing Phase</h3>
+                            <div class="methodology-grid">
+                                <div class="method-card">
+                                    <div class="method-icon">📐</div>
+                                    <h4>Wireframing</h4>
+                                    <p>Creating low-fidelity layouts for pattern generators</p>
+                                </div>
+                                <div class="method-card">
+                                    <div class="method-icon">⚡</div>
+                                    <h4>Rapid Prototyping</h4>
+                                    <p>Building functional prototypes to test core concepts</p>
+                                </div>
+                                <div class="method-card">
+                                    <div class="method-icon">👥</div>
+                                    <h4>User Testing</h4>
+                                    <p>Gathering feedback on pattern customization interfaces</p>
+                                </div>
+                            </div>
+                            <div class="example-project">
+                                <h4>Project Example: Color Studio Interface</h4>
+                                <p>Prototyping revealed need for AI-powered color generation with environmental context.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Development Content -->
+                    <div class="canvas-phase" id="development-content">
+                        <div class="phase-showcase">
+                            <h3>Development & Implementation Phase</h3>
+                            <div class="methodology-grid">
+                                <div class="method-card">
+                                    <div class="method-icon">⚙️</div>
+                                    <h4>Technical Implementation</h4>
+                                    <p>Building robust pattern generation algorithms</p>
+                                </div>
+                                <div class="method-card">
+                                    <div class="method-icon">🔧</div>
+                                    <h4>Quality Assurance</h4>
+                                    <p>Comprehensive testing across devices and browsers</p>
+                                </div>
+                                <div class="method-card">
+                                    <div class="method-icon">🚀</div>
+                                    <h4>Performance Optimization</h4>
+                                    <p>Ensuring smooth real-time pattern generation</p>
+                                </div>
+                            </div>
+                            <div class="example-project">
+                                <h4>Project Example: Mobile Export System</h4>
+                                <p>Development focused on seamless pattern export to mobile devices with multiple fallback methods.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Evolution Content -->
+                    <div class="canvas-phase" id="evolution-content">
+                        <div class="phase-showcase">
+                            <h3>Evolution & Iteration Phase</h3>
+                            <div class="methodology-grid">
+                                <div class="method-card">
+                                    <div class="method-icon">📈</div>
+                                    <h4>Analytics</h4>
+                                    <p>Tracking pattern creation and user engagement metrics</p>
+                                </div>
+                                <div class="method-card">
+                                    <div class="method-icon">💬</div>
+                                    <h4>User Feedback</h4>
+                                    <p>Continuous collection and analysis of user suggestions</p>
+                                </div>
+                                <div class="method-card">
+                                    <div class="method-icon">🔄</div>
+                                    <h4>Continuous Improvement</h4>
+                                    <p>Regular updates and feature enhancements</p>
+                                </div>
+                            </div>
+                            <div class="example-project">
+                                <h4>Project Example: 500 Pattern Challenge</h4>
+                                <p>Evolution strategy includes systematic pattern creation with progress tracking and milestone rewards.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Design Principles -->
+    <section class="design-principles">
+        <div class="container">
+            <h2 class="section-title">Core Design Principles</h2>
+            
+            <div class="principles-grid">
+                <div class="principle-card">
+                    <div class="principle-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <h3>Authentic Innovation</h3>
+                    <p>Every design decision is rooted in genuine user needs and authentic outdoor experiences.</p>
+                </div>
+                
+                <div class="principle-card">
+                    <div class="principle-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 8v4"/>
+                            <path d="M12 16h.01"/>
+                        </svg>
+                    </div>
+                    <h3>Technical Excellence</h3>
+                    <p>Combining cutting-edge technology with thoughtful design to create superior user experiences.</p>
+                </div>
+                
+                <div class="principle-card">
+                    <div class="principle-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                        </svg>
+                    </div>
+                    <h3>Continuous Learning</h3>
+                    <p>Embracing challenges as opportunities for growth and innovation in design methodology.</p>
+                </div>
+                
+                <div class="principle-card">
+                    <div class="principle-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <h3>User-Centered Design</h3>
+                    <p>Putting user needs at the center of every design decision and iteration cycle.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Savo Studio</h4>
+                    <p>Tactical design platform for outdoor adventure brands and pattern creation excellence.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <ul>
+                        <li><a href="forest-pattern-generator.html">Forest Generator</a></li>
+                        <li><a href="advanced-color-studio.html">Color Studio</a></li>
+                        <li><a href="pattern-library.html">Pattern Library</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Process</h4>
+                    <ul>
+                        <li><a href="design-process-visualizer.html">Design Process</a></li>
+                        <li><a href="design-challenges.html">Design Challenges</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Savo Studio. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/design-process.js"></script>
+    <script src="js/accessibility.js"></script>
+</body>
+</html>

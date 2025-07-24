@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Psychology - Savo Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/pattern-psychology.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="assets/savo-logo.jpg" alt="Savo Studio Logo" class="logo">
+                <span class="brand-name">SΛVO STUDIO</span>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="btn btn-secondary">← Back to Studio</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="psychology-main">
+        <div class="container">
+            <header class="psychology-header">
+                <h1 class="psychology-title">Pattern Psychology</h1>
+                <p class="psychology-subtitle">Explore how patterns influence human perception, emotion, and behavior</p>
+            </header>
+
+            <div class="psychology-content">
+                <!-- Pattern Analysis Tool -->
+                <section class="psychology-section">
+                    <h2 class="section-title">Pattern Analysis Tool</h2>
+                    <div class="analysis-workspace">
+                        <div class="pattern-display">
+                            <canvas id="analysis-canvas" width="300" height="200"></canvas>
+                            <div class="pattern-controls">
+                                <select id="pattern-select">
+                                    <option value="forest">Forest Camo</option>
+                                    <option value="urban">Urban Grid</option>
+                                    <option value="digital">Digital Tactical</option>
+                                    <option value="organic">Organic Shapes</option>
+                                    <option value="geometric">Geometric</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="analyzePattern()">Analyze Pattern</button>
+                                <button class="btn btn-success" onclick="saveAnalysisResults()" style="background: #27ae60; margin-left: 10px;">
+                                    Save Analysis
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-results" id="analysis-results">
+                            <h3>Psychological Analysis</h3>
+                            <div class="analysis-content">
+                                <p>Select a pattern to see its psychological impact analysis</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pattern Psychology Principles -->
+                <section class="psychology-section">
+                    <h2 class="section-title">Core Psychological Principles</h2>
+                    <div class="principles-grid">
+                        <div class="principle-card">
+                            <div class="principle-icon">🧠</div>
+                            <h3>Cognitive Load</h3>
+                            <p>Complex patterns require more mental processing, creating feelings of sophistication but potential fatigue</p>
+                            <div class="principle-examples">
+                                <div class="example-pattern" data-complexity="high">High Complexity</div>
+                                <div class="example-pattern" data-complexity="low">Low Complexity</div>
+                            </div>
+                        </div>
+                        
+                        <div class="principle-card">
+                            <div class="principle-icon">👁️</div>
+                            <h3>Visual Disruption</h3>
+                            <p>Camouflage patterns break up outlines and create depth illusions, affecting perception of size and distance</p>
+                            <div class="principle-examples">
+                                <div class="example-pattern" data-disruption="high">High Disruption</div>
+                                <div class="example-pattern" data-disruption="low">Low Disruption</div>
+                            </div>
+                        </div>
+                        
+                        <div class="principle-card">
+                            <div class="principle-icon">💚</div>
+                            <h3>Color Psychology</h3>
+                            <p>Colors evoke specific emotional responses - greens suggest nature and calm, while high contrast creates alertness</p>
+                            <div class="principle-examples">
+                                <div class="example-pattern" data-emotion="calm">Calming</div>
+                                <div class="example-pattern" data-emotion="energy">Energizing</div>
+                            </div>
+                        </div>
+                        
+                        <div class="principle-card">
+                            <div class="principle-icon">🔄</div>
+                            <h3>Pattern Recognition</h3>
+                            <p>Humans naturally seek patterns and meaning, creating comfort with familiar shapes and unease with random chaos</p>
+                            <div class="principle-examples">
+                                <div class="example-pattern" data-recognition="high">Familiar</div>
+                                <div class="example-pattern" data-recognition="low">Abstract</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Interactive Pattern Tests -->
+                <section class="psychology-section">
+                    <h2 class="section-title">Interactive Psychology Tests</h2>
+                    <div class="tests-container">
+                        <div class="test-card">
+                            <h3>Attention Test</h3>
+                            <p>How quickly can you spot the target in different pattern backgrounds?</p>
+                            <div class="test-area" id="attention-test">
+                                <canvas id="attention-canvas" width="400" height="300"></canvas>
+                                <div class="test-controls">
+                                    <button class="btn btn-primary" onclick="startAttentionTest()">Start Test</button>
+                                    <div class="test-timer" id="attention-timer">Time: 0.00s</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="test-card">
+                            <h3>Emotional Response</h3>
+                            <p>Rate how each pattern makes you feel on different emotional scales</p>
+                            <div class="test-area" id="emotion-test">
+                                <div class="emotion-pattern" id="emotion-pattern"></div>
+                                <div class="emotion-scales">
+                                    <div class="emotion-scale">
+                                        <label>Calm ← → Energetic</label>
+                                        <input type="range" id="energy-scale" min="1" max="10" value="5">
+                                    </div>
+                                    <div class="emotion-scale">
+                                        <label>Natural ← → Artificial</label>
+                                        <input type="range" id="natural-scale" min="1" max="10" value="5">
+                                    </div>
+                                    <div class="emotion-scale">
+                                        <label>Comfortable ← → Uncomfortable</label>
+                                        <input type="range" id="comfort-scale" min="1" max="10" value="5">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" onclick="nextEmotionPattern()">Next Pattern</button>
+                                <button class="btn btn-success" onclick="saveEmotionalResponse()" style="background: #27ae60; margin-left: 10px;">
+                                    Save Response
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="test-card">
+                            <h3>Memory Test</h3>
+                            <p>How well can you remember and recognize patterns after brief exposure?</p>
+                            <div class="test-area" id="memory-test">
+                                <canvas id="memory-canvas" width="400" height="300"></canvas>
+                                <div class="test-controls">
+                                    <button class="btn btn-primary" onclick="startMemoryTest()">Start Test</button>
+                                    <div class="test-score" id="memory-score">Score: 0/0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pattern Effects Database -->
+                <section class="psychology-section">
+                    <h2 class="section-title">Pattern Effects Database</h2>
+                    <div class="effects-database">
+                        <div class="database-filters">
+                            <select id="effect-filter">
+                                <option value="all">All Effects</option>
+                                <option value="cognitive">Cognitive</option>
+                                <option value="emotional">Emotional</option>
+                                <option value="behavioral">Behavioral</option>
+                                <option value="physiological">Physiological</option>
+                            </select>
+                            <input type="text" id="search-effects" placeholder="Search effects...">
+                        </div>
+                        
+                        <div class="effects-grid" id="effects-grid">
+                            <!-- Effects will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Research Insights -->
+                <section class="psychology-section">
+                    <h2 class="section-title">Research Insights</h2>
+                    <div class="insights-container">
+                        <div class="insight-card">
+                            <h3>Military Camouflage Studies</h3>
+                            <p>Research shows that irregular, high-contrast patterns are most effective at disrupting object recognition at distances over 100 meters.</p>
+                            <div class="insight-source">Source: Military Psychology Research, 2019</div>
+                        </div>
+                        
+                        <div class="insight-card">
+                            <h3>Urban Pattern Perception</h3>
+                            <p>Geometric patterns with right angles create feelings of order and control, while organic patterns evoke relaxation and natural connection.</p>
+                            <div class="insight-source">Source: Environmental Psychology Journal, 2020</div>
+                        </div>
+                        
+                        <div class="insight-card">
+                            <h3>Digital Pattern Effects</h3>
+                            <p>High-contrast digital patterns can cause eye strain after 15 minutes but increase alertness and focus in short bursts.</p>
+                            <div class="insight-source">Source: Digital Design Health Study, 2021</div>
+                        </div>
+                        
+                        <div class="insight-card">
+                            <h3>Color Pattern Combinations</h3>
+                            <p>Green-dominant patterns reduce cortisol levels by 12% compared to red-dominant patterns, which increase alertness by 18%.</p>
+                            <div class="insight-source">Source: Color Psychology Research, 2022</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/pattern-psychology.js"></script>
+</body>
+</html>

@@ -1,0 +1,3965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Pattern Generator - Savo Mode</title>
+    <link rel="stylesheet" href="css/accessibility.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f1f0f 0%, #1a3d0a 50%, #2d5016 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #4a7c28, #7cff50, #2d5016);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #a8c4a8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .forest-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .control-card {
+            background: rgba(26, 61, 10, 0.3);
+            border: 1px solid rgba(74, 124, 40, 0.3);
+            border-radius: 15px;
+            padding: 18px;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-card h3 {
+            color: #7cff50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .forest-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .forest-type-btn {
+            background: linear-gradient(135deg, #2d5016, #4a7c28);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .forest-type-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 124, 40, 0.4);
+        }
+
+        .forest-type-btn.active {
+            background: linear-gradient(135deg, #7cff50, #4a7c28);
+            color: #1a3d0a;
+        }
+
+        .pattern-preview {
+            background: rgba(26, 61, 10, 0.2);
+            border: 1px solid rgba(74, 124, 40, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .pattern-canvas {
+            width: 100%;
+            height: 300px;
+            border-radius: 10px;
+            border: 2px solid rgba(74, 124, 40, 0.5);
+            background: #1a3d0a;
+        }
+
+        .generated-patterns {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .pattern-card {
+            background: rgba(26, 61, 10, 0.3);
+            border: 1px solid rgba(74, 124, 40, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .pattern-preview-small {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(74, 124, 40, 0.5);
+        }
+
+        .pattern-info {
+            margin-bottom: 15px;
+        }
+
+        .pattern-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #7cff50;
+            margin-bottom: 5px;
+        }
+
+        .pattern-description {
+            color: #a8c4a8;
+            font-size: 0.9rem;
+        }
+
+        .color-palette-display {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin: 15px 0;
+        }
+
+        .color-swatch-mini {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #4a7c28, #7cff50);
+            border: none;
+            border-radius: 12px;
+            color: #1a3d0a;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(124, 255, 80, 0.3);
+        }
+
+        .parameters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .parameter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .parameter-group label {
+            color: #a8c4a8;
+            font-weight: 500;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .percentage-display {
+            background: rgba(124, 255, 80, 0.2);
+            border: 1px solid #7cff50;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #7cff50;
+            min-width: 35px;
+            text-align: center;
+            margin-left: 10px;
+        }
+
+        .parameter-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(74, 124, 40, 0.3);
+            outline: none;
+        }
+
+        .parameter-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #7cff50;
+            cursor: pointer;
+        }
+
+        .export-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Contextual Tooltips Styling */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 31, 15, 0.95);
+            color: #ffffff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            white-space: nowrap;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(124, 255, 80, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            max-width: 250px;
+            white-space: normal;
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: rgba(15, 31, 15, 0.95);
+        }
+
+        .tooltip.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        .tooltip-trigger {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip-trigger::before {
+            content: '?';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 16px;
+            height: 16px;
+            background: rgba(124, 255, 80, 0.8);
+            color: #1a3d0a;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .tooltip-trigger:hover::before {
+            background: #7cff50;
+            transform: scale(1.1);
+        }
+
+        .contextual-tip {
+            background: rgba(124, 255, 80, 0.1);
+            border: 1px solid rgba(124, 255, 80, 0.3);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin: 8px 0;
+            font-size: 0.8rem;
+            color: #a8c4a8;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .contextual-tip.show {
+            display: block;
+        }
+
+        .contextual-tip.tactical {
+            border-color: rgba(255, 106, 53, 0.5);
+            background: rgba(255, 106, 53, 0.1);
+        }
+
+        .contextual-tip.expert {
+            border-color: rgba(142, 68, 173, 0.5);
+            background: rgba(142, 68, 173, 0.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tip-icon {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        .parameter-group .tooltip-trigger {
+            margin-left: 8px;
+        }
+
+        .export-btn {
+            background: rgba(26, 61, 10, 0.5);
+            border: 1px solid #4a7c28;
+            border-radius: 10px;
+            color: #7cff50;
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .export-btn:hover {
+            background: rgba(74, 124, 40, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .pattern-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .grid-toggle-btn {
+            background: rgba(102, 102, 102, 0.5);
+            border: 1px solid #666666;
+            border-radius: 10px;
+            color: #cccccc;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .grid-toggle-btn:hover {
+            background: rgba(128, 128, 128, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .grid-toggle-btn.active {
+            background: rgba(124, 255, 80, 0.2);
+            border-color: #7cff50;
+            color: #7cff50;
+        }
+
+        /* Zoom functionality styles */
+        .pattern-card canvas {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pattern-card canvas:hover {
+            border-color: #7cff50;
+            box-shadow: 0 0 20px rgba(124, 255, 80, 0.3);
+            transform: scale(1.02);
+        }
+
+        .zoom-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            touch-action: none;
+            overflow: hidden;
+        }
+
+        .zoom-modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transform-origin: center;
+            transition: transform 0.3s ease;
+        }
+
+        .zoom-canvas {
+            border-radius: 10px;
+            border: 3px solid #7cff50;
+            box-shadow: 0 0 40px rgba(124, 255, 80, 0.5);
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .zoom-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            background: rgba(26, 61, 10, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(124, 255, 80, 0.3);
+        }
+
+        .zoom-btn {
+            background: rgba(124, 255, 80, 0.2);
+            border: 1px solid #7cff50;
+            border-radius: 8px;
+            color: #7cff50;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .zoom-btn:hover {
+            background: rgba(124, 255, 80, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .close-zoom {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 80, 80, 0.9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .close-zoom:hover {
+            background: rgba(255, 80, 80, 1);
+            transform: scale(1.1);
+        }
+
+        .zoom-info {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(26, 61, 10, 0.9);
+            color: #7cff50;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 1px solid rgba(124, 255, 80, 0.3);
+            backdrop-filter: blur(10px);
+            font-size: 14px;
+        }
+
+        .variations-header {
+            text-align: center;
+            padding: 20px;
+            color: #7cff50;
+        }
+
+        .variations-header h3 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .variations-header p {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .variations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .variation-card {
+            background: rgba(26, 61, 10, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(124, 255, 80, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .variation-card:hover {
+            border-color: #7cff50;
+            box-shadow: 0 0 20px rgba(124, 255, 80, 0.3);
+        }
+
+        .variation-canvas {
+            width: 100%;
+            height: 120px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .variation-label {
+            color: #7cff50;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .view-btn {
+            background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-right: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 210, 255, 0.3);
+        }
+
+        .pattern-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .pattern-checkbox {
+            width: 16px;
+            height: 16px;
+            accent-color: #7cff50;
+        }
+
+        .checkbox-label {
+            color: #7cff50;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .bulk-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            flex-wrap: wrap;
+        }
+
+        .bulk-btn {
+            background: linear-gradient(45deg, #7cff50, #4caf50);
+            color: #1a3d0a;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .bulk-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(124, 255, 80, 0.3);
+        }
+
+        .bulk-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .selection-count {
+            color: #7cff50;
+            font-weight: 600;
+            padding: 8px 15px;
+            background: rgba(124, 255, 80, 0.1);
+            border-radius: 15px;
+            border: 1px solid rgba(124, 255, 80, 0.3);
+        }
+
+        /* Notification System */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 400px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .notification.success {
+            border-left: 4px solid #22c55e;
+        }
+
+        .notification.error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .notification.info {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .notification-content {
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-close:hover {
+            color: #000;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .forest-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .pattern-canvas {
+                height: 300px;
+            }
+            
+            .notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+        }
+
+        /* Sacred Geometry Controls */
+        .geometry-controls {
+            padding: 20px;
+        }
+
+        .geometry-toggle {
+            margin-bottom: 20px;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toggle-switch input[type="checkbox"] {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            appearance: none;
+            background: #333;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 2px solid #555;
+        }
+
+        .toggle-switch input[type="checkbox"]:checked {
+            background: #7cff50;
+            border-color: #7cff50;
+        }
+
+        .toggle-switch input[type="checkbox"]::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch input[type="checkbox"]:checked::before {
+            transform: translateX(24px);
+        }
+
+        .toggle-label {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .geometry-options {
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .geometry-pattern-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .geometry-btn {
+            padding: 10px 15px;
+            background: rgba(45, 80, 22, 0.3);
+            border: 2px solid #4a7c28;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .geometry-btn:hover {
+            background: rgba(45, 80, 22, 0.5);
+            border-color: #7cff50;
+            transform: translateY(-2px);
+        }
+
+        .geometry-btn.active {
+            background: rgba(124, 255, 80, 0.2);
+            border-color: #7cff50;
+            color: #7cff50;
+            box-shadow: 0 0 10px rgba(124, 255, 80, 0.3);
+        }
+
+        .geometry-controls-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-group label {
+            color: #fff;
+            min-width: 80px;
+            font-size: 14px;
+        }
+
+        .control-group input[type="range"] {
+            flex: 1;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            appearance: none;
+            outline: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #7cff50;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(124, 255, 80, 0.5);
+        }
+
+        .control-group .value-display {
+            color: #7cff50;
+            font-weight: 500;
+            min-width: 50px;
+            text-align: right;
+            font-size: 12px;
+        }
+
+        .geometry-description {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(45, 80, 22, 0.2);
+            border-radius: 8px;
+            border-left: 3px solid #7cff50;
+        }
+
+        .geometry-description p {
+            color: #ccc;
+            font-size: 12px;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            .geometry-pattern-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .geometry-btn {
+                font-size: 11px;
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌲 Forest Pattern Generator</h1>
+            <p>Advanced tactical forest camouflage creation with authentic woodland environments</p>
+        </div>
+
+        <div class="forest-controls">
+            <div class="control-card">
+                <h3>Forest Environment 
+                    <span class="tooltip-trigger" data-tooltip="Choose the tactical environment that matches your operational needs. Each environment provides authentic color schemes and pattern characteristics.">
+                        <div class="tooltip">Choose the tactical environment that matches your operational needs. Each environment provides authentic color schemes and pattern characteristics.</div>
+                    </span>
+                </h3>
+                <div class="forest-types">
+                    <button class="forest-type-btn active" data-type="temperate">Temperate Forest</button>
+                    <button class="forest-type-btn" data-type="pine">Pine Forest</button>
+                    <button class="forest-type-btn" data-type="redwood">Redwood Grove</button>
+                    <button class="forest-type-btn" data-type="jungle">Dense Jungle</button>
+                    <button class="forest-type-btn" data-type="birch">Birch Woods</button>
+                    <button class="forest-type-btn" data-type="cedar">Cedar Forest</button>
+                    <button class="forest-type-btn" data-type="splash">Splash Camo</button>
+                    <button class="forest-type-btn" data-type="classic-military">Classic Military</button>
+                    <button class="forest-type-btn" data-type="woodland-dpm">Woodland DPM</button>
+                    <button class="forest-type-btn" data-type="urban-grid">Urban Grid</button>
+                    <button class="forest-type-btn" data-type="desert-sand">Desert Sand</button>
+                    <button class="forest-type-btn" data-type="arctic-white">Arctic White</button>
+                    <button class="forest-type-btn" data-type="ocean-blue">Ocean Blue</button>
+                    <button class="forest-type-btn" data-type="volcanic-rock">Volcanic Rock</button>
+                    <button class="forest-type-btn" data-type="purple-mountain">Purple Mountain</button>
+                    <button class="forest-type-btn" data-type="golden-wheat">Golden Wheat</button>
+
+                </div>
+                <div class="contextual-tip" id="environmentTip">
+                    <span class="tip-icon">💡</span>
+                    <span id="environmentTipText">Temperate forests provide excellent concealment in deciduous woodland with natural earth tones and organic shapes.</span>
+                </div>
+            </div>
+
+            <div class="control-card">
+                <div class="geometry-controls">
+                    <h3>⚡ Digital Tactical Overlay 
+                        <span class="tooltip-trigger" data-tooltip="Add cyber-tactical elements to your pattern for modern warfare applications and tech-enhanced operations.">
+                            <div class="tooltip">Add cyber-tactical elements to your pattern for modern warfare applications and tech-enhanced operations.</div>
+                        </span>
+                    </h3>
+                    <div class="geometry-toggle">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="geometryEnabled">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Enable Digital Tactical</span>
+                        </label>
+                    </div>
+                    
+                    <div id="geometryOptions" class="geometry-options" style="display: none;">
+                        <div class="geometry-pattern-selector">
+                            <button class="geometry-btn active" data-pattern="cyberDots">Cyber Dots</button>
+                            <button class="geometry-btn" data-pattern="circuitCamo">Circuit Camo</button>
+                            <button class="geometry-btn" data-pattern="dataStream">Data Stream</button>
+                            <button class="geometry-btn" data-pattern="pixelBurst">Pixel Burst</button>
+                            <button class="geometry-btn" data-pattern="neonGrid">Neon Grid</button>
+                        </div>
+                        
+                        <div class="geometry-controls-grid">
+                            <div class="control-group">
+                                <label for="geometryScale">Pattern Density:</label>
+                                <input type="range" id="geometryScale" min="1" max="20" step="1" value="8">
+                                <span class="value-display">Medium</span>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label for="geometryOpacity">Glow Intensity:</label>
+                                <input type="range" id="geometryOpacity" min="0.3" max="1.0" step="0.1" value="0.8">
+                                <span class="value-display">80%</span>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label for="geometryStroke">Element Size:</label>
+                                <input type="range" id="geometryStroke" min="1" max="10" step="1" value="4">
+                                <span class="value-display">Medium</span>
+                            </div>
+                        </div>
+                        
+                        <div class="geometry-description">
+                            <p><strong>Cyber Tactical:</strong> Bright neon overlays inspired by digital warfare aesthetics and tech interfaces</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-card">
+                <div class="season-controls">
+                    <h3>🍂 Season 
+                        <span class="tooltip-trigger" data-tooltip="Seasonal variations affect foliage density, color saturation, and overall camouflage effectiveness in different lighting conditions.">
+                            <div class="tooltip">Seasonal variations affect foliage density, color saturation, and overall camouflage effectiveness in different lighting conditions.</div>
+                        </span>
+                    </h3>
+                    <div class="season-selector">
+                        <button class="season-btn active" data-season="spring">Spring</button>
+                        <button class="season-btn" data-season="summer">Summer</button>
+                        <button class="season-btn" data-season="autumn">Autumn</button>
+                        <button class="season-btn" data-season="winter">Winter</button>
+                    </div>
+                    <div class="contextual-tip" id="seasonTip">
+                        <span class="tip-icon">🌿</span>
+                        <span id="seasonTipText">Spring patterns feature fresh green tones with lighter variations, ideal for early growing season camouflage.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-card">
+                <h3>Pattern Parameters 
+                    <span class="tooltip-trigger" data-tooltip="Fine-tune your tactical pattern for specific operational requirements. Each parameter affects camouflage effectiveness in different ways.">
+                        <div class="tooltip">Fine-tune your tactical pattern for specific operational requirements. Each parameter affects camouflage effectiveness in different ways.</div>
+                    </span>
+                </h3>
+                <div class="parameters">
+                    <div class="parameter-group">
+                        <label>Density 
+                            <span class="tooltip-trigger" data-tooltip="Higher density creates more pattern elements per area, providing better close-range concealment but potentially more visible from distance.">
+                                <div class="tooltip">Higher density creates more pattern elements per area, providing better close-range concealment but potentially more visible from distance.</div>
+                            </span>
+                            <span class="percentage-display" id="densityPercent">75%</span>
+                        </label>
+                        <input type="range" class="parameter-slider" id="density" min="10" max="90" value="60">
+                    </div>
+                    <div class="parameter-group">
+                        <label>Scale 
+                            <span class="tooltip-trigger" data-tooltip="Larger scale patterns work better at medium distances, while smaller scales are effective for close-range operations.">
+                                <div class="tooltip">Larger scale patterns work better at medium distances, while smaller scales are effective for close-range operations.</div>
+                            </span>
+                            <span class="percentage-display" id="scalePercent">44%</span>
+                        </label>
+                        <input type="range" class="parameter-slider" id="scale" min="5" max="50" value="25">
+                    </div>
+                    <div class="parameter-group">
+                        <label>Irregularity 
+                            <span class="tooltip-trigger" data-tooltip="Natural irregularity mimics organic forest patterns. Higher values create more realistic, nature-like camouflage shapes.">
+                                <div class="tooltip">Natural irregularity mimics organic forest patterns. Higher values create more realistic, nature-like camouflage shapes.</div>
+                            </span>
+                            <span class="percentage-display" id="irregularityPercent">75%</span>
+                        </label>
+                        <input type="range" class="parameter-slider" id="irregularity" min="0" max="100" value="75">
+                    </div>
+                    <div class="parameter-group">
+                        <label>Color Variation 
+                            <span class="tooltip-trigger" data-tooltip="Subtle color variations prevent uniform appearance and enhance natural blending. Moderate levels work best for most environments.">
+                                <div class="tooltip">Subtle color variations prevent uniform appearance and enhance natural blending. Moderate levels work best for most environments.</div>
+                            </span>
+                            <span class="percentage-display" id="colorVariationPercent">39%</span>
+                        </label>
+                        <input type="range" class="parameter-slider" id="colorVariation" min="10" max="100" value="45">
+                    </div>
+                </div>
+                <div class="contextual-tip tactical" id="parameterTip">
+                    <span class="tip-icon">⚡</span>
+                    <span id="parameterTipText">Current settings optimized for medium-range forest operations with natural appearance.</span>
+                </div>
+            </div>
+
+            <div class="control-card">
+                <h3 style="color: #7cff50; margin-bottom: 20px;">Live Pattern Preview</h3>
+                <canvas id="patternCanvas" class="pattern-canvas"></canvas>
+                <div style="margin-top: 20px;">
+                    <button class="generate-btn" onclick="generateForestPattern()">Generate New Forest Pattern</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="pattern-preview">
+            <div class="control-card">
+                <h3>Season & Lighting</h3>
+                <div class="forest-types">
+                    <button class="forest-type-btn" data-season="spring">Spring</button>
+                    <button class="forest-type-btn active" data-season="summer">Summer</button>
+                    <button class="forest-type-btn" data-season="autumn">Autumn</button>
+                    <button class="forest-type-btn" data-season="winter">Winter</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bulk Selection Controls -->
+        <div class="bulk-controls" id="bulkControls" style="display: none;">
+            <button class="bulk-btn" onclick="selectAllPatterns()">Select All</button>
+            <button class="bulk-btn" onclick="deselectAllPatterns()">Deselect All</button>
+            <button class="bulk-btn" onclick="saveSelectedToLibrary()">Save Selected to Library</button>
+            <span class="selection-count" id="selectionCount">0 selected</span>
+        </div>
+
+        <div class="generated-patterns" id="generatedPatterns">
+            <!-- Generated patterns will appear here -->
+        </div>
+
+        <!-- Zoom Modal -->
+        <div id="zoomModal" class="zoom-modal">
+            <button class="close-zoom" onclick="closeZoom()">×</button>
+            <div class="zoom-controls">
+                <button class="zoom-btn" onclick="zoomIn()">Zoom In</button>
+                <button class="zoom-btn" onclick="zoomOut()">Zoom Out</button>
+                <button class="zoom-btn" onclick="resetZoom()">Reset</button>
+            </div>
+            <div class="zoom-modal-content" id="zoomContent">
+                <canvas id="zoomCanvas" class="zoom-canvas"></canvas>
+            </div>
+            <div class="zoom-info">
+                Pinch to zoom • Drag to pan • Tap to close
+            </div>
+        </div>
+
+        <!-- Pattern Variations Modal -->
+        <div id="variationsModal" class="zoom-modal">
+            <button class="close-zoom" onclick="closeVariations()">×</button>
+            <div class="variations-header">
+                <h3 id="variationsTitle">Pattern Variations</h3>
+                <p>Explore different density, scale, and color variations of your pattern</p>
+            </div>
+            <div class="variations-grid" id="variationsGrid">
+                <!-- Variations will be generated here -->
+            </div>
+        </div>
+
+        <div class="export-section">
+            <h3 style="color: #7cff50; margin-bottom: 20px;">Export Options</h3>
+            <div class="export-buttons">
+                <button class="export-btn" onclick="exportPattern('svg')">Export as SVG</button>
+                <button class="export-btn" onclick="exportPattern('png')">Export as PNG</button>
+                <button class="export-btn" onclick="exportPattern('json')">Export Color Data</button>
+                <button class="export-btn" onclick="saveToLibrary()">Save to Pattern Library</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ForestPatternGenerator {
+            constructor() {
+                this.canvas = document.getElementById('patternCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.currentForestType = 'temperate';
+                this.currentSeason = 'summer';
+                this.generatedCount = 0;
+                
+                this.setupCanvas();
+                this.setupEventListeners();
+                this.generateForestPattern();
+            }
+
+            setupCanvas() {
+                const rect = this.canvas.getBoundingClientRect();
+                this.canvas.width = rect.width * 2;
+                this.canvas.height = rect.height * 2;
+                this.ctx.scale(2, 2);
+            }
+
+            setupEventListeners() {
+                // Forest type selection
+                document.querySelectorAll('[data-type]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('[data-type]').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.currentForestType = e.target.dataset.type;
+                        this.generateForestPattern();
+                    });
+                });
+
+                // Season selection
+                document.querySelectorAll('[data-season]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('[data-season]').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.currentSeason = e.target.dataset.season;
+                        this.generateForestPattern();
+                    });
+                });
+
+                // Parameter sliders
+                document.querySelectorAll('.parameter-slider').forEach(slider => {
+                    slider.addEventListener('input', () => this.generateForestPattern());
+                });
+            }
+
+            getForestColors(type, season) {
+                const colorSchemes = {
+                    temperate: {
+                        spring: ['#3d6b1f', '#4a7c28', '#2d5016', '#5d8c2f', '#6b9b36', '#7cff50', '#355e1f'],
+                        summer: ['#2d5016', '#4a7c28', '#1a3d0a', '#355e1f', '#5d8c2f', '#3d6b1f', '#4a6c28'],
+                        autumn: ['#8b4513', '#cd853f', '#2d5016', '#d2691e', '#4a7c28', '#a0522d', '#654321'],
+                        winter: ['#2d2d2d', '#4a4a4a', '#1a1a1a', '#3d3d3d', '#2d5016', '#0f1f0f', '#262626']
+                    },
+                    pine: {
+                        spring: ['#1c4532', '#2d5016', '#3d6b2a', '#4a7c28', '#0f2818', '#355e1f', '#5d8c2f'],
+                        summer: ['#0d2818', '#1c4532', '#355e1f', '#2d5016', '#4a7c28', '#0f2818', '#3d6b2a'],
+                        autumn: ['#1c4532', '#8b4513', '#2d5016', '#cd853f', '#355e1f', '#a0522d', '#654321'],
+                        winter: ['#0f1f0f', '#1c4532', '#2d2d2d', '#1a3d0a', '#2d5016', '#0f2818', '#262626']
+                    },
+                    redwood: {
+                        spring: ['#8b4513', '#2d5016', '#a0522d', '#4a7c28', '#654321', '#b8860b', '#355e1f'],
+                        summer: ['#8b4513', '#2d5016', '#a0522d', '#4a7c28', '#654321', '#b8860b', '#355e1f'],
+                        autumn: ['#cd853f', '#8b4513', '#2d5016', '#d2691e', '#a0522d', '#654321', '#b8860b'],
+                        winter: ['#654321', '#8b4513', '#2d2d2d', '#a0522d', '#2d5016', '#1a1a1a', '#0f1f0f']
+                    },
+                    jungle: {
+                        spring: ['#013220', '#228b22', '#556b2f', '#2e8b57', '#006400', '#9acd32', '#7cff50'],
+                        summer: ['#013220', '#228b22', '#556b2f', '#2e8b57', '#006400', '#9acd32', '#0f2818'],
+                        autumn: ['#228b22', '#8b4513', '#556b2f', '#cd853f', '#2e8b57', '#a0522d', '#9acd32'],
+                        winter: ['#013220', '#2d2d2d', '#556b2f', '#1a3d0a', '#2e8b57', '#006400', '#0f2818']
+                    },
+                    birch: {
+                        spring: ['#f5f5dc', '#deb887', '#2d5016', '#d3d3d3', '#4a7c28', '#f0f8ff', '#e6e6fa'],
+                        summer: ['#f5f5dc', '#2d5016', '#deb887', '#4a7c28', '#355e1f', '#f0f8ff', '#e6e6fa'],
+                        autumn: ['#ffd700', '#deb887', '#cd853f', '#d2691e', '#8b4513', '#ffb347', '#daa520'],
+                        winter: ['#f5f5f5', '#d3d3d3', '#2d2d2d', '#deb887', '#a9a9a9', '#e6e6fa', '#f0f8ff']
+                    },
+                    cedar: {
+                        spring: ['#2d4532', '#3d5016', '#4a6c28', '#1a3d1a', '#355e2f', '#2d5016', '#4a7c28'],
+                        summer: ['#2d4532', '#3d5016', '#4a6c28', '#1a3d1a', '#355e2f', '#0f2818', '#2d5016'],
+                        autumn: ['#8b4513', '#2d4532', '#cd853f', '#3d5016', '#a0522d', '#654321', '#b8860b'],
+                        winter: ['#2d2d2d', '#2d4532', '#1a1a1a', '#3d5016', '#4a4a4a', '#0f1f0f', '#262626']
+                    },
+                    splash: {
+                        spring: ['#2d5016', '#4a7c28', '#1a3d0a', '#355e1f', '#7cff50', '#5d8c2f', '#6b9b36'],
+                        summer: ['#2d5016', '#4a7c28', '#1a3d0a', '#355e1f', '#5d8c2f', '#3d6b1f', '#4a6c28'],
+                        autumn: ['#8b4513', '#cd853f', '#2d5016', '#d2691e', '#4a7c28', '#a0522d', '#654321'],
+                        winter: ['#2d2d2d', '#4a4a4a', '#1a1a1a', '#3d3d3d', '#2d5016', '#0f1f0f', '#262626']
+                    },
+                    'urban-grid': {
+                        spring: ['#1a1a1a', '#2d2d2d', '#404040', '#535353', '#666666', '#808080', '#999999'],
+                        summer: ['#0d0d0d', '#1a1a1a', '#262626', '#333333', '#404040', '#1a1a1a', '#2d2d2d'],
+                        autumn: ['#1a1a1a', '#2d2d2d', '#404040', '#535353', '#666666', '#4a4a4a', '#737373'],
+                        winter: ['#000000', '#0d0d0d', '#1a1a1a', '#262626', '#333333', '#1a1a1a', '#2d2d2d']
+                    },
+                    'desert-sand': {
+                        spring: ['#d4a574', '#c19a6b', '#8b6f47', '#f4d4a7', '#deb887', '#d2b48c', '#bc9a6a'],
+                        summer: ['#d4a574', '#c19a6b', '#8b6f47', '#f4d4a7', '#deb887', '#cd853f', '#a0522d'],
+                        autumn: ['#d4a574', '#c19a6b', '#8b6f47', '#f4d4a7', '#deb887', '#daa520', '#b8860b'],
+                        winter: ['#d4a574', '#c19a6b', '#8b6f47', '#a0522d', '#696969', '#2f4f4f', '#708090']
+                    },
+                    'arctic-white': {
+                        spring: ['#f0f0f0', '#e0e0e0', '#d0d0d0', '#ffffff', '#f5f5f5', '#e6e6fa', '#f0f8ff'],
+                        summer: ['#f0f0f0', '#e0e0e0', '#d0d0d0', '#ffffff', '#f5f5f5', '#dcdcdc', '#c0c0c0'],
+                        autumn: ['#f0f0f0', '#e0e0e0', '#d0d0d0', '#dcdcdc', '#c0c0c0', '#a9a9a9', '#808080'],
+                        winter: ['#f0f0f0', '#e0e0e0', '#d0d0d0', '#ffffff', '#f5f5f5', '#e6e6fa', '#f0f8ff']
+                    },
+                    'ocean-blue': {
+                        spring: ['#4682b4', '#5f9ea0', '#6495ed', '#87ceeb', '#00ced1', '#4169e1', '#1e90ff'],
+                        summer: ['#4682b4', '#5f9ea0', '#6495ed', '#87ceeb', '#00ced1', '#0080ff', '#007fff'],
+                        autumn: ['#4682b4', '#5f9ea0', '#6495ed', '#2f4f4f', '#708090', '#4169e1', '#191970'],
+                        winter: ['#2f4f4f', '#708090', '#4682b4', '#5f9ea0', '#6495ed', '#191970', '#000080']
+                    },
+                    'volcanic-rock': {
+                        spring: ['#2f4f4f', '#696969', '#708090', '#778899', '#2e2e2e', '#3c3c3c', '#4a4a4a'],
+                        summer: ['#2f4f4f', '#696969', '#708090', '#778899', '#2e2e2e', '#1a1a1a', '#0d0d0d'],
+                        autumn: ['#2f4f4f', '#696969', '#708090', '#8b4513', '#a0522d', '#654321', '#3c3c3c'],
+                        winter: ['#2f4f4f', '#696969', '#708090', '#778899', '#2e2e2e', '#1a1a1a', '#000000']
+                    },
+                    'purple-mountain': {
+                        spring: ['#663399', '#8a2be2', '#9932cc', '#ba55d3', '#9370db', '#7b68ee', '#6a5acd'],
+                        summer: ['#663399', '#8a2be2', '#9932cc', '#ba55d3', '#9370db', '#4b0082', '#301934'],
+                        autumn: ['#663399', '#8a2be2', '#9932cc', '#cd853f', '#d2691e', '#8b4513', '#4b0082'],
+                        winter: ['#483d8b', '#2f4f4f', '#663399', '#8a2be2', '#4b0082', '#2e2e2e', '#1a1a1a']
+                    },
+                    'golden-wheat': {
+                        spring: ['#f0e68c', '#bdb76b', '#daa520', '#b8860b', '#dab870', '#e6d066', '#f4e287'],
+                        summer: ['#f0e68c', '#bdb76b', '#daa520', '#b8860b', '#dab870', '#cd853f', '#d2691e'],
+                        autumn: ['#f0e68c', '#bdb76b', '#daa520', '#b8860b', '#dab870', '#ffb347', '#ffd700'],
+                        winter: ['#bdb76b', '#daa520', '#b8860b', '#2f4f4f', '#696969', '#8b4513', '#a0522d']
+                    }
+                };
+
+                return colorSchemes[type][season] || colorSchemes.temperate.summer;
+            }
+
+            generateForestPattern() {
+                const rect = this.canvas.getBoundingClientRect();
+                const width = rect.width;
+                const height = rect.height;
+                
+                // Get colors for current forest type and season
+                const colors = this.getForestColors(this.currentForestType, this.currentSeason);
+                
+                // Clear canvas with base color
+                this.ctx.fillStyle = colors[0];
+                this.ctx.fillRect(0, 0, width, height);
+
+                // Get parameters
+                const density = document.getElementById('density').value / 100;
+                const scale = document.getElementById('scale').value;
+                const irregularity = document.getElementById('irregularity').value / 100;
+                const colorVariation = document.getElementById('colorVariation').value / 100;
+
+                // Debug logging
+                console.log('Current forest type:', this.currentForestType);
+                console.log('Using splash camo:', this.currentForestType === 'splash');
+
+                // Generate main camouflage pattern first
+                if (this.currentForestType === 'splash') {
+                    this.drawSplashCamouflage(colors, density, scale, irregularity, colorVariation, width, height);
+                } else if (this.currentForestType === 'urban-grid') {
+                    this.drawUrbanGrid(colors, density, scale, irregularity, colorVariation, width, height);
+                } else {
+                    this.drawForestCamouflage(colors, density, scale, irregularity, colorVariation, width, height);
+                }
+
+                // Draw Digital Tactical overlay on top of camouflage
+                this.drawDigitalTacticalOverlay(colors, width, height);
+            }
+
+            drawDigitalTacticalOverlay(colors, width, height) {
+                const geometryEnabled = document.getElementById('geometryEnabled')?.checked;
+                console.log('Digital Tactical enabled:', geometryEnabled);
+                if (!geometryEnabled) return;
+                
+                const activePattern = document.querySelector('.geometry-btn.active')?.dataset.pattern || 'cyberDots';
+                const density = parseInt(document.getElementById('geometryScale')?.value || 8);
+                const opacity = parseFloat(document.getElementById('geometryOpacity')?.value || 0.8);
+                const elementSize = parseInt(document.getElementById('geometryStroke')?.value || 4);
+                
+                // Save current context
+                this.ctx.save();
+                this.ctx.globalAlpha = opacity;
+                
+                // Bright tactical colors
+                const primaryColor = '#7cff50'; // Bright green
+                const secondaryColor = '#00ff88'; // Cyan green
+                const accentColor = '#44ff00'; // Electric green
+                
+                // Draw the selected digital tactical pattern
+                switch (activePattern) {
+                    case 'cyberDots':
+                        this.drawCyberDots(width, height, density, elementSize, primaryColor);
+                        break;
+                    case 'circuitCamo':
+                        this.drawCircuitCamo(width, height, density, elementSize, primaryColor, secondaryColor);
+                        break;
+                    case 'dataStream':
+                        this.drawDataStream(width, height, density, elementSize, primaryColor, accentColor);
+                        break;
+                    case 'pixelBurst':
+                        this.drawPixelBurst(width, height, density, elementSize, primaryColor, secondaryColor);
+                        break;
+                    case 'neonGrid':
+                        this.drawNeonGrid(width, height, density, elementSize, primaryColor, accentColor);
+                        break;
+                }
+                
+                // Restore context
+                this.ctx.restore();
+            }
+
+            drawCyberDots(width, height, density, size, color) {
+                this.ctx.fillStyle = color;
+                this.ctx.shadowColor = color;
+                this.ctx.shadowBlur = size * 2;
+                
+                const numDots = density * 15;
+                for (let i = 0; i < numDots; i++) {
+                    const x = Math.random() * width;
+                    const y = Math.random() * height;
+                    const dotSize = size + Math.random() * size;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, dotSize, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    
+                    // Add inner glow
+                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, dotSize * 0.3, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    this.ctx.fillStyle = color;
+                }
+                
+                this.ctx.shadowBlur = 0;
+            }
+
+            drawCircuitCamo(width, height, density, size, primary, secondary) {
+                this.ctx.lineWidth = size;
+                this.ctx.lineCap = 'round';
+                this.ctx.shadowBlur = size;
+                
+                const numPaths = density * 8;
+                for (let i = 0; i < numPaths; i++) {
+                    const color = Math.random() > 0.5 ? primary : secondary;
+                    this.ctx.strokeStyle = color;
+                    this.ctx.shadowColor = color;
+                    
+                    // Draw circuit paths
+                    this.ctx.beginPath();
+                    const startX = Math.random() * width;
+                    const startY = Math.random() * height;
+                    this.ctx.moveTo(startX, startY);
+                    
+                    // Create angular circuit-like paths
+                    let currentX = startX;
+                    let currentY = startY;
+                    const segments = 3 + Math.floor(Math.random() * 4);
+                    
+                    for (let j = 0; j < segments; j++) {
+                        const direction = Math.floor(Math.random() * 4); // 0=right, 1=down, 2=left, 3=up
+                        const length = 20 + Math.random() * 60;
+                        
+                        switch (direction) {
+                            case 0: currentX += length; break;
+                            case 1: currentY += length; break;
+                            case 2: currentX -= length; break;
+                            case 3: currentY -= length; break;
+                        }
+                        
+                        this.ctx.lineTo(currentX, currentY);
+                    }
+                    this.ctx.stroke();
+                    
+                    // Add circuit nodes
+                    this.ctx.fillStyle = color;
+                    this.ctx.beginPath();
+                    this.ctx.arc(currentX, currentY, size * 1.5, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+                
+                this.ctx.shadowBlur = 0;
+            }
+
+            drawDataStream(width, height, density, size, primary, accent) {
+                this.ctx.lineWidth = size;
+                this.ctx.shadowBlur = size * 2;
+                
+                const numStreams = density * 6;
+                for (let i = 0; i < numStreams; i++) {
+                    const color = Math.random() > 0.7 ? accent : primary;
+                    this.ctx.strokeStyle = color;
+                    this.ctx.shadowColor = color;
+                    
+                    // Flowing data stream lines
+                    this.ctx.beginPath();
+                    const startX = Math.random() * width;
+                    const startY = Math.random() * height;
+                    this.ctx.moveTo(startX, startY);
+                    
+                    // Create flowing curves
+                    const controlPoints = 4 + Math.floor(Math.random() * 3);
+                    let currentX = startX;
+                    let currentY = startY;
+                    
+                    for (let j = 0; j < controlPoints; j++) {
+                        const cpX = currentX + (Math.random() - 0.5) * 100;
+                        const cpY = currentY + (Math.random() - 0.5) * 100;
+                        currentX += (Math.random() - 0.5) * 80;
+                        currentY += (Math.random() - 0.5) * 80;
+                        
+                        this.ctx.quadraticCurveTo(cpX, cpY, currentX, currentY);
+                    }
+                    this.ctx.stroke();
+                    
+                    // Add data packets
+                    for (let k = 0; k < 3; k++) {
+                        const packetX = startX + (currentX - startX) * (k / 3);
+                        const packetY = startY + (currentY - startY) * (k / 3);
+                        
+                        this.ctx.fillStyle = color;
+                        this.ctx.fillRect(packetX - size, packetY - size/2, size * 2, size);
+                    }
+                }
+                
+                this.ctx.shadowBlur = 0;
+            }
+
+            drawPixelBurst(width, height, density, size, primary, secondary) {
+                this.ctx.shadowBlur = size;
+                
+                const numBursts = density * 4;
+                for (let i = 0; i < numBursts; i++) {
+                    const centerX = Math.random() * width;
+                    const centerY = Math.random() * height;
+                    const burstSize = 20 + Math.random() * 40;
+                    
+                    // Create pixelated burst pattern
+                    for (let j = 0; j < 20; j++) {
+                        const angle = (j / 20) * Math.PI * 2;
+                        const distance = Math.random() * burstSize;
+                        const x = centerX + Math.cos(angle) * distance;
+                        const y = centerY + Math.sin(angle) * distance;
+                        
+                        const color = Math.random() > 0.5 ? primary : secondary;
+                        this.ctx.fillStyle = color;
+                        this.ctx.shadowColor = color;
+                        
+                        const pixelSize = size + Math.random() * size;
+                        this.ctx.fillRect(x - pixelSize/2, y - pixelSize/2, pixelSize, pixelSize);
+                    }
+                }
+                
+                this.ctx.shadowBlur = 0;
+            }
+
+            drawNeonGrid(width, height, density, size, primary, accent) {
+                this.ctx.lineWidth = size;
+                this.ctx.shadowBlur = size * 2;
+                
+                const gridSpacing = Math.max(20, 100 - density * 4);
+                
+                // Vertical lines
+                for (let x = 0; x < width; x += gridSpacing) {
+                    if (Math.random() > 0.7) { // Sparse grid
+                        const color = Math.random() > 0.5 ? primary : accent;
+                        this.ctx.strokeStyle = color;
+                        this.ctx.shadowColor = color;
+                        
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(x, 0);
+                        this.ctx.lineTo(x, height);
+                        this.ctx.stroke();
+                    }
+                }
+                
+                // Horizontal lines
+                for (let y = 0; y < height; y += gridSpacing) {
+                    if (Math.random() > 0.7) { // Sparse grid
+                        const color = Math.random() > 0.5 ? primary : accent;
+                        this.ctx.strokeStyle = color;
+                        this.ctx.shadowColor = color;
+                        
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(0, y);
+                        this.ctx.lineTo(width, y);
+                        this.ctx.stroke();
+                    }
+                }
+                
+                // Add intersection nodes
+                for (let x = 0; x < width; x += gridSpacing) {
+                    for (let y = 0; y < height; y += gridSpacing) {
+                        if (Math.random() > 0.85) {
+                            this.ctx.fillStyle = accent;
+                            this.ctx.shadowColor = accent;
+                            this.ctx.beginPath();
+                            this.ctx.arc(x, y, size * 2, 0, Math.PI * 2);
+                            this.ctx.fill();
+                        }
+                    }
+                }
+                
+                this.ctx.shadowBlur = 0;
+            }
+
+            drawSacredGeometryPattern(pattern, centerX, centerY, size, frameColor, innerColor) {
+                this.ctx.save();
+                
+                switch (pattern) {
+                    case 'flowerOfLife':
+                        this.drawFlowerOfLife(centerX, centerY, size, frameColor, innerColor);
+                        break;
+                    case 'seedOfLife':
+                        this.drawSeedOfLife(centerX, centerY, size, frameColor, innerColor);
+                        break;
+                    case 'merkaba':
+                        this.drawMerkaba(centerX, centerY, size, frameColor, innerColor);
+                        break;
+                    case 'sri':
+                        this.drawSriYantra(centerX, centerY, size, frameColor, innerColor);
+                        break;
+                    case 'hexagon':
+                    default:
+                        this.drawHexagonPortal(centerX, centerY, size, frameColor, innerColor, 0.3);
+                        break;
+                }
+                
+                this.ctx.restore();
+            }
+
+            drawForestCamouflage(colors, density, scale, irregularity, colorVariation, width, height) {
+                const numShapes = Math.floor((width * height) / (scale * scale) * density);
+
+                for (let i = 0; i < numShapes; i++) {
+                    const x = Math.random() * width;
+                    const y = Math.random() * height;
+                    const size = scale + (Math.random() - 0.5) * scale * 0.5;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    // Apply color variation
+                    const variedColor = this.varyColor(color, colorVariation);
+                    this.ctx.fillStyle = variedColor;
+
+                    this.drawIrregularForestShape(x, y, size, irregularity);
+                }
+            }
+
+            drawSplashCamouflage(colors, density, scale, irregularity, colorVariation, width, height) {
+                const numShapes = Math.floor((width * height) / (scale * scale) * density);
+
+                for (let i = 0; i < numShapes; i++) {
+                    const x = Math.random() * width;
+                    const y = Math.random() * height;
+                    const size = scale + (Math.random() - 0.5) * scale * 0.5;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    // Apply color variation
+                    const variedColor = this.varyColor(color, colorVariation);
+                    this.ctx.fillStyle = variedColor;
+
+                    this.drawSplashBlob(x, y, size, irregularity);
+                }
+            }
+
+            drawSplashBlob(x, y, size, irregularity) {
+                // Create multiple connected blob shapes for authentic military look
+                const numBlobs = 2 + Math.floor(Math.random() * 3); // 2-4 connected blobs
+                
+                for (let i = 0; i < numBlobs; i++) {
+                    this.ctx.beginPath();
+                    
+                    // Create stretched/squashed ellipses
+                    const offsetX = (Math.random() - 0.5) * size * irregularity;
+                    const offsetY = (Math.random() - 0.5) * size * irregularity;
+                    
+                    // Random stretch ratios for authentic blob shapes
+                    const stretchX = 0.4 + Math.random() * 0.8; // 0.4 to 1.2
+                    const stretchY = 0.4 + Math.random() * 0.8; // 0.4 to 1.2
+                    
+                    const radiusX = size * stretchX;
+                    const radiusY = size * stretchY;
+                    const rotation = Math.random() * Math.PI; // Random rotation
+                    
+                    const centerX = x + offsetX;
+                    const centerY = y + offsetY;
+                    
+                    // Create stretched ellipse
+                    this.ctx.ellipse(centerX, centerY, radiusX, radiusY, rotation, 0, 2 * Math.PI);
+                    this.ctx.fill();
+                }
+            }
+
+            drawIrregularForestShape(x, y, size, irregularity) {
+                this.ctx.beginPath();
+                
+                const numPoints = 6 + Math.floor(Math.random() * 6);
+                const angleStep = (Math.PI * 2) / numPoints;
+                
+                for (let i = 0; i < numPoints; i++) {
+                    const angle = i * angleStep;
+                    const radiusVariation = 1 + (Math.random() - 0.5) * irregularity;
+                    const radius = size * radiusVariation;
+                    
+                    const pointX = x + Math.cos(angle) * radius;
+                    const pointY = y + Math.sin(angle) * radius;
+                    
+                    if (i === 0) {
+                        this.ctx.moveTo(pointX, pointY);
+                    } else {
+                        this.ctx.lineTo(pointX, pointY);
+                    }
+                }
+                
+                this.ctx.closePath();
+                this.ctx.fill();
+            }
+
+            drawPortalCamouflage(colors, density, scale, irregularity, colorVariation, width, height) {
+                // Base tactical pattern
+                this.drawForestCamouflage(colors.slice(0, 3), density, scale, irregularity, colorVariation, width, height);
+                
+                // Add geometric portal frames inspired by the cap photo
+                const numPortals = Math.max(2, Math.floor(density * 6));
+                
+                for (let i = 0; i < numPortals; i++) {
+                    const x = Math.random() * width;
+                    const y = Math.random() * height;
+                    const size = 40 + Math.random() * (scale * 2);
+                    
+                    // Portal frame color (contrasting with base)
+                    const frameColor = colors[3] || colors[colors.length - 1];
+                    const innerColor = colors[4] || colors[0];
+                    
+                    this.drawPortalFrame(x, y, size, frameColor, innerColor, irregularity);
+                }
+            }
+
+            drawPortalFrame(centerX, centerY, size, frameColor, innerColor, irregularity) {
+                // Select sacred geometry pattern randomly
+                const patterns = ['flowerOfLife', 'seedOfLife', 'merkaba', 'sri', 'hexagon'];
+                const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+                
+                this.ctx.save();
+                
+                switch (pattern) {
+                    case 'flowerOfLife':
+                        this.drawFlowerOfLife(centerX, centerY, size, frameColor, innerColor);
+                        break;
+                    case 'seedOfLife':
+                        this.drawSeedOfLife(centerX, centerY, size, frameColor, innerColor);
+                        break;
+                    case 'merkaba':
+                        this.drawMerkaba(centerX, centerY, size, frameColor, innerColor);
+                        break;
+                    case 'sri':
+                        this.drawSriYantra(centerX, centerY, size, frameColor, innerColor);
+                        break;
+                    default:
+                        this.drawHexagonPortal(centerX, centerY, size, frameColor, innerColor, irregularity);
+                }
+                
+                this.ctx.restore();
+            }
+
+            drawFlowerOfLife(centerX, centerY, size, frameColor, innerColor) {
+                // Make it more visible with thicker lines and fill
+                this.ctx.strokeStyle = frameColor;
+                this.ctx.lineWidth = 3;
+                this.ctx.fillStyle = innerColor;
+                
+                // Center circle - larger and filled
+                this.ctx.beginPath();
+                this.ctx.arc(centerX, centerY, size * 0.4, 0, Math.PI * 2);
+                this.ctx.fill();
+                this.ctx.stroke();
+                
+                // Surrounding circles (Flower of Life pattern) - also filled
+                const radius = size * 0.3;
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i * Math.PI) / 3;
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, radius * 0.5, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    this.ctx.stroke();
+                }
+            }
+
+            drawSeedOfLife(centerX, centerY, size, frameColor, innerColor) {
+                this.ctx.strokeStyle = frameColor;
+                this.ctx.lineWidth = 4;
+                this.ctx.fillStyle = innerColor;
+                
+                // Center circle - filled
+                this.ctx.beginPath();
+                this.ctx.arc(centerX, centerY, size * 0.3, 0, Math.PI * 2);
+                this.ctx.fill();
+                this.ctx.stroke();
+                
+                // Six surrounding circles - thicker outline
+                const radius = size * 0.25;
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i * Math.PI) / 3;
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, radius * 0.8, 0, Math.PI * 2);
+                    this.ctx.stroke();
+                }
+            }
+
+            drawMerkaba(centerX, centerY, size, frameColor, innerColor) {
+                this.ctx.strokeStyle = frameColor;
+                this.ctx.lineWidth = 4;
+                this.ctx.fillStyle = innerColor;
+                
+                // Inner circle - filled and larger
+                this.ctx.beginPath();
+                this.ctx.arc(centerX, centerY, size * 0.2, 0, Math.PI * 2);
+                this.ctx.fill();
+                this.ctx.stroke();
+                
+                // Two interlocking triangles (Star of David / Merkaba)
+                const triSize = size * 0.5;
+                
+                // Upward triangle - filled
+                this.ctx.fillStyle = innerColor;
+                this.ctx.globalAlpha = 0.3;
+                this.ctx.beginPath();
+                this.ctx.moveTo(centerX, centerY - triSize);
+                this.ctx.lineTo(centerX - triSize * 0.866, centerY + triSize * 0.5);
+                this.ctx.lineTo(centerX + triSize * 0.866, centerY + triSize * 0.5);
+                this.ctx.closePath();
+                this.ctx.fill();
+                this.ctx.globalAlpha = 1.0;
+                this.ctx.stroke();
+                
+                // Downward triangle - filled
+                this.ctx.fillStyle = frameColor;
+                this.ctx.globalAlpha = 0.2;
+                this.ctx.beginPath();
+                this.ctx.moveTo(centerX, centerY + triSize);
+                this.ctx.lineTo(centerX - triSize * 0.866, centerY - triSize * 0.5);
+                this.ctx.lineTo(centerX + triSize * 0.866, centerY - triSize * 0.5);
+                this.ctx.closePath();
+                this.ctx.fill();
+                this.ctx.globalAlpha = 1.0;
+                this.ctx.stroke();
+            }
+
+            drawSriYantra(centerX, centerY, size, frameColor, innerColor) {
+                this.ctx.strokeStyle = frameColor;
+                this.ctx.lineWidth = 1;
+                this.ctx.fillStyle = innerColor;
+                
+                // Central dot
+                this.ctx.beginPath();
+                this.ctx.arc(centerX, centerY, size * 0.05, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Multiple interlocking triangles
+                const scales = [0.2, 0.4, 0.6, 0.8];
+                for (let scale of scales) {
+                    const triSize = size * scale;
+                    
+                    // Upward triangle
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(centerX, centerY - triSize);
+                    this.ctx.lineTo(centerX - triSize * 0.866, centerY + triSize * 0.5);
+                    this.ctx.lineTo(centerX + triSize * 0.866, centerY + triSize * 0.5);
+                    this.ctx.closePath();
+                    this.ctx.stroke();
+                    
+                    // Downward triangle
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(centerX, centerY + triSize * 0.8);
+                    this.ctx.lineTo(centerX - triSize * 0.7, centerY - triSize * 0.4);
+                    this.ctx.lineTo(centerX + triSize * 0.7, centerY - triSize * 0.4);
+                    this.ctx.closePath();
+                    this.ctx.stroke();
+                }
+            }
+
+            drawHexagonPortal(centerX, centerY, size, frameColor, innerColor, irregularity) {
+                // Original hexagon design with irregularity
+                this.ctx.fillStyle = frameColor;
+                this.ctx.beginPath();
+                
+                const sides = 6 + Math.floor(Math.random() * 3);
+                const angleStep = (Math.PI * 2) / sides;
+                
+                for (let i = 0; i < sides; i++) {
+                    const angle = i * angleStep + (Math.random() - 0.5) * irregularity * 0.5;
+                    const radius = size * (0.8 + Math.random() * 0.4 * irregularity);
+                    
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    
+                    if (i === 0) {
+                        this.ctx.moveTo(x, y);
+                    } else {
+                        this.ctx.lineTo(x, y);
+                    }
+                }
+                this.ctx.closePath();
+                this.ctx.fill();
+                
+                // Inner portal space
+                this.ctx.fillStyle = innerColor;
+                this.ctx.beginPath();
+                const innerRadius = size * 0.6;
+                this.ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
+                this.ctx.fill();
+            }
+
+            drawUrbanGrid(colors, density, scale, irregularity, colorVariation, width, height) {
+                // Set dark background for urban pattern
+                this.ctx.fillStyle = colors[0]; // Darkest color
+                this.ctx.fillRect(0, 0, width, height);
+
+                // First pass: Draw camo blobs
+                const numShapes = Math.floor((width * height) / (scale * scale) * density);
+                
+                for (let i = 0; i < numShapes; i++) {
+                    const x = Math.random() * width;
+                    const y = Math.random() * height;
+                    const size = scale + (Math.random() - 0.5) * scale * 0.5;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    const variedColor = this.varyColor(color, colorVariation);
+                    this.ctx.fillStyle = variedColor;
+                    this.drawUrbanBlob(x, y, size, irregularity);
+                }
+
+                // Second pass: Draw geometric grid overlay (Nike style)
+                this.drawGeometricGrid(width, height, irregularity);
+            }
+
+            drawUrbanBlob(x, y, size, irregularity) {
+                // Create angular urban-style shapes (not round forest shapes)
+                this.ctx.beginPath();
+                const numPoints = 5 + Math.floor(Math.random() * 3); // 5-7 sided shapes
+                const angleStep = (Math.PI * 2) / numPoints;
+                
+                for (let i = 0; i < numPoints; i++) {
+                    const angle = i * angleStep + (Math.random() - 0.5) * irregularity * 0.5;
+                    const radiusVariation = 0.7 + Math.random() * 0.6;
+                    const radius = size * radiusVariation;
+                    
+                    const pointX = x + Math.cos(angle) * radius;
+                    const pointY = y + Math.sin(angle) * radius;
+                    
+                    if (i === 0) {
+                        this.ctx.moveTo(pointX, pointY);
+                    } else {
+                        this.ctx.lineTo(pointX, pointY);
+                    }
+                }
+                
+                this.ctx.closePath();
+                this.ctx.fill();
+            }
+
+            drawGeometricGrid(width, height, irregularity) {
+                // Draw subtle geometric grid overlay like Nike shirt
+                this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)'; // Very subtle white lines
+                this.ctx.lineWidth = 1;
+                this.ctx.setLineDash([4, 4]); // Dashed lines like your Nike shirt
+
+                const baseSpacing = 40;
+                const spacing = baseSpacing + irregularity * 30;
+                
+                // Draw vertical lines with slight irregularity
+                for (let x = spacing; x < width; x += spacing + Math.random() * 15 * irregularity) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x, 0);
+                    this.ctx.lineTo(x + (Math.random() - 0.5) * 20 * irregularity, height);
+                    this.ctx.stroke();
+                }
+                
+                // Draw horizontal lines with slight irregularity
+                for (let y = spacing; y < height; y += spacing + Math.random() * 15 * irregularity) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(0, y);
+                    this.ctx.lineTo(width, y + (Math.random() - 0.5) * 20 * irregularity);
+                    this.ctx.stroke();
+                }
+                
+                this.ctx.setLineDash([]); // Reset line dash
+            }
+
+            varyColor(hexColor, variation) {
+                const r = parseInt(hexColor.slice(1, 3), 16);
+                const g = parseInt(hexColor.slice(3, 5), 16);
+                const b = parseInt(hexColor.slice(5, 7), 16);
+
+                const vary = (color) => {
+                    const change = (Math.random() - 0.5) * 255 * variation;
+                    return Math.max(0, Math.min(255, color + change));
+                };
+
+                const newR = Math.round(vary(r));
+                const newG = Math.round(vary(g));
+                const newB = Math.round(vary(b));
+
+                return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
+            }
+
+            saveGeneratedPattern() {
+                this.generatedCount++;
+                const colors = this.getForestColors(this.currentForestType, this.currentSeason);
+                const digitalTacticalEnabled = document.getElementById('geometryEnabled')?.checked || false;
+                const digitalTacticalPattern = document.getElementById('geometryPattern')?.value || 'circuit';
+                
+                // CRITICAL FIX: Capture the actual canvas image data immediately
+                const mainCanvas = document.getElementById('patternCanvas');
+                let actualImageData = null;
+                
+                if (mainCanvas) {
+                    try {
+                        actualImageData = mainCanvas.toDataURL('image/png');
+                        console.log('✅ Successfully captured main canvas image data:', actualImageData.substring(0, 50) + '...');
+                    } catch (error) {
+                        console.error('❌ Failed to capture main canvas:', error);
+                    }
+                }
+                
+                const patternData = {
+                    id: `forest-${this.generatedCount}`,
+                    name: `${this.currentForestType.charAt(0).toUpperCase() + this.currentForestType.slice(1)} ${this.currentSeason}`,
+                    description: `Advanced tactical ${this.currentForestType} pattern for ${this.currentSeason} conditions`,
+                    colors: colors,
+                    type: this.currentForestType,
+                    season: this.currentSeason,
+                    digitalTactical: digitalTacticalEnabled,
+                    digitalPattern: digitalTacticalPattern,
+                    timestamp: Date.now(),
+                    actualImageData: actualImageData // Pass the captured image data
+                };
+
+                console.log('Pattern data with Digital Tactical and image data:', patternData);
+
+                this.displayGeneratedPattern(patternData);
+                // Save to libraries with the actual image data
+                saveToLibraries(patternData);
+                return patternData;
+            }
+
+            generatePattern() {
+                // Generate new pattern and save it (creates a new pattern card)
+                return this.saveGeneratedPattern();
+            }
+
+            displayGeneratedPattern(patternData) {
+                const container = document.getElementById('generatedPatterns');
+                const patternCard = document.createElement('div');
+                patternCard.className = 'pattern-card';
+                
+                patternCard.innerHTML = `
+                    <div class="pattern-header">
+                        <input type="checkbox" class="pattern-checkbox" id="checkbox-${patternData.id}" value="${patternData.id}">
+                        <label for="checkbox-${patternData.id}" class="checkbox-label">Select for Library</label>
+                    </div>
+                    <canvas class="pattern-preview-small" id="preview-${patternData.id}"></canvas>
+                    <div class="pattern-info">
+                        <div class="pattern-name">${patternData.name}</div>
+                        <div class="pattern-description">${patternData.description}</div>
+                    </div>
+                    <div class="color-palette-display">
+                        ${patternData.colors.map(color => `<div class="color-swatch-mini" style="background-color: ${color}"></div>`).join('')}
+                    </div>
+                    <div class="pattern-controls">
+                        <button class="view-btn" onclick="viewPatternVariations('${patternData.id}')">View Variations</button>
+                        <button class="grid-toggle-btn" onclick="toggleGridOverlay('${patternData.id}')">Add Grid Overlay</button>
+                        <button class="export-btn" onclick="exportPatternData('${patternData.id}')">Export This Pattern</button>
+                    </div>
+                `;
+                
+                container.appendChild(patternCard);
+                
+                // Add checkbox event listener
+                const checkbox = document.getElementById(`checkbox-${patternData.id}`);
+                if (checkbox) {
+                    checkbox.addEventListener('change', updateSelectionCount);
+                }
+                
+                // Show bulk controls if this is the first pattern
+                const bulkControls = document.getElementById('bulkControls');
+                if (bulkControls && container.children.length === 1) {
+                    bulkControls.style.display = 'flex';
+                }
+                
+                // Generate preview
+                setTimeout(() => {
+                    this.generatePreview(patternData.id, patternData);
+                    // Add click handler for zoom
+                    const canvas = document.getElementById(`preview-${patternData.id}`);
+                    if (canvas) {
+                        canvas.addEventListener('click', () => openZoom(patternData.id));
+                    }
+                }, 100);
+            }
+
+            generatePreview(canvasId, patternData) {
+                const canvas = document.getElementById(`preview-${canvasId}`);
+                if (!canvas) return;
+                
+                const ctx = canvas.getContext('2d');
+                const rect = canvas.getBoundingClientRect();
+                canvas.width = rect.width * 2;
+                canvas.height = rect.height * 2;
+                ctx.scale(2, 2);
+                
+                const width = rect.width;
+                const height = rect.height;
+                
+                // Clear canvas
+                ctx.fillStyle = '#1a3d0a';
+                ctx.fillRect(0, 0, width, height);
+                
+                // Generate smaller pattern
+                const numShapes = Math.floor((width * height) / 400);
+                
+                for (let i = 0; i < numShapes; i++) {
+                    const x = Math.random() * width;
+                    const y = Math.random() * height;
+                    const size = 10 + Math.random() * 15;
+                    const color = patternData.colors[Math.floor(Math.random() * patternData.colors.length)];
+                    
+                    ctx.fillStyle = this.varyColor(color, 0.3);
+                    
+                    // Use correct shape based on pattern type
+                    if (patternData.type === 'splash') {
+                        this.drawSimpleSplashBlob(ctx, x, y, size);
+                    } else if (patternData.type === 'urban-grid') {
+                        this.drawSimpleUrbanShape(ctx, x, y, size);
+                    } else {
+                        this.drawSimpleForestShape(ctx, x, y, size);
+                    }
+                }
+                
+                // Add Digital Tactical overlay if it was enabled when pattern was generated
+                if (patternData.digitalTactical) {
+                    this.drawDigitalTacticalPreview(ctx, patternData.colors, width, height, patternData.digitalPattern);
+                }
+            }
+
+            drawDigitalTacticalPreview(ctx, colors, width, height, patternType = 'circuit') {
+                // Use same parameters as main overlay for consistency
+                const geometryDensity = document.getElementById('geometryDensity')?.value || 50;
+                const geometrySize = document.getElementById('geometrySize')?.value || 3;
+                const geometryOpacity = document.getElementById('geometryOpacity')?.value || 80;
+                
+                const density = geometryDensity / 100;
+                const size = parseInt(geometrySize);
+                
+                const primary = '#7cff50';
+                const accent = '#00ff88';
+                
+                // Simplified versions of the digital patterns for preview
+                switch (patternType) {
+                    case 'circuit':
+                        this.drawSimpleCircuitPreview(ctx, width, height, density, size, primary, accent);
+                        break;
+                    case 'dataStream':
+                        this.drawSimpleDataStreamPreview(ctx, width, height, density, size, primary, accent);
+                        break;
+                    case 'cyberDots':
+                        this.drawSimpleCyberDotsPreview(ctx, width, height, density, size, primary, accent);
+                        break;
+                    case 'pixelBurst':
+                        this.drawSimplePixelBurstPreview(ctx, width, height, density, size, primary, accent);
+                        break;
+                    case 'neonGrid':
+                        this.drawSimpleNeonGridPreview(ctx, width, height, density, size, primary, accent);
+                        break;
+                }
+            }
+
+            drawSimpleCircuitPreview(ctx, width, height, density, size, primary, accent) {
+                ctx.lineWidth = size;
+                ctx.lineCap = 'round';
+                ctx.shadowBlur = size;
+                
+                // Use same density calculation as main function
+                const numPaths = density * 8;
+                for (let i = 0; i < numPaths; i++) {
+                    const color = Math.random() > 0.5 ? primary : accent;
+                    ctx.strokeStyle = color;
+                    ctx.shadowColor = color;
+                    
+                    // Draw circuit paths exactly like main function
+                    ctx.beginPath();
+                    const startX = Math.random() * width;
+                    const startY = Math.random() * height;
+                    ctx.moveTo(startX, startY);
+                    
+                    // Create angular circuit-like paths
+                    let currentX = startX;
+                    let currentY = startY;
+                    const segments = 3 + Math.floor(Math.random() * 4);
+                    
+                    for (let j = 0; j < segments; j++) {
+                        const direction = Math.floor(Math.random() * 4); // 0=right, 1=down, 2=left, 3=up
+                        const length = 20 + Math.random() * 60;
+                        
+                        switch (direction) {
+                            case 0: currentX += length; break;
+                            case 1: currentY += length; break;
+                            case 2: currentX -= length; break;
+                            case 3: currentY -= length; break;
+                        }
+                        
+                        ctx.lineTo(currentX, currentY);
+                    }
+                    ctx.stroke();
+                    
+                    // Add circuit nodes
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.arc(currentX, currentY, size * 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                ctx.shadowBlur = 0;
+            }
+
+            drawSimpleDataStreamPreview(ctx, width, height, density, size, primary, accent) {
+                ctx.lineWidth = size;
+                ctx.shadowBlur = size * 3;
+                
+                const numStreams = Math.floor(density * 12);
+                for (let i = 0; i < numStreams; i++) {
+                    const color = Math.random() > 0.6 ? accent : primary;
+                    ctx.strokeStyle = color;
+                    ctx.shadowColor = color;
+                    
+                    ctx.beginPath();
+                    const startX = Math.random() * width;
+                    const startY = Math.random() * height;
+                    ctx.moveTo(startX, startY);
+                    
+                    // Create flowing curves with multiple control points
+                    const controlPoints = 3 + Math.floor(Math.random() * 3);
+                    let currentX = startX;
+                    let currentY = startY;
+                    
+                    for (let j = 0; j < controlPoints; j++) {
+                        const cpX = currentX + (Math.random() - 0.5) * 60;
+                        const cpY = currentY + (Math.random() - 0.5) * 60;
+                        currentX += (Math.random() - 0.5) * 50;
+                        currentY += (Math.random() - 0.5) * 50;
+                        
+                        ctx.quadraticCurveTo(cpX, cpY, currentX, currentY);
+                    }
+                    ctx.stroke();
+                    
+                    // Add larger data packets
+                    for (let k = 0; k < 2; k++) {
+                        const packetX = startX + (currentX - startX) * (k / 2);
+                        const packetY = startY + (currentY - startY) * (k / 2);
+                        
+                        ctx.fillStyle = color;
+                        ctx.shadowColor = color;
+                        ctx.fillRect(packetX - size * 1.5, packetY - size, size * 3, size * 2);
+                    }
+                }
+                
+                ctx.shadowBlur = 0;
+            }
+
+            drawSimpleCyberDotsPreview(ctx, width, height, density, size, primary, accent) {
+                const numDots = Math.floor(density * 15);
+                for (let i = 0; i < numDots; i++) {
+                    const x = Math.random() * width;
+                    const y = Math.random() * height;
+                    const color = Math.random() > 0.5 ? primary : accent;
+                    
+                    ctx.fillStyle = color;
+                    ctx.fillRect(x - size, y - size, size * 2, size * 2);
+                }
+            }
+
+            drawSimplePixelBurstPreview(ctx, width, height, density, size, primary, accent) {
+                const numBursts = Math.floor(density * 4);
+                for (let i = 0; i < numBursts; i++) {
+                    const centerX = Math.random() * width;
+                    const centerY = Math.random() * height;
+                    const color = Math.random() > 0.5 ? primary : accent;
+                    
+                    ctx.fillStyle = color;
+                    // Small pixel burst pattern
+                    for (let j = 0; j < 6; j++) {
+                        const angle = (j / 6) * Math.PI * 2;
+                        const distance = size * 3;
+                        const x = centerX + Math.cos(angle) * distance;
+                        const y = centerY + Math.sin(angle) * distance;
+                        ctx.fillRect(x - size/2, y - size/2, size, size);
+                    }
+                }
+            }
+
+            drawSimpleNeonGridPreview(ctx, width, height, density, size, primary, accent) {
+                ctx.lineWidth = size;
+                ctx.strokeStyle = primary;
+                
+                const gridSpacing = 20;
+                const numLines = Math.floor(density * 8);
+                
+                for (let i = 0; i < numLines; i++) {
+                    if (Math.random() > 0.5) {
+                        // Vertical line
+                        const x = Math.random() * width;
+                        ctx.beginPath();
+                        ctx.moveTo(x, 0);
+                        ctx.lineTo(x, height);
+                        ctx.stroke();
+                    } else {
+                        // Horizontal line
+                        const y = Math.random() * height;
+                        ctx.beginPath();
+                        ctx.moveTo(0, y);
+                        ctx.lineTo(width, y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            drawSimpleForestShape(ctx, x, y, size) {
+                ctx.beginPath();
+                const numPoints = 6;
+                const angleStep = (Math.PI * 2) / numPoints;
+                
+                for (let i = 0; i < numPoints; i++) {
+                    const angle = i * angleStep;
+                    const radiusVariation = 0.7 + Math.random() * 0.6;
+                    const radius = size * radiusVariation;
+                    
+                    const pointX = x + Math.cos(angle) * radius;
+                    const pointY = y + Math.sin(angle) * radius;
+                    
+                    if (i === 0) {
+                        ctx.moveTo(pointX, pointY);
+                    } else {
+                        ctx.lineTo(pointX, pointY);
+                    }
+                }
+                
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            drawSimpleSplashBlob(ctx, x, y, size) {
+                // Create 2-3 connected ellipses for blob effect
+                const numBlobs = 2 + Math.floor(Math.random() * 2);
+                
+                for (let i = 0; i < numBlobs; i++) {
+                    ctx.beginPath();
+                    
+                    const offsetX = (Math.random() - 0.5) * size * 0.6;
+                    const offsetY = (Math.random() - 0.5) * size * 0.6;
+                    
+                    const stretchX = 0.5 + Math.random() * 0.7;
+                    const stretchY = 0.5 + Math.random() * 0.7;
+                    
+                    const radiusX = size * stretchX;
+                    const radiusY = size * stretchY;
+                    const rotation = Math.random() * Math.PI;
+                    
+                    ctx.ellipse(x + offsetX, y + offsetY, radiusX, radiusY, rotation, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+            }
+
+            drawSimpleUrbanShape(ctx, x, y, size) {
+                // Create angular urban shapes for pattern previews
+                ctx.beginPath();
+                const numPoints = 5 + Math.floor(Math.random() * 2); // 5-6 sided shapes
+                const angleStep = (Math.PI * 2) / numPoints;
+                
+                for (let i = 0; i < numPoints; i++) {
+                    const angle = i * angleStep;
+                    const radiusVariation = 0.7 + Math.random() * 0.6;
+                    const radius = size * radiusVariation;
+                    
+                    const pointX = x + Math.cos(angle) * radius;
+                    const pointY = y + Math.sin(angle) * radius;
+                    
+                    if (i === 0) {
+                        ctx.moveTo(pointX, pointY);
+                    } else {
+                        ctx.lineTo(pointX, pointY);
+                    }
+                }
+                
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        // Global functions for UI interaction
+        function generateForestPattern() {
+            if (window.forestGenerator) {
+                window.forestGenerator.generateForestPattern();
+                window.forestGenerator.saveGeneratedPattern();
+            }
+        }
+
+        function exportPattern(format) {
+            const canvas = document.getElementById('patternCanvas');
+            if (format === 'png') {
+                const link = document.createElement('a');
+                link.download = `savo-mode-forest-pattern-${Date.now()}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            } else if (format === 'svg') {
+                alert('SVG export feature coming soon!');
+            } else if (format === 'json') {
+                const colors = window.forestGenerator?.getForestColors(
+                    window.forestGenerator.currentForestType, 
+                    window.forestGenerator.currentSeason
+                );
+                const data = {
+                    colors: colors,
+                    type: window.forestGenerator?.currentForestType,
+                    season: window.forestGenerator?.currentSeason,
+                    timestamp: Date.now()
+                };
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const link = document.createElement('a');
+                link.download = `savo-mode-forest-colors-${Date.now()}.json`;
+                link.href = URL.createObjectURL(blob);
+                link.click();
+            }
+
+
+        }
+
+        // Global pattern saving function
+        function saveToLibraries(patternData) {
+            try {
+                // Check localStorage availability
+                if (typeof(Storage) === "undefined") {
+                    alert('Your browser does not support localStorage. Patterns cannot be saved.');
+                    return false;
+                }
+
+                // Save to My Patterns (correct key)
+                let myPatterns = JSON.parse(localStorage.getItem('savoModePatterns') || '[]');
+                
+                // Use the image data passed from saveGeneratedPattern, or fallback to canvas capture
+                let patternImageData = patternData.actualImageData;
+                
+                if (!patternImageData) {
+                    console.log('⚠️ No image data provided, attempting canvas capture...');
+                    const canvas = document.getElementById('patternCanvas');
+                    if (canvas) {
+                        try {
+                            patternImageData = canvas.toDataURL('image/png');
+                            console.log('✅ Fallback canvas capture successful');
+                        } catch (error) {
+                            console.error('❌ Fallback canvas capture failed:', error);
+                        }
+                    }
+                }
+                
+                console.log('📊 Pattern image data status:', !!patternImageData);
+                if (patternImageData) {
+                    console.log('📊 Image data preview:', patternImageData.substring(0, 50) + '...');
+                }
+
+                const libraryPattern = {
+                    id: patternData.id,
+                    name: patternData.name,
+                    description: patternData.description,
+                    category: 'forest',
+                    type: patternData.type,
+                    colors: patternData.colors,
+                    environment: patternData.type,
+                    season: patternData.season,
+                    created: new Date().toISOString(),
+                    tags: [patternData.type, patternData.season, 'forest', 'tactical'],
+                    preview: patternImageData || `linear-gradient(45deg, ${patternData.colors.join(', ')})`,
+                    actualImage: patternImageData,
+                    timestamp: patternData.timestamp
+                };
+                
+                myPatterns.push(libraryPattern);
+                localStorage.setItem('savoModePatterns', JSON.stringify(myPatterns));
+                
+                // Automatically increment the 500 Pattern Challenge counter
+                let patternCount = parseInt(localStorage.getItem('savoModePatternCount') || '0');
+                patternCount += 1;
+                localStorage.setItem('savoModePatternCount', patternCount.toString());
+                
+                console.log('✅ Pattern saved successfully to savoModePatterns:', libraryPattern.name);
+                console.log('📈 500 Pattern Challenge counter updated:', patternCount);
+                console.log('🖼️ Saved with actual image data:', !!libraryPattern.actualImage);
+                showPatternSavedNotification(patternData.name || 'Forest Pattern', patternCount);
+                
+                return true;
+            } catch (error) {
+                console.error('❌ Error saving pattern:', error);
+                alert(`Failed to save pattern: ${error.message}`);
+                return false;
+            }
+        }
+
+        function showPatternSavedNotification(patternName, patternCount) {
+            const safePatternName = patternName || 'Forest Pattern';
+            console.log('Showing notification for:', safePatternName);
+            
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px; z-index: 10000;
+                background: white; border-left: 4px solid #22c55e;
+                border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                padding: 16px; max-width: 400px; min-height: 50px;
+                color: #333; font-family: Arial, sans-serif; font-size: 14px;
+            `;
+            
+            const challengeProgress = patternCount ? ` (${patternCount}/500 patterns)` : '';
+            const messageText = `"${safePatternName}" saved to Pattern Library!${challengeProgress}`;
+            
+            notification.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                    <div>
+                        <span style="color: #333; font-size: 14px;">${messageText}</span>
+                        ${patternCount ? `<div style="margin-top: 5px; font-size: 12px; color: #666;">500 Pattern Challenge: ${Math.round((patternCount/500)*100)}% complete</div>` : ''}
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="background: none; border: none; font-size: 18px; cursor: pointer; color: #666;">×</button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        function saveToLibrary() {
+            alert('Pattern saved to your Savo Mode library! Access it from the Pattern Library page.');
+        }
+
+        function exportPatternData(patternId) {
+            const patternData = getStoredPatternData(patternId);
+            if (!patternData) {
+                alert('Pattern data not found!');
+                return;
+            }
+
+            // Create a high-resolution canvas for export
+            const exportCanvas = document.createElement('canvas');
+            const ctx = exportCanvas.getContext('2d');
+            
+            // Set high resolution for mobile viewing
+            const exportWidth = 800;
+            const exportHeight = 600;
+            exportCanvas.width = exportWidth;
+            exportCanvas.height = exportHeight;
+
+            // Clear with base color
+            ctx.fillStyle = '#1a3d0a';
+            ctx.fillRect(0, 0, exportWidth, exportHeight);
+
+            // Generate the pattern at high resolution
+            if (patternData.type === 'splash') {
+                generateSplashForExport(ctx, patternData.colors, exportWidth, exportHeight);
+            } else if (patternData.type === 'urban-grid') {
+                generateUrbanForExport(ctx, patternData.colors, exportWidth, exportHeight);
+            } else if (patternData.type === 'portal') {
+                generatePortalForExport(ctx, patternData.colors, exportWidth, exportHeight);
+            } else {
+                generateForestForExport(ctx, patternData.colors, exportWidth, exportHeight);
+            }
+
+            // Mobile-optimized export
+            exportCanvas.toBlob((blob) => {
+                const fileName = `${patternData.name.replace(/\s+/g, '_')}_${patternData.id}.png`;
+                const dataURL = exportCanvas.toDataURL('image/png');
+                
+                // Detect mobile device
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                    // Mobile-optimized download interface
+                    createMobileExportInterface(dataURL, patternData.name, fileName);
+                } else {
+                    // Desktop direct download
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    alert(`Pattern "${patternData.name}" exported to your downloads!`);
+                }
+            }, 'image/png');
+        }
+
+        // Mobile export interface for Forest Generator
+        function createMobileExportInterface(dataURL, patternName, fileName) {
+            const modal = document.createElement('div');
+            modal.className = 'mobile-export-modal';
+            modal.innerHTML = `
+                <div class="mobile-export-content">
+                    <div class="export-header">
+                        <h2>${patternName}</h2>
+                        <button class="close-btn" onclick="this.closest('.mobile-export-modal').remove()">×</button>
+                    </div>
+                    
+                    <div class="pattern-preview-export">
+                        <img src="${dataURL}" alt="${patternName}" class="export-preview-image">
+                    </div>
+                    
+                    <div class="export-options">
+                        <button class="export-option primary" onclick="forestMobileDownloadDirect('${dataURL}', '${fileName}')">
+                            <span class="export-icon">📱</span>
+                            <div>
+                                <div class="option-title">Direct Download</div>
+                                <div class="option-desc">Save to phone gallery</div>
+                            </div>
+                        </button>
+                        
+                        <button class="export-option" onclick="forestMobileDownloadShare('${dataURL}', '${fileName}')">
+                            <span class="export-icon">📤</span>
+                            <div>
+                                <div class="option-title">Share & Save</div>
+                                <div class="option-desc">Use share menu to save</div>
+                            </div>
+                        </button>
+                        
+                        <button class="export-option" onclick="forestMobileDownloadLongPress('${dataURL}')">
+                            <span class="export-icon">👆</span>
+                            <div>
+                                <div class="option-title">Long Press Method</div>
+                                <div class="option-desc">Long press image to save</div>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="export-instructions">
+                        <p><strong>📱 Mobile Export Instructions:</strong></p>
+                        <p>1. Try "Direct Download" first</p>
+                        <p>2. If blocked, use "Share & Save"</p>
+                        <p>3. Or long press the image above</p>
+                    </div>
+                </div>
+            `;
+            
+            // Add CSS for mobile export interface
+            if (!document.getElementById('mobileExportStyles')) {
+                const style = document.createElement('style');
+                style.id = 'mobileExportStyles';
+                style.textContent = `
+                    .mobile-export-modal {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.95);
+                        z-index: 10000;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 20px;
+                        box-sizing: border-box;
+                    }
+                    .mobile-export-content {
+                        background: linear-gradient(135deg, #1a1a2e, #16213e);
+                        border-radius: 20px;
+                        padding: 30px;
+                        max-width: 400px;
+                        width: 100%;
+                        max-height: 90vh;
+                        overflow-y: auto;
+                        border: 2px solid #7cff50;
+                        box-shadow: 0 10px 30px rgba(124, 255, 80, 0.3);
+                    }
+                    .export-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 20px;
+                        padding-bottom: 15px;
+                        border-bottom: 2px solid #7cff50;
+                    }
+                    .export-header h2 {
+                        color: #7cff50;
+                        margin: 0;
+                        font-size: 1.5rem;
+                    }
+                    .pattern-preview-export {
+                        background: #000;
+                        border-radius: 15px;
+                        padding: 15px;
+                        margin: 20px 0;
+                        text-align: center;
+                    }
+                    .export-preview-image {
+                        max-width: 100%;
+                        height: auto;
+                        border-radius: 10px;
+                        max-height: 200px;
+                        object-fit: cover;
+                    }
+                    .export-options {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 15px;
+                        margin: 20px 0;
+                    }
+                    .export-option {
+                        background: rgba(255, 255, 255, 0.1);
+                        border: 2px solid rgba(255, 255, 255, 0.2);
+                        border-radius: 15px;
+                        padding: 15px;
+                        color: white;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        text-align: left;
+                    }
+                    .export-option:hover {
+                        background: rgba(124, 255, 80, 0.2);
+                        border-color: #7cff50;
+                        transform: translateY(-2px);
+                    }
+                    .export-option.primary {
+                        background: linear-gradient(45deg, #7cff50, #4caf50);
+                        border-color: #7cff50;
+                        color: #000;
+                    }
+                    .export-option.primary:hover {
+                        background: linear-gradient(45deg, #6bef40, #45a047);
+                    }
+                    .export-instructions {
+                        background: rgba(0, 0, 0, 0.3);
+                        border-radius: 10px;
+                        padding: 15px;
+                        margin-top: 20px;
+                        font-size: 0.9rem;
+                        line-height: 1.4;
+                        color: #ccc;
+                    }
+                    .export-instructions strong {
+                        color: #7cff50;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            document.body.appendChild(modal);
+        }
+
+        // Mobile download functions for Forest Generator
+        function forestMobileDownloadDirect(dataURL, fileName) {
+            try {
+                const byteCharacters = atob(dataURL.split(',')[1]);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: 'image/png' });
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+                
+                alert('Download started successfully!');
+            } catch (error) {
+                alert('Direct download failed, try Share method');
+            }
+        }
+
+        function forestMobileDownloadShare(dataURL, fileName) {
+            if (navigator.share) {
+                try {
+                    const byteCharacters = atob(dataURL.split(',')[1]);
+                    const byteNumbers = new Array(byteCharacters.length);
+                    for (let i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    const byteArray = new Uint8Array(byteNumbers);
+                    const blob = new Blob([byteArray], { type: 'image/png' });
+                    const file = new File([blob], fileName, { type: 'image/png' });
+                    
+                    navigator.share({
+                        files: [file],
+                        title: 'Savo Mode Forest Pattern',
+                        text: 'Check out this tactical forest pattern!'
+                    });
+                } catch (error) {
+                    window.open(dataURL, '_blank');
+                }
+            } else {
+                window.open(dataURL, '_blank');
+                alert('Image opened in new tab - save from there');
+            }
+        }
+
+        function forestMobileDownloadLongPress(dataURL) {
+            const newWindow = window.open('', '_blank');
+            newWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Savo Mode Forest Pattern - Long Press to Save</title>
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <style>
+                            body { 
+                                margin: 0; 
+                                padding: 20px; 
+                                background: #0a0f0a; 
+                                text-align: center; 
+                                font-family: Arial, sans-serif;
+                                color: white;
+                            }
+                            .image-container {
+                                background: #111;
+                                padding: 20px;
+                                border-radius: 15px;
+                                margin: 20px 0;
+                                border: 2px solid #7cff50;
+                            }
+                            img { 
+                                max-width: 100%; 
+                                height: auto; 
+                                border-radius: 10px;
+                                user-select: none;
+                                -webkit-user-select: none;
+                                -webkit-touch-callout: default;
+                            }
+                            .instructions {
+                                background: #222;
+                                padding: 20px;
+                                border-radius: 10px;
+                                margin: 20px 0;
+                                font-size: 16px;
+                            }
+                            .highlight {
+                                color: #7cff50;
+                                font-weight: bold;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>🌲 Long Press to Save Forest Pattern</h1>
+                        <div class="image-container">
+                            <img src="${dataURL}" alt="Savo Mode Forest Pattern">
+                        </div>
+                        <div class="instructions">
+                            <p><span class="highlight">📱 Mobile Instructions:</span></p>
+                            <p>1. <strong>Long press</strong> the forest pattern above</p>
+                            <p>2. Select <strong>"Save Image"</strong> or <strong>"Download Image"</strong></p>
+                            <p>3. Forest pattern will save to your phone's gallery</p>
+                        </div>
+                    </body>
+                </html>
+            `);
+            
+            alert('Opened in new tab - long press forest pattern to save');
+        }
+
+        function toggleGridOverlay(patternId) {
+            const canvas = document.getElementById(`preview-${patternId}`);
+            const toggleBtn = document.querySelector(`button[onclick="toggleGridOverlay('${patternId}')"]`);
+            
+            if (!canvas || !toggleBtn) return;
+
+            const isActive = toggleBtn.classList.contains('active');
+            
+            if (isActive) {
+                // Remove grid overlay
+                toggleBtn.classList.remove('active');
+                toggleBtn.textContent = 'Add Grid Overlay';
+                // Regenerate pattern without grid
+                regeneratePatternPreview(patternId, false);
+            } else {
+                // Add grid overlay
+                toggleBtn.classList.add('active');
+                toggleBtn.textContent = 'Remove Grid Overlay';
+                // Add grid to existing pattern
+                regeneratePatternPreview(patternId, true);
+            }
+        }
+
+        function regeneratePatternPreview(patternId, withGrid) {
+            if (!withGrid) {
+                // Just regenerate the original pattern
+                const patternData = getStoredPatternData(patternId);
+                if (patternData && window.forestGenerator) {
+                    window.forestGenerator.generatePreview(patternId, patternData);
+                }
+            } else {
+                // Add grid overlay to existing pattern without redrawing
+                const canvas = document.getElementById(`preview-${patternId}`);
+                if (canvas) {
+                    const ctx = canvas.getContext('2d');
+                    const rect = canvas.getBoundingClientRect();
+                    addGridOverlayToCanvas(ctx, rect.width, rect.height);
+                }
+            }
+        }
+
+        // Store pattern data when patterns are generated
+        const storedPatterns = new Map();
+
+        function getStoredPatternData(patternId) {
+            return storedPatterns.get(patternId);
+        }
+
+        function storePatternData(patternId, data) {
+            storedPatterns.set(patternId, data);
+        }
+
+        function addGridOverlayToCanvas(ctx, width, height) {
+            // Save current context
+            ctx.save();
+            
+            // Very subtle white dashed lines - Nike shirt style
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+            ctx.lineWidth = 0.5;
+            ctx.setLineDash([3, 6]); // Smaller dashes, more spacing
+            
+            const spacing = 35;
+            
+            // Vertical lines
+            for (let x = spacing; x < width; x += spacing) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+            
+            // Horizontal lines  
+            for (let y = spacing; y < height; y += spacing) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+            
+            // Restore context to not affect other drawing
+            ctx.restore();
+        }
+
+        // Mobile touch zoom functionality
+        let currentZoomScale = 1;
+        let currentZoomX = 0;
+        let currentZoomY = 0;
+        let zoomCanvas = null;
+        let zoomContent = null;
+        let initialPinchDistance = 0;
+        let lastPanX = 0;
+        let lastPanY = 0;
+
+        function openZoom(patternId) {
+            const sourceCanvas = document.getElementById(`preview-${patternId}`);
+            if (!sourceCanvas) return;
+
+            const modal = document.getElementById('zoomModal');
+            zoomCanvas = document.getElementById('zoomCanvas');
+            zoomContent = document.getElementById('zoomContent');
+
+            // Copy the source canvas to zoom canvas
+            const sourceCtx = sourceCanvas.getContext('2d');
+            const zoomCtx = zoomCanvas.getContext('2d');
+
+            // Set zoom canvas size (higher resolution for better zoom quality)
+            zoomCanvas.width = sourceCanvas.width * 2;
+            zoomCanvas.height = sourceCanvas.height * 2;
+            zoomCanvas.style.width = '400px';
+            zoomCanvas.style.height = '300px';
+
+            // Copy pattern to zoom canvas
+            zoomCtx.drawImage(sourceCanvas, 0, 0, zoomCanvas.width, zoomCanvas.height);
+
+            // Reset zoom state
+            currentZoomScale = 1;
+            currentZoomX = 0;
+            currentZoomY = 0;
+            updateZoomTransform();
+
+            // Show modal
+            modal.style.display = 'block';
+
+            // Add touch event listeners
+            setupTouchEvents();
+        }
+
+        function closeZoom() {
+            const modal = document.getElementById('zoomModal');
+            modal.style.display = 'none';
+            removeTouchEvents();
+        }
+
+        function setupTouchEvents() {
+            zoomContent.addEventListener('touchstart', handleTouchStart, { passive: false });
+            zoomContent.addEventListener('touchmove', handleTouchMove, { passive: false });
+            zoomContent.addEventListener('touchend', handleTouchEnd, { passive: false });
+        }
+
+        function removeTouchEvents() {
+            zoomContent.removeEventListener('touchstart', handleTouchStart);
+            zoomContent.removeEventListener('touchmove', handleTouchMove);
+            zoomContent.removeEventListener('touchend', handleTouchEnd);
+        }
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            
+            if (e.touches.length === 2) {
+                // Pinch start
+                initialPinchDistance = getPinchDistance(e.touches[0], e.touches[1]);
+            } else if (e.touches.length === 1) {
+                // Pan start
+                lastPanX = e.touches[0].clientX;
+                lastPanY = e.touches[0].clientY;
+            }
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            
+            if (e.touches.length === 2) {
+                // Pinch zoom
+                const currentPinchDistance = getPinchDistance(e.touches[0], e.touches[1]);
+                const scaleChange = currentPinchDistance / initialPinchDistance;
+                
+                const newScale = Math.max(0.5, Math.min(5, currentZoomScale * scaleChange));
+                if (newScale !== currentZoomScale) {
+                    currentZoomScale = newScale;
+                    updateZoomTransform();
+                }
+                
+                initialPinchDistance = currentPinchDistance;
+            } else if (e.touches.length === 1) {
+                // Pan
+                const deltaX = e.touches[0].clientX - lastPanX;
+                const deltaY = e.touches[0].clientY - lastPanY;
+                
+                currentZoomX += deltaX;
+                currentZoomY += deltaY;
+                
+                lastPanX = e.touches[0].clientX;
+                lastPanY = e.touches[0].clientY;
+                
+                updateZoomTransform();
+            }
+        }
+
+        function handleTouchEnd(e) {
+            e.preventDefault();
+        }
+
+        function getPinchDistance(touch1, touch2) {
+            const dx = touch1.clientX - touch2.clientX;
+            const dy = touch1.clientY - touch2.clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        function updateZoomTransform() {
+            if (zoomContent) {
+                zoomContent.style.transform = `translate(calc(-50% + ${currentZoomX}px), calc(-50% + ${currentZoomY}px)) scale(${currentZoomScale})`;
+            }
+        }
+
+        function zoomIn() {
+            currentZoomScale = Math.min(5, currentZoomScale * 1.3);
+            updateZoomTransform();
+        }
+
+        function zoomOut() {
+            currentZoomScale = Math.max(0.5, currentZoomScale / 1.3);
+            updateZoomTransform();
+        }
+
+        function resetZoom() {
+            currentZoomScale = 1;
+            currentZoomX = 0;
+            currentZoomY = 0;
+            updateZoomTransform();
+        }
+
+        // Global function for generate button
+        function generateForestPattern() {
+            if (window.forestGenerator) {
+                window.forestGenerator.generatePattern();
+            }
+        }
+
+        // Pattern variations viewer
+        function viewPatternVariations(patternId) {
+            const patternData = getStoredPatternData(patternId);
+            if (!patternData) return;
+
+            const modal = document.getElementById('variationsModal');
+            const title = document.getElementById('variationsTitle');
+            const grid = document.getElementById('variationsGrid');
+
+            title.textContent = `${patternData.name} Variations`;
+            
+            // Generate 6 variations with different parameters
+            const variations = [
+                { label: 'Dense', density: 0.8, scale: 20, irregularity: 0.7, colorVar: 0.3 },
+                { label: 'Sparse', density: 0.4, scale: 30, irregularity: 0.8, colorVar: 0.5 },
+                { label: 'Fine Detail', density: 0.6, scale: 15, irregularity: 0.9, colorVar: 0.2 },
+                { label: 'Bold Shapes', density: 0.5, scale: 40, irregularity: 0.5, colorVar: 0.4 },
+                { label: 'Organic', density: 0.7, scale: 25, irregularity: 0.95, colorVar: 0.6 },
+                { label: 'Tactical', density: 0.6, scale: 22, irregularity: 0.6, colorVar: 0.3 }
+            ];
+
+            grid.innerHTML = variations.map((variation, index) => `
+                <div class="variation-card" onclick="selectVariation('${patternId}', ${index})">
+                    <canvas class="variation-canvas" id="variation-${index}"></canvas>
+                    <div class="variation-label">${variation.label}</div>
+                </div>
+            `).join('');
+
+            modal.style.display = 'block';
+
+            // Generate each variation after modal is visible
+            setTimeout(() => {
+                variations.forEach((variation, index) => {
+                    generateVariationPreview(patternId, index, variation, patternData);
+                });
+            }, 300);
+        }
+
+        function generateVariationPreview(patternId, index, variation, patternData) {
+            const canvas = document.getElementById(`variation-${index}`);
+            if (!canvas) {
+                console.log(`Canvas variation-${index} not found`);
+                return;
+            }
+
+            const ctx = canvas.getContext('2d');
+            // Set fixed size for consistent rendering
+            const width = 200;
+            const height = 120;
+            canvas.width = width * 2;
+            canvas.height = height * 2;
+            ctx.scale(2, 2);
+
+            console.log(`Generating variation ${index} for pattern ${patternId}`);
+
+            // Clear canvas
+            ctx.fillStyle = '#1a3d0a';
+            ctx.fillRect(0, 0, width, height);
+
+            // Generate variation pattern
+            if (patternData.type === 'splash') {
+                generateSplashVariation(ctx, patternData.colors, variation, width, height);
+            } else if (patternData.type === 'urban-grid') {
+                generateUrbanVariation(ctx, patternData.colors, variation, width, height);
+            } else {
+                generateForestVariation(ctx, patternData.colors, variation, width, height);
+            }
+        }
+
+        function generateSplashVariation(ctx, colors, variation, width, height) {
+            const numShapes = Math.floor((width * height * variation.density) / 300);
+            
+            for (let i = 0; i < numShapes; i++) {
+                const x = Math.random() * width;
+                const y = Math.random() * height;
+                const size = variation.scale * (0.5 + Math.random() * 0.5);
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                ctx.fillStyle = varyColorForVariation(color, variation.colorVar);
+                
+                // Create splash blob
+                const numBlobs = 2 + Math.floor(Math.random() * 2);
+                for (let j = 0; j < numBlobs; j++) {
+                    ctx.beginPath();
+                    const offsetX = (Math.random() - 0.5) * size * 0.6;
+                    const offsetY = (Math.random() - 0.5) * size * 0.6;
+                    const rotation = Math.random() * Math.PI * 2;
+                    const scaleX = 0.6 + Math.random() * 0.8;
+                    const scaleY = 0.4 + Math.random() * 0.6;
+                    
+                    ctx.save();
+                    ctx.translate(x + offsetX, y + offsetY);
+                    ctx.rotate(rotation);
+                    ctx.scale(scaleX, scaleY);
+                    ctx.ellipse(0, 0, size, size * 0.7, 0, 0, Math.PI * 2);
+                    ctx.restore();
+                    ctx.fill();
+                }
+            }
+        }
+
+        function generateForestVariation(ctx, colors, variation, width, height) {
+            const numShapes = Math.floor((width * height * variation.density) / 400);
+            
+            for (let i = 0; i < numShapes; i++) {
+                const x = Math.random() * width;
+                const y = Math.random() * height;
+                const size = variation.scale * (0.3 + Math.random() * 0.7);
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                ctx.fillStyle = varyColorForVariation(color, variation.colorVar);
+                
+                // Create forest shape
+                ctx.beginPath();
+                const numPoints = 6;
+                const angleStep = (Math.PI * 2) / numPoints;
+                
+                for (let j = 0; j < numPoints; j++) {
+                    const angle = j * angleStep;
+                    const radiusVariation = 0.7 + Math.random() * variation.irregularity * 0.6;
+                    const radius = size * radiusVariation;
+                    
+                    const pointX = x + Math.cos(angle) * radius;
+                    const pointY = y + Math.sin(angle) * radius;
+                    
+                    if (j === 0) {
+                        ctx.moveTo(pointX, pointY);
+                    } else {
+                        ctx.lineTo(pointX, pointY);
+                    }
+                }
+                
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        function generateUrbanVariation(ctx, colors, variation, width, height) {
+            const numShapes = Math.floor((width * height * variation.density) / 350);
+            
+            for (let i = 0; i < numShapes; i++) {
+                const x = Math.random() * width;
+                const y = Math.random() * height;
+                const size = variation.scale * (0.4 + Math.random() * 0.6);
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                ctx.fillStyle = varyColorForVariation(color, variation.colorVar);
+                
+                // Create angular urban shape
+                ctx.beginPath();
+                const sides = 3 + Math.floor(Math.random() * 4);
+                const angleStep = (Math.PI * 2) / sides;
+                
+                for (let j = 0; j < sides; j++) {
+                    const angle = j * angleStep;
+                    const radius = size * (0.8 + Math.random() * variation.irregularity * 0.4);
+                    
+                    const pointX = x + Math.cos(angle) * radius;
+                    const pointY = y + Math.sin(angle) * radius;
+                    
+                    if (j === 0) {
+                        ctx.moveTo(pointX, pointY);
+                    } else {
+                        ctx.lineTo(pointX, pointY);
+                    }
+                }
+                
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        function varyColorForVariation(hexColor, variation) {
+            const r = parseInt(hexColor.slice(1, 3), 16);
+            const g = parseInt(hexColor.slice(3, 5), 16);
+            const b = parseInt(hexColor.slice(5, 7), 16);
+
+            const vary = (color) => {
+                const change = (Math.random() - 0.5) * 255 * variation;
+                return Math.max(0, Math.min(255, color + change));
+            };
+
+            const newR = Math.round(vary(r));
+            const newG = Math.round(vary(g));
+            const newB = Math.round(vary(b));
+
+            return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
+        }
+
+        function selectVariation(patternId, variationIndex) {
+            console.log(`Selected variation ${variationIndex} for pattern ${patternId}`);
+            // Could save this variation as a new pattern or apply to main preview
+            closeVariations();
+        }
+
+        function closeVariations() {
+            const modal = document.getElementById('variationsModal');
+            modal.style.display = 'none';
+        }
+
+        function generateSplashForExport(ctx, colors, width, height) {
+            const numShapes = Math.floor((width * height) / 1500);
+            
+            for (let i = 0; i < numShapes; i++) {
+                const x = Math.random() * width;
+                const y = Math.random() * height;
+                const size = 20 + Math.random() * 40;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                ctx.fillStyle = color;
+                
+                // Create splash blobs
+                const numBlobs = 2 + Math.floor(Math.random() * 2);
+                for (let j = 0; j < numBlobs; j++) {
+                    ctx.beginPath();
+                    const offsetX = (Math.random() - 0.5) * size * 0.6;
+                    const offsetY = (Math.random() - 0.5) * size * 0.6;
+                    const rotation = Math.random() * Math.PI * 2;
+                    const scaleX = 0.6 + Math.random() * 0.8;
+                    const scaleY = 0.4 + Math.random() * 0.6;
+                    
+                    ctx.save();
+                    ctx.translate(x + offsetX, y + offsetY);
+                    ctx.rotate(rotation);
+                    ctx.scale(scaleX, scaleY);
+                    ctx.ellipse(0, 0, size, size * 0.7, 0, 0, Math.PI * 2);
+                    ctx.restore();
+                    ctx.fill();
+                }
+            }
+        }
+
+        function generateForestForExport(ctx, colors, width, height) {
+            const numShapes = Math.floor((width * height) / 2000);
+            
+            for (let i = 0; i < numShapes; i++) {
+                const x = Math.random() * width;
+                const y = Math.random() * height;
+                const size = 15 + Math.random() * 35;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                ctx.fillStyle = color;
+                
+                // Create forest shapes
+                ctx.beginPath();
+                const numPoints = 6;
+                const angleStep = (Math.PI * 2) / numPoints;
+                
+                for (let j = 0; j < numPoints; j++) {
+                    const angle = j * angleStep;
+                    const radiusVariation = 0.7 + Math.random() * 0.6;
+                    const radius = size * radiusVariation;
+                    
+                    const pointX = x + Math.cos(angle) * radius;
+                    const pointY = y + Math.sin(angle) * radius;
+                    
+                    if (j === 0) {
+                        ctx.moveTo(pointX, pointY);
+                    } else {
+                        ctx.lineTo(pointX, pointY);
+                    }
+                }
+                
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        function generateUrbanForExport(ctx, colors, width, height) {
+            const numShapes = Math.floor((width * height) / 1800);
+            
+            for (let i = 0; i < numShapes; i++) {
+                const x = Math.random() * width;
+                const y = Math.random() * height;
+                const size = 18 + Math.random() * 32;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                ctx.fillStyle = color;
+                
+                // Create angular urban shapes
+                ctx.beginPath();
+                const sides = 3 + Math.floor(Math.random() * 4);
+                const angleStep = (Math.PI * 2) / sides;
+                
+                for (let j = 0; j < sides; j++) {
+                    const angle = j * angleStep;
+                    const radius = size * (0.8 + Math.random() * 0.4);
+                    
+                    const pointX = x + Math.cos(angle) * radius;
+                    const pointY = y + Math.sin(angle) * radius;
+                    
+                    if (j === 0) {
+                        ctx.moveTo(pointX, pointY);
+                    } else {
+                        ctx.lineTo(pointX, pointY);
+                    }
+                }
+                
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        function generatePortalForExport(ctx, colors, width, height) {
+            // First draw base forest pattern
+            const numShapes = Math.floor((width * height) / 2000);
+            
+            for (let i = 0; i < numShapes; i++) {
+                const x = Math.random() * width;
+                const y = Math.random() * height;
+                const size = 15 + Math.random() * 25;
+                const color = colors[Math.floor(Math.random() * Math.min(3, colors.length))];
+                
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                
+                // Irregular forest shapes
+                const points = 6 + Math.floor(Math.random() * 4);
+                for (let j = 0; j < points; j++) {
+                    const angle = (j / points) * Math.PI * 2;
+                    const radius = size * (0.7 + Math.random() * 0.6);
+                    const px = x + Math.cos(angle) * radius;
+                    const py = y + Math.sin(angle) * radius;
+                    
+                    if (j === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                ctx.closePath();
+                ctx.fill();
+            }
+            
+            // Add sacred geometry portal frames
+            const numPortals = Math.max(3, Math.floor((width * height) / 50000));
+            const patterns = ['flowerOfLife', 'seedOfLife', 'merkaba', 'sri', 'hexagon'];
+            
+            for (let i = 0; i < numPortals; i++) {
+                const x = Math.random() * width;
+                const y = Math.random() * height;
+                const size = 60 + Math.random() * 80;
+                
+                const frameColor = colors[3] || colors[colors.length - 1];
+                const innerColor = colors[4] || colors[0];
+                const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+                
+                ctx.save();
+                drawSacredGeometryForExport(ctx, pattern, x, y, size, frameColor, innerColor);
+                ctx.restore();
+            }
+        }
+
+        function drawSacredGeometryForExport(ctx, pattern, centerX, centerY, size, frameColor, innerColor) {
+            switch (pattern) {
+                case 'flowerOfLife':
+                    // Center circle
+                    ctx.fillStyle = innerColor;
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, size * 0.6, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Outline
+                    ctx.strokeStyle = frameColor;
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                    
+                    // Surrounding circles
+                    const radius = size * 0.3;
+                    for (let i = 0; i < 6; i++) {
+                        const angle = (i * Math.PI) / 3;
+                        const x = centerX + Math.cos(angle) * radius;
+                        const y = centerY + Math.sin(angle) * radius;
+                        
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius * 0.6, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                    break;
+                    
+                case 'seedOfLife':
+                    // Center circle
+                    ctx.fillStyle = innerColor;
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, size * 0.4, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    ctx.strokeStyle = frameColor;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Six surrounding circles
+                    const seedRadius = size * 0.4;
+                    for (let i = 0; i < 6; i++) {
+                        const angle = (i * Math.PI) / 3;
+                        const x = centerX + Math.cos(angle) * seedRadius;
+                        const y = centerY + Math.sin(angle) * seedRadius;
+                        
+                        ctx.beginPath();
+                        ctx.arc(x, y, seedRadius, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                    break;
+                    
+                case 'merkaba':
+                    // Inner circle
+                    ctx.fillStyle = innerColor;
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, size * 0.3, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Star of David triangles
+                    ctx.strokeStyle = frameColor;
+                    ctx.lineWidth = 3;
+                    const triSize = size * 0.6;
+                    
+                    // Upward triangle
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY - triSize);
+                    ctx.lineTo(centerX - triSize * 0.866, centerY + triSize * 0.5);
+                    ctx.lineTo(centerX + triSize * 0.866, centerY + triSize * 0.5);
+                    ctx.closePath();
+                    ctx.stroke();
+                    
+                    // Downward triangle
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY + triSize);
+                    ctx.lineTo(centerX - triSize * 0.866, centerY - triSize * 0.5);
+                    ctx.lineTo(centerX + triSize * 0.866, centerY - triSize * 0.5);
+                    ctx.closePath();
+                    ctx.stroke();
+                    break;
+                    
+                case 'sri':
+                    // Central dot
+                    ctx.fillStyle = innerColor;
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, size * 0.1, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Multiple interlocking triangles
+                    ctx.strokeStyle = frameColor;
+                    ctx.lineWidth = 2;
+                    const scales = [0.2, 0.4, 0.6, 0.8];
+                    for (let scale of scales) {
+                        const sriSize = size * scale;
+                        
+                        // Upward triangle
+                        ctx.beginPath();
+                        ctx.moveTo(centerX, centerY - sriSize);
+                        ctx.lineTo(centerX - sriSize * 0.866, centerY + sriSize * 0.5);
+                        ctx.lineTo(centerX + sriSize * 0.866, centerY + sriSize * 0.5);
+                        ctx.closePath();
+                        ctx.stroke();
+                        
+                        // Downward triangle
+                        ctx.beginPath();
+                        ctx.moveTo(centerX, centerY + sriSize * 0.8);
+                        ctx.lineTo(centerX - sriSize * 0.7, centerY - sriSize * 0.4);
+                        ctx.lineTo(centerX + sriSize * 0.7, centerY - sriSize * 0.4);
+                        ctx.closePath();
+                        ctx.stroke();
+                    }
+                    break;
+                    
+                default: // hexagon
+                    ctx.fillStyle = frameColor;
+                    ctx.beginPath();
+                    
+                    const sides = 6;
+                    const angleStep = (Math.PI * 2) / sides;
+                    
+                    for (let i = 0; i < sides; i++) {
+                        const angle = i * angleStep;
+                        const radius = size * 0.8;
+                        
+                        const px = centerX + Math.cos(angle) * radius;
+                        const py = centerY + Math.sin(angle) * radius;
+                        
+                        if (i === 0) ctx.moveTo(px, py);
+                        else ctx.lineTo(px, py);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Inner circle
+                    ctx.fillStyle = innerColor;
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, size * 0.6, 0, Math.PI * 2);
+                    ctx.fill();
+            }
+        }
+
+        function varyColorForExport(hexColor, variation) {
+            const r = parseInt(hexColor.slice(1, 3), 16);
+            const g = parseInt(hexColor.slice(3, 5), 16);
+            const b = parseInt(hexColor.slice(5, 7), 16);
+            
+            const vary = (val) => {
+                const change = (Math.random() - 0.5) * variation * 255;
+                return Math.max(0, Math.min(255, Math.round(val + change)));
+            };
+            
+            return `#${vary(r).toString(16).padStart(2, '0')}${vary(g).toString(16).padStart(2, '0')}${vary(b).toString(16).padStart(2, '0')}`;
+        }
+
+        // Bulk selection functions
+        function updateSelectionCount() {
+            const checkboxes = document.querySelectorAll('.pattern-checkbox');
+            const checked = document.querySelectorAll('.pattern-checkbox:checked');
+            const count = checked.length;
+            
+            const countElement = document.getElementById('selectionCount');
+            if (countElement) {
+                countElement.textContent = `${count} selected`;
+            }
+        }
+
+        function selectAllPatterns() {
+            const checkboxes = document.querySelectorAll('.pattern-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            updateSelectionCount();
+        }
+
+        function deselectAllPatterns() {
+            const checkboxes = document.querySelectorAll('.pattern-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            updateSelectionCount();
+        }
+
+        function saveSelectedToLibrary() {
+            const selectedCheckboxes = document.querySelectorAll('.pattern-checkbox:checked');
+            
+            if (selectedCheckboxes.length === 0) {
+                alert('Please select at least one pattern to save to library.');
+                return;
+            }
+
+            let savedCount = 0;
+            
+            selectedCheckboxes.forEach(checkbox => {
+                const patternId = checkbox.value;
+                const patternData = getStoredPatternData(patternId);
+                
+                if (patternData) {
+                    // Save to library without showing individual notifications
+                    try {
+                        let myPatterns = JSON.parse(localStorage.getItem('savoModePatterns') || '[]');
+                        
+                        // Check if pattern already exists
+                        const exists = myPatterns.some(p => p.id === patternData.id);
+                        if (!exists) {
+                            myPatterns.push(patternData);
+                            localStorage.setItem('savoModePatterns', JSON.stringify(myPatterns));
+                            savedCount++;
+                        }
+                    } catch (error) {
+                        console.error('Error saving pattern to library:', error);
+                    }
+                }
+            });
+
+            if (savedCount > 0) {
+                alert(`✅ Successfully saved ${savedCount} pattern(s) to your library!`);
+                // Deselect all after saving
+                deselectAllPatterns();
+            } else {
+                alert('⚠️ Selected patterns were already in your library.');
+            }
+        }
+
+        // Contextual Tooltips System
+        class ContextualTooltipManager {
+            constructor() {
+                this.tips = {
+                    environment: {
+                        temperate: "Temperate forests provide excellent concealment in deciduous woodland with natural earth tones and organic shapes.",
+                        pine: "Pine forests feature darker, denser patterns with needle-like textures perfect for coniferous concealment.",
+                        redwood: "Redwood groves use deep browns and rust colors, ideal for large-scale forest operations.",
+                        jungle: "Dense jungle patterns maximize visual disruption in tropical environments with high contrast elements.",
+                        birch: "Birch woods utilize lighter patterns with distinctive bark-like textures and silver highlights.",
+                        cedar: "Cedar forests emphasize scale-like patterns with varied browns and subtle green undertones.",
+                        splash: "Classic military splash camo with rounded blob shapes for versatile tactical applications.",
+                        'urban-grid': "Urban grid patterns combine angular camo with geometric overlays for city environments.",
+                        'desert-sand': "Desert sand patterns use warm earth tones optimized for arid terrain concealment.",
+                        'arctic-white': "Arctic white patterns feature high contrast elements for snow and ice environments.",
+                        'ocean-blue': "Ocean blue patterns provide maritime camouflage with wave-like fluid shapes.",
+                        'volcanic-rock': "Volcanic rock patterns use dark, angular elements for rocky terrain operations.",
+                        'purple-mountain': "Purple mountain patterns utilize high-altitude color schemes for mountain operations.",
+                        'golden-wheat': "Golden wheat patterns mimic grassland environments with flowing organic textures."
+                    },
+                    season: {
+                        spring: "Spring patterns feature fresh green tones with lighter variations, ideal for early growing season camouflage.",
+                        summer: "Summer patterns use full saturation greens and browns for dense foliage concealment.",
+                        autumn: "Autumn patterns incorporate rust and gold tones matching seasonal foliage changes.",
+                        winter: "Winter patterns emphasize darker, more muted tones for bare branch and snow environments."
+                    },
+                    parameters: {
+                        density: {
+                            low: "Low density creates sparse, open patterns ideal for long-range observation and movement.",
+                            medium: "Medium density provides balanced coverage suitable for most tactical operations.",
+                            high: "High density creates dense, complex patterns for close-range concealment in thick vegetation."
+                        },
+                        scale: {
+                            small: "Small scale patterns work best for close-range operations and detailed concealment.",
+                            medium: "Medium scale patterns provide optimal effectiveness at standard engagement distances.",
+                            large: "Large scale patterns are effective for medium-to-long range operations and vehicle applications."
+                        },
+                        tactical: {
+                            stealth: "Current settings optimized for stealth operations with natural organic appearance.",
+                            assault: "Settings configured for assault operations with enhanced visual disruption.",
+                            recon: "Pattern optimized for reconnaissance with emphasis on long-range concealment.",
+                            urban: "Urban tactical configuration with geometric elements for city environments."
+                        }
+                    }
+                };
+                
+                this.init();
+            }
+
+            init() {
+                this.bindTooltipEvents();
+                this.bindControlEvents();
+                this.showInitialTips();
+            }
+
+            bindTooltipEvents() {
+                // Bind hover events for tooltip triggers
+                document.querySelectorAll('.tooltip-trigger').forEach(trigger => {
+                    const tooltip = trigger.querySelector('.tooltip');
+                    if (tooltip) {
+                        trigger.addEventListener('mouseenter', () => {
+                            tooltip.classList.add('show');
+                        });
+                        
+                        trigger.addEventListener('mouseleave', () => {
+                            tooltip.classList.remove('show');
+                        });
+                    }
+                });
+            }
+
+            bindControlEvents() {
+                // Environment selection
+                document.querySelectorAll('.forest-type-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const type = btn.dataset.type;
+                        this.updateEnvironmentTip(type);
+                    });
+                });
+
+                // Season selection
+                document.querySelectorAll('.season-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const season = btn.dataset.season;
+                        this.updateSeasonTip(season);
+                    });
+                });
+
+                // Parameter sliders
+                const paramSliders = ['density', 'scale', 'irregularity', 'colorVariation'];
+                paramSliders.forEach(param => {
+                    const slider = document.getElementById(param);
+                    if (slider) {
+                        slider.addEventListener('input', () => {
+                            this.updateParameterTip(param, slider.value);
+                        });
+                    }
+                });
+            }
+
+            updateEnvironmentTip(type) {
+                const tip = this.tips.environment[type];
+                if (tip) {
+                    const tipElement = document.getElementById('environmentTip');
+                    const textElement = document.getElementById('environmentTipText');
+                    if (tipElement && textElement) {
+                        textElement.textContent = tip;
+                        tipElement.classList.add('show');
+                        
+                        // Auto-hide after 5 seconds
+                        setTimeout(() => {
+                            tipElement.classList.remove('show');
+                        }, 5000);
+                    }
+                }
+            }
+
+            updateSeasonTip(season) {
+                const tip = this.tips.season[season];
+                if (tip) {
+                    const tipElement = document.getElementById('seasonTip');
+                    const textElement = document.getElementById('seasonTipText');
+                    if (tipElement && textElement) {
+                        textElement.textContent = tip;
+                        tipElement.classList.add('show');
+                        
+                        // Auto-hide after 5 seconds
+                        setTimeout(() => {
+                            tipElement.classList.remove('show');
+                        }, 5000);
+                    }
+                }
+            }
+
+            updateParameterTip(param, value) {
+                const tipElement = document.getElementById('parameterTip');
+                const textElement = document.getElementById('parameterTipText');
+                
+                if (tipElement && textElement) {
+                    let tipText = this.generateParameterTip(param, value);
+                    textElement.textContent = tipText;
+                    tipElement.classList.add('show');
+                    
+                    // Auto-hide after 4 seconds
+                    setTimeout(() => {
+                        tipElement.classList.remove('show');
+                    }, 4000);
+                }
+            }
+
+            generateParameterTip(param, value) {
+                const numValue = parseInt(value);
+                
+                switch(param) {
+                    case 'density':
+                        if (numValue < 30) return "Low density creates sparse, open patterns ideal for long-range observation and movement.";
+                        if (numValue < 70) return "Medium density provides balanced coverage suitable for most tactical operations.";
+                        return "High density creates dense, complex patterns for close-range concealment in thick vegetation.";
+                    
+                    case 'scale':
+                        if (numValue < 20) return "Small scale patterns work best for close-range operations and detailed concealment.";
+                        if (numValue < 35) return "Medium scale patterns provide optimal effectiveness at standard engagement distances.";
+                        return "Large scale patterns are effective for medium-to-long range operations and vehicle applications.";
+                    
+                    case 'irregularity':
+                        if (numValue < 40) return "Low irregularity creates more uniform, geometric patterns suitable for urban environments.";
+                        if (numValue < 80) return "Medium irregularity balances natural appearance with tactical effectiveness.";
+                        return "High irregularity maximizes natural camouflage with organic, unpredictable shapes.";
+                    
+                    case 'colorVariation':
+                        if (numValue < 35) return "Low color variation creates subtle, uniform patterns ideal for consistent lighting conditions.";
+                        if (numValue < 70) return "Medium color variation provides natural depth and texture for most environments.";
+                        return "High color variation maximizes visual disruption in varied lighting and terrain conditions.";
+                    
+                    default:
+                        return "Current settings optimized for medium-range forest operations with natural appearance.";
+                }
+            }
+
+            showInitialTips() {
+                // Show initial environment tip
+                this.updateEnvironmentTip('temperate');
+                
+                // Show initial season tip after 2 seconds
+                setTimeout(() => {
+                    this.updateSeasonTip('spring');
+                }, 2000);
+            }
+
+            showExpertTip(message, type = 'expert') {
+                const tipElement = document.getElementById('parameterTip');
+                const textElement = document.getElementById('parameterTipText');
+                
+                if (tipElement && textElement) {
+                    tipElement.className = `contextual-tip show ${type}`;
+                    textElement.textContent = message;
+                    
+                    // Auto-hide after 6 seconds
+                    setTimeout(() => {
+                        tipElement.classList.remove('show');
+                        tipElement.className = 'contextual-tip tactical';
+                    }, 6000);
+                }
+            }
+        }
+
+        // Initialize tooltips when DOM is ready
+        let tooltipManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            tooltipManager = new ContextualTooltipManager();
+        });
+
+        // Sacred Geometry Controls
+        function initializeGeometryControls() {
+            const geometryToggle = document.getElementById('geometryEnabled');
+            const geometryOptions = document.getElementById('geometryOptions');
+            const geometryBtns = document.querySelectorAll('.geometry-btn');
+            const geometryScale = document.getElementById('geometryScale');
+            const geometryOpacity = document.getElementById('geometryOpacity');
+            const geometryStroke = document.getElementById('geometryStroke');
+
+            // Toggle visibility of geometry options
+            geometryToggle.addEventListener('change', () => {
+                geometryOptions.style.display = geometryToggle.checked ? 'block' : 'none';
+                updateGeometryDisplay();
+                
+                // Show contextual tip for digital tactical
+                if (geometryToggle.checked && tooltipManager) {
+                    tooltipManager.showExpertTip("Digital tactical overlay activated. These cyber elements enhance modern warfare effectiveness.", 'tactical');
+                }
+            });
+
+            // Pattern selection
+            geometryBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    geometryBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    updateGeometryDisplay();
+                    
+                    // Show pattern-specific tip
+                    if (tooltipManager) {
+                        const pattern = btn.dataset.pattern;
+                        const patternTips = {
+                            cyberDots: "Cyber dots provide scattered tactical disruption with glowing neon elements.",
+                            circuitCamo: "Circuit camo uses PCB-style angular paths for tech-enhanced concealment.",
+                            dataStream: "Data stream patterns feature flowing curves with digital data packets.",
+                            pixelBurst: "Pixel burst creates blocky digital explosions for cyber warfare aesthetics.",
+                            neonGrid: "Neon grid adds sparse glowing grid lines for futuristic tactical appearance."
+                        };
+                        
+                        const tip = patternTips[pattern] || "Digital tactical pattern selected for modern warfare applications.";
+                        tooltipManager.showExpertTip(tip, 'tactical');
+                    }
+                });
+            });
+
+            // Update value displays and regenerate
+            [geometryScale, geometryOpacity, geometryStroke].forEach(control => {
+                control.addEventListener('input', () => {
+                    updateValueDisplay(control);
+                    updateGeometryDisplay();
+                });
+            });
+
+            // Initialize value displays
+            updateValueDisplay(geometryScale);
+            updateValueDisplay(geometryOpacity);
+            updateValueDisplay(geometryStroke);
+        }
+
+        function updateValueDisplay(control) {
+            const valueDisplay = control.parentElement.querySelector('.value-display');
+            if (control.id === 'geometryScale') {
+                const value = parseInt(control.value);
+                if (value <= 5) {
+                    valueDisplay.textContent = 'Sparse';
+                } else if (value <= 10) {
+                    valueDisplay.textContent = 'Medium';
+                } else if (value <= 15) {
+                    valueDisplay.textContent = 'Dense';
+                } else {
+                    valueDisplay.textContent = 'Intense';
+                }
+            } else if (control.id === 'geometryOpacity') {
+                valueDisplay.textContent = Math.round(control.value * 100) + '%';
+            } else if (control.id === 'geometryStroke') {
+                const value = parseInt(control.value);
+                if (value <= 3) {
+                    valueDisplay.textContent = 'Small';
+                } else if (value <= 6) {
+                    valueDisplay.textContent = 'Medium';
+                } else {
+                    valueDisplay.textContent = 'Large';
+                }
+            }
+        }
+
+        function updateGeometryDisplay() {
+            if (window.forestGenerator) {
+                window.forestGenerator.generateForestPattern();
+            }
+        }
+
+        // Function to update percentage displays
+        function initializePercentageDisplays() {
+            // Define slider configurations with their min/max values
+            const sliders = [
+                { slider: 'density', display: 'densityPercent', min: 10, max: 90 },
+                { slider: 'scale', display: 'scalePercent', min: 5, max: 50 },
+                { slider: 'irregularity', display: 'irregularityPercent', min: 0, max: 100 },
+                { slider: 'colorVariation', display: 'colorVariationPercent', min: 10, max: 100 }
+            ];
+
+            sliders.forEach(({ slider, display, min, max }) => {
+                const sliderElement = document.getElementById(slider);
+                const displayElement = document.getElementById(display);
+                
+                if (sliderElement && displayElement) {
+                    // Function to calculate and update percentage
+                    const updatePercentage = () => {
+                        const value = parseInt(sliderElement.value);
+                        const percentage = Math.round(((value - min) / (max - min)) * 100);
+                        displayElement.textContent = `${percentage}%`;
+                    };
+                    
+                    // Set initial percentage value
+                    updatePercentage();
+                    
+                    // Update percentage in real-time as slider moves
+                    sliderElement.addEventListener('input', updatePercentage);
+                    sliderElement.addEventListener('change', updatePercentage);
+                }
+            });
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', () => {
+            window.forestGenerator = new ForestPatternGenerator();
+            
+            // Initialize percentage displays for sliders
+            initializePercentageDisplays();
+            initializeGeometryControls();
+        });
+    </script>
+    <script src="js/accessibility.js"></script>
+</body>
+</html>

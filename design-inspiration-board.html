@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Inspiration Board - Savo Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="css/design-inspiration-board.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="inspiration-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <h1 class="logo">Savo Studio</h1>
+                    <span class="tagline">Design Inspiration Board</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="showUploadModal()">
+                        <i data-feather="upload"></i>
+                        Add Inspiration
+                    </button>
+                    <button class="btn btn-secondary" onclick="toggleGridView()">
+                        <i data-feather="grid"></i>
+                        View Mode
+                    </button>
+                    <a href="index.html" class="btn btn-outline">
+                        <i data-feather="home"></i>
+                        Back to Studio
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-section">
+                <h3>Categories</h3>
+                <div class="filter-tags">
+                    <button class="filter-tag active" data-category="all">All</button>
+                    <button class="filter-tag" data-category="nature">Nature</button>
+                    <button class="filter-tag" data-category="tactical">Tactical</button>
+                    <button class="filter-tag" data-category="colors">Colors</button>
+                    <button class="filter-tag" data-category="patterns">Patterns</button>
+                    <button class="filter-tag" data-category="textures">Textures</button>
+                    <button class="filter-tag" data-category="typography">Typography</button>
+                    <button class="filter-tag" data-category="branding">Branding</button>
+                </div>
+            </div>
+            <div class="filter-section">
+                <h3>Mood</h3>
+                <div class="filter-tags">
+                    <button class="filter-tag" data-mood="energetic">Energetic</button>
+                    <button class="filter-tag" data-mood="calm">Calm</button>
+                    <button class="filter-tag" data-mood="bold">Bold</button>
+                    <button class="filter-tag" data-mood="minimal">Minimal</button>
+                    <button class="filter-tag" data-mood="organic">Organic</button>
+                    <button class="filter-tag" data-mood="industrial">Industrial</button>
+                </div>
+            </div>
+            <div class="search-section">
+                <div class="search-container">
+                    <i data-feather="search"></i>
+                    <input type="text" placeholder="Search inspiration..." id="search-input">
+                </div>
+            </div>
+        </div>
+
+        <!-- Inspiration Board -->
+        <div class="inspiration-board" id="inspiration-board">
+            <!-- Dynamic content will be loaded here -->
+        </div>
+
+        <!-- Upload Modal -->
+        <div class="modal-overlay" id="upload-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add New Inspiration</h3>
+                    <button class="close-btn" onclick="hideUploadModal()">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="inspiration-form">
+                        <div class="form-group">
+                            <label for="inspiration-title">Title</label>
+                            <input type="text" id="inspiration-title" placeholder="What inspires you about this?">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="inspiration-description">Description</label>
+                            <textarea id="inspiration-description" placeholder="Describe what makes this inspiring..."></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="inspiration-category">Category</label>
+                                <select id="inspiration-category">
+                                    <option value="nature">Nature</option>
+                                    <option value="tactical">Tactical</option>
+                                    <option value="colors">Colors</option>
+                                    <option value="patterns">Patterns</option>
+                                    <option value="textures">Textures</option>
+                                    <option value="typography">Typography</option>
+                                    <option value="branding">Branding</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="inspiration-mood">Mood</label>
+                                <select id="inspiration-mood">
+                                    <option value="energetic">Energetic</option>
+                                    <option value="calm">Calm</option>
+                                    <option value="bold">Bold</option>
+                                    <option value="minimal">Minimal</option>
+                                    <option value="organic">Organic</option>
+                                    <option value="industrial">Industrial</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="inspiration-tags">Tags</label>
+                            <input type="text" id="inspiration-tags" placeholder="forest, camo, green, outdoor (comma separated)">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="inspiration-source">Source URL (optional)</label>
+                            <input type="url" id="inspiration-source" placeholder="https://...">
+                        </div>
+                        
+                        <div class="upload-section">
+                            <div class="upload-area" id="upload-area">
+                                <i data-feather="upload-cloud"></i>
+                                <p>Drag & drop an image or click to browse</p>
+                                <input type="file" id="image-upload" accept="image/*">
+                            </div>
+                            <div class="upload-preview" id="upload-preview"></div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="hideUploadModal()">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Add to Board</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inspiration Detail Modal -->
+        <div class="modal-overlay" id="detail-modal">
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <div class="detail-header">
+                        <h3 id="detail-title"></h3>
+                        <div class="detail-actions">
+                            <button class="btn btn-sm btn-secondary" onclick="extractColors()">
+                                <i data-feather="palette"></i>
+                                Extract Colors
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="analyzePattern()">
+                                <i data-feather="target"></i>
+                                Analyze Pattern
+                            </button>
+                            <button class="btn btn-sm btn-primary" onclick="createFromInspiration()">
+                                <i data-feather="plus"></i>
+                                Create Pattern
+                            </button>
+                        </div>
+                    </div>
+                    <button class="close-btn" onclick="hideDetailModal()">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="detail-content">
+                        <div class="detail-image">
+                            <img id="detail-image" src="" alt="">
+                        </div>
+                        <div class="detail-info">
+                            <div class="detail-section">
+                                <h4>Description</h4>
+                                <p id="detail-description"></p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Category & Mood</h4>
+                                <div class="detail-tags">
+                                    <span class="tag" id="detail-category"></span>
+                                    <span class="tag" id="detail-mood"></span>
+                                </div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Tags</h4>
+                                <div class="detail-tags" id="detail-tags"></div>
+                            </div>
+                            <div class="detail-section" id="color-analysis">
+                                <h4>Color Analysis</h4>
+                                <div class="color-palette" id="extracted-colors"></div>
+                            </div>
+                            <div class="detail-section" id="pattern-analysis">
+                                <h4>Pattern Analysis</h4>
+                                <div class="analysis-results" id="pattern-results"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/design-inspiration-board.js"></script>
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+    </script>
+</body>
+</html>

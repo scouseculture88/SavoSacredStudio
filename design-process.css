@@ -1,0 +1,482 @@
+/* Design Process Visualizer Styles */
+
+/* Hero Section */
+.process-hero {
+    padding: 120px 0 80px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.process-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    opacity: 0.5;
+}
+
+.process-hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    z-index: 1;
+}
+
+.process-hero-subtitle {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    position: relative;
+    z-index: 1;
+}
+
+.process-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 3rem;
+    position: relative;
+    z-index: 1;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #27ae60;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Process Flow */
+.process-flow {
+    padding: 80px 0;
+    background: #f8f9fa;
+    min-height: 100vh;
+    position: relative;
+}
+
+.process-timeline {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #27ae60, #2ecc71);
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.process-phase {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4rem;
+    position: relative;
+    z-index: 2;
+}
+
+.process-phase:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+.process-phase:nth-child(even) .phase-content {
+    text-align: right;
+}
+
+.phase-marker {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    background: #27ae60;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(39, 174, 96, 0.3);
+}
+
+.phase-marker:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 30px rgba(39, 174, 96, 0.5);
+}
+
+.phase-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+}
+
+.phase-pulse {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    border: 2px solid #27ae60;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.4);
+        opacity: 0;
+    }
+}
+
+.phase-content {
+    flex: 1;
+    max-width: 300px;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.phase-content:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.phase-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.phase-description {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.phase-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tool-tag {
+    background: #e8f5e8;
+    color: #27ae60;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Interactive Canvas */
+.interactive-canvas {
+    padding: 80px 0;
+    background: white;
+}
+
+.canvas-container {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 3rem;
+    margin-top: 3rem;
+    min-height: 400px;
+    position: relative;
+    overflow: hidden;
+}
+
+.canvas-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 25%, rgba(39, 174, 96, 0.05) 25%, rgba(39, 174, 96, 0.05) 50%, transparent 50%, transparent 75%, rgba(39, 174, 96, 0.05) 75%);
+    background-size: 20px 20px;
+    pointer-events: none;
+}
+
+.canvas-content {
+    position: relative;
+    z-index: 1;
+}
+
+.canvas-default {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.canvas-default.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.canvas-icon {
+    color: #27ae60;
+    margin-bottom: 1rem;
+}
+
+.canvas-phase {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.canvas-phase.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.phase-showcase h3 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.methodology-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.method-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.method-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.method-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.method-card h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.method-card p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.example-project {
+    background: #e8f5e8;
+    padding: 2rem;
+    border-radius: 12px;
+    border-left: 4px solid #27ae60;
+}
+
+.example-project h4 {
+    color: #27ae60;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.example-project p {
+    color: #2c3e50;
+    line-height: 1.6;
+}
+
+/* Design Principles */
+.design-principles {
+    padding: 80px 0;
+    background: #f8f9fa;
+}
+
+.principles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.principle-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.principle-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #27ae60, #2ecc71);
+}
+
+.principle-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.principle-icon {
+    color: #27ae60;
+    margin-bottom: 1.5rem;
+}
+
+.principle-card h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.principle-card p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .process-hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .process-stats {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .timeline-line {
+        left: 40px;
+    }
+    
+    .process-phase {
+        flex-direction: row !important;
+        align-items: flex-start;
+    }
+    
+    .process-phase:nth-child(even) .phase-content {
+        text-align: left;
+    }
+    
+    .phase-marker {
+        width: 60px;
+        height: 60px;
+        margin: 0 1rem 0 0;
+    }
+    
+    .phase-number {
+        font-size: 1.25rem;
+    }
+    
+    .phase-content {
+        max-width: none;
+        flex: 1;
+    }
+    
+    .methodology-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .canvas-container {
+        padding: 2rem;
+    }
+    
+    .principles-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .process-flow {
+        background: #1a1a1a;
+    }
+    
+    .phase-content {
+        background: #2d2d2d;
+        color: white;
+    }
+    
+    .phase-title {
+        color: #e8f5e8;
+    }
+    
+    .phase-description {
+        color: #ccc;
+    }
+    
+    .interactive-canvas {
+        background: #1a1a1a;
+    }
+    
+    .canvas-container {
+        background: #2d2d2d;
+    }
+    
+    .design-principles {
+        background: #1a1a1a;
+    }
+    
+    .principle-card, .method-card {
+        background: #2d2d2d;
+        color: white;
+    }
+    
+    .principle-card h3, .method-card h4 {
+        color: #e8f5e8;
+    }
+    
+    .principle-card p, .method-card p {
+        color: #ccc;
+    }
+}

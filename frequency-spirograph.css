@@ -1,0 +1,416 @@
+/* Frequency Spirograph Styles */
+.spirograph-main {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a40 50%, #2d1b69 100%);
+    padding: 120px 20px 40px;
+    color: white;
+}
+
+.spirograph-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.spirograph-header h1 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 4rem;
+    background: linear-gradient(45deg, #ff6b35, #f7931e, #00ff88);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+    text-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
+}
+
+.spirograph-header p {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.spirograph-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    display: grid;
+    gap: 40px;
+    grid-template-columns: 1fr 1fr;
+}
+
+.spirograph-section {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid rgba(255, 107, 53, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.spirograph-section:nth-child(even) {
+    border-color: rgba(0, 255, 136, 0.2);
+}
+
+.spirograph-section:nth-child(3), .spirograph-section:nth-child(4) {
+    grid-column: 1 / -1;
+}
+
+.spirograph-section h2 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    color: #ff6b35;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* Frequency Controls */
+.frequency-inputs {
+    display: grid;
+    gap: 25px;
+}
+
+.freq-control-group {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid rgba(255, 107, 53, 0.3);
+}
+
+.freq-control-group h3 {
+    color: #ff6b35;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.control-row label {
+    min-width: 100px;
+    font-weight: 500;
+    color: #00ff88;
+}
+
+.control-row input[type="range"] {
+    flex: 1;
+    min-width: 150px;
+    appearance: none;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    outline: none;
+}
+
+.control-row input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(45deg, #ff6b35, #f7931e);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.control-row select {
+    flex: 1;
+    min-width: 150px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 107, 53, 0.3);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+}
+
+.control-row span {
+    min-width: 80px;
+    font-weight: 600;
+    color: #f7931e;
+}
+
+.play-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #00ff88, #7cff50);
+    color: #0f0f23;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.play-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);
+}
+
+/* Frequency Presets */
+.frequency-presets {
+    margin-top: 25px;
+}
+
+.frequency-presets h3 {
+    color: #00ff88;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.preset-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.preset-btn {
+    padding: 10px 15px;
+    border: 2px solid rgba(255, 107, 53, 0.3);
+    background: transparent;
+    color: #ff6b35;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.preset-btn:hover, .preset-btn.active {
+    background: linear-gradient(45deg, #ff6b35, #f7931e);
+    color: white;
+    border-color: #ff6b35;
+    transform: translateY(-2px);
+}
+
+/* Pattern Controls */
+.pattern-controls {
+    display: grid;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.drawing-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.control-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: 2px solid rgba(255, 107, 53, 0.3);
+    background: transparent;
+    color: #ff6b35;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.control-btn.primary {
+    background: linear-gradient(45deg, #ff6b35, #f7931e);
+    color: white;
+    border-color: #ff6b35;
+}
+
+.control-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+}
+
+.control-btn.primary:hover {
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
+}
+
+/* Canvas Styles */
+#spirographCanvas {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    aspect-ratio: 1;
+    border: 2px solid rgba(255, 107, 53, 0.3);
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.4);
+    display: block;
+    margin: 0 auto;
+}
+
+#frequencyDisplay {
+    width: 100%;
+    max-width: 400px;
+    height: 200px;
+    border: 2px solid rgba(0, 255, 136, 0.3);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    display: block;
+    margin: 0 auto 20px;
+}
+
+/* Audio Controls */
+.audio-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.audio-settings {
+    display: grid;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.frequency-display {
+    text-align: center;
+}
+
+.audio-status {
+    margin-top: 15px;
+}
+
+#audioStatus, #dominantFrequencies {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(0, 255, 136, 0.2);
+}
+
+/* Mathematical Analysis */
+.math-display {
+    display: grid;
+    gap: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.equation-display, .parameter-display, .frequency-analysis {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid rgba(255, 107, 53, 0.3);
+}
+
+.equation-display h3, .parameter-display h3, .frequency-analysis h3 {
+    color: #ff6b35;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.equation {
+    background: rgba(255, 107, 53, 0.1);
+    border: 1px solid rgba(255, 107, 53, 0.3);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: #f7931e;
+}
+
+.param, .relationship {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.param:last-child, .relationship:last-child {
+    border-bottom: none;
+}
+
+.param span, .relationship span {
+    font-weight: 600;
+    color: #00ff88;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .spirograph-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .spirograph-section:nth-child(3), .spirograph-section:nth-child(4) {
+        grid-column: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .spirograph-header h1 {
+        font-size: 2.5rem;
+    }
+    
+    .control-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .control-row label {
+        min-width: auto;
+    }
+    
+    .drawing-controls {
+        flex-direction: column;
+    }
+    
+    .audio-controls {
+        flex-direction: column;
+    }
+    
+    .preset-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .math-display {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animation for active drawing */
+.drawing-active #spirographCanvas {
+    border-color: #00ff88;
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+    animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+    0%, 100% { 
+        border-color: #00ff88; 
+        box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+    }
+    50% { 
+        border-color: #7cff50; 
+        box-shadow: 0 0 40px rgba(124, 255, 80, 0.5);
+    }
+}
+
+/* Tesla Energy Effects */
+.tesla-active {
+    animation: tesla-glow 3s infinite;
+}
+
+@keyframes tesla-glow {
+    0%, 100% { 
+        border-color: #ff6b35; 
+        box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+    }
+    33% { 
+        border-color: #00ff88; 
+        box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+    }
+    66% { 
+        border-color: #7cff50; 
+        box-shadow: 0 0 25px rgba(124, 255, 80, 0.4);
+    }
+}

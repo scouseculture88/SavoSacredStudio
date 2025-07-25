@@ -1,0 +1,434 @@
+/* Accessibility Features for Savo Mode */
+
+/* Color Blind Accessibility */
+.colorblind-filter {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    padding: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.colorblind-filter h4 {
+    color: white;
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.colorblind-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.colorblind-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.colorblind-option:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.colorblind-option input[type="radio"] {
+    accent-color: var(--primary-color);
+}
+
+/* Color Blind Filter Effects */
+.deuteranopia-filter {
+    filter: url(#deuteranopia);
+}
+
+.protanopia-filter {
+    filter: url(#protanopia);
+}
+
+.tritanopia-filter {
+    filter: url(#tritanopia);
+}
+
+.high-contrast-filter {
+    filter: contrast(150%) brightness(110%);
+}
+
+.monochrome-filter {
+    filter: grayscale(100%) contrast(120%);
+}
+
+/* SVG Filters for Color Blindness */
+.accessibility-filters {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+/* Pattern Accessibility - Add textures for color blind users */
+.pattern-accessible {
+    position: relative;
+}
+
+.pattern-accessible::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 2px,
+            rgba(255, 255, 255, 0.1) 2px,
+            rgba(255, 255, 255, 0.1) 4px
+        );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pattern-accessible.show-texture::before {
+    opacity: 1;
+}
+
+/* High Contrast Mode */
+.high-contrast {
+    --background-color: #000000;
+    --text-color: #ffffff;
+    --primary-color: #ffff00;
+    --secondary-color: #ffffff;
+    --accent-color: #00ffff;
+    --border-color: #ffffff;
+}
+
+.high-contrast .btn {
+    border: 2px solid var(--border-color);
+    background: var(--background-color);
+    color: var(--text-color);
+}
+
+.high-contrast .btn:hover {
+    background: var(--primary-color);
+    color: var(--background-color);
+}
+
+/* Motion Reduction */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .dynamic-background {
+        animation: none !important;
+    }
+    
+    .floating-particles {
+        display: none !important;
+    }
+}
+
+/* Screen Reader Accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.sr-only-focusable:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+}
+
+/* Focus Indicators */
+.accessible-focus:focus {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 5px rgba(124, 255, 80, 0.3);
+}
+
+/* Pattern Description for Screen Readers */
+.pattern-description {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.pattern-card:focus .pattern-description,
+.pattern-card:hover .pattern-description {
+    position: static;
+    width: auto;
+    height: auto;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+/* Keyboard Navigation */
+.keyboard-nav {
+    display: none;
+}
+
+.keyboard-user .keyboard-nav {
+    display: block;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 1001;
+}
+
+/* Font Size Controls */
+.font-size-controls {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    display: flex;
+    gap: 5px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 10px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.font-size-btn {
+    background: var(--primary-color);
+    color: black;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.font-size-btn:hover {
+    background: var(--accent-color);
+    transform: scale(1.05);
+}
+
+/* Font Size Classes */
+.font-small {
+    font-size: 0.9em;
+}
+
+.font-normal {
+    font-size: 1em;
+}
+
+.font-large {
+    font-size: 1.2em;
+}
+
+.font-xl {
+    font-size: 1.4em;
+}
+
+/* Pattern Color Labels */
+.color-label {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pattern-card:hover .color-label,
+.pattern-card:focus .color-label {
+    opacity: 1;
+}
+
+/* Accessibility Controls Toggle */
+.accessibility-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: var(--primary-color);
+    color: black;
+    border: none;
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.accessibility-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.accessibility-panel {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-width: 250px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.accessibility-panel.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+.accessibility-section {
+    margin-bottom: 15px;
+}
+
+.accessibility-section h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: var(--primary-color);
+}
+
+.accessibility-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.accessibility-option:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.accessibility-option input {
+    accent-color: var(--primary-color);
+}
+
+.accessibility-option label {
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* Mobile Accessibility */
+@media (max-width: 768px) {
+    .colorblind-filter,
+    .font-size-controls {
+        position: static;
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
+    
+    .accessibility-panel {
+        right: 10px;
+        left: 10px;
+        bottom: 70px;
+        width: auto;
+    }
+    
+    .accessibility-toggle {
+        bottom: 10px;
+        right: 10px;
+    }
+}
+
+/* Pattern Alternative Text */
+.pattern-alt-text {
+    display: none;
+}
+
+.show-alt-text .pattern-alt-text {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 10px;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/* Dyslexia-Friendly Font */
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap');
+
+.dyslexia-font {
+    font-family: 'Atkinson Hyperlegible', 'OpenDyslexic', Arial, sans-serif !important;
+}
+
+.dyslexia-font * {
+    font-family: 'Atkinson Hyperlegible', 'OpenDyslexic', Arial, sans-serif !important;
+}
+
+/* Loading States for Screen Readers */
+.loading-announcement {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.loading-announcement.announce {
+    position: static;
+    width: auto;
+    height: auto;
+    background: var(--primary-color);
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+    font-weight: bold;
+}

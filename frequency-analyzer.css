@@ -1,0 +1,461 @@
+/* Frequency Analyzer Styles */
+.frequency-main {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 120px 20px 40px;
+    color: white;
+}
+
+.frequency-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.frequency-header h1 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 4rem;
+    background: linear-gradient(45deg, #00ff88, #7cff50, #44ff00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+    text-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+}
+
+.frequency-header p {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.frequency-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    gap: 40px;
+}
+
+.frequency-section {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.frequency-section h2 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    color: #00ff88;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* Audio Input Controls */
+.audio-input-controls {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.input-method {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.record-btn, .stop-btn, .upload-btn, .test-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.record-btn {
+    background: linear-gradient(45deg, #ff4757, #ff3742);
+    color: white;
+}
+
+.record-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4);
+}
+
+.stop-btn {
+    background: linear-gradient(45deg, #747d8c, #57606f);
+    color: white;
+}
+
+.stop-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.upload-btn {
+    background: linear-gradient(45deg, #5352ed, #3742fa);
+    color: white;
+    cursor: pointer;
+}
+
+.test-btn {
+    background: linear-gradient(45deg, #00ff88, #7cff50);
+    color: #1a1a2e;
+    font-weight: 600;
+}
+
+#testFrequency {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 0.9rem;
+}
+
+.recording-status {
+    text-align: center;
+    margin-top: 20px;
+    font-weight: 500;
+    min-height: 25px;
+}
+
+.recording-status.recording {
+    color: #ff4757;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Frequency Analysis Display */
+.analysis-display {
+    display: grid;
+    gap: 30px;
+    grid-template-columns: 1fr 400px;
+}
+
+#frequencyCanvas {
+    width: 100%;
+    max-width: 800px;
+    height: 400px;
+    border: 2px solid rgba(0, 255, 136, 0.3);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.frequency-info {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.frequency-info h3 {
+    font-family: 'Bebas Neue', cursive;
+    color: #00ff88;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.freq-list, .tesla-results, .solfeggio-results {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 15px;
+    min-height: 80px;
+    border: 1px solid rgba(0, 255, 136, 0.2);
+}
+
+.freq-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.freq-item:last-child {
+    border-bottom: none;
+}
+
+.freq-hz {
+    font-weight: 600;
+    color: #00ff88;
+}
+
+.freq-amplitude {
+    opacity: 0.7;
+}
+
+/* Pattern Generation */
+.pattern-controls {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    margin-bottom: 30px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.control-group label {
+    font-weight: 500;
+    color: #00ff88;
+}
+
+.control-group select, .control-group input[type="range"] {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.control-group input[type="range"] {
+    appearance: none;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.control-group input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(45deg, #00ff88, #7cff50);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.generate-btn {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px 30px;
+    background: linear-gradient(45deg, #00ff88, #7cff50);
+    color: #1a1a2e;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+}
+
+#patternCanvas {
+    width: 100%;
+    max-width: 600px;
+    height: 600px;
+    border: 2px solid rgba(0, 255, 136, 0.3);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    margin: 0 auto;
+    display: block;
+}
+
+/* Healing Frequency Database */
+.frequency-categories {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.category-btn {
+    padding: 10px 20px;
+    border: 2px solid rgba(0, 255, 136, 0.3);
+    background: transparent;
+    color: white;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.category-btn.active, .category-btn:hover {
+    background: linear-gradient(45deg, #00ff88, #7cff50);
+    color: #1a1a2e;
+    border-color: #00ff88;
+}
+
+.frequency-list-container {
+    display: grid;
+    gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.frequency-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.frequency-card:hover {
+    border-color: #00ff88;
+    background: rgba(0, 255, 136, 0.1);
+    transform: translateY(-2px);
+}
+
+.frequency-card h4 {
+    color: #00ff88;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.frequency-card .hz {
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.frequency-card .description {
+    opacity: 0.8;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Export Controls */
+.export-controls {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.export-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.export-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Plant Bioacoustics Section */
+.plant-bioacoustics {
+    background: linear-gradient(135deg, rgba(34, 139, 34, 0.1), rgba(0, 255, 136, 0.05));
+    border: 2px solid rgba(34, 139, 34, 0.3);
+}
+
+.plant-bioacoustics h2 {
+    color: #32cd32;
+}
+
+.plant-controls {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    margin-bottom: 25px;
+}
+
+.plant-type-selector {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.plant-btn {
+    padding: 8px 16px;
+    border: 2px solid rgba(34, 139, 34, 0.5);
+    background: transparent;
+    color: #32cd32;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.plant-btn.active, .plant-btn:hover {
+    background: rgba(34, 139, 34, 0.3);
+    border-color: #32cd32;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .frequency-header h1 {
+        font-size: 2.5rem;
+    }
+    
+    .analysis-display {
+        grid-template-columns: 1fr;
+    }
+    
+    .audio-input-controls {
+        grid-template-columns: 1fr;
+    }
+    
+    .pattern-controls {
+        grid-template-columns: 1fr;
+    }
+    
+    .frequency-categories {
+        justify-content: center;
+    }
+    
+    .export-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* Tesla Analysis Specific Styles */
+.tesla-frequency {
+    color: #ff6b35;
+    font-weight: 600;
+}
+
+.tesla-match {
+    background: linear-gradient(45deg, rgba(255, 107, 53, 0.2), rgba(255, 107, 53, 0.1));
+    border: 1px solid rgba(255, 107, 53, 0.3);
+    border-radius: 8px;
+    padding: 10px;
+    margin: 5px 0;
+}
+
+/* Solfeggio Detection Styles */
+.solfeggio-detected {
+    color: #7cff50;
+    font-weight: 600;
+}
+
+.solfeggio-match {
+    background: linear-gradient(45deg, rgba(124, 255, 80, 0.2), rgba(124, 255, 80, 0.1));
+    border: 1px solid rgba(124, 255, 80, 0.3);
+    border-radius: 8px;
+    padding: 10px;
+    margin: 5px 0;
+}

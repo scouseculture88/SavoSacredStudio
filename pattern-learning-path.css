@@ -1,0 +1,535 @@
+/* Pattern Learning Path Styles */
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background: #0a0a0a;
+}
+
+.learning-main {
+    padding-top: 80px;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    min-height: 100vh;
+    color: #ffffff;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.learning-main::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    z-index: -1;
+}
+
+.learning-header {
+    text-align: center;
+    margin-bottom: 60px;
+    padding: 40px 0;
+}
+
+.learning-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 4rem;
+    font-weight: 400;
+    margin-bottom: 20px;
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.learning-subtitle {
+    font-size: 1.2rem;
+    color: #cccccc;
+    max-width: 600px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+}
+
+.progress-overview {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 800px;
+    margin: 0 auto;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.progress-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #27ae60;
+    margin-bottom: 10px;
+}
+
+.stat-label {
+    color: #cccccc;
+    font-size: 1rem;
+}
+
+.progress-bar {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    height: 15px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.learning-section {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 40px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #27ae60;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Modules Grid */
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 30px;
+}
+
+.module-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 25px;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.module-card:hover {
+    transform: translateY(-5px);
+}
+
+.module-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.module-icon {
+    font-size: 2rem;
+    margin-right: 15px;
+}
+
+.module-header h3 {
+    flex: 1;
+    color: #27ae60;
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.module-progress {
+    text-align: right;
+}
+
+.progress-text {
+    display: block;
+    color: #cccccc;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.progress-mini {
+    width: 100px;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-mini-fill {
+    height: 100%;
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
+    transition: width 0.3s ease;
+}
+
+.module-description {
+    margin-bottom: 20px;
+}
+
+.module-description p {
+    color: #cccccc;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.module-lessons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lesson-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.lesson-item:hover {
+    background: rgba(39, 174, 96, 0.1);
+}
+
+.lesson-status {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.lesson-title {
+    flex: 1;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.lesson-duration {
+    color: #999999;
+    font-size: 0.9rem;
+}
+
+.lesson-item.unlocked .lesson-status {
+    color: #27ae60;
+}
+
+.lesson-item.completed .lesson-status {
+    color: #2ecc71;
+}
+
+.lesson-item.completed .lesson-title {
+    color: #2ecc71;
+}
+
+/* Lesson Viewer */
+.lesson-viewer {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 40px;
+    min-height: 400px;
+}
+
+.lesson-placeholder {
+    text-align: center;
+    color: #cccccc;
+    padding: 60px 20px;
+}
+
+.placeholder-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.lesson-placeholder h3 {
+    color: #27ae60;
+    margin-bottom: 15px;
+}
+
+.lesson-content {
+    display: none;
+}
+
+.lesson-content.active {
+    display: block;
+}
+
+.lesson-content h3 {
+    color: #27ae60;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+.lesson-content p {
+    color: #cccccc;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.lesson-content .formula {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #27ae60;
+    font-family: 'Courier New', monospace;
+}
+
+.lesson-content .example {
+    background: rgba(39, 174, 96, 0.1);
+    border-left: 4px solid #27ae60;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 0 10px 10px 0;
+}
+
+.lesson-content .example h4 {
+    color: #27ae60;
+    margin-bottom: 10px;
+}
+
+.lesson-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+/* Practice Exercises */
+.exercises-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.exercise-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 25px;
+    transition: transform 0.3s ease;
+}
+
+.exercise-card:hover {
+    transform: translateY(-5px);
+}
+
+.exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.exercise-header h3 {
+    color: #27ae60;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.difficulty {
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.difficulty.easy {
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+}
+
+.difficulty.medium {
+    background: rgba(241, 196, 15, 0.2);
+    color: #f1c40f;
+}
+
+.difficulty.hard {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+}
+
+.exercise-card p {
+    color: #cccccc;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.exercise-btn {
+    width: 100%;
+}
+
+/* Achievements */
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+}
+
+.achievement-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.achievement-card:hover {
+    transform: translateY(-3px);
+}
+
+.achievement-card.locked {
+    opacity: 0.5;
+}
+
+.achievement-card.unlocked {
+    background: rgba(39, 174, 96, 0.1);
+    border: 2px solid rgba(39, 174, 96, 0.3);
+}
+
+.achievement-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.achievement-card h3 {
+    color: #27ae60;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.achievement-card p {
+    color: #cccccc;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Study Notes */
+.notes-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+.notes-editor {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 25px;
+}
+
+#study-notes {
+    width: 100%;
+    min-height: 300px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(39, 174, 96, 0.3);
+    border-radius: 10px;
+    padding: 20px;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    resize: vertical;
+}
+
+#study-notes:focus {
+    outline: none;
+    border-color: #27ae60;
+}
+
+.notes-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.notes-suggestions {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 25px;
+}
+
+.notes-suggestions h3 {
+    color: #27ae60;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+.notes-suggestions ul {
+    list-style: none;
+    padding: 0;
+}
+
+.notes-suggestions li {
+    padding: 10px 0;
+    border-left: 3px solid rgba(39, 174, 96, 0.5);
+    padding-left: 15px;
+    margin-bottom: 10px;
+    color: #cccccc;
+    line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .learning-title {
+        font-size: 2.5rem;
+    }
+    
+    .modules-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .progress-stats {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .notes-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .learning-section {
+        padding: 20px;
+    }
+    
+    .module-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .module-progress {
+        text-align: left;
+    }
+    
+    .progress-mini {
+        width: 100%;
+    }
+    
+    .container {
+        padding: 0 15px;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+    
+    .learning-main {
+        padding-top: 60px;
+    }
+}

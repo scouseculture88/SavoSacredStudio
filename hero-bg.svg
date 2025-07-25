@@ -1,0 +1,116 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sky gradient background -->
+  <rect width="1920" height="1080" fill="url(#skyGradient)"/>
+  
+  <!-- Distant mountain layers -->
+  <path d="M0 700 L200 500 L400 600 L600 450 L800 550 L1000 400 L1200 500 L1400 350 L1600 450 L1800 300 L1920 400 L1920 1080 L0 1080 Z" 
+        fill="url(#distantMountains)" opacity="0.3"/>
+  
+  <path d="M0 750 L150 550 L350 650 L550 500 L750 600 L950 450 L1150 550 L1350 400 L1550 500 L1750 350 L1920 450 L1920 1080 L0 1080 Z" 
+        fill="url(#distantMountains)" opacity="0.5"/>
+  
+  <!-- Middle mountain layer -->
+  <path d="M0 800 L100 600 L300 700 L500 550 L700 650 L900 500 L1100 600 L1300 450 L1500 550 L1700 400 L1920 500 L1920 1080 L0 1080 Z" 
+        fill="url(#middleMountains)" opacity="0.7"/>
+  
+  <!-- Foreground mountains -->
+  <path d="M0 850 L80 650 L250 750 L450 600 L650 700 L850 550 L1050 650 L1250 500 L1450 600 L1650 450 L1920 550 L1920 1080 L0 1080 Z" 
+        fill="url(#foregroundMountains)"/>
+  
+  <!-- Trees silhouettes -->
+  <g opacity="0.8">
+    <!-- Pine trees -->
+    <path d="M100 850 L120 780 L140 850 Z M120 800 L135 750 L150 800 Z M135 770 L145 720 L155 770 Z" 
+          fill="#1a3d29"/>
+    <path d="M300 870 L325 790 L350 870 Z M325 810 L345 750 L365 810 Z M345 770 L360 710 L375 770 Z" 
+          fill="#1a3d29"/>
+    <path d="M500 860 L520 800 L540 860 Z M520 820 L535 770 L550 820 Z M535 790 L545 750 L555 790 Z" 
+          fill="#1a3d29"/>
+    <path d="M800 880 L825 810 L850 880 Z M825 830 L845 780 L865 830 Z M845 800 L860 750 L875 800 Z" 
+          fill="#1a3d29"/>
+    <path d="M1200 850 L1220 790 L1240 850 Z M1220 810 L1235 760 L1250 810 Z M1235 780 L1245 740 L1255 780 Z" 
+          fill="#1a3d29"/>
+    <path d="M1500 870 L1525 800 L1550 870 Z M1525 820 L1545 770 L1565 820 Z M1545 790 L1560 740 L1575 790 Z" 
+          fill="#1a3d29"/>
+  </g>
+  
+  <!-- Mist/fog effects -->
+  <ellipse cx="400" cy="700" rx="200" ry="50" fill="rgba(255,255,255,0.2)"/>
+  <ellipse cx="800" cy="650" rx="150" ry="40" fill="rgba(255,255,255,0.15)"/>
+  <ellipse cx="1200" cy="720" rx="180" ry="45" fill="rgba(255,255,255,0.18)"/>
+  <ellipse cx="1600" cy="680" rx="160" ry="35" fill="rgba(255,255,255,0.12)"/>
+  
+  <!-- Atmospheric perspective dots (distant elements) -->
+  <g opacity="0.4">
+    <circle cx="200" cy="500" r="2" fill="#7f8c8d"/>
+    <circle cx="600" cy="450" r="1.5" fill="#7f8c8d"/>
+    <circle cx="1000" cy="400" r="2" fill="#7f8c8d"/>
+    <circle cx="1400" cy="350" r="1" fill="#7f8c8d"/>
+    <circle cx="1800" cy="300" r="1.5" fill="#7f8c8d"/>
+  </g>
+  
+  <!-- Light rays -->
+  <g opacity="0.1">
+    <path d="M800 0 L850 600 L750 600 Z" fill="url(#lightRay)"/>
+    <path d="M1200 0 L1280 500 L1120 500 Z" fill="url(#lightRay)"/>
+    <path d="M400 0 L480 700 L320 700 Z" fill="url(#lightRay)"/>
+  </g>
+  
+  <!-- Gradient definitions -->
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#98D8E8;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#F0E68C;stop-opacity:1" />
+      <stop offset="80%" style="stop-color:#DDA0DD;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFB6C1;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="distantMountains" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#6c7b95;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8892b0;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="middleMountains" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a5568;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#718096;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="foregroundMountains" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2d3748;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#4a5568;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#27ae60;stop-opacity:0.8" />
+    </linearGradient>
+    
+    <radialGradient id="lightRay" cx="50%" cy="0%" r="50%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </radialGradient>
+    
+    <!-- Noise filter for texture -->
+    <filter id="noise">
+      <feTurbulence baseFrequency="0.9" numOctaves="4" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0"/>
+      <feBlend in="SourceGraphic" in2="noise" mode="multiply" opacity="0.05"/>
+    </filter>
+  </defs>
+  
+  <!-- Apply subtle texture -->
+  <rect width="1920" height="1080" fill="transparent" filter="url(#noise)"/>
+  
+  <!-- Atmospheric particles -->
+  <g opacity="0.3">
+    <circle cx="300" cy="400" r="1" fill="rgba(255,255,255,0.6)">
+      <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="700" cy="350" r="0.8" fill="rgba(255,255,255,0.5)">
+      <animate attributeName="opacity" values="0.2;0.7;0.2" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1100" cy="300" r="1.2" fill="rgba(255,255,255,0.4)">
+      <animate attributeName="opacity" values="0.1;0.6;0.1" dur="5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1500" cy="450" r="0.9" fill="rgba(255,255,255,0.7)">
+      <animate attributeName="opacity" values="0.4;0.9;0.4" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Content Studio - Savo Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 20px rgba(116, 235, 213, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .studio-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .preview-area {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            min-height: 600px;
+        }
+
+        .phone-mockup {
+            width: 200px;
+            height: 355px;
+            background: #000;
+            border-radius: 25px;
+            margin: 0 auto;
+            position: relative;
+            border: 3px solid #333;
+            overflow: hidden;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            background-size: 400% 400%;
+            animation: tiktokGradient 8s ease infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .pattern-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mandala-pattern {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, 
+                rgba(116, 235, 213, 0.8) 0%,
+                rgba(255, 107, 107, 0.6) 25%,
+                rgba(78, 205, 196, 0.8) 50%,
+                rgba(159, 122, 234, 0.6) 75%,
+                rgba(116, 235, 213, 0.8) 100%);
+            animation: mandalaRotate 6s linear infinite;
+        }
+
+        .geometry-pattern {
+            width: 100%;
+            height: 100%;
+            background: conic-gradient(from 0deg, 
+                #74ebd5, #acb6e5, #ff6b6b, #4ecdc4, #45b7d1, #74ebd5);
+            animation: geometryPulse 4s ease-in-out infinite;
+        }
+
+        .cymatics-pattern {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center,
+                transparent 20%,
+                rgba(78, 205, 196, 0.8) 25%,
+                transparent 30%,
+                rgba(116, 235, 213, 0.6) 40%,
+                transparent 45%,
+                rgba(69, 183, 209, 0.8) 60%,
+                transparent 65%);
+            animation: cymaticsRipple 3s ease-in-out infinite;
+        }
+
+        .tessellation-pattern {
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(60deg, rgba(159, 122, 234, 0.5) 25%, transparent 25%),
+                linear-gradient(-60deg, rgba(116, 235, 213, 0.5) 25%, transparent 25%),
+                linear-gradient(60deg, transparent 75%, rgba(78, 205, 196, 0.5) 75%),
+                linear-gradient(-60deg, transparent 75%, rgba(255, 107, 107, 0.5) 75%);
+            background-size: 20px 35px;
+            animation: tessellationFlow 5s linear infinite;
+        }
+
+        .particle-pattern {
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(2px 2px at 20% 30%, #74ebd5, transparent),
+                radial-gradient(2px 2px at 60% 20%, #ff6b6b, transparent),
+                radial-gradient(1px 1px at 90% 40%, #4ecdc4, transparent),
+                radial-gradient(1px 1px at 40% 60%, #45b7d1, transparent),
+                radial-gradient(2px 2px at 80% 80%, #9f7aea, transparent),
+                radial-gradient(1px 1px at 10% 90%, #74ebd5, transparent);
+            background-size: 50px 50px, 60px 60px, 40px 40px, 70px 70px, 45px 45px, 55px 55px;
+            animation: particleFloat 8s ease-in-out infinite;
+        }
+
+        .weather-pattern {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg,
+                rgba(69, 183, 209, 0.8) 0%,
+                rgba(78, 205, 196, 0.6) 30%,
+                rgba(116, 235, 213, 0.8) 60%,
+                rgba(159, 122, 234, 0.4) 100%);
+            animation: weatherFlow 7s ease-in-out infinite;
+        }
+
+        @keyframes mandalaRotate {
+            from { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            to { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes geometryPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.05) rotate(90deg); }
+            50% { transform: scale(0.95) rotate(180deg); }
+            75% { transform: scale(1.05) rotate(270deg); }
+        }
+
+        @keyframes cymaticsRipple {
+            0% { transform: scale(1); filter: hue-rotate(0deg); }
+            50% { transform: scale(1.1); filter: hue-rotate(180deg); }
+            100% { transform: scale(1); filter: hue-rotate(360deg); }
+        }
+
+        @keyframes tessellationFlow {
+            from { background-position: 0 0, 0 0, 0 0, 0 0; }
+            to { background-position: 20px 35px, -20px -35px, 20px -35px, -20px 35px; }
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(90deg); }
+            50% { transform: translateY(-5px) rotate(180deg); }
+            75% { transform: translateY(-15px) rotate(270deg); }
+        }
+
+        @keyframes weatherFlow {
+            0% { transform: translateX(0px) scale(1); }
+            33% { transform: translateX(-5px) scale(1.02); }
+            66% { transform: translateX(5px) scale(0.98); }
+            100% { transform: translateX(0px) scale(1); }
+        }
+
+        @keyframes tiktokGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .tiktok-overlay {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            color: white;
+            font-size: 10px;
+        }
+
+        .controls-panel {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-section {
+            margin-bottom: 25px;
+        }
+
+        .control-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #74ebd5;
+            font-size: 1.1rem;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .pattern-btn {
+            background: rgba(116, 235, 213, 0.2);
+            border: 2px solid rgba(116, 235, 213, 0.3);
+            border-radius: 10px;
+            color: white;
+            padding: 8px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .pattern-btn:hover, .pattern-btn.active {
+            background: rgba(116, 235, 213, 0.4);
+            border-color: #74ebd5;
+            transform: translateY(-2px);
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .control-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .control-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #74ebd5;
+            cursor: pointer;
+        }
+
+        .trending-section {
+            background: rgba(255,100,100,0.1);
+            border: 1px solid rgba(255,100,100,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .trending-sounds {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .sound-chip {
+            background: rgba(255,100,100,0.3);
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sound-chip:hover {
+            background: rgba(255,100,100,0.5);
+            transform: scale(1.05);
+        }
+
+        .export-section {
+            text-align: center;
+        }
+
+        .export-btn {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .tips-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tip-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+
+        .tip-icon {
+            width: 20px;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .studio-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .phone-mockup {
+                width: 150px;
+                height: 266px;
+            }
+            
+            .pattern-preview {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(116, 235, 213, 0.2);
+            border: 2px solid rgba(116, 235, 213, 0.3);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #74ebd5;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .back-btn:hover {
+            background: rgba(116, 235, 213, 0.3);
+            border-color: #74ebd5;
+            transform: scale(1.1);
+        }
+
+        .hashtag-generator {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .hashtag-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .hashtag {
+            background: rgba(116, 235, 213, 0.2);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .hashtag:hover {
+            background: rgba(116, 235, 213, 0.4);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">←</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🎬 TikTok Content Studio</h1>
+            <p class="subtitle">Transform consciousness patterns into viral TikTok content</p>
+        </div>
+
+        <div class="studio-layout">
+            <div class="preview-area">
+                <h3 style="text-align: center; margin-bottom: 20px; color: #74ebd5;">📱 Live Preview</h3>
+                <div class="phone-mockup">
+                    <div class="phone-screen" id="phoneScreen">
+                        <div class="pattern-preview" id="patternPreview">
+                            <canvas id="patternCanvas" width="300" height="533" style="width: 100%; height: 100%; object-fit: cover;"></canvas>
+                        </div>
+                        <div class="tiktok-overlay">
+                            <div style="font-weight: bold; margin-bottom: 5px;">✨ Sacred Mandala Flow</div>
+                            <div style="opacity: 0.8;">#mandala #meditation #sacred</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 20px; font-size: 0.9rem; opacity: 0.8;">
+                    Real-time preview of your TikTok content
+                </div>
+            </div>
+
+            <div class="controls-panel">
+                <div class="trending-section">
+                    <div class="control-title">🔥 Trending Sounds</div>
+                    <div class="trending-sounds">
+                        <div class="sound-chip" onclick="selectSound('meditation')">Meditation Vibes</div>
+                        <div class="sound-chip" onclick="selectSound('cosmic')">Cosmic Journey</div>
+                        <div class="sound-chip" onclick="selectSound('healing')">Healing Frequencies</div>
+                        <div class="sound-chip" onclick="selectSound('focus')">Focus Beats</div>
+                        <div class="sound-chip" onclick="selectSound('nature')">Nature Sounds</div>
+                        <div class="sound-chip" onclick="selectSound('ambient')">Ambient Chill</div>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <div class="control-title">🎨 Pattern Source</div>
+                    <div class="control-group">
+                        <label class="control-label">Import from Savo Tools</label>
+                        <select style="width: 100%; padding: 8px; border-radius: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); margin-bottom: 10px;" id="toolSource" onchange="loadFromTool()">
+                            <option value="">Select Tool to Import</option>
+                            <option value="mandala-random">🌸 Sacred Geometry - Random</option>
+                            <option value="mandala-saved">🌸 Sacred Geometry - Saved Patterns</option>
+                            <option value="cymatics-random">🌊 Cymatics - Random Frequency</option>
+                            <option value="cymatics-solfeggio">🌊 Cymatics - Solfeggio Patterns</option>
+                            <option value="tessellation-random">🔷 Cosmic Tessellations - Random</option>
+                            <option value="tessellation-voronoi">🔷 Tessellations - Voronoi Web</option>
+                            <option value="particle-random">✨ Epic Particles - Random Mode</option>
+                            <option value="particle-aurora">✨ Particles - Aurora Effect</option>
+                            <option value="weather-random">🌧️ Weather Studio - Random</option>
+                            <option value="weather-rain">🌧️ Weather - Rain Mode</option>
+                            <option value="leaf-authentic">🍃 Authentic Leaf - Canva Pattern</option>
+                            <option value="bigbang-cosmic">🌌 Big Bang - Cosmic Accident</option>
+                        </select>
+                        <button class="pattern-btn" onclick="generateRandom()" style="width: 100%; margin-bottom: 10px; background: rgba(255, 107, 107, 0.3);">🎲 Generate Random From All Tools</button>
+                    </div>
+                    
+                    <div class="pattern-grid">
+                        <button class="pattern-btn active" onclick="selectPattern('mandala')">🌸 Mandala</button>
+                        <button class="pattern-btn" onclick="selectPattern('geometry')">📐 Sacred Geo</button>
+                        <button class="pattern-btn" onclick="selectPattern('cymatics')">🌊 Cymatics</button>
+                        <button class="pattern-btn" onclick="selectPattern('tessellation')">🔷 Tessellation</button>
+                        <button class="pattern-btn" onclick="selectPattern('particle')">✨ Particles</button>
+                        <button class="pattern-btn" onclick="selectPattern('weather')">🌧️ Weather</button>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <div class="control-title">⚙️ Animation Settings</div>
+                    <div class="control-group">
+                        <label class="control-label">Animation Speed</label>
+                        <input type="range" class="control-slider" min="0.5" max="3" step="0.1" value="1" id="speed" oninput="updatePreview()">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Transition Style</label>
+                        <select style="width: 100%; padding: 8px; border-radius: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3);" id="transition" onchange="updatePreview()">
+                            <option value="fade">Smooth Fade</option>
+                            <option value="zoom">Zoom Pulse</option>
+                            <option value="rotate">Rotation Flow</option>
+                            <option value="morph">Pattern Morph</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Color Intensity</label>
+                        <input type="range" class="control-slider" min="0.3" max="1" step="0.1" value="0.8" id="intensity" oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <div class="hashtag-generator">
+                    <div class="control-title"># Smart Hashtags</div>
+                    <div class="hashtag-grid">
+                        <span class="hashtag">#sacredgeometry</span>
+                        <span class="hashtag">#meditation</span>
+                        <span class="hashtag">#consciousness</span>
+                        <span class="hashtag">#healing</span>
+                        <span class="hashtag">#mindfulness</span>
+                        <span class="hashtag">#spiritual</span>
+                        <span class="hashtag">#patterns</span>
+                        <span class="hashtag">#art</span>
+                        <span class="hashtag">#satisfying</span>
+                        <span class="hashtag">#asmr</span>
+                        <span class="hashtag">#zen</span>
+                        <span class="hashtag">#wellness</span>
+                    </div>
+                </div>
+
+                <div class="export-section">
+                    <div style="background: rgba(116, 235, 213, 0.1); padding: 12px; border-radius: 10px; margin-bottom: 15px; font-size: 11px;">
+                        <strong>💡 Current Pattern:</strong> <span id="currentPatternInfo">Sacred Mandala Flow - Default Animation</span>
+                    </div>
+                    <button class="export-btn" onclick="exportTikTok()">📱 Export for TikTok</button>
+                    <button class="export-btn" onclick="exportReels()">📸 Export for Reels</button>
+                    <button class="export-btn" onclick="exportHighRes()" style="background: linear-gradient(45deg, #9c27b0, #673ab7);">💎 Export High-Res PNG</button>
+                    <div style="margin-top: 15px; font-size: 0.8rem; opacity: 0.7;">
+                        TikTok: 9:16 vertical format • 15-60 seconds • 1080x1920px
+                        <br>PNG: High-resolution pattern capture • Perfect for backgrounds
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tips-section">
+            <div class="control-title">💡 TikTok Success Tips</div>
+            <div class="tip-item">
+                <div class="tip-icon">🎯</div>
+                <div><strong>Hook in 3 seconds:</strong> Start with your most mesmerizing pattern</div>
+            </div>
+            <div class="tip-item">
+                <div class="tip-icon">🎵</div>
+                <div><strong>Music sync:</strong> Match pattern transitions to audio beats</div>
+            </div>
+            <div class="tip-item">
+                <div class="tip-icon">📝</div>
+                <div><strong>Caption strategy:</strong> "POV: You discover sacred geometry in nature"</div>
+            </div>
+            <div class="tip-item">
+                <div class="tip-icon">⏰</div>
+                <div><strong>Optimal length:</strong> 15-30 seconds for meditation content</div>
+            </div>
+            <div class="tip-item">
+                <div class="tip-icon">🔄</div>
+                <div><strong>Loop seamlessly:</strong> Create endless meditation experiences</div>
+            </div>
+            <div class="tip-item">
+                <div class="tip-icon">🌟</div>
+                <div><strong>Trending hashtags:</strong> Mix niche (#cymatics) with popular (#meditation)</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPattern = 'mandala';
+        let currentPatternSource = 'default';
+        let currentSound = null;
+        let animationSpeed = 1;
+        let transitionStyle = 'fade';
+        let colorIntensity = 0.8;
+        let importedPatternData = null;
+        let animationFrame = null;
+        let canvas = null;
+        let ctx = null;
+
+        function selectPattern(pattern) {
+            currentPattern = pattern;
+            
+            // Update active button
+            document.querySelectorAll('.pattern-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Initialize canvas if needed
+            if (!canvas) {
+                initializeCanvas();
+            }
+            
+            updatePreview();
+            updateHashtags();
+            updatePatternInfo();
+        }
+
+
+        
+        function loadFromTool() {
+            const toolSource = document.getElementById('toolSource').value;
+            if (!toolSource) return;
+            
+            currentPatternSource = toolSource;
+            const patternConfigs = getPatternConfig(toolSource);
+            
+            // Apply the imported pattern configuration
+            if (patternConfigs) {
+                currentPattern = patternConfigs.type;
+                importedPatternData = patternConfigs.data;
+                
+                // Update active button
+                document.querySelectorAll('.pattern-btn').forEach(btn => btn.classList.remove('active'));
+                const targetBtn = document.querySelector(`[onclick="selectPattern('${currentPattern}')"]`);
+                if (targetBtn) {
+                    targetBtn.classList.add('active');
+                }
+                
+                // Initialize canvas rendering immediately
+                initializeCanvas();
+                renderAuthenticPattern();
+                
+                // Update preview with imported data
+                updatePreview();
+                updateHashtags();
+                updatePatternInfo();
+                
+                // Visual feedback
+                const btn = document.getElementById('toolSource');
+                const originalBg = btn.style.background;
+                btn.style.background = 'rgba(116, 235, 213, 0.4)';
+                setTimeout(() => {
+                    btn.style.background = originalBg;
+                }, 1000);
+            }
+        }
+        
+        function getPatternConfig(source) {
+            // Simulate importing from actual Savo tools
+            const configs = {
+                'mandala-random': {
+                    type: 'geometry',
+                    data: { complexity: Math.random() * 0.5 + 0.5, rotation: Math.random() * 360 }
+                },
+                'mandala-saved': {
+                    type: 'mandala',
+                    data: { preset: 'flower-of-life', layers: 6 }
+                },
+                'cymatics-random': {
+                    type: 'cymatics',
+                    data: { frequency: Math.floor(Math.random() * 400) + 100, amplitude: 0.8 }
+                },
+                'cymatics-solfeggio': {
+                    type: 'cymatics',
+                    data: { frequency: [396, 417, 528, 639, 741, 852][Math.floor(Math.random() * 6)] }
+                },
+                'tessellation-random': {
+                    type: 'tessellation',
+                    data: { density: Math.random() * 0.7 + 0.3, colorShift: Math.random() * 360 }
+                },
+                'tessellation-voronoi': {
+                    type: 'tessellation',
+                    data: { type: 'voronoi', seed: Math.random() * 1000 }
+                },
+                'particle-random': {
+                    type: 'particle',
+                    data: { count: Math.floor(Math.random() * 200) + 50, speed: Math.random() * 2 + 1 }
+                },
+                'particle-aurora': {
+                    type: 'particle',
+                    data: { effect: 'aurora', colors: ['#74ebd5', '#acb6e5', '#ff6b6b'] }
+                },
+                'weather-random': {
+                    type: 'weather',
+                    data: { type: ['rain', 'snow', 'sakura'][Math.floor(Math.random() * 3)] }
+                },
+                'weather-rain': {
+                    type: 'weather',
+                    data: { type: 'rain', intensity: Math.random() * 0.5 + 0.5 }
+                },
+                'leaf-authentic': {
+                    type: 'tessellation',
+                    data: { type: 'canva-leaf', authentic: true, coordinates: [260, 360] }
+                },
+                'bigbang-cosmic': {
+                    type: 'particle',
+                    data: { mode: 'big-bang', chaos: Math.random(), universalPatterns: true }
+                }
+            };
+            
+            return configs[source];
+        }
+        
+        function generateRandom() {
+            const allSources = [
+                'mandala-random', 'cymatics-random', 'tessellation-random', 
+                'particle-random', 'weather-random', 'bigbang-cosmic'
+            ];
+            const randomSource = allSources[Math.floor(Math.random() * allSources.length)];
+            
+            document.getElementById('toolSource').value = randomSource;
+            loadFromTool();
+            
+            // Extra visual feedback for random generation
+            const patternPreview = document.getElementById('patternPreview');
+            patternPreview.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                patternPreview.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        function applyImportedData(patternElement, data) {
+            // Apply specific modifications based on imported data
+            if (data.complexity) {
+                patternElement.style.transform = `scale(${data.complexity})`;
+            }
+            if (data.frequency) {
+                // Adjust animation speed based on frequency
+                const speedMultiplier = Math.log(data.frequency / 100) / 2;
+                patternElement.style.animationDuration = `${3 / (speedMultiplier || 1)}s`;
+            }
+            if (data.colorShift) {
+                patternElement.style.filter = `hue-rotate(${data.colorShift}deg)`;
+            }
+            if (data.density) {
+                patternElement.style.opacity = data.density;
+            }
+            if (data.chaos) {
+                // Big Bang chaos effect
+                patternElement.style.transform = `rotate(${data.chaos * 360}deg) scale(${0.5 + data.chaos})`;
+            }
+        }
+
+        function updatePatternInfo() {
+            const patternInfo = document.getElementById('currentPatternInfo');
+            const sourceDescriptions = {
+                'mandala-random': 'Sacred Geometry - Random Generation',
+                'mandala-saved': 'Sacred Geometry - Saved Pattern',
+                'cymatics-random': 'Cymatics - Random Frequency',
+                'cymatics-solfeggio': 'Cymatics - Solfeggio Healing',
+                'tessellation-random': 'Cosmic Tessellations - Random',
+                'tessellation-voronoi': 'Tessellations - Voronoi Web',
+                'particle-random': 'Epic Particles - Random Mode',
+                'particle-aurora': 'Particles - Aurora Effect',
+                'weather-random': 'Weather Studio - Random',
+                'weather-rain': 'Weather - Rain Mode',
+                'leaf-authentic': 'Authentic Canva Leaf Pattern',
+                'bigbang-cosmic': 'Big Bang - Cosmic Accident',
+                'default': 'Default Animation'
+            };
+            
+            const description = sourceDescriptions[currentPatternSource] || 'Custom Pattern';
+            let detailText = `${description} - ${currentPattern.charAt(0).toUpperCase() + currentPattern.slice(1)} Pattern`;
+            
+            // Add specific details from imported data
+            if (importedPatternData) {
+                if (importedPatternData.frequency) {
+                    detailText += ` (${importedPatternData.frequency}Hz)`;
+                }
+                if (importedPatternData.effect) {
+                    detailText += ` - ${importedPatternData.effect} effect`;
+                }
+                if (importedPatternData.type === 'canva-leaf') {
+                    detailText += ` - Authentic coordinates [260, 360]`;
+                }
+            }
+            
+            patternInfo.textContent = detailText;
+        }
+
+        function selectSound(sound) {
+            currentSound = sound;
+            
+            // Update active sound chip
+            document.querySelectorAll('.sound-chip').forEach(chip => chip.style.background = 'rgba(255,100,100,0.3)');
+            event.target.style.background = 'rgba(255,100,100,0.6)';
+            
+            updatePreview();
+        }
+
+        function initializeCanvas() {
+            canvas = document.getElementById('patternCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // Set canvas size for high DPI displays
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = 300 * window.devicePixelRatio;
+            canvas.height = 533 * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            
+            // Start animation loop
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+            }
+            animate();
+        }
+
+        function animate() {
+            renderAuthenticPattern();
+            animationFrame = requestAnimationFrame(animate);
+        }
+
+        function renderAuthenticPattern() {
+            if (!ctx) return;
+            
+            const time = Date.now() * 0.001 * animationSpeed;
+            
+            // Clear canvas with cosmic background
+            const gradient = ctx.createRadialGradient(150, 266, 0, 150, 266, 300);
+            gradient.addColorStop(0, '#0a0a1a');
+            gradient.addColorStop(0.5, '#1a1a2e');
+            gradient.addColorStop(1, '#16213e');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 300, 533);
+            
+            // Apply color intensity
+            ctx.globalAlpha = colorIntensity;
+            
+            switch (currentPattern) {
+                case 'mandala':
+                    renderMandala(time);
+                    break;
+                case 'geometry':
+                    renderSacredGeometry(time);
+                    break;
+                case 'cymatics':
+                    renderCymatics(time);
+                    break;
+                case 'tessellation':
+                    renderTessellation(time);
+                    break;
+                case 'particle':
+                    renderParticles(time);
+                    break;
+                case 'weather':
+                    renderWeather(time);
+                    break;
+            }
+            
+            ctx.globalAlpha = 1.0;
+            
+            updateOverlay();
+        }
+
+        function renderMandala(time) {
+            const centerX = 150;
+            const centerY = 266;
+            const layers = importedPatternData?.layers || 6;
+            const baseRadius = 80;
+            
+            for (let layer = 0; layer < layers; layer++) {
+                const radius = baseRadius - (layer * 10);
+                const petals = 6 + (layer * 2);
+                const rotation = time * 0.5 + (layer * Math.PI / 6);
+                
+                ctx.strokeStyle = `hsl(${120 + layer * 30}, 70%, ${60 - layer * 5}%)`;
+                ctx.lineWidth = 2 - (layer * 0.2);
+                ctx.globalAlpha = colorIntensity * (0.8 - layer * 0.1);
+                
+                ctx.beginPath();
+                for (let i = 0; i <= petals; i++) {
+                    const angle = (i / petals) * Math.PI * 2 + rotation;
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.stroke();
+            }
+        }
+
+        function renderSacredGeometry(time) {
+            const centerX = 150;
+            const centerY = 266;
+            const complexity = importedPatternData?.complexity || 0.8;
+            
+            // Flower of Life pattern
+            const radius = 40 * complexity;
+            const circles = 7;
+            
+            ctx.strokeStyle = '#74ebd5';
+            ctx.lineWidth = 1.5;
+            ctx.globalAlpha = colorIntensity * 0.8;
+            
+            for (let i = 0; i < circles; i++) {
+                const angle = (i / circles) * Math.PI * 2 + time;
+                const x = centerX + Math.cos(angle) * radius * 0.7;
+                const y = centerY + Math.sin(angle) * radius * 0.7;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            // Center circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+
+        function renderCymatics(time) {
+            const centerX = 150;
+            const centerY = 266;
+            const frequency = importedPatternData?.frequency || 256;
+            const amplitude = 50;
+            
+            // Cymatics interference patterns
+            ctx.strokeStyle = `hsl(${180 + Math.sin(time) * 60}, 80%, 60%)`;
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = colorIntensity;
+            
+            for (let ring = 1; ring <= 8; ring++) {
+                const radius = ring * 15;
+                const segments = Math.floor(frequency / 20);
+                
+                ctx.beginPath();
+                for (let i = 0; i <= segments; i++) {
+                    const angle = (i / segments) * Math.PI * 2;
+                    const wave = Math.sin(frequency * 0.01 * ring + time * 2) * 0.3;
+                    const r = radius + wave * amplitude / ring;
+                    const x = centerX + Math.cos(angle) * r;
+                    const y = centerY + Math.sin(angle) * r;
+                    
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.stroke();
+            }
+        }
+
+        function renderTessellation(time) {
+            const size = 30;
+            const cols = Math.floor(300 / size) + 1;
+            const rows = Math.floor(533 / size) + 1;
+            const colorShift = importedPatternData?.colorShift || 0;
+            
+            if (importedPatternData?.type === 'voronoi') {
+                // Authentic Voronoi tessellation like Canva leaf pattern
+                const points = [];
+                const seed = importedPatternData?.seed || 42;
+                
+                for (let i = 0; i < 50; i++) {
+                    points.push({
+                        x: (Math.sin(seed + i) * 0.5 + 0.5) * 300,
+                        y: (Math.cos(seed + i * 1.3) * 0.5 + 0.5) * 533,
+                        color: `hsl(${120 + (i * 137.5) % 360}, 70%, ${50 + Math.sin(time + i) * 10}%)`
+                    });
+                }
+                
+                // Render Voronoi cells
+                for (let x = 0; x < 300; x += 2) {
+                    for (let y = 0; y < 533; y += 2) {
+                        let closest = 0;
+                        let minDist = Infinity;
+                        
+                        for (let i = 0; i < points.length; i++) {
+                            const dist = Math.sqrt((x - points[i].x) ** 2 + (y - points[i].y) ** 2);
+                            if (dist < minDist) {
+                                minDist = dist;
+                                closest = i;
+                            }
+                        }
+                        
+                        ctx.fillStyle = points[closest].color;
+                        ctx.globalAlpha = colorIntensity * 0.3;
+                        ctx.fillRect(x, y, 2, 2);
+                    }
+                }
+            } else {
+                // Hexagonal tessellation
+                for (let row = 0; row < rows; row++) {
+                    for (let col = 0; col < cols; col++) {
+                        const x = col * size + (row % 2) * size * 0.5;
+                        const y = row * size * 0.866;
+                        const hue = (colorShift + col * 20 + row * 15 + time * 20) % 360;
+                        
+                        ctx.strokeStyle = `hsl(${hue}, 70%, 60%)`;
+                        ctx.lineWidth = 1;
+                        ctx.globalAlpha = colorIntensity * 0.6;
+                        
+                        // Draw hexagon
+                        ctx.beginPath();
+                        for (let i = 0; i < 6; i++) {
+                            const angle = (i / 6) * Math.PI * 2;
+                            const hx = x + Math.cos(angle) * size * 0.4;
+                            const hy = y + Math.sin(angle) * size * 0.4;
+                            if (i === 0) ctx.moveTo(hx, hy);
+                            else ctx.lineTo(hx, hy);
+                        }
+                        ctx.closePath();
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function renderParticles(time) {
+            const count = importedPatternData?.count || 100;
+            const effect = importedPatternData?.effect || 'default';
+            
+            if (importedPatternData?.mode === 'big-bang') {
+                // Big Bang cosmic chaos
+                const chaos = importedPatternData.chaos;
+                for (let i = 0; i < count; i++) {
+                    const angle = (i / count) * Math.PI * 2 * chaos * 10;
+                    const distance = 50 + Math.sin(time + i) * 100 * chaos;
+                    const x = 150 + Math.cos(angle) * distance;
+                    const y = 266 + Math.sin(angle) * distance;
+                    
+                    ctx.fillStyle = `hsl(${(i * 137.5 + time * 100) % 360}, 80%, 70%)`;
+                    ctx.globalAlpha = colorIntensity * (0.5 + chaos * 0.5);
+                    ctx.beginPath();
+                    ctx.arc(x, y, 1 + chaos * 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            } else if (effect === 'aurora') {
+                // Aurora particle dance
+                const colors = importedPatternData?.colors || ['#74ebd5', '#acb6e5', '#ff6b6b'];
+                for (let i = 0; i < count; i++) {
+                    const x = 150 + Math.sin(time * 0.5 + i * 0.1) * 120;
+                    const y = 100 + i * 3 + Math.cos(time + i * 0.05) * 20;
+                    
+                    if (y < 533) {
+                        const colorIndex = Math.floor((i + time * 10) % colors.length);
+                        ctx.fillStyle = colors[colorIndex];
+                        ctx.globalAlpha = colorIntensity * (0.3 + Math.sin(time + i) * 0.2);
+                        ctx.beginPath();
+                        ctx.arc(x, y, 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+        }
+
+        function renderWeather(time) {
+            const type = importedPatternData?.type || 'rain';
+            const intensity = importedPatternData?.intensity || 0.7;
+            
+            if (type === 'rain') {
+                ctx.strokeStyle = '#74ebd5';
+                ctx.lineWidth = 1;
+                ctx.globalAlpha = colorIntensity * intensity;
+                
+                for (let i = 0; i < 100; i++) {
+                    const x = (i * 47) % 300;
+                    const y = ((time * 200 + i * 13) % 600) - 67;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x - 2, y + 10);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function updateOverlay() {
+            const overlayTexts = {
+                mandala: { title: '✨ Sacred Mandala Flow', tags: '#mandala #meditation #sacred' },
+                geometry: { title: '📐 Sacred Geometry Vibes', tags: '#sacredgeometry #math #spiritual' },
+                cymatics: { title: '🌊 Sound Wave Patterns', tags: '#cymatics #sound #healing' },
+                tessellation: { title: '🔷 Infinite Tessellations', tags: '#tessellation #patterns #satisfying' },
+                particle: { title: '✨ Cosmic Particle Dance', tags: '#particles #cosmic #universe' },
+                weather: { title: '🌧️ Therapeutic Weather', tags: '#weather #calm #therapeutic' }
+            };
+
+            const overlay = document.querySelector('.tiktok-overlay');
+            if (overlayTexts[currentPattern]) {
+                let title = overlayTexts[currentPattern].title;
+                
+                // Customize title based on imported source
+                if (currentPatternSource !== 'default') {
+                    if (currentPatternSource.includes('solfeggio')) {
+                        title = '🌊 Solfeggio Healing Waves';
+                    } else if (currentPatternSource.includes('bigbang')) {
+                        title = '🌌 Big Bang Cosmic Chaos';
+                    } else if (currentPatternSource.includes('authentic')) {
+                        title = '🍃 Authentic Canva Leaf';
+                    } else if (currentPatternSource.includes('aurora')) {
+                        title = '✨ Aurora Particle Dance';
+                    }
+                }
+                
+                overlay.innerHTML = `
+                    <div style="font-weight: bold; margin-bottom: 5px;">${title}</div>
+                    <div style="opacity: 0.8;">${overlayTexts[currentPattern].tags}</div>
+                `;
+            }
+        }
+
+        function updatePreview() {
+            const speed = document.getElementById('speed').value;
+            const transition = document.getElementById('transition').value;
+            const intensity = document.getElementById('intensity').value;
+
+            animationSpeed = parseFloat(speed);
+            colorIntensity = parseFloat(intensity);
+            
+            // Apply transition effects to phone screen
+            const phoneScreen = document.getElementById('phoneScreen');
+            const transitionEffects = {
+                fade: `brightness(${intensity})`,
+                zoom: `scale(${0.8 + parseFloat(intensity) * 0.4})`,
+                rotate: `hue-rotate(${(1 - intensity) * 180}deg)`,
+                morph: `contrast(${0.8 + parseFloat(intensity) * 0.4})`
+            };
+            
+            phoneScreen.style.filter = transitionEffects[transition] || transitionEffects.fade;
+        }
+
+        function updateHashtags() {
+            const hashtagSets = {
+                mandala: ['#mandala', '#meditation', '#sacred', '#spiritual', '#zen', '#healing'],
+                geometry: ['#sacredgeometry', '#math', '#patterns', '#fibonacci', '#golden', '#divine'],
+                cymatics: ['#cymatics', '#sound', '#frequency', '#healing', '#vibration', '#waves'],
+                tessellation: ['#tessellation', '#patterns', '#satisfying', '#geometric', '#art', '#infinite'],
+                particle: ['#particles', '#cosmic', '#universe', '#space', '#energy', '#quantum'],
+                weather: ['#weather', '#calm', '#therapeutic', '#nature', '#relaxing', '#ambient']
+            };
+
+            const hashtagGrid = document.querySelector('.hashtag-grid');
+            const currentTags = hashtagSets[currentPattern] || [];
+            const generalTags = ['#consciousness', '#mindfulness', '#asmr', '#art', '#wellness', '#tiktok'];
+            
+            const allTags = [...currentTags, ...generalTags];
+            
+            hashtagGrid.innerHTML = allTags.map(tag => 
+                `<span class="hashtag" onclick="copyHashtag('${tag}')">${tag}</span>`
+            ).join('');
+        }
+
+        function copyHashtag(hashtag) {
+            navigator.clipboard.writeText(hashtag);
+            event.target.style.background = 'rgba(116, 235, 213, 0.6)';
+            setTimeout(() => {
+                event.target.style.background = 'rgba(116, 235, 213, 0.2)';
+            }, 500);
+        }
+
+        function exportTikTok() {
+            // Simulate export process
+            const btn = event.target;
+            const originalText = btn.textContent;
+            
+            btn.textContent = '📱 Creating TikTok Content...';
+            btn.style.background = 'rgba(116, 235, 213, 0.8)';
+            
+            setTimeout(() => {
+                btn.textContent = '✅ Ready for TikTok!';
+                
+                // Create download link
+                const link = document.createElement('a');
+                link.href = generateVideoURL();
+                link.download = `savo-studio-${currentPattern}-tiktok.mp4`;
+                link.click();
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = 'linear-gradient(45deg, #ff6b6b, #4ecdc4)';
+                }, 2000);
+            }, 1500);
+        }
+
+        function exportReels() {
+            // Simulate export for Instagram Reels
+            const btn = event.target;
+            const originalText = btn.textContent;
+            
+            btn.textContent = '📸 Creating Reel...';
+            btn.style.background = 'rgba(255, 107, 107, 0.8)';
+            
+            setTimeout(() => {
+                btn.textContent = '✅ Ready for Reels!';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = 'linear-gradient(45deg, #ff6b6b, #4ecdc4)';
+                }, 2000);
+            }, 1500);
+        }
+        
+        function exportHighRes() {
+            // Export high-resolution PNG of current pattern
+            const btn = event.target;
+            const originalText = btn.textContent;
+            
+            btn.textContent = '💎 Creating High-Res...';
+            btn.style.background = 'rgba(159, 122, 234, 0.8)';
+            
+            // Create a larger canvas for high-res export
+            const canvas = document.createElement('canvas');
+            canvas.width = 1080;
+            canvas.height = 1920; // TikTok dimensions
+            const ctx = canvas.getContext('2d');
+            
+            // Fill with gradient background matching current pattern
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Add pattern overlay (simplified version for PNG)
+            ctx.fillStyle = 'rgba(116, 235, 213, 0.3)';
+            ctx.beginPath();
+            ctx.arc(canvas.width / 2, canvas.height / 2, 300, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            setTimeout(() => {
+                btn.textContent = '✅ High-Res Ready!';
+                
+                // Create download link
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = `savo-studio-${currentPattern}-${currentPatternSource}-highres.png`;
+                link.click();
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = 'linear-gradient(45deg, #9c27b0, #673ab7)';
+                }, 2000);
+            }, 1500);
+        }
+
+        function generateVideoURL() {
+            // In a real implementation, this would generate actual video content
+            return `data:application/octet-stream,savo-studio-${currentPattern}-${Date.now()}`;
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start canvas rendering
+            initializeCanvas();
+            updatePreview();
+            updateHashtags();
+            updatePatternInfo();
+            console.log('🎬 TikTok Content Studio initialized successfully');
+        });
+
+        // Fallback initialization
+        window.addEventListener('load', function() {
+            if (!canvas) {
+                initializeCanvas();
+            }
+        });
+    </script>
+</body>
+</html>

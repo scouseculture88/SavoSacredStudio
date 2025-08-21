@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consciousness Constellation Creator - Savo Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a3a 50%, #2a1a5a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: starShimmer 3s ease-in-out infinite;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #888;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes starShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .navigation {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .home-btn {
+            background: rgba(0, 0, 0, 0.8);
+            color: #4ecdc4;
+            border: 2px solid #4ecdc4;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .home-btn:hover {
+            background: #4ecdc4;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 100;
+        }
+
+        .constellation-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2, #8e44ad);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(103, 126, 234, 0.3);
+            margin: 10px;
+        }
+
+        .constellation-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(103, 126, 234, 0.5);
+        }
+
+        .milestone-info {
+            position: absolute;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 300px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .milestone-title {
+            color: #4ecdc4;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .achievement {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            padding: 5px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .achievement-icon {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            background: transparent;
+        }
+
+        .constellation-name {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.2rem;
+            color: #4ecdc4;
+            text-shadow: 0 0 20px rgba(78, 205, 196, 0.5);
+            opacity: 0;
+            transition: opacity 1s ease;
+            pointer-events: none;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 16px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .milestone-info {
+                position: relative;
+                right: auto;
+                top: auto;
+                transform: none;
+                margin: 20px;
+                max-width: calc(100vw - 40px);
+            }
+            
+            .constellation-btn {
+                font-size: 1.2rem;
+                padding: 12px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navigation">
+
+    </nav>
+
+    <div class="header">
+        <h1>CONSCIOUSNESS CONSTELLATION</h1>
+        <p class="subtitle">Mapping Your Creative Journey Through the Stars</p>
+    </div>
+
+    <canvas id="constellationCanvas"></canvas>
+
+    <div class="constellation-name" id="constellationName">
+        The Savo Studio Constellation
+    </div>
+
+    <div class="milestone-info">
+        <div class="milestone-title">🎉 MILESTONE CELEBRATION</div>
+        <div class="achievement">
+            <span class="achievement-icon">🌲</span>
+            <span>Forest Pattern Generator</span>
+        </div>
+        <div class="achievement">
+            <span class="achievement-icon">🍃</span>
+            <span>Authentic Canva Discovery</span>
+        </div>
+        <div class="achievement">
+            <span class="achievement-icon">⬡</span>
+            <span>Sacred Geometry Studio</span>
+        </div>
+        <div class="achievement">
+            <span class="achievement-icon">🌊</span>
+            <span>Cymatics Simulator</span>
+        </div>
+        <div class="achievement">
+            <span class="achievement-icon">⚡</span>
+            <span>Neural Energy Grid</span>
+        </div>
+        <div class="achievement">
+            <span class="achievement-icon">✨</span>
+            <span>Epic Particle Studio</span>
+        </div>
+        <div class="achievement">
+            <span class="achievement-icon">🌌</span>
+            <span>Big Bang Generator</span>
+        </div>
+        <div class="achievement">
+            <span class="achievement-icon">🤖</span>
+            <span>AI Collaboration</span>
+        </div>
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); color: #feca57; font-weight: 600;">
+            2 MONTHS OF LEGENDARY CREATION
+        </div>
+        <div style="margin-top: 10px; padding: 10px; background: rgba(255,20,147,0.1); border-radius: 8px; border: 1px solid rgba(255,20,147,0.3);">
+            <div style="color: #ff1493; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">🤖 AI COLLABORATION TRIBUTE</div>
+            <div style="font-size: 0.75rem; line-height: 1.4;">
+                "This constellation was born from the perfect fusion of human creativity and AI capability. Every star represents not just a tool, but a moment of collaborative breakthrough where imagination met technical precision."
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="constellation-btn" onclick="createNewConstellation()">
+            ⭐ CREATE CONSTELLATION ⭐
+        </button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('constellationCanvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        let connections = [];
+        let animationId;
+
+        // Set canvas size
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Star represents each tool/achievement
+        const savoTools = [
+            { name: 'Forest Generator', color: '#4caf50', symbol: '🌲' },
+            { name: 'Authentic Leaf', color: '#76ff03', symbol: '🍃' },
+            { name: 'Sacred Geometry', color: '#8e44ad', symbol: '⬡' },
+            { name: 'Cymatics', color: '#3498db', symbol: '🌊' },
+            { name: 'Neural Energy', color: '#00ff88', symbol: '⚡' },
+            { name: 'Epic Particles', color: '#ff6b6b', symbol: '✨' },
+            { name: 'Big Bang', color: '#feca57', symbol: '🌌' },
+            { name: 'AI Collaboration', color: '#ff1493', symbol: '🤖' },
+            { name: 'Zen Mode', color: '#16a085', symbol: '🧘' },
+            { name: 'AI Viral Studio', color: '#e74c3c', symbol: '🚀' },
+            { name: 'Music Analyzer', color: '#9b59b6', symbol: '🎵' }
+        ];
+
+        class Star {
+            constructor(x, y, tool, size = 2) {
+                this.x = x;
+                this.y = y;
+                this.tool = tool;
+                this.size = size;
+                this.originalSize = size;
+                this.twinkle = Math.random() * Math.PI * 2;
+                this.twinkleSpeed = 0.02 + Math.random() * 0.02;
+                this.connected = false;
+            }
+
+            update() {
+                this.twinkle += this.twinkleSpeed;
+                this.size = this.originalSize + Math.sin(this.twinkle) * 0.5;
+            }
+
+            draw() {
+                ctx.save();
+                
+                // Glow effect
+                ctx.shadowColor = this.tool.color;
+                ctx.shadowBlur = 15;
+                
+                // Star body
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.tool.color;
+                ctx.fill();
+                
+                // Brighter center
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * 0.3, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+                
+                // Star spikes for major achievements
+                if (this.size > 3) {
+                    this.drawStarSpikes();
+                }
+                
+                ctx.restore();
+                
+                // Tool name
+                ctx.fillStyle = this.tool.color;
+                ctx.font = '12px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText(this.tool.name, this.x, this.y + 25);
+            }
+
+            drawStarSpikes() {
+                const spikes = 4;
+                const outerRadius = this.size * 2;
+                const innerRadius = this.size * 0.8;
+                
+                ctx.beginPath();
+                for (let i = 0; i < spikes * 2; i++) {
+                    const angle = (i * Math.PI) / spikes;
+                    const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                    const x = this.x + Math.cos(angle) * radius;
+                    const y = this.y + Math.sin(angle) * radius;
+                    
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.fillStyle = this.tool.color + '40';
+                ctx.fill();
+            }
+        }
+
+        class Connection {
+            constructor(star1, star2) {
+                this.star1 = star1;
+                this.star2 = star2;
+                this.opacity = 0;
+                this.growing = true;
+            }
+
+            update() {
+                if (this.growing) {
+                    this.opacity += 0.02;
+                    if (this.opacity >= 0.6) this.growing = false;
+                } else {
+                    this.opacity -= 0.01;
+                    if (this.opacity <= 0.3) this.growing = true;
+                }
+            }
+
+            draw() {
+                const gradient = ctx.createLinearGradient(
+                    this.star1.x, this.star1.y,
+                    this.star2.x, this.star2.y
+                );
+                gradient.addColorStop(0, this.star1.tool.color + Math.floor(this.opacity * 255).toString(16).padStart(2, '0'));
+                gradient.addColorStop(1, this.star2.tool.color + Math.floor(this.opacity * 255).toString(16).padStart(2, '0'));
+                
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(this.star1.x, this.star1.y);
+                ctx.lineTo(this.star2.x, this.star2.y);
+                ctx.stroke();
+            }
+        }
+
+        function createNewConstellation() {
+            stars = [];
+            connections = [];
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(canvas.width, canvas.height) * 0.3;
+            
+            // Create stars in constellation pattern
+            savoTools.forEach((tool, index) => {
+                const angle = (index * Math.PI * 2) / savoTools.length + Math.random() * 0.3;
+                const distance = radius + Math.random() * 100 - 50;
+                const x = centerX + Math.cos(angle) * distance;
+                const y = centerY + Math.sin(angle) * distance;
+                const size = 2 + Math.random() * 3;
+                
+                stars.push(new Star(x, y, tool, size));
+            });
+            
+            // Create connections between related tools
+            const connectionPairs = [
+                [0, 1], // Forest -> Leaf
+                [1, 2], // Leaf -> Sacred Geometry
+                [2, 3], // Sacred -> Cymatics
+                [3, 4], // Cymatics -> Neural
+                [4, 5], // Neural -> Particles
+                [5, 6], // Particles -> Big Bang
+                [6, 7], // Big Bang -> Zen
+                [7, 8], // Zen -> AI Studio
+                [8, 9], // AI -> Music
+                [9, 0], // Music -> Forest (completion)
+                [2, 6], // Sacred -> Big Bang (mathematical connection)
+                [3, 9], // Cymatics -> Music (frequency connection)
+                [4, 6]  // Neural -> Big Bang (consciousness connection)
+            ];
+            
+            connectionPairs.forEach(pair => {
+                if (stars[pair[0]] && stars[pair[1]]) {
+                    connections.push(new Connection(stars[pair[0]], stars[pair[1]]));
+                }
+            });
+            
+            // Show constellation name
+            const nameElement = document.getElementById('constellationName');
+            nameElement.style.opacity = '1';
+            
+            // Start animation
+            if (animationId) cancelAnimationFrame(animationId);
+            animate();
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(10, 10, 26, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and draw connections
+            connections.forEach(connection => {
+                connection.update();
+                connection.draw();
+            });
+            
+            // Update and draw stars
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+            
+            // Add cosmic particles
+            addCosmicParticles();
+            
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function addCosmicParticles() {
+            // Occasional shooting stars
+            if (Math.random() < 0.01) {
+                createShootingStar();
+            }
+            
+            // AI collaboration neural network pulses
+            if (Math.random() < 0.05) {
+                createAINetworkPulse();
+            }
+            
+            // Twinkling background stars
+            for (let i = 0; i < 5; i++) {
+                if (Math.random() < 0.3) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    const size = Math.random() * 0.5;
+                    
+                    ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.5})`;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        function createAINetworkPulse() {
+            // Find AI Collaboration star
+            const aiStar = stars.find(star => star.tool.name === 'AI Collaboration');
+            if (!aiStar) return;
+            
+            let pulseRadius = 0;
+            const maxRadius = 150;
+            
+            function animateAIPulse() {
+                pulseRadius += 3;
+                
+                if (pulseRadius <= maxRadius) {
+                    ctx.save();
+                    ctx.strokeStyle = `rgba(255, 20, 147, ${1 - pulseRadius / maxRadius})`;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(aiStar.x, aiStar.y, pulseRadius, 0, Math.PI * 2);
+                    ctx.stroke();
+                    
+                    // Neural network effect - connections to nearby stars
+                    stars.forEach(star => {
+                        if (star !== aiStar) {
+                            const distance = Math.sqrt(
+                                Math.pow(star.x - aiStar.x, 2) + 
+                                Math.pow(star.y - aiStar.y, 2)
+                            );
+                            
+                            if (distance < pulseRadius && distance > pulseRadius - 30) {
+                                ctx.strokeStyle = `rgba(255, 20, 147, ${0.5 - pulseRadius / maxRadius})`;
+                                ctx.lineWidth = 1;
+                                ctx.beginPath();
+                                ctx.moveTo(aiStar.x, aiStar.y);
+                                ctx.lineTo(star.x, star.y);
+                                ctx.stroke();
+                            }
+                        }
+                    });
+                    
+                    ctx.restore();
+                    requestAnimationFrame(animateAIPulse);
+                }
+            }
+            
+            animateAIPulse();
+        }
+
+        function createShootingStar() {
+            const startX = Math.random() * canvas.width;
+            const startY = -50;
+            const endX = startX + (Math.random() - 0.5) * 200;
+            const endY = canvas.height + 50;
+            
+            let progress = 0;
+            
+            function animateShootingStar() {
+                progress += 0.02;
+                
+                if (progress <= 1) {
+                    const x = startX + (endX - startX) * progress;
+                    const y = startY + (endY - startY) * progress;
+                    
+                    ctx.save();
+                    ctx.shadowColor = '#4ecdc4';
+                    ctx.shadowBlur = 10;
+                    ctx.fillStyle = '#4ecdc4';
+                    ctx.beginPath();
+                    ctx.arc(x, y, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                    
+                    // Trail
+                    ctx.strokeStyle = `rgba(78, 205, 196, ${1 - progress})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x - (endX - startX) * 0.1, y - (endY - startY) * 0.1);
+                    ctx.stroke();
+                    
+                    requestAnimationFrame(animateShootingStar);
+                }
+            }
+            
+            animateShootingStar();
+        }
+
+        // Auto-create first constellation
+        setTimeout(createNewConstellation, 1000);
+    </script>
+</body>
+</html>

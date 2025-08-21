@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sacred Geometry Studio - Savo Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            min-height: 100vh;
+        }
+        
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            background: linear-gradient(45deg, #ff1744, #9c27b0, #3f51b5, #00bcd4, #4caf50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+            text-shadow: 
+                0 0 2px #ff1744,
+                0 0 4px #ff1744,
+                0 0 8px #9c27b0,
+                0 0 12px #3f51b5;
+            filter: drop-shadow(0 0 6px rgba(255, 23, 68, 0.3));
+        }
+        
+        .sidebar {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid rgba(124, 255, 80, 0.3);
+            height: fit-content;
+        }
+        
+        .layer-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .layer-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .layer-card.active {
+            border-color: #ffd700;
+            background: linear-gradient(135deg, rgba(128, 0, 128, 0.3), rgba(0, 0, 255, 0.3));
+        }
+        
+        .layer-symbol {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .layer-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .layer-meaning {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+        
+        .layer-description {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .layer-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.75rem;
+        }
+        
+        .layer-colors {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .color-swatch {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .canvas-area {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid rgba(124, 255, 80, 0.3);
+        }
+        
+        .canvas-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .canvas-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #00bcd4;
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #7cff50, #00ff88);
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(124, 255, 80, 0.4);
+        }
+        
+        .btn.pause {
+            background: linear-gradient(45deg, #ff6b6b, #ff5722);
+            color: white;
+        }
+        
+        .canvas-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        
+        #sacredCanvas {
+            border: 2px solid rgba(124, 255, 80, 0.3);
+            border-radius: 15px;
+            background: radial-gradient(circle at center, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 1));
+        }
+        
+        .controls {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group label {
+            display: block;
+            color: #a855f7;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #7cff50, #00ff88);
+            cursor: pointer;
+        }
+        
+        .all-layers-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #4caf50, #2196f3);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .all-layers-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        .selected-info {
+            background: linear-gradient(135deg, rgba(128, 0, 128, 0.4), rgba(0, 0, 255, 0.4));
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(128, 0, 255, 0.5);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .info-item {
+            text-align: center;
+        }
+        
+        .info-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        /* Desktop Layout */
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: 350px 1fr;
+                gap: 25px;
+                padding: 20px;
+            }
+        }
+        
+        /* Mobile Optimizations */
+        @media (max-width: 767px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .canvas-container canvas {
+                width: 100%;
+                max-width: 350px;
+                height: auto;
+            }
+            
+            .sidebar {
+                padding: 15px;
+            }
+            
+            .layer-card {
+                padding: 15px;
+            }
+        }
+        
+        /* Sacred Relationships Section */
+        .sacred-relationships {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(18, 18, 18, 0.95), rgba(45, 27, 105, 0.3));
+            border-radius: 20px;
+            border: 1px solid rgba(124, 255, 80, 0.3);
+        }
+        
+        .sacred-relationships h3 {
+            color: #7cff50;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(124, 255, 80, 0.5);
+        }
+        
+        .relationship-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .relationship-section {
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .relationship-section.genesis {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.1), rgba(196, 69, 105, 0.1));
+        }
+        
+        .relationship-section.frequency {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(67, 160, 71, 0.1));
+        }
+        
+        .relationship-section.aura {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.1), rgba(142, 36, 170, 0.1));
+        }
+        
+        .relationship-section h4 {
+            color: #7cff50;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .relationship-section p {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        /* Element Controls */
+        .element-controls {
+            margin-top: 30px;
+        }
+        
+        .element-controls h4 {
+            color: #7cff50;
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .element-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .element-control {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(124, 255, 80, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .element-control:hover {
+            border-color: rgba(124, 255, 80, 0.5);
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .element-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .element-header input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #7cff50;
+        }
+        
+        .element-header label {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+        
+        .element-properties {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .property-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .property-group label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            min-width: 90px;
+        }
+        
+        .property-group input[type="range"] {
+            flex: 1;
+            min-width: 100px;
+            accent-color: #7cff50;
+        }
+        
+        .property-group input[type="color"] {
+            width: 40px;
+            height: 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: none;
+        }
+        
+        .property-group span {
+            color: #7cff50;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .sacred-relationships {
+                margin: 20px;
+                padding: 20px;
+            }
+            
+            .relationship-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .element-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .property-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .property-group label {
+                min-width: auto;
+            }
+            
+            .property-group input[type="range"] {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Sacred Geometry Studio</h1>
+            <p>Journey through 5 sacred patterns with healing frequencies and divine proportions</p>
+        </div>
+        
+        <div class="sidebar">
+            <h3 style="color: #7cff50; margin-bottom: 20px;">Sacred Layers</h3>
+            
+            <div id="layersList"></div>
+            
+            <button class="all-layers-btn" onclick="showAllLayers()">
+                🌌 View All Layers Combined
+            </button>
+        </div>
+        
+        <div class="canvas-area">
+            <div class="canvas-header">
+                <div class="canvas-title" id="canvasTitle">Complete Sacred Mandala</div>
+                <div class="control-buttons">
+                    <button class="btn" id="animateBtn" onclick="toggleAnimation()">⏸️ Pause</button>
+                    <button class="btn zen-btn" onclick="enterZenMode('geometry')" style="background: linear-gradient(45deg, #2d1b69, #11998e); margin-left: 10px;">🧘 Zen Mode</button>
+                </div>
+            </div>
+            
+            <div class="canvas-container">
+                <canvas id="sacredCanvas" width="600" height="600"></canvas>
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label>Animation Speed: <span id="speedValue">1.0x</span></label>
+                    <input type="range" class="slider" min="0.1" max="3" step="0.1" value="1" 
+                           oninput="updateAnimationSpeed(this.value)">
+                </div>
+            </div>
+            
+            <div id="selectedInfo" class="selected-info" style="display: none;">
+                <h4 id="selectedTitle"></h4>
+                <div class="info-grid" id="selectedDetails"></div>
+                <div style="margin-top: 15px;">
+                    <div class="info-label">Energetic Signature:</div>
+                    <div id="selectedAura" style="color: #ff69b4; font-weight: bold;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sacred Mathematical Relationships Section -->
+        <div class="sacred-relationships">
+            <h3>🧬 Sacred Mathematical Relationships</h3>
+            
+            <div class="relationship-grid">
+                <div class="relationship-section genesis">
+                    <h4>🌱 Genesis Sequence</h4>
+                    <p>Each sacred pattern builds upon the previous: Vesica Piscis births the Seed of Life, which unfolds into the Flower of Life, completing as the Fruit of Life.</p>
+                </div>
+                
+                <div class="relationship-section frequency">
+                    <h4>🎵 Frequency Harmonics</h4>
+                    <p>Every layer resonates at specific healing frequencies, creating harmonic relationships that enhance meditation and consciousness expansion.</p>
+                </div>
+                
+                <div class="relationship-section aura">
+                    <h4>✨ Living Auras</h4>
+                    <p>Each geometry carries its own energetic signature and aura, just like your Living Alphabet system, creating unique vibrational experiences.</p>
+                </div>
+            </div>
+            
+            <!-- Individual Element Controls -->
+            <div class="element-controls">
+                <h4>🎨 Individual Element Controls</h4>
+                <div class="element-grid">
+                    <div class="element-control">
+                        <div class="element-header">
+                            <input type="checkbox" id="vesica-toggle" checked onchange="toggleElement('vesica')">
+                            <label for="vesica-toggle">Vesica Piscis</label>
+                        </div>
+                        <div class="element-properties">
+                            <div class="property-group">
+                                <label>Line Weight:</label>
+                                <input type="range" id="vesica-weight" min="1" max="8" value="3" onchange="updateElementProperty('vesica', 'weight', this.value)">
+                                <span id="vesica-weight-value">3</span>
+                            </div>
+                            <div class="property-group">
+                                <label>Color:</label>
+                                <input type="color" id="vesica-color" value="#FF6B9D" onchange="updateElementProperty('vesica', 'color', this.value)">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="element-control">
+                        <div class="element-header">
+                            <input type="checkbox" id="seed-toggle" checked onchange="toggleElement('seed')">
+                            <label for="seed-toggle">Seed of Life</label>
+                        </div>
+                        <div class="element-properties">
+                            <div class="property-group">
+                                <label>Line Weight:</label>
+                                <input type="range" id="seed-weight" min="1" max="8" value="3" onchange="updateElementProperty('seed', 'weight', this.value)">
+                                <span id="seed-weight-value">3</span>
+                            </div>
+                            <div class="property-group">
+                                <label>Color:</label>
+                                <input type="color" id="seed-color" value="#4caf50" onchange="updateElementProperty('seed', 'color', this.value)">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="element-control">
+                        <div class="element-header">
+                            <input type="checkbox" id="flower-toggle" checked onchange="toggleElement('flower')">
+                            <label for="flower-toggle">Flower of Life</label>
+                        </div>
+                        <div class="element-properties">
+                            <div class="property-group">
+                                <label>Line Weight:</label>
+                                <input type="range" id="flower-weight" min="1" max="8" value="3" onchange="updateElementProperty('flower', 'weight', this.value)">
+                                <span id="flower-weight-value">3</span>
+                            </div>
+                            <div class="property-group">
+                                <label>Color:</label>
+                                <input type="color" id="flower-color" value="#2196f3" onchange="updateElementProperty('flower', 'color', this.value)">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="element-control">
+                        <div class="element-header">
+                            <input type="checkbox" id="fruit-toggle" checked onchange="toggleElement('fruit')">
+                            <label for="fruit-toggle">Fruit of Life</label>
+                        </div>
+                        <div class="element-properties">
+                            <div class="property-group">
+                                <label>Line Weight:</label>
+                                <input type="range" id="fruit-weight" min="1" max="8" value="3" onchange="updateElementProperty('fruit', 'weight', this.value)">
+                                <span id="fruit-weight-value">3</span>
+                            </div>
+                            <div class="property-group">
+                                <label>Color:</label>
+                                <input type="color" id="fruit-color" value="#ff9800" onchange="updateElementProperty('fruit', 'color', this.value)">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="element-control">
+                        <div class="element-header">
+                            <input type="checkbox" id="metatron-toggle" checked onchange="toggleElement('metatron')">
+                            <label for="metatron-toggle">Metatron's Cube</label>
+                        </div>
+                        <div class="element-properties">
+                            <div class="property-group">
+                                <label>Line Weight:</label>
+                                <input type="range" id="metatron-weight" min="1" max="8" value="3" onchange="updateElementProperty('metatron', 'weight', this.value)">
+                                <span id="metatron-weight-value">3</span>
+                            </div>
+                            <div class="property-group">
+                                <label>Color:</label>
+                                <input type="color" id="metatron-color" value="#9c27b0" onchange="updateElementProperty('metatron', 'color', this.value)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sacred Geometry Layers Data
+        const sacredLayers = [
+            {
+                id: 1,
+                name: 'Vesica Piscis',
+                symbol: '⚬',
+                meaning: 'Sacred Union',
+                description: 'The intersection of two circles, representing the birth of creation and divine feminine',
+                frequency: [256, 288],
+                colors: ['#FF6B9D', '#C44569', '#FF8A80'],
+                aura: 'Divine Feminine Energy',
+                strokeWeight: 3,
+                glowIntensity: 15,
+                rotationSpeed: 0.5,
+                pulseBeat: 1.2,
+                properties: ['Union', 'Birth', 'Duality', 'Sacred Feminine']
+            },
+            {
+                id: 2,
+                name: 'Seed of Life',
+                symbol: '🌱',
+                meaning: 'Genesis Pattern',
+                description: 'Seven interconnected circles forming the foundation of all sacred geometry',
+                frequency: [288, 324],
+                colors: ['#A8E6CF', '#88D8A3', '#68C583'],
+                aura: 'Pure Creation Force',
+                strokeWeight: 2,
+                glowIntensity: 12,
+                rotationSpeed: 0.8,
+                pulseBeat: 1.5,
+                properties: ['Genesis', 'Foundation', 'Growth', 'Potential']
+            },
+            {
+                id: 3,
+                name: 'Flower of Life',
+                symbol: '🌸',
+                meaning: 'Universal Blueprint',
+                description: 'Nineteen overlapping circles containing the fundamental patterns of creation',
+                frequency: [324, 360],
+                colors: ['#FFD93D', '#F39C12', '#E67E22'],
+                aura: 'Cosmic Harmony',
+                strokeWeight: 2.5,
+                glowIntensity: 18,
+                rotationSpeed: 1.2,
+                pulseBeat: 1.0,
+                properties: ['Harmony', 'Universe', 'Sacred', 'Blueprint']
+            },
+            {
+                id: 4,
+                name: 'Fruit of Life',
+                symbol: '🍃',
+                meaning: 'Completion Cycle',
+                description: 'Thirteen circles representing the completion of the creative process',
+                frequency: [360, 396],
+                colors: ['#6C5CE7', '#A29BFE', '#74B9FF'],
+                aura: 'Manifestation Energy',
+                strokeWeight: 4,
+                glowIntensity: 20,
+                rotationSpeed: 0.7,
+                pulseBeat: 0.8,
+                properties: ['Completion', 'Manifestation', 'Wisdom', 'Mastery']
+            },
+            {
+                id: 5,
+                name: "Metatron's Cube",
+                symbol: '🔷',
+                meaning: 'Divine Architecture',
+                description: 'Contains all five Platonic solids and represents the building blocks of reality',
+                frequency: [396, 432],
+                colors: ['#FF9F43', '#EE5A24', '#FD79A8'],
+                aura: 'Universal Structure',
+                strokeWeight: 3.5,
+                glowIntensity: 25,
+                rotationSpeed: 1.0,
+                pulseBeat: 0.9,
+                properties: ['Structure', 'Platonic', 'Reality', 'Divine']
+            }
+        ];
+
+        // Canvas and animation variables
+        const canvas = document.getElementById('sacredCanvas');
+        const ctx = canvas.getContext('2d');
+        let selectedLayer = null;
+        let animationSpeed = 1.0;
+        let isAnimating = true;
+        let animationFrame = 0;
+        let currentSelectedLayer = null;
+
+        // Initialize the application
+        function init() {
+            renderLayersList();
+            startAnimation();
+        }
+
+        // Render the layers list in sidebar
+        function renderLayersList() {
+            const layersList = document.getElementById('layersList');
+            layersList.innerHTML = '';
+
+            sacredLayers.forEach(layer => {
+                const layerCard = document.createElement('div');
+                layerCard.className = 'layer-card';
+                layerCard.onclick = () => selectLayer(layer);
+
+                layerCard.innerHTML = `
+                    <div class="layer-symbol">${layer.symbol}</div>
+                    <div class="layer-name" style="color: ${layer.colors[0]}">${layer.name}</div>
+                    <div class="layer-meaning">${layer.meaning}</div>
+                    <div class="layer-description">${layer.description}</div>
+                    <div class="layer-details">
+                        <div>
+                            <span style="color: #00bcd4;">Frequency:</span><br>
+                            ${layer.frequency[0]}-${layer.frequency[1]}Hz
+                        </div>
+                        <div>
+                            <span style="color: #a855f7;">Aura:</span><br>
+                            ${layer.aura}
+                        </div>
+                    </div>
+                    <div class="layer-colors">
+                        ${layer.colors.map(color => `<div class="color-swatch" style="background-color: ${color}"></div>`).join('')}
+                    </div>
+                `;
+
+                layersList.appendChild(layerCard);
+            });
+        }
+
+        // Select a specific layer
+        function selectLayer(layer) {
+            selectedLayer = layer;
+            
+            // Update active state
+            document.querySelectorAll('.layer-card').forEach((card, index) => {
+                card.classList.toggle('active', index === layer.id - 1);
+            });
+
+            // Update canvas title
+            document.getElementById('canvasTitle').textContent = `✨ ${layer.name}`;
+
+            // Show layer details
+            showLayerDetails(layer);
+        }
+
+        // Show all layers
+        function showAllLayers() {
+            selectedLayer = null;
+            
+            // Remove active state from all cards
+            document.querySelectorAll('.layer-card').forEach(card => {
+                card.classList.remove('active');
+            });
+
+            // Update canvas title
+            document.getElementById('canvasTitle').textContent = 'Complete Sacred Mandala';
+
+            // Hide layer details
+            document.getElementById('selectedInfo').style.display = 'none';
+        }
+
+        // Show layer details panel
+        function showLayerDetails(layer) {
+            const selectedInfo = document.getElementById('selectedInfo');
+            const selectedTitle = document.getElementById('selectedTitle');
+            const selectedDetails = document.getElementById('selectedDetails');
+            const selectedAura = document.getElementById('selectedAura');
+
+            selectedTitle.innerHTML = `${layer.symbol} ${layer.name} Aura Properties`;
+            selectedTitle.style.color = layer.colors[0];
+
+            selectedDetails.innerHTML = `
+                <div class="info-item">
+                    <div class="info-label" style="color: #00bcd4;">Frequency Range</div>
+                    <div class="info-value">${layer.frequency[0]} - ${layer.frequency[1]} Hz</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label" style="color: #a855f7;">Stroke Weight</div>
+                    <div class="info-value">${layer.strokeWeight}px</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label" style="color: #ffd700;">Glow Intensity</div>
+                    <div class="info-value">${layer.glowIntensity}px</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label" style="color: #4caf50;">Pulse Rate</div>
+                    <div class="info-value">${layer.pulseBeat}x</div>
+                </div>
+            `;
+
+            selectedAura.textContent = layer.aura;
+            selectedInfo.style.display = 'block';
+        }
+
+        // Animation controls
+        function toggleAnimation() {
+            isAnimating = !isAnimating;
+            const btn = document.getElementById('animateBtn');
+            
+            if (isAnimating) {
+                btn.textContent = '⏸️ Pause';
+                btn.className = 'btn pause';
+                startAnimation();
+            } else {
+                btn.textContent = '▶️ Animate';
+                btn.className = 'btn';
+            }
+        }
+
+        function updateAnimationSpeed(speed) {
+            animationSpeed = parseFloat(speed);
+            document.getElementById('speedValue').textContent = speed + 'x';
+        }
+
+        // Start animation loop
+        function startAnimation() {
+            if (isAnimating) {
+                animationFrame += animationSpeed;
+                draw();
+                requestAnimationFrame(startAnimation);
+            }
+        }
+
+        // Main drawing function
+        function draw() {
+            if (selectedLayer) {
+                // Draw single layer view
+                drawSingleLayerView();
+            } else {
+                // Draw with element controls
+                drawWithElementControls();
+            }
+        }
+
+        // Draw single layer view (existing functionality)
+        function drawSingleLayerView() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const time = animationFrame * 0.01;
+
+            drawLayer(selectedLayer, centerX, centerY, time);
+        }
+
+        // Draw individual sacred geometry layer
+        function drawLayer(layer, centerX, centerY, time, layerOffset = 0) {
+            ctx.save();
+            
+            // Apply glow effect
+            ctx.shadowColor = layer.colors[0];
+            ctx.shadowBlur = layer.glowIntensity;
+            
+            // Calculate pulsing scale
+            const pulseScale = 1 + 0.1 * Math.sin(time * layer.pulseBeat);
+            
+            // Calculate rotation
+            const rotation = time * layer.rotationSpeed;
+            
+            // Apply transformations
+            ctx.translate(centerX, centerY);
+            ctx.rotate(rotation);
+            ctx.scale(pulseScale, pulseScale);
+            
+            // Set line properties
+            ctx.lineWidth = layer.strokeWeight;
+            ctx.strokeStyle = layer.colors[0];
+            ctx.fillStyle = layer.colors[1] + '30'; // Semi-transparent fill
+            
+            // Draw the specific sacred geometry pattern
+            switch(layer.name) {
+                case 'Vesica Piscis':
+                    drawVesicaPiscis(layer, layerOffset);
+                    break;
+                case 'Seed of Life':
+                    drawSeedOfLife(layer, layerOffset);
+                    break;
+                case 'Flower of Life':
+                    drawFlowerOfLife(layer, layerOffset);
+                    break;
+                case 'Fruit of Life':
+                    drawFruitOfLife(layer, layerOffset);
+                    break;
+                case "Metatron's Cube":
+                    drawMetatronsCube(layer, layerOffset);
+                    break;
+            }
+            
+            ctx.restore();
+        }
+
+        // Sacred geometry drawing functions
+        function drawVesicaPiscis(layer, offset) {
+            const radius = 80 + offset * 10;
+            const separation = radius * 0.8;
+            
+            // Draw two intersecting circles
+            ctx.beginPath();
+            ctx.arc(-separation/2, 0, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(separation/2, 0, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // Fill the intersection (vesica piscis)
+            ctx.save();
+            ctx.globalCompositeOperation = 'source-atop';
+            ctx.fillStyle = layer.colors[1] + '40';
+            ctx.beginPath();
+            ctx.arc(-separation/2, 0, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function drawSeedOfLife(layer, offset) {
+            const radius = 60 + offset * 8;
+            
+            // Center circle
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // Six surrounding circles
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI * 2) / 6;
+                const x = Math.cos(angle) * radius;
+                const y = Math.sin(angle) * radius;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+
+        function drawFlowerOfLife(layer, offset) {
+            const radius = 50 + offset * 6;
+            
+            // Draw multiple rings of circles
+            for (let ring = 0; ring < 3; ring++) {
+                const ringRadius = ring * radius * 1.732; // √3 for proper spacing
+                const circlesInRing = ring === 0 ? 1 : ring * 6;
+                
+                for (let i = 0; i < circlesInRing; i++) {
+                    let x = 0, y = 0;
+                    
+                    if (ring > 0) {
+                        const angle = (i * Math.PI * 2) / circlesInRing;
+                        x = Math.cos(angle) * ringRadius;
+                        y = Math.sin(angle) * ringRadius;
+                    }
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, radius, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function drawFruitOfLife(layer, offset) {
+            const radius = 45 + offset * 5;
+            const positions = [
+                [0, 0], // Center
+                [-radius * 1.5, -radius * 0.866], [-radius * 1.5, radius * 0.866],
+                [radius * 1.5, -radius * 0.866], [radius * 1.5, radius * 0.866],
+                [0, -radius * 1.732], [0, radius * 1.732],
+                [-radius * 3, 0], [radius * 3, 0],
+                [-radius * 1.5, -radius * 2.598], [-radius * 1.5, radius * 2.598],
+                [radius * 1.5, -radius * 2.598], [radius * 1.5, radius * 2.598]
+            ];
+            
+            positions.forEach(([x, y]) => {
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.stroke();
+            });
+        }
+
+        function drawMetatronsCube(layer, offset) {
+            const radius = 40 + offset * 4;
+            
+            // Draw the outer circles first
+            const positions = [
+                [0, 0], // Center
+                [-radius * 2, -radius * 1.155], [-radius * 2, radius * 1.155],
+                [radius * 2, -radius * 1.155], [radius * 2, radius * 1.155],
+                [0, -radius * 2.31], [0, radius * 2.31],
+                [-radius * 4, 0], [radius * 4, 0],
+                [-radius * 2, -radius * 3.465], [-radius * 2, radius * 3.465],
+                [radius * 2, -radius * 3.465], [radius * 2, radius * 3.465]
+            ];
+            
+            // Draw circles
+            positions.forEach(([x, y]) => {
+                ctx.beginPath();
+                ctx.arc(x, y, radius * 0.6, 0, Math.PI * 2);
+                ctx.stroke();
+            });
+            
+            // Draw connecting lines (simplified Metatron's Cube structure)
+            ctx.strokeStyle = layer.colors[2];
+            ctx.lineWidth = layer.strokeWeight * 0.7;
+            
+            for (let i = 0; i < positions.length; i++) {
+                for (let j = i + 1; j < positions.length; j++) {
+                    const [x1, y1] = positions[i];
+                    const [x2, y2] = positions[j];
+                    const distance = Math.sqrt((x2-x1)**2 + (y2-y1)**2);
+                    
+                    if (distance < radius * 5) { // Only connect nearby points
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        // Individual element control state
+        let elementStates = {
+            vesica: { enabled: true, weight: 3, color: '#FF6B9D' },
+            seed: { enabled: true, weight: 3, color: '#4caf50' },
+            flower: { enabled: true, weight: 3, color: '#2196f3' },
+            fruit: { enabled: true, weight: 3, color: '#ff9800' },
+            metatron: { enabled: true, weight: 3, color: '#9c27b0' }
+        };
+
+        // Toggle individual elements
+        function toggleElement(elementId) {
+            const checkbox = document.getElementById(`${elementId}-toggle`);
+            elementStates[elementId].enabled = checkbox.checked;
+            draw(); // Redraw with updated visibility
+        }
+
+        // Update element properties (weight or color)
+        function updateElementProperty(elementId, property, value) {
+            if (property === 'weight') {
+                elementStates[elementId].weight = parseInt(value);
+                document.getElementById(`${elementId}-weight-value`).textContent = value;
+            } else if (property === 'color') {
+                elementStates[elementId].color = value;
+            }
+            draw(); // Redraw with updated properties
+        }
+
+        // Modified draw function to respect individual element states
+        function drawWithElementControls() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const time = animationFrame * 0.01;
+            
+            // Draw each enabled element with its custom properties
+            const elements = ['vesica', 'seed', 'flower', 'fruit', 'metatron'];
+            
+            elements.forEach((elementId, index) => {
+                const state = elementStates[elementId];
+                if (!state.enabled) return;
+                
+                const layer = sacredLayers[index];
+                
+                ctx.save();
+                
+                // Apply glow effect with custom color
+                ctx.shadowColor = state.color;
+                ctx.shadowBlur = 15;
+                
+                // Calculate pulsing scale
+                const pulseScale = 1 + 0.1 * Math.sin(time * layer.pulseBeat);
+                
+                // Calculate rotation
+                const rotation = time * layer.rotationSpeed;
+                
+                // Apply transformations
+                ctx.translate(centerX, centerY);
+                ctx.rotate(rotation);
+                ctx.scale(pulseScale, pulseScale);
+                
+                // Set custom line properties
+                ctx.lineWidth = state.weight;
+                ctx.strokeStyle = state.color;
+                ctx.fillStyle = state.color + '30'; // Semi-transparent fill
+                
+                // Draw the specific element using original functions
+                switch(elementId) {
+                    case 'vesica':
+                        drawVesicaPiscis(layer, index);
+                        break;
+                    case 'seed':
+                        drawSeedOfLife(layer, index);
+                        break;
+                    case 'flower':
+                        drawFlowerOfLife(layer, index);
+                        break;
+                    case 'fruit':
+                        drawFruitOfLife(layer, index);
+                        break;
+                    case 'metatron':
+                        drawMetatronsCube(layer, index);
+                        break;
+                }
+                
+                ctx.restore();
+            });
+        }
+
+
+
+        // Zen Mode function
+        function enterZenMode(mode) {
+            window.location.href = `zen-mode-visualizer.html?mode=${mode}`;
+        }
+
+        // Initialize the application
+        init();
+    </script>
+</body>
+  </html>

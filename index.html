@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Savo Studio - Comprehensive mathematical healing platform featuring sacred geometry, cymatics, neural energy visualization, and consciousness expansion tools.">
+    <meta name="keywords" content="outdoor clothing, adventure gear, hiking apparel, camping gear, outdoor fashion, adventure lifestyle">
+    <meta name="author" content="Savo Mode">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Savo Studio - Mathematical Healing Platform">
+    <meta property="og:description" content="Sacred geometry visualization, cymatics simulation, neural energy mapping, and consciousness expansion tools.">
+    <meta property="og:url" content="https://savomode.com">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Savo Mode - Embrace the Wild">
+    <meta property="twitter:description" content="Premium outdoor adventure clothing for those who push boundaries and embrace challenges.">
+    
+    <title>Savo Studio - Mathematical Healing Platform | Sacred Geometry & Consciousness Tools</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+    
+    <!-- Icons removed - not used on main page -->
+    
+    <!-- Accessibility Styles -->
+    <style>
+        .accessibility-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: #1a1a2e;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            margin: 20px;
+            color: white;
+            border: 2px solid #ff6b6b;
+        }
+        
+        .modal-content h2 {
+            color: #ff6b6b;
+            margin-bottom: 20px;
+        }
+        
+        .modal-content ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .btn-safe, .btn-proceed {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            flex: 1;
+        }
+        
+        .btn-safe {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-proceed {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        /* Reduced motion styles */
+        .reduce-motion * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        
+        .motion-warning {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 107, 107, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            z-index: 1000;
+        }
+        
+        /* Animations removed to prevent freezing */
+
+        /* Big Bang Logo Animation */
+        .logo-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 120px;
+            height: 120px;
+        }
+
+        .big-bang-canvas {
+            width: 120px;
+            height: 120px;
+            pointer-events: none;
+        }
+
+        .brand-name {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 20px rgba(116, 235, 213, 0.7);
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            margin-left: 20px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        /* Fixed Logo and Text Positioning */
+        .fixed-logo, .fixed-text {
+            pointer-events: auto;
+        }
+
+        /* Show only in hero section */
+        .hero-only {
+            display: block;
+        }
+        
+        /* Hide when scrolled past hero */
+        .scrolled .hero-only {
+            display: none !important;
+        }
+
+        /* Reduced motion compatibility */
+        .reduce-motion .floater {
+            animation: none !important;
+        }
+        
+        .reduce-motion .aurora-glow {
+            animation: none !important;
+        }
+        
+        .reduce-motion .cosmic-particles {
+            display: none !important;
+        }
+
+        /* Starfield Background - static version */
+        .starfield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(2px 2px at 20px 30px, rgba(116, 235, 213, 0.5), transparent),
+                        radial-gradient(2px 2px at 40px 70px, rgba(255, 107, 107, 0.3), transparent),
+                        radial-gradient(1px 1px at 90px 40px, rgba(78, 205, 196, 0.4), transparent);
+            background-repeat: repeat;
+            background-size: 350px 250px;
+            opacity: 0.6;
+        }
+
+        /* Cosmic Energy Pulses - removed to prevent freezing */
+
+        /* Mobile positioning adjustments */
+        @media (max-width: 768px) {
+            .fixed-logo {
+                top: 80px !important;
+                left: 20px !important;
+            }
+            
+            .fixed-text {
+                top: 90px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+            }
+            
+            .fixed-text .brand-name {
+                font-size: 1.8rem !important;
+            }
+        }
+
+        /* Hamburger Menu Styling */
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .bar {
+            width: 25px;
+            height: 3px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            background-size: 400% 400%;
+            animation: gradientShift 3s ease-in-out infinite;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+            box-shadow: 0 0 8px rgba(116, 235, 213, 0.4);
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Cosmic Atmosphere Enhancements */
+        .cosmic-atmosphere {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .cosmic-particles {
+            display: none; /* Removed to prevent freezing */
+        }
+
+        .geometric-floaters {
+            display: none; /* Removed to prevent freezing */
+        }
+
+        /* Energy streams removed to prevent freezing */
+
+        .aurora-glow {
+            display: none; /* Removed to prevent freezing */
+        }
+    </style>
+</head>
+<body>
+    <!-- Accessibility Warning Modal -->
+    <div id="accessibilityWarning" class="accessibility-modal" style="display: none;">
+        <div class="modal-content">
+            <h2>⚠️ Accessibility Notice</h2>
+            <p>This platform contains visual effects including:</p>
+            <ul>
+                <li>Animated patterns and moving graphics</li>
+                <li>Flashing or strobing elements</li>
+                <li>High contrast geometric patterns</li>
+                <li>Frequency visualizations</li>
+            </ul>
+            <p><strong>Please be aware if you have photosensitive epilepsy or motion sensitivity.</strong></p>
+            <div class="modal-actions">
+                <button onclick="enableReducedMotion()" class="btn-safe">Reduce Motion</button>
+                <button onclick="proceedWithCaution()" class="btn-proceed">I Understand</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Big Bang Logo removed to prevent freezing -->
+    
+    <!-- Fixed Text -->
+    <div class="fixed-text hero-only" style="position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 1001;">
+        <span class="brand-name" style="margin-left: 0; font-size: 2.2rem;">SAVO STUDIO</span>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            
+            <div class="nav-menu" id="nav-menu">
+                <ul class="nav-list">
+                    <!-- Core Navigation -->
+                    <li class="nav-item">
+                        <a href="#home" class="nav-link" data-scroll="home" style="color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); font-weight: 600;">🏠 Home 🏠</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#savo-mode" class="nav-link" data-scroll="savo-mode" style="background: linear-gradient(45deg, #ff6b35, #f7931e); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🧘 Savo Mode 🧘</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#portfolio" class="nav-link" data-scroll="portfolio" style="background: linear-gradient(45deg, #8e44ad, #9b59b6); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🎨 Portfolio 🎨</a>
+                    </li>
+                    
+                    <!-- Design Tools - Alphabetical Order -->
+                    <li class="nav-item">
+                        <a href="ai-viral-content-studio.html" class="nav-link" style="background: linear-gradient(45deg, #ff6b6b, #ee5a24, #ffa502); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🚀 AI Viral Studio 🚀</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="tiktok-content-studio.html" class="nav-link" style="background: linear-gradient(45deg, #ff1744, #e91e63, #9c27b0); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">📱 TikTok Studio 📱</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="canva-authentic-leaf/index.html" class="nav-link" style="background: linear-gradient(45deg, #4caf50, #00e676, #76ff03); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🍃 Authentic Canva 🍃</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="cosmic-accident-generator.html" class="nav-link" style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600; animation: cosmicPulse 2s ease-in-out infinite;">🌌 BIG BANG 🌌</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="advanced-color-studio.html" class="nav-link" style="background: linear-gradient(45deg, #00d2ff, #3a7bd5); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🎨 Color Studio 🎨</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="consciousness-constellation-creator.html" class="nav-link" style="background: linear-gradient(45deg, #667eea, #764ba2, #8e44ad, #9b59b6); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">⭐ CONSTELLATION ⭐</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="cosmic-tessellations-studio/cosmic-studio.html" class="nav-link" style="background: linear-gradient(45deg, #ff006e, #8338ec, #3a86ff, #06ffa5); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🕸️ Cosmic Tessellations 🕸️</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="cymatics-simulator.html" class="nav-link" style="background: linear-gradient(45deg, #667eea, #764ba2, #8e44ad); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🌊 Cymatics 🌊</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="design-inspiration-board.html" class="nav-link" style="background: linear-gradient(45deg, #e74c3c, #c0392b); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">💡 Design Inspiration 💡</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="design-flows-binary-codes/binary-codes-design-flows.html" class="nav-link" style="background: linear-gradient(45deg, #00ff41, #00d4aa, #74ebd5); color: #1a1a1a; text-shadow: 0 0 10px rgba(0, 255, 65, 0.8); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">💾 Binary Design Flow 💾</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="quantum-atom-splitter/atom-splitter.html" class="nav-link" style="background: linear-gradient(45deg, #ff0080, #8000ff, #0080ff, #00ffff); color: #74ebd5; text-shadow: 0 0 15px rgba(255, 0, 128, 0.8); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">⚛️ Quantum Atom Splitter ⚛️</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="butterfly-draw-studio.html" class="nav-link" style="background: linear-gradient(45deg, #ff9a9e, #feca57, #48cae4, #f72585); color: #74ebd5; text-shadow: 0 0 10px rgba(247, 37, 133, 0.8); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🦋 Butterfly Draw Studio 🦋</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="particle-portrait-studio.html" class="nav-link" style="background: linear-gradient(45deg, #c2985a, #4a5c2a, #74ebd5, #ff6b35); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.8); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🎨 Particle Portrait Studio 🎨</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="epic-particle-studio.html" class="nav-link" style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">✨ Epic Particles ✨</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="forest-pattern-generator.html" class="nav-link" style="background: linear-gradient(45deg, #2d5016, #4a7c28); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🌲 Forest Generator 🌲</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="frequency-analyzer.html" class="nav-link" style="background: linear-gradient(45deg, #00ff88, #7cff50); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">📊 Frequency Analyzer 📊</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="frequency-spirograph.html" class="nav-link" style="background: linear-gradient(45deg, #ff6b35, #f7931e); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🌀 Frequency Spirograph 🌀</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pattern-learning-path.html" class="nav-link" style="background: linear-gradient(45deg, #27ae60, #2ecc71); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🎓 Learning Path 🎓</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="living-alphabet-studio.html" class="nav-link" style="background: linear-gradient(45deg, #ff1744, #9c27b0, #3f51b5, #00bcd4, #4caf50); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🔤 Living Alphabet 🔤</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="magical-weather-studio/magical-weather-studio.html" class="nav-link" style="background: linear-gradient(45deg, #4a90e2, #7b68ee, #9370db, #20b2aa, #32cd32); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🌦️ Magical Weather 🌦️</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="music-frequency-analyzer.html" class="nav-link" style="background: linear-gradient(45deg, #00ff88, #00bcd4, #9c27b0); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🎵 Music Analyzer 🎵</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="chrome-spectrogram-analyzer.html" class="nav-link" style="background: linear-gradient(45deg, #74ebd5, #acb6e5, #ff9a9e); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🐦 Natural Spectrogram 🐦</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="chrome-spectrogram/index.html" class="nav-link" style="background: linear-gradient(45deg, #4285f4, #34a853, #fbbc05, #ea4335); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🚀 Simplified Chrome Lab 🚀</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="aurora-borealis-studio.html" class="nav-link" style="background: linear-gradient(45deg, #00ff88, #7cff50, #4a90e2, #9370db); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🌌 Aurora Borealis 🌌</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="meteor-madness.html" class="nav-link" style="background: linear-gradient(45deg, #ff6b35, #f7931e, #ffaa00, #ff4500); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">☄️ Meteor Madness ☄️</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="aurora-nebula-studio/aurora-nebula.html" class="nav-link" style="background: linear-gradient(45deg, #00ffaa, #00aaff, #aa00ff, #ffaa00); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">✨ Aurora Nebula ✨</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="neural-energy-grid.html" class="nav-link" style="background: linear-gradient(45deg, #00ff88, #00bcd4, #9c27b0); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">⚡ Neural Energy Grid ⚡</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pattern-library.html" class="nav-link" style="background: linear-gradient(45deg, #27ae60, #2ecc71); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">📚 Pattern Library 📚</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pattern-mathematics.html" class="nav-link" style="background: linear-gradient(45deg, #00d2ff, #3a7bd5); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🔢 Pattern Mathematics 🔢</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pattern-psychology.html" class="nav-link" style="background: linear-gradient(45deg, #9b59b6, #8e44ad); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🧠 Pattern Psychology 🧠</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pattern-variation-engine.html" class="nav-link" style="background: linear-gradient(45deg, #ff6b35, #f7931e); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🔄 Pattern Variation 🔄</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="sacred-geometry-studio.html" class="nav-link" style="background: linear-gradient(45deg, #667eea, #764ba2, #8e44ad); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">⬡ Sacred Geometry ⬡</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="cosmic-visualization-studio.html" class="nav-link" style="background: linear-gradient(45deg, #1a1a2e, #16213e, #0f0f23); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.8); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🌌 Cosmic Studio 🌌</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="cosmic-cosmos/cosmic-tesselations.html" class="nav-link" style="background: linear-gradient(45deg, #4b0082, #8a2be2, #9932cc); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🪐 Cosmic Cosmos 🪐</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="water-cymatics-studio-simple/simple-water-cymatics.html" class="nav-link" style="background: linear-gradient(45deg, #00bfff, #40e0d0, #87ceeb); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🌊 Simple Cymatics 🌊</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="simple-tracer.html" class="nav-link" style="background: linear-gradient(45deg, #7cff50, #00ff88); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">✏️ Simple Tracer ✏️</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="social-media-creator.html" class="nav-link" style="background: linear-gradient(45deg, #ff6b6b, #ee5a24, #ffa502); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">📱 Social Creator 📱</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="binaural-beats.html" class="nav-link" style="background: linear-gradient(45deg, #ff6b35, #ff8c42); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🎧 Sound Therapy 🎧</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="tiktok-logo-enhancer.html" class="nav-link" style="background: linear-gradient(45deg, #ff1744, #9c27b0); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">📱 TikTok Logo 📱</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="wallpaper-mandala-replicator.html" class="nav-link" style="background: linear-gradient(45deg, #ff6b9d, #c44569, #9c27b0); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🕉️ Wallpaper Mandala 🕉️</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="water-cymatics-studio/water-cymatics-studio.html" class="nav-link" style="background: linear-gradient(45deg, #00bfff, #0080ff, #40e0d0, #00ffff, #87ceeb); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">💧 Water Cymatics 💧</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="zen-mode-visualizer.html" class="nav-link" style="background: linear-gradient(45deg, #2d1b69, #11998e, #38ef7d); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🧘 Zen Mode 🧘</a>
+                    </li>
+
+                    
+                    <!-- Community -->
+                    <li class="nav-item">
+                        <a href="community.html" class="nav-link" style="background: linear-gradient(45deg, #0088cc, #005f99); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">👥 Community 👥</a>
+                    </li>
+                    
+                    <!-- Production Tools -->
+                    <li class="nav-item">
+                        <a href="3d-previewer.html" class="nav-link" style="background: linear-gradient(45deg, #e67e22, #d35400); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🎲 3D Previewer 🎲</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="product-blank-manager.html" class="nav-link" style="background: linear-gradient(45deg, #8e44ad, #9b59b6); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🛍️ Product Blanks 🛍️</a>
+                    </li>
+                    
+                    <!-- Progress & Process -->
+                    <li class="nav-item">
+                        <a href="simple-pattern-counter.html" class="nav-link" style="background: linear-gradient(45deg, #7cff50, #44ff00); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">🎯 500 Challenge 🎯</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="design-process-visualizer.html" class="nav-link" style="background: linear-gradient(45deg, #34495e, #2c3e50); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">⚙️ Design Process ⚙️</a>
+                    </li>
+                    
+                    <!-- Join -->
+                    <li class="nav-item">
+                        <a href="#newsletter" class="nav-link" data-scroll="newsletter" style="background: linear-gradient(45deg, #16a085, #1abc9c); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🚀 Join 🚀</a>
+                    </li>
+
+                </ul>
+            </div>
+            
+            <div class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-background" id="heroBackground">
+            <div class="hero-bg-slides">
+                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Mountain landscape" class="hero-bg-image active">
+                <img src="https://images.unsplash.com/photo-1519904981063-b0cf448d479e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Forest wilderness" class="hero-bg-image">
+                <img src="https://images.unsplash.com/photo-1464822759844-d150ad6fa52d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Mountain peaks" class="hero-bg-image">
+                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Forest path" class="hero-bg-image">
+                <img src="https://images.unsplash.com/photo-1545558014-8692077e9b5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Alpine lake" class="hero-bg-image">
+                <img src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Mountain valley" class="hero-bg-image">
+                <img src="https://images.unsplash.com/photo-1439066615861-d1af74d74000?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Rocky peaks" class="hero-bg-image">
+                <img src="https://images.unsplash.com/photo-1502780402662-acc01917589e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Misty mountains" class="hero-bg-image">
+            </div>
+            
+            <!-- Cosmic animations removed to prevent freezing -->
+        </div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="hero-title-main">DESIGN</span>
+                    <span class="hero-title-sub">YOUR</span>
+                    <span class="hero-title-emphasis">FUTURE</span>
+                </h1>
+                <p class="hero-description">
+                    CREATIVITY BEGINS WHERE<br>
+                    COMFORT ZONES END.<br>
+                    FROM SHED TO STUDIO,<br>
+                    <strong>DISCOVERY AWAITS</strong>.
+                </p>
+            </div>
+            <div class="hero-cta">
+                <a href="pattern-mathematics.html" class="btn btn-primary">Start My Journey</a>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Pattern Gallery Section -->
+    <section id="patterns" class="pattern-gallery">
+        <div class="container">
+            <div class="pattern-gallery-header">
+                <h2 class="pattern-gallery-title">Custom Patterns</h2>
+                <p class="pattern-gallery-description">
+                    Explore our AI-generated outdoor patterns - each one unique and designed for adventure gear customization. 
+                    Preview how these patterns could look on your custom bottles, caps, and gear.
+                </p>
+            </div>
+            
+            <div class="pattern-grid">
+                <!-- Pattern 1: Digital Forest Camo -->
+                <div class="pattern-card">
+                    <div class="pattern-preview">
+                        <svg width="100%" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <pattern id="forestCamo" patternUnits="userSpaceOnUse" width="20" height="20">
+                                    <rect width="20" height="20" fill="#2d5016"/>
+                                    <rect x="2" y="2" width="6" height="4" fill="#4a7c2a"/>
+                                    <rect x="10" y="1" width="4" height="6" fill="#1a3d0a"/>
+                                    <rect x="1" y="8" width="8" height="3" fill="#3d6b1f"/>
+                                    <rect x="12" y="10" width="5" height="5" fill="#2d5016"/>
+                                    <rect x="5" y="15" width="7" height="4" fill="#1a3d0a"/>
+                                    <rect x="15" y="16" width="4" height="3" fill="#4a7c2a"/>
+                                </pattern>
+                            </defs>
+                            <rect width="200" height="200" fill="url(#forestCamo)"/>
+                        </svg>
+                    </div>
+                    <div class="pattern-info">
+                        <h3 class="pattern-name">Digital Forest</h3>
+                        <p class="pattern-description">Tactical forest pattern with pixelated green tones</p>
+                        <div class="pattern-tags">
+                            <span class="pattern-tag">Forest</span>
+                            <span class="pattern-tag">Tactical</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 2: Mountain Ridge Camo -->
+                <div class="pattern-card">
+                    <div class="pattern-preview">
+                        <svg width="100%" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <pattern id="mountainCamo" patternUnits="userSpaceOnUse" width="24" height="24">
+                                    <rect width="24" height="24" fill="#5d4e37"/>
+                                    <rect x="1" y="1" width="8" height="5" fill="#8b7355"/>
+                                    <rect x="11" y="2" width="6" height="4" fill="#3d2f1f"/>
+                                    <rect x="3" y="8" width="5" height="7" fill="#6b5a45"/>
+                                    <rect x="15" y="9" width="7" height="4" fill="#4a3c2a"/>
+                                    <rect x="2" y="17" width="9" height="5" fill="#8b7355"/>
+                                    <rect x="18" y="16" width="5" height="6" fill="#3d2f1f"/>
+                                </pattern>
+                            </defs>
+                            <rect width="200" height="200" fill="url(#mountainCamo)"/>
+                        </svg>
+                    </div>
+                    <div class="pattern-info">
+                        <h3 class="pattern-name">Mountain Ridge</h3>
+                        <p class="pattern-description">Earth-tone digital pattern inspired by rocky terrain</p>
+                        <div class="pattern-tags">
+                            <span class="pattern-tag">Mountain</span>
+                            <span class="pattern-tag">Earth</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 3: Arctic Digital -->
+                <div class="pattern-card">
+                    <div class="pattern-preview">
+                        <svg width="100%" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <pattern id="arcticCamo" patternUnits="userSpaceOnUse" width="18" height="18">
+                                    <rect width="18" height="18" fill="#e8f0ff"/>
+                                    <rect x="2" y="1" width="5" height="4" fill="#b8d4f0"/>
+                                    <rect x="9" y="2" width="4" height="5" fill="#d1e2f5"/>
+                                    <rect x="1" y="7" width="6" height="3" fill="#a8c4e8"/>
+                                    <rect x="10" y="9" width="6" height="4" fill="#c8ddf2"/>
+                                    <rect x="3" y="13" width="8" height="4" fill="#b8d4f0"/>
+                                    <rect x="13" y="15" width="4" height="2" fill="#a8c4e8"/>
+                                </pattern>
+                            </defs>
+                            <rect width="200" height="200" fill="url(#arcticCamo)"/>
+                        </svg>
+                    </div>
+                    <div class="pattern-info">
+                        <h3 class="pattern-name">Arctic Digital</h3>
+                        <p class="pattern-description">Cool blue-white pattern for extreme conditions</p>
+                        <div class="pattern-tags">
+                            <span class="pattern-tag">Arctic</span>
+                            <span class="pattern-tag">Winter</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 4: Desert Storm -->
+                <div class="pattern-card">
+                    <div class="pattern-preview">
+                        <svg width="100%" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <pattern id="desertCamo" patternUnits="userSpaceOnUse" width="22" height="22">
+                                    <rect width="22" height="22" fill="#ddb892"/>
+                                    <rect x="1" y="2" width="7" height="4" fill="#c9a876"/>
+                                    <rect x="10" y="1" width="5" height="6" fill="#b8956a"/>
+                                    <rect x="2" y="9" width="6" height="5" fill="#e6c49a"/>
+                                    <rect x="12" y="11" width="8" height="3" fill="#c9a876"/>
+                                    <rect x="4" y="16" width="9" height="4" fill="#b8956a"/>
+                                    <rect x="16" y="17" width="5" height="4" fill="#ddb892"/>
+                                </pattern>
+                            </defs>
+                            <rect width="200" height="200" fill="url(#desertCamo)"/>
+                        </svg>
+                    </div>
+                    <div class="pattern-info">
+                        <h3 class="pattern-name">Desert Storm</h3>
+                        <p class="pattern-description">Sandy digital camo for arid environments</p>
+                        <div class="pattern-tags">
+                            <span class="pattern-tag">Desert</span>
+                            <span class="pattern-tag">Sand</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 5: Urban Tech -->
+                <div class="pattern-card">
+                    <div class="pattern-preview">
+                        <svg width="100%" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <pattern id="urbanCamo" patternUnits="userSpaceOnUse" width="16" height="16">
+                                    <rect width="16" height="16" fill="#2a2a2a"/>
+                                    <rect x="1" y="1" width="4" height="3" fill="#4a4a4a"/>
+                                    <rect x="7" y="2" width="3" height="4" fill="#1a1a1a"/>
+                                    <rect x="2" y="6" width="5" height="2" fill="#3a3a3a"/>
+                                    <rect x="9" y="8" width="4" height="5" fill="#4a4a4a"/>
+                                    <rect x="3" y="11" width="6" height="3" fill="#1a1a1a"/>
+                                    <rect x="11" y="13" width="4" height="2" fill="#3a3a3a"/>
+                                </pattern>
+                            </defs>
+                            <rect width="200" height="200" fill="url(#urbanCamo)"/>
+                        </svg>
+                    </div>
+                    <div class="pattern-info">
+                        <h3 class="pattern-name">Urban Tech</h3>
+                        <p class="pattern-description">Dark digital pattern for city environments</p>
+                        <div class="pattern-tags">
+                            <span class="pattern-tag">Urban</span>
+                            <span class="pattern-tag">Tech</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 6: Ocean Deep -->
+                <div class="pattern-card">
+                    <div class="pattern-preview">
+                        <svg width="100%" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <pattern id="oceanCamo" patternUnits="userSpaceOnUse" width="20" height="20">
+                                    <rect width="20" height="20" fill="#1e3a5f"/>
+                                    <rect x="2" y="1" width="6" height="4" fill="#2d5a87"/>
+                                    <rect x="10" y="2" width="4" height="5" fill="#0f2844"/>
+                                    <rect x="1" y="7" width="7" height="3" fill="#1e4a6f"/>
+                                    <rect x="11" y="9" width="6" height="4" fill="#2d5a87"/>
+                                    <rect x="3" y="14" width="8" height="5" fill="#0f2844"/>
+                                    <rect x="14" y="15" width="5" height="4" fill="#1e4a6f"/>
+                                </pattern>
+                            </defs>
+                            <rect width="200" height="200" fill="url(#oceanCamo)"/>
+                        </svg>
+                    </div>
+                    <div class="pattern-info">
+                        <h3 class="pattern-name">Ocean Deep</h3>
+                        <p class="pattern-description">Deep blue digital pattern for water adventures</p>
+                        <div class="pattern-tags">
+                            <span class="pattern-tag">Ocean</span>
+                            <span class="pattern-tag">Water</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 7: Electric Blue Forest -->
+                <div class="pattern-card">
+                    <div class="pattern-preview">
+                        <svg width="100%" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <pattern id="blueForestCamo" patternUnits="userSpaceOnUse" width="22" height="22">
+                                    <rect width="22" height="22" fill="#1a4c66"/>
+                                    <rect x="2" y="1" width="7" height="5" fill="#2e6b8a"/>
+                                    <rect x="11" y="2" width="5" height="6" fill="#0d3649"/>
+                                    <rect x="1" y="9" width="8" height="4" fill="#1e5a75"/>
+                                    <rect x="13" y="11" width="6" height="5" fill="#2e6b8a"/>
+                                    <rect x="3" y="16" width="9" height="4" fill="#0d3649"/>
+                                    <rect x="16" y="17" width="5" height="4" fill="#1a4c66"/>
+                                </pattern>
+                            </defs>
+                            <rect width="200" height="200" fill="url(#blueForestCamo)"/>
+                        </svg>
+                    </div>
+                    <div class="pattern-info">
+                        <h3 class="pattern-name">Electric Blue Forest</h3>
+                        <p class="pattern-description">High-tech blue forest pattern with electric undertones</p>
+                        <div class="pattern-tags">
+                            <span class="pattern-tag">Blue</span>
+                            <span class="pattern-tag">Forest</span>
+                            <span class="pattern-tag">Electric</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 8: Midnight Urban -->
+                <div class="pattern-card">
+                    <div class="pattern-preview">
+                        <svg width="100%" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <pattern id="midnightUrbanCamo" patternUnits="userSpaceOnUse" width="18" height="18">
+                                    <rect width="18" height="18" fill="#1e2a3a"/>
+                                    <rect x="1" y="1" width="5" height="4" fill="#2d4a66"/>
+                                    <rect x="8" y="2" width="4" height="5" fill="#0f1a26"/>
+                                    <rect x="2" y="7" width="6" height="3" fill="#1a334a"/>
+                                    <rect x="10" y="9" width="5" height="4" fill="#2d4a66"/>
+                                    <rect x="3" y="13" width="7" height="4" fill="#0f1a26"/>
+                                    <rect x="12" y="14" width="5" height="3" fill="#1a334a"/>
+                                </pattern>
+                            </defs>
+                            <rect width="200" height="200" fill="url(#midnightUrbanCamo)"/>
+                        </svg>
+                    </div>
+                    <div class="pattern-info">
+                        <h3 class="pattern-name">Midnight Urban</h3>
+                        <p class="pattern-description">Dark blue urban tactical pattern for night operations</p>
+                        <div class="pattern-tags">
+                            <span class="pattern-tag">Blue</span>
+                            <span class="pattern-tag">Urban</span>
+                            <span class="pattern-tag">Tactical</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pattern-gallery-cta">
+                <h3>Coming Soon: Full Customization</h3>
+                <p>These patterns are just the beginning. Soon you'll be able to create your own custom patterns and apply them to water bottles, caps, and gear in real-time.</p>
+                <button class="btn btn-secondary" data-scroll="newsletter">Get Notified</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Color Studio Section -->
+    <section id="color-generator" class="color-studio">
+        <div class="container">
+            <div class="color-studio-header">
+                <h2 class="color-studio-title">Color Studio</h2>
+                <p class="color-studio-description">
+                    Generate custom color palettes using AI. Describe any environment, mood, or theme, 
+                    and watch as unique color combinations come to life in tactical camo patterns.
+                </p>
+            </div>
+            
+            <div class="color-generator-interface">
+                <div class="prompt-section">
+                    <h3>Describe Your Vision</h3>
+                    <div class="prompt-examples">
+                        <span class="prompt-example" data-prompt="Aurora borealis with electric greens and deep purples">Aurora Borealis</span>
+                        <span class="prompt-example" data-prompt="Desert sunset with warm oranges and dusty browns">Desert Sunset</span>
+                        <span class="prompt-example" data-prompt="Deep ocean storm with navy blues and storm grays">Ocean Storm</span>
+                        <span class="prompt-example" data-prompt="Mountain forest with dark greens and earth tones">Mountain Forest</span>
+                        <span class="prompt-example" data-prompt="Urban nighttime with dark blues and metallic accents">Urban Night</span>
+                    </div>
+                    
+                    <div class="prompt-input-section">
+                        <textarea 
+                            id="color-prompt" 
+                            placeholder="Describe your ideal color palette... (e.g., 'Aurora borealis with electric greens and deep purples' or 'Volcanic landscape with deep reds and charcoal blacks')"
+                            rows="3"
+                        ></textarea>
+                        <div class="generate-buttons">
+                            <button id="generate-palette-btn" class="btn btn-primary">
+                                <span class="btn-text">Generate Palette</span>
+                                <span class="btn-loading" style="display: none;">Generating...</span>
+                            </button>
+                            <button id="refresh-palette-btn" class="btn btn-secondary" style="display: none;">
+                                <span class="btn-text">🔄 Different Colors</span>
+                                <span class="btn-loading" style="display: none;">Generating...</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="results-section">
+                    <div class="palette-results" id="palette-results" style="display: none;">
+                        <h3>Generated Palette</h3>
+                        <div class="color-swatches" id="color-swatches"></div>
+                        <div class="palette-actions">
+                            <button id="apply-to-preview-btn" class="btn btn-secondary">Preview on Pattern</button>
+                            <button id="save-palette-btn" class="btn btn-outline">Save Palette</button>
+                        </div>
+                    </div>
+                    
+                    <div class="pattern-preview" id="pattern-preview" style="display: none;">
+                        <h3>Pattern Preview</h3>
+                        <div class="preview-container">
+                            <svg width="100%" height="300" viewBox="0 0 400 300" id="preview-svg">
+                                <!-- Pattern will be dynamically generated here -->
+                            </svg>
+                        </div>
+                        <div class="preview-actions">
+                            <button id="try-another-btn" class="btn btn-secondary">Try Another Palette</button>
+                            <button id="save-design-btn" class="btn btn-primary">Save This Design</button>
+                        </div>
+                    </div>
+                    
+                    <div class="api-setup-notice" id="api-setup-notice">
+                        <div class="notice-content">
+                            <h3>🚀 Connect AI Color Generation</h3>
+                            <p>Enter your OpenAI API key to unlock unlimited custom color palette generation:</p>
+                            
+                            <div class="api-key-section">
+                                <div class="api-key-input-group">
+                                    <input 
+                                        type="password" 
+                                        id="openai-api-key" 
+                                        placeholder="sk-..." 
+                                        class="api-key-input"
+                                    >
+                                    <button id="connect-api-btn" class="btn btn-primary">Connect AI</button>
+                                </div>
+                                <p class="api-help-text">
+                                    Get your free API key at <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a>
+                                </p>
+                            </div>
+                            
+                            <div class="demo-mode-info">
+                                <h4>Demo Mode Features (Available Now):</h4>
+                                <ul>
+                                    <li>Generate sample color palettes</li>
+                                    <li>Preview patterns in real-time</li>
+                                    <li>Save your favorite combinations</li>
+                                    <li>Apply colors to any pattern style</li>
+                                </ul>
+                                <p class="demo-note">Try the examples above - they work immediately with smart color matching!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="saved-palettes" id="saved-palettes" style="display: none;">
+                <h3>Your Saved Palettes</h3>
+                <div class="palette-grid" id="palette-grid">
+                    <!-- Saved palettes will appear here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+    <!-- Call to Action Section -->
+    <section id="cta" class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">Ready to Find Your Edge?</h2>
+                <p class="cta-description">
+                    Join the community of adventurers who refuse to settle for ordinary. 
+                    Your next challenge is waiting – are you in Savo Mode?
+                </p>
+                <button class="btn btn-primary cta-btn">Join the Movement</button>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <h3 style="margin-bottom: 20px; color: #ffffff;">Pattern Creation Tools</h3>
+                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                        <a href="advanced-color-studio.html" class="btn" style="background: linear-gradient(135deg, #00d2ff, #3a7bd5);">Color Studio</a>
+                        <a href="my-patterns.html" class="btn" style="background: linear-gradient(135deg, #2ecc71, #27ae60);">My Patterns</a>
+                        <a href="design-challenges.html" class="btn" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);">Design Challenges</a>
+                        <a href="pattern-creation-guide.html" class="btn" style="background: linear-gradient(135deg, #f39c12, #e67e22);">500 Challenge</a>
+                        <a href="pattern-library.html" class="btn" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">Pattern Library</a>
+                        <a href="blog.html" class="btn" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">Blog & Stories</a>
+                    </div>
+                </div>
+                
+                <div class="social-section">
+                    <p class="social-title">Follow on Socials</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Facebook">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="YouTube">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Savo Mode: Brand Story Section -->
+    <section id="savo-mode" class="savo-mode">
+        <div class="container">
+            <div class="section-breadcrumb">
+                <span class="breadcrumb-item">Savo Studio</span>
+                <span class="breadcrumb-separator">→</span>
+                <span class="breadcrumb-item active">Brand Story</span>
+            </div>
+            <div class="savo-mode-header">
+                <h2 class="savo-mode-title">SAVO MODE</h2>
+                <p class="savo-mode-subtitle">The Brand Behind the Studio</p>
+            </div>
+            
+            <div class="brand-story">
+                <div class="story-intro">
+                    <h3>From Adventure to Innovation</h3>
+                    <p>Savo Mode represents more than outdoor gear - it's a philosophy of pushing boundaries, embracing challenges, and turning obstacles into opportunities. Born from a passion for authentic outdoor experiences, the brand evolved into a comprehensive design ecosystem.</p>
+                </div>
+                
+                <div class="brand-pillars">
+                    <div class="brand-pillar">
+                        <div class="pillar-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="13,2 3,14 12,14 11,22 21,10 12,10"/>
+                            </svg>
+                        </div>
+                        <div class="pillar-content">
+                            <h4>SURVIVE</h4>
+                            <p>Resilience through adversity. Every challenge makes you stronger, every setback teaches valuable lessons.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="brand-pillar">
+                        <div class="pillar-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                            </svg>
+                        </div>
+                        <div class="pillar-content">
+                            <h4>ADAPT</h4>
+                            <p>Embrace change as opportunity. Evolution through innovation, growth through flexibility.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="brand-pillar">
+                        <div class="pillar-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7z"/>
+                            </svg>
+                        </div>
+                        <div class="pillar-content">
+                            <h4>VENTURE</h4>
+                            <p>Courage to explore unknown territories. Adventure begins where comfort zones end.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="brand-pillar">
+                        <div class="pillar-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <div class="pillar-content">
+                            <h4>OUTLAST</h4>
+                            <p>Endurance and persistence. Building something that stands the test of time.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="brand-evolution">
+                    <h3>Evolution to Studio</h3>
+                    <p>What started as an outdoor clothing brand has evolved into a comprehensive design studio. By combining authentic outdoor experience with cutting-edge design technology, Savo Mode now creates patterns and designs that other brands can't replicate - because they come from real expertise, not just aesthetics.</p>
+                    
+                    <div class="evolution-stats">
+                        <div class="stat">
+                            <h4>500+</h4>
+                            <p>Unique Patterns</p>
+                        </div>
+                        <div class="stat">
+                            <h4>100%</h4>
+                            <p>Botanical Accuracy</p>
+                        </div>
+                        <div class="stat">
+                            <h4>AI-Powered</h4>
+                            <p>Color Generation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio: From Shed to Studio -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <div class="section-breadcrumb">
+                <span class="breadcrumb-item">Savo Studio</span>
+                <span class="breadcrumb-separator">→</span>
+                <span class="breadcrumb-item">Brand Story</span>
+                <span class="breadcrumb-separator">→</span>
+                <span class="breadcrumb-item active">Personal Journey</span>
+            </div>
+            <div class="portfolio-header">
+                <h2 class="portfolio-title">FROM SHED TO STUDIO</h2>
+                <p class="portfolio-subtitle">My Creative Journey & Professional Development</p>
+            </div>
+            
+            <div class="journey-narrative">
+                <div class="narrative-intro">
+                    <div class="context-helper">
+                        <p><strong>About this section:</strong> While "Savo Mode" tells the brand story, this Portfolio section documents my personal design journey from university studies to professional ambitions.</p>
+                    </div>
+                    <h3>Where Ideas Take Flight</h3>
+                    <p>Every great studio starts somewhere. Mine began in a shed - a simple space where curiosity met creativity, where university coursework blended with professional aspirations. This is the story of transforming humble beginnings into professional expertise.</p>
+                </div>
+                
+                <div class="journey-phases">
+                    <div class="phase">
+                        <div class="phase-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                                <circle cx="12" cy="13" r="3"/>
+                            </svg>
+                        </div>
+                        <div class="phase-content">
+                            <h4>The Shed Phase</h4>
+                            <p>Starting with simple tools and big dreams. University assignments became the foundation for understanding design principles, color theory, and creative problem-solving. Every project taught something new.</p>
+                            <div class="phase-highlights">
+                                <span class="highlight">Open University Design Studies</span>
+                                <span class="highlight">Design Theory Fundamentals</span>
+                                <span class="highlight">Color Science Exploration</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="phase">
+                        <div class="phase-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <div class="phase-content">
+                            <h4>The Growth Phase</h4>
+                            <p>Expanding skills through professional certifications and specialized programs. Coursera courses, industry certifications, and real-world application of design principles.</p>
+                            <div class="phase-highlights">
+                                <span class="highlight">Coursera Certifications</span>
+                                <span class="highlight">UX/UI Specialization</span>
+                                <span class="highlight">Brand Identity Mastery</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="phase">
+                        <div class="phase-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                            </svg>
+                        </div>
+                        <div class="phase-content">
+                            <h4>The Innovation Phase</h4>
+                            <p>Breakthrough moments where learning transformed into creation. Developing unique tactical patterns, mastering AI-powered tools, and building systems that can't be easily replicated.</p>
+                            <div class="phase-highlights">
+                                <span class="highlight">500 Pattern Challenge</span>
+                                <span class="highlight">Botanical Pattern Innovation</span>
+                                <span class="highlight">AI Integration Mastery</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="phase">
+                        <div class="phase-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="9" cy="9" r="2"/>
+                                <path d="M21 15l-3.086-3.086a2 2 0 00-2.828 0L6 21"/>
+                            </svg>
+                        </div>
+                        <div class="phase-content">
+                            <h4>The Studio Phase</h4>
+                            <p>The vision realized - a comprehensive design studio that combines authentic expertise with cutting-edge technology. Ready to serve clients and create industry-defining work.</p>
+                            <div class="phase-highlights">
+                                <span class="highlight">Professional Studio Setup</span>
+                                <span class="highlight">Client-Ready Systems</span>
+                                <span class="highlight">Industry Recognition</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="creative-philosophy">
+                    <h3>Design Philosophy</h3>
+                    <p>My approach combines academic rigor with creative intuition. I believe the best designs come from understanding both the technical foundations and the emotional impact of visual communication. Every project is an opportunity to push boundaries while staying grounded in proven principles.</p>
+                    
+                    <div class="philosophy-principles">
+                        <div class="principle">
+                            <h4>Authentic Innovation</h4>
+                            <p>Creating original solutions rooted in real expertise</p>
+                        </div>
+                        <div class="principle">
+                            <h4>Technical Excellence</h4>
+                            <p>Understanding the science behind design decisions</p>
+                        </div>
+                        <div class="principle">
+                            <h4>Continuous Evolution</h4>
+                            <p>Every project teaches, every challenge grows capability</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section id="newsletter" class="newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <div class="newsletter-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                </div>
+                <h2 class="newsletter-title">Stay Connected</h2>
+                <p class="newsletter-description">
+                    Get notified when our collection launches and join the <span style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientShift 3s ease-in-out infinite;">Savo Mode</span> community.
+                </p>
+                <form class="newsletter-form" id="newsletter-form">
+                    <div class="form-group">
+                        <input type="text" placeholder="Your name" class="form-input newsletter-input" name="name">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="your@email.com" class="form-input newsletter-input" name="email" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary newsletter-btn">Join</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="footer-brand-name" style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientShift 3s ease-in-out infinite; text-shadow: 0 0 20px rgba(116, 235, 213, 0.5);">SAVO STUDIO</span>
+                    <p class="footer-tagline" style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientShift 3s ease-in-out infinite; text-shadow: 0 0 15px rgba(116, 235, 213, 0.3);">Design Your Future</p>
+                </div>
+                
+                <div class="footer-bottom">
+                    <p class="footer-copyright" style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientShift 3s ease-in-out infinite; text-shadow: 0 0 10px rgba(116, 235, 213, 0.3);">
+                        &copy; 2025 Savo Studio. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/color-studio.js"></script>
+    <script src="js/owl-buddy.js"></script>
+    <script src="js/accessibility.js"></script>
+    
+    <script>
+        console.log('🏔️ Savo Mode website initialized successfully');
+        console.log('🏔️ Static mountain background activated');
+        console.log('🎨 Color Studio initialized');
+        console.log('🎨 SVG className compatibility issue handled silently');
+        
+        // Accessibility warning system
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user has seen warning before
+            if (!localStorage.getItem('savoStudioAccessibilityAcknowledged')) {
+                document.getElementById('accessibilityWarning').style.display = 'flex';
+            }
+        });
+        
+        function enableReducedMotion() {
+            document.body.classList.add('reduce-motion');
+            localStorage.setItem('savoStudioAccessibilityAcknowledged', 'reduced-motion');
+            localStorage.setItem('savoStudioMotionPreference', 'reduced');
+            document.getElementById('accessibilityWarning').style.display = 'none';
+            
+            // Add persistent warning
+            const warning = document.createElement('div');
+            warning.className = 'motion-warning';
+            warning.innerHTML = '⚠️ Reduced Motion Mode Active';
+            document.body.appendChild(warning);
+        }
+        
+        function proceedWithCaution() {
+            localStorage.setItem('savoStudioAccessibilityAcknowledged', 'acknowledged');
+            document.getElementById('accessibilityWarning').style.display = 'none';
+        }
+        
+        // Apply reduced motion if previously set
+        if (localStorage.getItem('savoStudioMotionPreference') === 'reduced') {
+            document.body.classList.add('reduce-motion');
+        }
+
+        // All animation functions removed to prevent freezing
+
+        // Scroll detection to hide hero elements
+        let lastScrollY = 0;
+        
+        function handleScroll() {
+            const scrollY = window.scrollY;
+            
+            // Hide branding elements after scrolling just 50px down
+            if (scrollY > 50) {
+                document.body.classList.add('scrolled');
+            } else {
+                document.body.classList.remove('scrolled');
+            }
+            
+            // Fade out cosmic atmosphere as user scrolls
+            const cosmicAtmosphere = document.getElementById('cosmicAtmosphere');
+            if (cosmicAtmosphere) {
+                const fadeStart = 0;
+                const fadeEnd = 400;
+                let opacity = 1;
+                
+                if (scrollY > fadeStart) {
+                    opacity = 1 - (scrollY - fadeStart) / (fadeEnd - fadeStart);
+                    opacity = Math.max(0, Math.min(1, opacity));
+                }
+                
+                cosmicAtmosphere.style.opacity = opacity;
+            }
+            
+            lastScrollY = scrollY;
+        }
+        
+        // Cosmic particles system removed to prevent freezing
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animation initialization removed to prevent freezing
+            window.addEventListener('scroll', handleScroll);
+            handleScroll(); // Call once to set initial state
+        });
+    </script>
+</body>
+  </html>

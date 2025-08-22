@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Tessellation Studio</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: radial-gradient(circle, #0a0a1a, #1a0a3a, #000);
+            color: #e8f5e8;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.05);
+            border-radius: 25px;
+            padding: 25px;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(138, 43, 226, 0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            background: linear-gradient(45deg, #ff006e, #8338ec, #3a86ff, #06ffa5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+        }
+        
+        .layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+        
+        .controls {
+            background: rgba(138, 43, 226, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            height: fit-content;
+        }
+        
+        .pattern-buttons {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .pattern-btn {
+            background: rgba(138, 43, 226, 0.2);
+            border: 2px solid rgba(138, 43, 226, 0.4);
+            border-radius: 10px;
+            padding: 12px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .pattern-btn:hover {
+            background: rgba(138, 43, 226, 0.4);
+            transform: scale(1.02);
+        }
+        
+        .pattern-btn.active {
+            background: linear-gradient(135deg, #8338ec, #3a86ff);
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            color: #06ffa5;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        
+        .value {
+            color: #ffbe0b;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        canvas {
+            width: 100%;
+            height: 700px;
+            border: 3px solid rgba(138, 43, 226, 0.5);
+            border-radius: 20px;
+            background: #000;
+            cursor: crosshair;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #ff006e, #8338ec);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 1000px) {
+            .layout { grid-template-columns: 1fr; }
+            canvas { height: 500px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌌 Cosmic Tessellation Studio</h1>
+        
+        <div class="layout">
+            <div class="controls">
+                <div class="pattern-buttons">
+                    <button class="pattern-btn active" onclick="setPattern('voronoi')">🕸️ Cosmic Web</button>
+                    <button class="pattern-btn" onclick="setPattern('triangles')">🔺 Star Network</button>
+                    <button class="pattern-btn" onclick="setPattern('hexagons')">⬡ Honeycomb</button>
+                    <button class="pattern-btn" onclick="setPattern('crystals')">💎 Crystals</button>
+                    <button class="pattern-btn" onclick="setPattern('nebula')">☁️ Nebula</button>
+                    <button class="pattern-btn" onclick="setPattern('quantum')">⚛️ Quantum</button>
+                </div>
+                
+                <div class="control-group">
+                    <label>Density</label>
+                    <input type="range" id="density" min="20" max="300" value="100" oninput="updatePattern()">
+                    <div class="value" id="densityValue">100</div>
+                </div>
+                
+                <div class="control-group">
+                    <label>Scale</label>
+                    <input type="range" id="scale" min="0.3" max="3" step="0.1" value="1" oninput="updatePattern()">
+                    <div class="value" id="scaleValue">1.0</div>
+                </div>
+                
+                <div class="control-group">
+                    <label>Color Hue</label>
+                    <input type="range" id="hue" min="0" max="360" value="240" oninput="updatePattern()">
+                    <div class="value" id="hueValue">240°</div>
+                </div>
+                
+                <div class="control-group">
+                    <label>Brightness</label>
+                    <input type="range" id="brightness" min="20" max="80" value="50" oninput="updatePattern()">
+                    <div class="value" id="brightnessValue">50%</div>
+                </div>
+                
+                <div class="control-group">
+                    <label>Animation Speed</label>
+                    <input type="range" id="speed" min="0" max="0.1" step="0.01" value="0.02" oninput="updateSettings()">
+                    <div class="value" id="speedValue">0.02</div>
+                </div>
+                
+                <button onclick="generateNew()">🌌 Generate New</button>
+                <button onclick="toggleAnimation()" id="animBtn">✨ Animate</button>
+                <button onclick="randomize()">🎲 Randomize</button>
+                <button onclick="exportImage()">💾 Export</button>
+            </div>
+            
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let canvas, ctx;
+        let currentPattern = 'voronoi';
+        let points = [];
+        let animationId;
+        let isAnimating = false;
+        let animationPhase = 0;
+        let settings = {
+            density: 100,
+            scale: 1,
+            hue: 240,
+            brightness: 50,
+            speed: 0.02
+        };
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            canvas = document.getElementById('canvas');
+            ctx = canvas.getContext('2d');
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            generatePoints();
+            drawPattern();
+            updateValues();
+        });
+        
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+        
+        function setPattern(pattern) {
+            currentPattern = pattern;
+            document.querySelectorAll('.pattern-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            generatePoints();
+            drawPattern();
+        }
+        
+        function generatePoints() {
+            points = [];
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            for (let i = 0; i < settings.density; i++) {
+                points.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    size: Math.random() * 20 + 10,
+                    hue: (settings.hue + i * 10) % 360,
+                    phase: Math.random() * Math.PI * 2
+                });
+            }
+        }
+        
+        function updatePattern() {
+            settings.density = parseInt(document.getElementById('density').value);
+            settings.scale = parseFloat(document.getElementById('scale').value);
+            settings.hue = parseInt(document.getElementById('hue').value);
+            settings.brightness = parseInt(document.getElementById('brightness').value);
+            
+            generatePoints();
+            drawPattern();
+            updateValues();
+        }
+        
+        function updateSettings() {
+            settings.speed = parseFloat(document.getElementById('speed').value);
+            updateValues();
+        }
+        
+        function drawPattern() {
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // Clear with space background
+            const bgGradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, Math.max(width, height));
+            bgGradient.addColorStop(0, '#001122');
+            bgGradient.addColorStop(1, '#000000');
+            ctx.fillStyle = bgGradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            switch(currentPattern) {
+                case 'voronoi':
+                    drawVoronoi();
+                    break;
+                case 'triangles':
+                    drawTriangles();
+                    break;
+                case 'hexagons':
+                    drawHexagons();
+                    break;
+                case 'crystals':
+                    drawCrystals();
+                    break;
+                case 'nebula':
+                    drawNebula();
+                    break;
+                case 'quantum':
+                    drawQuantum();
+                    break;
+            }
+        }
+        
+        function drawVoronoi() {
+            // Draw connections between nearby points
+            ctx.strokeStyle = `hsl(${settings.hue}, 70%, ${settings.brightness}%)`;
+            ctx.lineWidth = 1;
+            
+            points.forEach((point, i) => {
+                points.forEach((other, j) => {
+                    if (i < j) {
+                        const dist = Math.sqrt((point.x - other.x) ** 2 + (point.y - other.y) ** 2);
+                        if (dist < 80 * settings.scale) {
+                            ctx.globalAlpha = (80 - dist / settings.scale) / 80 * 0.5;
+                            ctx.beginPath();
+                            ctx.moveTo(point.x, point.y);
+                            ctx.lineTo(other.x, other.y);
+                            ctx.stroke();
+                        }
+                    }
+                });
+            });
+            
+            // Draw points
+            points.forEach(point => {
+                const gradient = ctx.createRadialGradient(point.x, point.y, 0, point.x, point.y, 10 * settings.scale);
+                gradient.addColorStop(0, `hsl(${point.hue}, 100%, 70%)`);
+                gradient.addColorStop(1, `hsl(${point.hue}, 100%, 30%)`);
+                
+                ctx.fillStyle = gradient;
+                ctx.globalAlpha = 0.8;
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 5 * settings.scale, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+        
+        function drawTriangles() {
+            ctx.strokeStyle = `hsl(${settings.hue}, 80%, ${settings.brightness}%)`;
+            ctx.fillStyle = `hsl(${settings.hue}, 60%, ${settings.brightness - 20}%)`;
+            ctx.lineWidth = 1;
+            
+            points.forEach((point, i) => {
+                if (i < points.length - 2) {
+                    const p1 = points[i];
+                    const p2 = points[i + 1];
+                    const p3 = points[i + 2];
+                    
+                    ctx.globalAlpha = 0.3;
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    ctx.lineTo(p3.x, p3.y);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    ctx.globalAlpha = 0.7;
+                    ctx.stroke();
+                }
+            });
+        }
+        
+        function drawHexagons() {
+            points.forEach(point => {
+                ctx.strokeStyle = `hsl(${point.hue}, 80%, ${settings.brightness + 20}%)`;
+                ctx.fillStyle = `hsl(${point.hue}, 60%, ${settings.brightness - 10}%)`;
+                ctx.lineWidth = 2;
+                
+                ctx.globalAlpha = 0.6;
+                ctx.beginPath();
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i * Math.PI * 2) / 6;
+                    const x = point.x + Math.cos(angle) * point.size * settings.scale / 2;
+                    const y = point.y + Math.sin(angle) * point.size * settings.scale / 2;
+                    
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            });
+        }
+        
+        function drawCrystals() {
+            points.forEach(point => {
+                ctx.save();
+                ctx.translate(point.x, point.y);
+                ctx.rotate(animationPhase);
+                
+                ctx.strokeStyle = `hsl(${point.hue}, 90%, ${settings.brightness + 30}%)`;
+                ctx.fillStyle = `hsl(${point.hue}, 70%, ${settings.brightness}%)`;
+                ctx.lineWidth = 2;
+                
+                const size = point.size * settings.scale / 2;
+                
+                ctx.globalAlpha = 0.7;
+                ctx.beginPath();
+                ctx.moveTo(0, -size);
+                ctx.lineTo(size/2, 0);
+                ctx.lineTo(0, size);
+                ctx.lineTo(-size/2, 0);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.restore();
+            });
+        }
+        
+        function drawNebula() {
+            points.forEach(point => {
+                const size = point.size * settings.scale;
+                const gradient = ctx.createRadialGradient(point.x, point.y, 0, point.x, point.y, size);
+                gradient.addColorStop(0, `hsl(${point.hue}, 90%, ${settings.brightness + 20}%)`);
+                gradient.addColorStop(0.5, `hsl(${(point.hue + 60) % 360}, 80%, ${settings.brightness}%)`);
+                gradient.addColorStop(1, 'transparent');
+                
+                ctx.fillStyle = gradient;
+                ctx.globalAlpha = 0.4;
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+        
+        function drawQuantum() {
+            const gridSize = 50 * settings.scale;
+            
+            for (let x = 0; x < canvas.width + gridSize; x += gridSize) {
+                for (let y = 0; y < canvas.height + gridSize; y += gridSize) {
+                    const field = Math.sin(x * 0.01 + animationPhase) * Math.cos(y * 0.01 + animationPhase);
+                    const hue = (settings.hue + field * 180) % 360;
+                    const size = Math.abs(field) * 15 + 3;
+                    
+                    const gradient = ctx.createRadialGradient(x, y, 0, x, y, size);
+                    gradient.addColorStop(0, `hsl(${hue}, 90%, ${settings.brightness + 20}%)`);
+                    gradient.addColorStop(1, 'transparent');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.globalAlpha = Math.abs(field) * 0.6;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+        
+        function animate() {
+            if (!isAnimating) return;
+            
+            animationPhase += settings.speed;
+            
+            // Move points slightly for dynamic effects
+            points.forEach(point => {
+                point.x += Math.sin(animationPhase + point.phase) * 0.3;
+                point.y += Math.cos(animationPhase + point.phase) * 0.3;
+                
+                // Wrap around edges
+                if (point.x < 0) point.x = canvas.width;
+                if (point.x > canvas.width) point.x = 0;
+                if (point.y < 0) point.y = canvas.height;
+                if (point.y > canvas.height) point.y = 0;
+            });
+            
+            drawPattern();
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        function toggleAnimation() {
+            const btn = document.getElementById('animBtn');
+            
+            if (isAnimating) {
+                cancelAnimationFrame(animationId);
+                isAnimating = false;
+                btn.textContent = '✨ Animate';
+            } else {
+                isAnimating = true;
+                btn.textContent = '⏹️ Stop';
+                animate();
+            }
+        }
+        
+        function generateNew() {
+            generatePoints();
+            drawPattern();
+        }
+        
+        function randomize() {
+            document.getElementById('density').value = Math.floor(Math.random() * 200) + 50;
+            document.getElementById('scale').value = (Math.random() * 2 + 0.5).toFixed(1);
+            document.getElementById('hue').value = Math.floor(Math.random() * 360);
+            document.getElementById('brightness').value = Math.floor(Math.random() * 40) + 40;
+            document.getElementById('speed').value = (Math.random() * 0.08 + 0.01).toFixed(2);
+            
+            updatePattern();
+        }
+        
+        function updateValues() {
+            document.getElementById('densityValue').textContent = settings.density;
+            document.getElementById('scaleValue').textContent = settings.scale;
+            document.getElementById('hueValue').textContent = settings.hue + '°';
+            document.getElementById('brightnessValue').textContent = settings.brightness + '%';
+            document.getElementById('speedValue').textContent = settings.speed;
+        }
+        
+        function exportImage() {
+            const link = document.createElement('a');
+            link.download = `cosmic-tessellation-${currentPattern}-${Date.now()}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    </script>
+</body>
+</html>

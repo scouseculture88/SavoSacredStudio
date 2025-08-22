@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Flow Visualizer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 50%, #0a1a0a 100%);
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            user-select: none;
+        }
+        
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 15px 20px;
+            background: linear-gradient(180deg, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0) 100%);
+            backdrop-filter: blur(15px);
+        }
+        
+        .title {
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, #00ff41, #00ffff, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-size: 12px;
+            color: rgba(0, 255, 65, 0.8);
+            font-weight: 300;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 1px;
+        }
+        
+        #canvas {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+        }
+        
+        .controls {
+            position: absolute;
+            top: 70px;
+            right: 10px;
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+        
+        .control-group {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            border-radius: 6px;
+            padding: 10px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+        }
+        
+        .control-label {
+            font-family: 'Orbitron', monospace;
+            font-size: 10px;
+            color: rgba(0, 255, 65, 0.9);
+            margin-bottom: 5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        select, input[type="range"] {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 65, 0.4);
+            border-radius: 4px;
+            color: #00ff41;
+            font-size: 10px;
+            outline: none;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        select {
+            padding: 5px;
+        }
+        
+        input[type="range"] {
+            height: 3px;
+            -webkit-appearance: none;
+            background: rgba(0, 255, 65, 0.2);
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ff41, #00ffff);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.8);
+        }
+        
+        .value-display {
+            font-family: 'Orbitron', monospace;
+            font-size: 8px;
+            color: rgba(0, 255, 255, 0.8);
+            margin-top: 2px;
+            text-align: center;
+            font-weight: 700;
+        }
+        
+        .button {
+            background: linear-gradient(135deg, rgba(0, 255, 65, 0.2), rgba(255, 0, 128, 0.2));
+            border: 1px solid rgba(0, 255, 65, 0.4);
+            border-radius: 4px;
+            color: #00ff41;
+            padding: 6px 10px;
+            font-size: 9px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+            margin: 1px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        
+        .button:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 65, 0.4), rgba(255, 0, 128, 0.3));
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+        }
+        
+        .rakim-quote {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            border-radius: 6px;
+            padding: 8px;
+            backdrop-filter: blur(20px);
+            font-family: 'Orbitron', monospace;
+            font-size: 8px;
+            color: rgba(0, 255, 65, 0.8);
+            max-width: 250px;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                width: 180px;
+                top: 65px;
+            }
+            
+            .title {
+                font-size: 20px;
+            }
+            
+            .header {
+                padding: 12px 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .controls {
+                width: 160px;
+            }
+            
+            .rakim-quote {
+                max-width: 200px;
+                font-size: 7px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">BINARY FLOW</div>
+            <div class="subtitle">"Design flows in binary codes, no matrix"</div>
+        </div>
+        
+        <canvas id="canvas"></canvas>
+        
+        <div class="controls">
+            <div class="control-group">
+                <div class="control-label">Flow Speed</div>
+                <input type="range" id="speed" min="0.1" max="3" value="1" step="0.1">
+                <div class="value-display" id="speedValue">1.0</div>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">Streams</div>
+                <input type="range" id="streamCount" min="5" max="50" value="20" step="1">
+                <div class="value-display" id="streamValue">20</div>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">Complexity</div>
+                <input type="range" id="complexity" min="1" max="8" value="4" step="1">
+                <div class="value-display" id="complexityValue">4</div>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">Pulse Rate</div>
+                <input type="range" id="pulseRate" min="0.5" max="5" value="2" step="0.1">
+                <div class="value-display" id="pulseValue">2.0</div>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">Visual Mode</div>
+                <select id="visualMode">
+                    <option value="matrix">Matrix Rain</option>
+                    <option value="spiral">Binary Spiral</option>
+                    <option value="network">Neural Network</option>
+                    <option value="consciousness">Consciousness Flow</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">Color Theme</div>
+                <select id="colorTheme">
+                    <option value="matrix">Matrix Green</option>
+                    <option value="quantum">Quantum Blue</option>
+                    <option value="rakim">Rakim Gold</option>
+                    <option value="neon">Neon Cyber</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <button class="button" id="pulseBtn">Quantum Pulse</button>
+                <button class="button" id="resetBtn">Reset Flow</button>
+            </div>
+        </div>
+        
+        <div class="rakim-quote">
+            "Design flows in binary codes, no matrix<br>
+            Light-speeds, time could be froze, no spaceships<br>
+            Atom splitter, complex, it's quantum physics"<br>
+            <span style="color: rgba(255, 0, 128, 0.8);">- Rakim</span>
+        </div>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height, centerX, centerY;
+        let animationId;
+        let time = 0;
+        let binaryStreams = [];
+        let networkNodes = [];
+        let quantumPulse = 0;
+        
+        // Parameters
+        let flowSpeed = 1;
+        let streamCount = 20;
+        let complexity = 4;
+        let pulseRate = 2;
+        let visualMode = 'matrix';
+        let colorTheme = 'matrix';
+        
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            centerX = width / 2;
+            centerY = height / 2;
+            initStreams();
+            initNetwork();
+        }
+        
+        function initStreams() {
+            binaryStreams = [];
+            for (let i = 0; i < streamCount; i++) {
+                binaryStreams.push({
+                    x: Math.random() * width,
+                    y: -100,
+                    speed: 2 + Math.random() * 4,
+                    binary: generateBinarySequence(),
+                    opacity: 0.5 + Math.random() * 0.5,
+                    phase: Math.random() * Math.PI * 2
+                });
+            }
+        }
+        
+        function initNetwork() {
+            networkNodes = [];
+            const nodeCount = Math.min(30, streamCount * 1.5);
+            for (let i = 0; i < nodeCount; i++) {
+                networkNodes.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    connections: [],
+                    activity: Math.random(),
+                    pulse: Math.random() * Math.PI * 2
+                });
+            }
+            
+            // Create connections between nearby nodes
+            networkNodes.forEach((node, i) => {
+                networkNodes.forEach((otherNode, j) => {
+                    if (i !== j) {
+                        const distance = Math.sqrt((node.x - otherNode.x) ** 2 + (node.y - otherNode.y) ** 2);
+                        if (distance < 150 && Math.random() < 0.3) {
+                            node.connections.push(j);
+                        }
+                    }
+                });
+            });
+        }
+        
+        function generateBinarySequence() {
+            let sequence = '';
+            for (let i = 0; i < 20 + Math.random() * 30; i++) {
+                sequence += Math.random() > 0.5 ? '1' : '0';
+            }
+            return sequence;
+        }
+        
+        function getThemeColor(intensity = 1, alpha = 1) {
+            const themes = {
+                matrix: () => `rgba(0, ${Math.floor(255 * intensity)}, 65, ${alpha})`,
+                quantum: () => `rgba(0, ${Math.floor(150 * intensity)}, ${Math.floor(255 * intensity)}, ${alpha})`,
+                rakim: () => `rgba(${Math.floor(255 * intensity)}, ${Math.floor(200 * intensity)}, 0, ${alpha})`,
+                neon: () => {
+                    const hue = (time * 0.5 + intensity * 180) % 360;
+                    return `hsla(${hue}, 100%, ${50 + intensity * 30}%, ${alpha})`;
+                }
+            };
+            return themes[colorTheme]();
+        }
+        
+        function drawMatrixRain() {
+            binaryStreams.forEach((stream, index) => {
+                stream.y += stream.speed * flowSpeed;
+                
+                if (stream.y > height + 100) {
+                    stream.y = -100;
+                    stream.x = Math.random() * width;
+                    stream.binary = generateBinarySequence();
+                }
+                
+                // Quantum interference effect
+                const interference = Math.sin(time * pulseRate * 0.01 + stream.phase) * 0.3;
+                const finalOpacity = stream.opacity + interference + quantumPulse * 0.5;
+                
+                ctx.font = `${12 + Math.sin(time * 0.01 + index) * 3}px Orbitron`;
+                
+                // Draw binary digits
+                for (let i = 0; i < stream.binary.length; i++) {
+                    const digit = stream.binary[i];
+                    const y = stream.y + i * 20;
+                    
+                    if (y > -20 && y < height + 20) {
+                        const digitIntensity = (1 - i / stream.binary.length) * finalOpacity;
+                        const glitchOffset = Math.sin(time * 0.1 + i) * 2;
+                        
+                        ctx.fillStyle = getThemeColor(digitIntensity, digitIntensity);
+                        ctx.fillText(digit, stream.x + glitchOffset, y);
+                        
+                        // Add glow for 1s
+                        if (digit === '1' && digitIntensity > 0.7) {
+                            ctx.shadowColor = getThemeColor(1, 0.8);
+                            ctx.shadowBlur = 10;
+                            ctx.fillText(digit, stream.x + glitchOffset, y);
+                            ctx.shadowBlur = 0;
+                        }
+                    }
+                }
+            });
+        }
+        
+        function drawBinarySpiral() {
+            const maxRadius = Math.min(width, height) * 0.4;
+            const spiralCount = Math.floor(streamCount / 4);
+            
+            for (let s = 0; s < spiralCount; s++) {
+                const spiralPhase = (s / spiralCount) * Math.PI * 2;
+                const binary = generateBinarySequence();
+                
+                ctx.font = '10px Orbitron';
+                
+                for (let i = 0; i < binary.length; i++) {
+                    const digit = binary[i];
+                    const angle = spiralPhase + (i * 0.3) + time * flowSpeed * 0.02;
+                    const radius = (i / binary.length) * maxRadius;
+                    
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    
+                    const intensity = 1 - (i / binary.length) * 0.5;
+                    const pulseEffect = Math.sin(time * pulseRate * 0.01 + angle) * 0.3 + 0.7;
+                    
+                    ctx.fillStyle = getThemeColor(intensity * pulseEffect, intensity);
+                    ctx.fillText(digit, x, y);
+                    
+                    if (digit === '1' && intensity > 0.6) {
+                        ctx.shadowColor = getThemeColor(1, 0.6);
+                        ctx.shadowBlur = 8;
+                        ctx.fillText(digit, x, y);
+                        ctx.shadowBlur = 0;
+                    }
+                }
+            }
+        }
+        
+        function drawNeuralNetwork() {
+            // Update node activities
+            networkNodes.forEach(node => {
+                node.pulse += pulseRate * 0.02;
+                node.activity = 0.3 + 0.7 * Math.abs(Math.sin(node.pulse)) + quantumPulse * 0.4;
+            });
+            
+            // Draw connections
+            networkNodes.forEach((node, i) => {
+                node.connections.forEach(connectionIndex => {
+                    const connectedNode = networkNodes[connectionIndex];
+                    if (!connectedNode) return;
+                    
+                    const avgActivity = (node.activity + connectedNode.activity) / 2;
+                    const alpha = avgActivity * 0.6;
+                    
+                    ctx.strokeStyle = getThemeColor(avgActivity, alpha);
+                    ctx.lineWidth = 1 + avgActivity * 2;
+                    ctx.beginPath();
+                    ctx.moveTo(node.x, node.y);
+                    ctx.lineTo(connectedNode.x, connectedNode.y);
+                    ctx.stroke();
+                    
+                    // Binary data flow along connections
+                    const flowPosition = (time * flowSpeed * 0.02) % 1;
+                    const flowX = node.x + (connectedNode.x - node.x) * flowPosition;
+                    const flowY = node.y + (connectedNode.y - node.y) * flowPosition;
+                    
+                    ctx.font = '8px Orbitron';
+                    ctx.fillStyle = getThemeColor(1, avgActivity);
+                    ctx.fillText(Math.random() > 0.5 ? '1' : '0', flowX, flowY);
+                });
+            });
+            
+            // Draw nodes
+            networkNodes.forEach(node => {
+                const radius = Math.max(3, 5 + node.activity * 8);
+                
+                // Outer glow
+                const gradient = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, radius * 3);
+                gradient.addColorStop(0, getThemeColor(node.activity, 0.8));
+                gradient.addColorStop(1, getThemeColor(node.activity, 0));
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, radius * 3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Core
+                ctx.fillStyle = getThemeColor(1, node.activity);
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+        
+        function drawConsciousnessFlow() {
+            const waveCount = Math.floor(streamCount / 2);
+            
+            for (let w = 0; w < waveCount; w++) {
+                const wavePhase = (w / waveCount) * Math.PI * 2;
+                const waveAmplitude = 50 + w * 10;
+                
+                ctx.font = '12px Orbitron';
+                ctx.beginPath();
+                
+                const points = 100;
+                for (let i = 0; i <= points; i++) {
+                    const t = (i / points);
+                    const x = t * width;
+                    const y = centerY + Math.sin(wavePhase + t * Math.PI * complexity + time * flowSpeed * 0.02) * waveAmplitude;
+                    
+                    // Place binary digits along the wave
+                    if (i % 8 === 0) {
+                        const digit = Math.random() > 0.5 ? '1' : '0';
+                        const intensity = Math.abs(Math.sin(t * Math.PI * 2 + time * pulseRate * 0.01));
+                        const alpha = intensity * (0.5 + quantumPulse * 0.5);
+                        
+                        ctx.fillStyle = getThemeColor(intensity, alpha);
+                        ctx.fillText(digit, x, y);
+                        
+                        if (digit === '1' && intensity > 0.7) {
+                            ctx.shadowColor = getThemeColor(1, 0.8);
+                            ctx.shadowBlur = 12;
+                            ctx.fillText(digit, x, y);
+                            ctx.shadowBlur = 0;
+                        }
+                    }
+                }
+                
+                // Draw wave line
+                ctx.strokeStyle = getThemeColor(0.3, 0.4);
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+            
+            // Consciousness center
+            const centerPulse = 1 + Math.sin(time * pulseRate * 0.03) * 0.5;
+            const centerRadius = Math.max(5, 30 * centerPulse + quantumPulse * 20);
+            
+            const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, centerRadius * 2);
+            gradient.addColorStop(0, getThemeColor(1, 0.8));
+            gradient.addColorStop(0.5, getThemeColor(0.7, 0.4));
+            gradient.addColorStop(1, getThemeColor(0.3, 0));
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, centerRadius * 2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        function draw() {
+            // Dark background with subtle matrix effect
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Quantum pulse decay
+            quantumPulse *= 0.95;
+            
+            switch (visualMode) {
+                case 'matrix':
+                    drawMatrixRain();
+                    break;
+                case 'spiral':
+                    drawBinarySpiral();
+                    break;
+                case 'network':
+                    drawNeuralNetwork();
+                    break;
+                case 'consciousness':
+                    drawConsciousnessFlow();
+                    break;
+            }
+        }
+        
+        function animate() {
+            time += 1;
+            draw();
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        function triggerQuantumPulse() {
+            quantumPulse = 1;
+            
+            // Regenerate some streams for matrix mode
+            if (visualMode === 'matrix') {
+                for (let i = 0; i < 5; i++) {
+                    const randomIndex = Math.floor(Math.random() * binaryStreams.length);
+                    binaryStreams[randomIndex].binary = generateBinarySequence();
+                    binaryStreams[randomIndex].y = -100;
+                }
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('speed').addEventListener('input', (e) => {
+            flowSpeed = parseFloat(e.target.value);
+            document.getElementById('speedValue').textContent = flowSpeed.toFixed(1);
+        });
+        
+        document.getElementById('streamCount').addEventListener('input', (e) => {
+            streamCount = parseInt(e.target.value);
+            document.getElementById('streamValue').textContent = streamCount;
+            initStreams();
+            initNetwork();
+        });
+        
+        document.getElementById('complexity').addEventListener('input', (e) => {
+            complexity = parseInt(e.target.value);
+            document.getElementById('complexityValue').textContent = complexity;
+        });
+        
+        document.getElementById('pulseRate').addEventListener('input', (e) => {
+            pulseRate = parseFloat(e.target.value);
+            document.getElementById('pulseValue').textContent = pulseRate.toFixed(1);
+        });
+        
+        document.getElementById('visualMode').addEventListener('change', (e) => {
+            visualMode = e.target.value;
+            initStreams();
+            initNetwork();
+        });
+        
+        document.getElementById('colorTheme').addEventListener('change', (e) => {
+            colorTheme = e.target.value;
+        });
+        
+        document.getElementById('pulseBtn').addEventListener('click', triggerQuantumPulse);
+        
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            time = 0;
+            quantumPulse = 0;
+            initStreams();
+            initNetwork();
+        });
+        
+        // Click to create quantum pulse
+        canvas.addEventListener('click', triggerQuantumPulse);
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            triggerQuantumPulse();
+        });
+        
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Initialize
+        resizeCanvas();
+        animate();
+    </script>
+</body>
+</html>

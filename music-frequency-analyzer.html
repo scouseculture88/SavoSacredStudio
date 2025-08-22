@@ -30,3 +30,965 @@
         .header {
             text-align: center;
             margin-bottom: 40px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #00ff88, #00bcd4, #9c27b0, #ff6b6b);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            margin-bottom: 15px;
+            text-shadow: 
+                0 0 2px #00ff88,
+                0 0 4px #00ff88,
+                0 0 8px #00bcd4,
+                0 0 12px #9c27b0;
+            filter: drop-shadow(0 0 6px rgba(0, 255, 136, 0.3));
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .analyzer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .panel h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #00ff88;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255,255,255,0.3);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .spectrogram-canvas {
+            width: 100%;
+            height: 300px;
+            background: radial-gradient(circle at center, #000428, #004e92);
+            border-radius: 15px;
+            border: 2px solid rgba(0,255,136,0.3);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .frequency-bands {
+            display: flex;
+            height: 200px;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .freq-bar {
+            background: linear-gradient(to top, #ff6b6b, #4ecdc4, #45b7d1);
+            width: 8px;
+            border-radius: 4px;
+            transition: height 0.1s ease;
+            box-shadow: 0 0 10px rgba(116, 235, 213, 0.3);
+        }
+
+        .natural-sounds {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .sound-preset {
+            background: rgba(116, 235, 213, 0.1);
+            border: 2px solid rgba(116, 235, 213, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .sound-preset:hover {
+            background: rgba(116, 235, 213, 0.2);
+            border-color: #74ebd5;
+            transform: translateY(-2px);
+        }
+
+        .sound-preset.active {
+            background: rgba(116, 235, 213, 0.3);
+            border-color: #74ebd5;
+        }
+
+        .upload-area:hover {
+            border-color: #00ff88;
+            background: rgba(0,255,136,0.1);
+        }
+
+        .upload-area.dragover {
+            border-color: #00bcd4;
+            background: rgba(0,188,212,0.2);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00ff88, #00bcd4);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #9c27b0, #673ab7);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .frequency-visualization {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .frequency-bars {
+            display: flex;
+            align-items: end;
+            height: 150px;
+            gap: 2px;
+            justify-content: space-between;
+        }
+
+        .frequency-bar {
+            background: linear-gradient(to top, #ff6b6b, #00ff88);
+            border-radius: 2px;
+            min-width: 3px;
+            transition: height 0.1s ease;
+        }
+
+        .analysis-results {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .frequency-score {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+
+        .score-label {
+            font-weight: 600;
+        }
+
+        .score-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        .high-vibe {
+            background: linear-gradient(45deg, #00ff88, #4caf50);
+            color: white;
+        }
+
+        .medium-vibe {
+            background: linear-gradient(45deg, #ffa726, #ff9800);
+            color: white;
+        }
+
+        .low-vibe {
+            background: linear-gradient(45deg, #ff6b6b, #f44336);
+            color: white;
+        }
+
+        .library-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+        }
+
+        .track-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .track-item:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .track-info {
+            flex: 1;
+        }
+
+        .track-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .track-artist {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .track-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .keep-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .remove-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #00ff88;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .analyzer-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .upload-area {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 Music Frequency Analyzer</h1>
+            <p class="subtitle">Analyze and curate your music library based on vibrational frequencies</p>
+        </div>
+
+        <div class="analyzer-grid">
+            <!-- Upload & Analysis Panel -->
+            <div class="panel">
+                <h3>🎧 Audio Analysis</h3>
+                <div class="upload-area" id="uploadArea">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🎵</div>
+                    <div>Drop audio files here or click to browse</div>
+                    <div style="font-size: 0.9rem; opacity: 0.7; margin-top: 10px;">
+                        Supports MP3, WAV, M4A formats
+                    </div>
+                </div>
+                <input type="file" id="fileInput" class="file-input" accept="audio/*" multiple>
+                
+                <button class="btn btn-primary" onclick="analyzeFrequencies()">🔍 Analyze Frequencies</button>
+                <button class="btn btn-secondary" onclick="detectConsciousRap()">🧠 Detect Conscious Content</button>
+                
+                <div class="frequency-visualization" id="frequencyViz">
+                    <div class="frequency-bars" id="frequencyBars">
+                        <!-- Frequency bars will be generated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="panel">
+                <h3>📊 Frequency Analysis Results</h3>
+                <!-- Natural Sound Presets -->
+                <div class="natural-sounds">
+                    <div class="sound-preset" onclick="analyzeNaturalSound('bird')">
+                        <div style="font-size: 1.5rem; margin-bottom: 5px;">🐦</div>
+                        <div>Bird Songs</div>
+                        <div style="font-size: 0.8rem; opacity: 0.7;">2-8kHz range</div>
+                    </div>
+                    <div class="sound-preset" onclick="analyzeNaturalSound('whistle')">
+                        <div style="font-size: 1.5rem; margin-bottom: 5px;">🎵</div>
+                        <div>Whistling</div>
+                        <div style="font-size: 0.8rem; opacity: 0.7;">1-4kHz range</div>
+                    </div>
+                    <div class="sound-preset" onclick="analyzeNaturalSound('glass')">
+                        <div style="font-size: 1.5rem; margin-bottom: 5px;">🍷</div>
+                        <div>Wine Glass</div>
+                        <div style="font-size: 0.8rem; opacity: 0.7;">0.5-2kHz range</div>
+                    </div>
+                    <div class="sound-preset" onclick="analyzeNaturalSound('violin')">
+                        <div style="font-size: 1.5rem; margin-bottom: 5px;">🎻</div>
+                        <div>Violin</div>
+                        <div style="font-size: 0.8rem; opacity: 0.7;">0.2-8kHz range</div>
+                    </div>
+                </div>
+
+                <!-- Spectrogram Canvas -->
+                <div class="spectrogram-canvas" id="spectrogramCanvas">
+                    <canvas id="spectrogramDisplay" width="800" height="300" style="width: 100%; height: 100%;"></canvas>
+                </div>
+
+                <div class="analysis-results" id="analysisResults">
+                    <div class="frequency-score">
+                        <span class="score-label">Overall Vibration:</span>
+                        <span class="score-value high-vibe" id="overallScore">High Frequency</span>
+                    </div>
+                    
+                    <div class="frequency-score">
+                        <span class="score-label">Consciousness Level:</span>
+                        <span class="score-value medium-vibe" id="consciousnessScore">Elevated</span>
+                    </div>
+                    
+                    <div class="frequency-score">
+                        <span class="score-label">Natural Sound Match:</span>
+                        <span class="score-value medium-vibe" id="naturalMatch">Bird Song Pattern</span>
+                    </div>
+                    
+                    <div class="frequency-score">
+                        <span class="score-label">Therapeutic Value:</span>
+                        <span class="score-value high-vibe" id="therapeuticScore">Beneficial</span>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="highFreqCount">0</div>
+                            <div class="stat-label">High Frequency Tracks</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="mediumFreqCount">0</div>
+                            <div class="stat-label">Medium Frequency</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="lowFreqCount">0</div>
+                            <div class="stat-label">Low Frequency</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalTracks">0</div>
+                            <div class="stat-label">Total Analyzed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Library Management Panel -->
+            <div class="panel">
+                <h3>🎶 Library Curation</h3>
+                <button class="btn btn-primary" onclick="showHighVibeOnly()">✨ Show High Frequency Only</button>
+                <button class="btn btn-secondary" onclick="showMediumVibeOnly()">🌟 Show Medium Frequency</button>
+                <button class="btn btn-danger" onclick="removeLowVibe()">🗑️ Remove Low Frequency</button>
+                
+                <div class="library-list" id="libraryList">
+                    <!-- Track items will be populated here -->
+                </div>
+            </div>
+
+            <!-- Frequency Patterns Panel -->
+            <div class="panel">
+                <h3>🔮 Frequency Patterns</h3>
+                <div class="frequency-score">
+                    <span class="score-label">Sacred Geometry Alignment:</span>
+                    <span class="score-value high-vibe" id="geometryAlignment">Synchronized</span>
+                </div>
+                
+                <div class="frequency-score">
+                    <span class="score-label">Tesla 3-6-9 Resonance:</span>
+                    <span class="score-value medium-vibe" id="teslaResonance">Partial Match</span>
+                </div>
+                
+                <div class="frequency-score">
+                    <span class="score-label">Solfeggio Frequency:</span>
+                    <span class="score-value high-vibe" id="solfeggioMatch">528 Hz Detected</span>
+                </div>
+
+                <button class="btn btn-primary" onclick="generateFrequencyReport()">📋 Generate Report</button>
+                <button class="btn btn-secondary" onclick="exportCuratedLibrary()">💾 Export Curated Library</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let audioContext;
+        let analyzer;
+        let musicLibrary = [];
+        let analysisResults = {};
+
+        // Sample tracks for demonstration
+        const sampleTracks = [
+            { name: "D/vision", artist: "JID, EARTHGANG", frequency: "high", consciousness: "elevated", file: null },
+            { name: "Alphabets", artist: "GZA", frequency: "high", consciousness: "high", file: null },
+            { name: "What More Can I Say", artist: "GI JOE OMG, J Black", frequency: "high", consciousness: "elevated", file: null },
+            { name: "Shadowboxin'", artist: "GZA, Method Man", frequency: "high", consciousness: "high", file: null },
+            { name: "Uncut, Pure", artist: "Big Daddy Kane", frequency: "high", consciousness: "elevated", file: null },
+            { name: "You Can Never Feel My Pain", artist: "Prodigy", frequency: "medium", consciousness: "elevated", file: null },
+            { name: "Real Hip-Hop", artist: "Das EFX", frequency: "high", consciousness: "high", file: null },
+            { name: "I'm Kurious", artist: "Kurious", frequency: "medium", consciousness: "medium", file: null }
+        ];
+
+        // Initialize with sample data
+        musicLibrary = [...sampleTracks];
+        updateLibraryDisplay();
+        updateStats();
+        generateFrequencyBars();
+
+        // File upload handling
+        document.getElementById('uploadArea').addEventListener('click', () => {
+            document.getElementById('fileInput').click();
+        });
+
+        document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+
+        // Drag and drop handling
+        const uploadArea = document.getElementById('uploadArea');
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFileSelect({ target: { files: e.dataTransfer.files } });
+        });
+
+        function handleFileSelect(event) {
+            const files = Array.from(event.target.files);
+            files.forEach(file => {
+                if (file.type.startsWith('audio/')) {
+                    addTrackToLibrary(file);
+                }
+            });
+        }
+
+        function addTrackToLibrary(file) {
+            const track = {
+                name: file.name.replace(/\.[^/.]+$/, ""),
+                artist: "Unknown Artist",
+                frequency: analyzeFileFrequency(file),
+                consciousness: analyzeConsciousness(file.name),
+                file: file
+            };
+            
+            musicLibrary.push(track);
+            updateLibraryDisplay();
+            updateStats();
+        }
+
+        function analyzeFileFrequency(file) {
+            // Simulate frequency analysis based on file characteristics
+            const frequencies = ['high', 'medium', 'low'];
+            const weights = [0.4, 0.4, 0.2]; // Higher chance for high/medium
+            
+            const random = Math.random();
+            let sum = 0;
+            for (let i = 0; i < frequencies.length; i++) {
+                sum += weights[i];
+                if (random < sum) {
+                    return frequencies[i];
+                }
+            }
+            return 'medium';
+        }
+
+        function analyzeConsciousness(filename) {
+            const consciousKeywords = ['conscious', 'wisdom', 'truth', 'peace', 'love', 'unity', 'spiritual'];
+            const lowercaseName = filename.toLowerCase();
+            
+            if (consciousKeywords.some(keyword => lowercaseName.includes(keyword))) {
+                return 'high';
+            }
+            
+            return Math.random() > 0.5 ? 'elevated' : 'medium';
+        }
+
+        function analyzeFrequencies() {
+            // Simulate advanced frequency analysis
+            generateFrequencyBars();
+            
+            // Update analysis results with random but realistic data
+            const highCount = musicLibrary.filter(track => track.frequency === 'high').length;
+            const mediumCount = musicLibrary.filter(track => track.frequency === 'medium').length;
+            const lowCount = musicLibrary.filter(track => track.frequency === 'low').length;
+            
+            document.getElementById('overallScore').textContent = highCount > mediumCount + lowCount ? 'High Frequency' : 'Mixed Frequency';
+            document.getElementById('consciousnessScore').textContent = 'Elevated';
+            document.getElementById('therapeuticScore').textContent = 'Beneficial';
+            
+            // Update sacred geometry patterns
+            document.getElementById('geometryAlignment').textContent = Math.random() > 0.5 ? 'Synchronized' : 'Partial Sync';
+            document.getElementById('teslaResonance').textContent = Math.random() > 0.3 ? '3-6-9 Pattern Found' : 'Searching...';
+            document.getElementById('solfeggioMatch').textContent = Math.random() > 0.4 ? '528 Hz Detected' : '432 Hz Detected';
+        }
+
+        function detectConsciousRap() {
+            musicLibrary.forEach(track => {
+                const consciousArtists = ['rakim', 'krs', 'mos def', 'talib', 'common', 'gza', 'nas', 'biggie', 'prodigy'];
+                const isConscious = consciousArtists.some(artist => 
+                    track.artist.toLowerCase().includes(artist) || 
+                    track.name.toLowerCase().includes(artist)
+                );
+                
+                if (isConscious) {
+                    track.consciousness = 'high';
+                    track.frequency = 'high';
+                }
+            });
+            
+            updateLibraryDisplay();
+            updateStats();
+        }
+
+        function generateFrequencyBars() {
+            const barsContainer = document.getElementById('frequencyBars');
+            barsContainer.innerHTML = '';
+            
+            // Generate 32 frequency bars
+            for (let i = 0; i < 32; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'frequency-bar';
+                const height = Math.random() * 100 + 10;
+                bar.style.height = height + 'px';
+                
+                // Color based on frequency range
+                if (i < 8) {
+                    bar.style.background = 'linear-gradient(to top, #ff6b6b, #ff9ff3)'; // Low frequencies
+                } else if (i < 24) {
+                    bar.style.background = 'linear-gradient(to top, #feca57, #ff9ff3)'; // Mid frequencies
+                } else {
+                    bar.style.background = 'linear-gradient(to top, #00ff88, #4ecdc4)'; // High frequencies
+                }
+                
+                barsContainer.appendChild(bar);
+                
+                // Animate bars
+                setTimeout(() => {
+                    const newHeight = Math.random() * 100 + 10;
+                    bar.style.height = newHeight + 'px';
+                }, Math.random() * 2000);
+            }
+        }
+
+        function updateLibraryDisplay() {
+            const libraryList = document.getElementById('libraryList');
+            libraryList.innerHTML = '';
+            
+            musicLibrary.forEach((track, index) => {
+                const trackItem = document.createElement('div');
+                trackItem.className = 'track-item';
+                
+                const frequencyClass = track.frequency === 'high' ? 'high-vibe' : 
+                                     track.frequency === 'medium' ? 'medium-vibe' : 'low-vibe';
+                
+                trackItem.innerHTML = `
+                    <div class="track-info">
+                        <div class="track-name">${track.name}</div>
+                        <div class="track-artist">${track.artist}</div>
+                    </div>
+                    <div class="track-actions">
+                        <span class="score-value ${frequencyClass}" style="font-size: 0.8rem; padding: 4px 8px;">
+                            ${track.frequency.toUpperCase()}
+                        </span>
+                        <button class="action-btn keep-btn" onclick="keepTrack(${index})">Keep</button>
+                        <button class="action-btn remove-btn" onclick="removeTrack(${index})">Remove</button>
+                    </div>
+                `;
+                
+                libraryList.appendChild(trackItem);
+            });
+        }
+
+        function updateStats() {
+            const highCount = musicLibrary.filter(track => track.frequency === 'high').length;
+            const mediumCount = musicLibrary.filter(track => track.frequency === 'medium').length;
+            const lowCount = musicLibrary.filter(track => track.frequency === 'low').length;
+            
+            document.getElementById('highFreqCount').textContent = highCount;
+            document.getElementById('mediumFreqCount').textContent = mediumCount;
+            document.getElementById('lowFreqCount').textContent = lowCount;
+            document.getElementById('totalTracks').textContent = musicLibrary.length;
+        }
+
+        function showHighVibeOnly() {
+            const highVibeLibrary = musicLibrary.filter(track => track.frequency === 'high');
+            displayFilteredLibrary(highVibeLibrary);
+        }
+
+        function showMediumVibeOnly() {
+            const mediumVibeLibrary = musicLibrary.filter(track => track.frequency === 'medium');
+            displayFilteredLibrary(mediumVibeLibrary);
+        }
+
+        function removeLowVibe() {
+            musicLibrary = musicLibrary.filter(track => track.frequency !== 'low');
+            updateLibraryDisplay();
+            updateStats();
+        }
+
+        function displayFilteredLibrary(filteredLibrary) {
+            const originalLibrary = [...musicLibrary];
+            musicLibrary = filteredLibrary;
+            updateLibraryDisplay();
+            
+            // Restore original library after 5 seconds
+            setTimeout(() => {
+                musicLibrary = originalLibrary;
+                updateLibraryDisplay();
+            }, 5000);
+        }
+
+        function keepTrack(index) {
+            // Mark track as kept (visual feedback)
+            const trackItem = document.querySelectorAll('.track-item')[index];
+            trackItem.style.background = 'rgba(76, 175, 80, 0.3)';
+            setTimeout(() => {
+                trackItem.style.background = 'rgba(255,255,255,0.1)';
+            }, 1000);
+        }
+
+        function removeTrack(index) {
+            musicLibrary.splice(index, 1);
+            updateLibraryDisplay();
+            updateStats();
+        }
+
+        function analyzeNaturalSound(soundType) {
+            // Clear previous analysis
+            document.querySelectorAll('.sound-preset').forEach(preset => preset.classList.remove('active'));
+            event.target.closest('.sound-preset').classList.add('active');
+            
+            // Start spectrogram visualization for natural sounds
+            renderSpectrogram(soundType);
+            
+            // Update analysis results based on sound type
+            const naturalSoundData = {
+                'bird': {
+                    vibration: 'High Frequency',
+                    consciousness: 'Nature Connected',
+                    match: 'Bird Song Pattern - 4.2kHz Peak',
+                    frequency: [2000, 4200, 6800, 8000]
+                },
+                'whistle': {
+                    vibration: 'Pure Tone',
+                    consciousness: 'Focused Intent',
+                    match: 'Whistle Pattern - 2.1kHz Peak',
+                    frequency: [1500, 2100, 3000, 4000]
+                },
+                'glass': {
+                    vibration: 'Resonant Frequency',
+                    consciousness: 'Crystal Harmony',
+                    match: 'Wine Glass - 440Hz Fundamental',
+                    frequency: [440, 880, 1320, 1760]
+                },
+                'violin': {
+                    vibration: 'Complex Harmonics',
+                    consciousness: 'Musical Consciousness',
+                    match: 'Violin Harmonics - Multiple Peaks',
+                    frequency: [196, 659, 1319, 2637, 5274]
+                }
+            };
+            
+            const data = naturalSoundData[soundType];
+            document.getElementById('overallScore').textContent = data.vibration;
+            document.getElementById('consciousnessScore').textContent = data.consciousness;
+            document.getElementById('naturalMatch').textContent = data.match;
+            
+            // Generate frequency visualization for natural sound
+            generateNaturalFrequencyBars(data.frequency);
+        }
+
+        function renderSpectrogram(soundType) {
+            const canvas = document.getElementById('spectrogramDisplay');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = 800;
+            canvas.height = 300;
+            
+            // Clear canvas
+            ctx.fillStyle = '#000428';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Simulate spectrogram based on sound type
+            const spectrogramData = generateSpectrogramData(soundType);
+            
+            // Render time-frequency visualization
+            spectrogramData.forEach((timeSlice, timeIndex) => {
+                timeSlice.forEach((magnitude, freqIndex) => {
+                    const x = (timeIndex / spectrogramData.length) * canvas.width;
+                    const y = canvas.height - (freqIndex / timeSlice.length) * canvas.height;
+                    const intensity = magnitude;
+                    
+                    // Color based on intensity - like Chrome Music Lab
+                    const hue = intensity * 60; // 0-60 (red to yellow)
+                    const saturation = 100;
+                    const lightness = intensity * 50 + 20;
+                    
+                    ctx.fillStyle = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+                    ctx.fillRect(x, y, 4, 2);
+                });
+            });
+            
+            // Add frequency labels
+            ctx.fillStyle = '#74ebd5';
+            ctx.font = '12px Inter';
+            ctx.fillText('8kHz', 10, 20);
+            ctx.fillText('4kHz', 10, canvas.height / 2);
+            ctx.fillText('1kHz', 10, canvas.height - 20);
+        }
+
+        function generateSpectrogramData(soundType) {
+            const timeSlices = 200;
+            const freqBins = 150;
+            const data = [];
+            
+            for (let t = 0; t < timeSlices; t++) {
+                const timeSlice = [];
+                for (let f = 0; f < freqBins; f++) {
+                    let magnitude = 0;
+                    
+                    // Generate different patterns for different sound types
+                    switch (soundType) {
+                        case 'bird':
+                            // Bird songs have multiple harmonics with frequency modulation
+                            if (f > 30 && f < 120) {
+                                magnitude = Math.sin(t * 0.1 + f * 0.05) * Math.exp(-Math.abs(f - 60) / 20);
+                                magnitude += Math.sin(t * 0.15 + f * 0.03) * Math.exp(-Math.abs(f - 80) / 15);
+                            }
+                            break;
+                        case 'whistle':
+                            // Pure tone with slight vibrato
+                            if (f > 40 && f < 60) {
+                                magnitude = Math.exp(-Math.abs(f - 50) / 5) * (1 + 0.1 * Math.sin(t * 0.2));
+                            }
+                            break;
+                        case 'glass':
+                            // Fundamental frequency with harmonics
+                            const fundamental = 25;
+                            if (Math.abs(f - fundamental) < 3) magnitude = 1;
+                            if (Math.abs(f - fundamental * 2) < 2) magnitude = 0.5;
+                            if (Math.abs(f - fundamental * 3) < 2) magnitude = 0.3;
+                            break;
+                        case 'violin':
+                            // Complex harmonic series
+                            for (let harmonic = 1; harmonic <= 8; harmonic++) {
+                                const harmonicFreq = 12 * harmonic;
+                                if (Math.abs(f - harmonicFreq) < 2) {
+                                    magnitude += (1 / harmonic) * (1 + 0.2 * Math.sin(t * 0.1));
+                                }
+                            }
+                            break;
+                    }
+                    
+                    // Add some noise and normalize
+                    magnitude += Math.random() * 0.1;
+                    magnitude = Math.max(0, Math.min(1, magnitude));
+                    timeSlice.push(magnitude);
+                }
+                data.push(timeSlice);
+            }
+            
+            return data;
+        }
+
+        function generateNaturalFrequencyBars(frequencies) {
+            const barsContainer = document.getElementById('frequencyBars');
+            barsContainer.innerHTML = '';
+            
+            // Generate 32 frequency bars with emphasis on natural sound frequencies
+            for (let i = 0; i < 32; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'frequency-bar';
+                
+                // Calculate frequency for this bar (20Hz to 20kHz)
+                const frequency = 20 * Math.pow(1000, i / 31); // Logarithmic scale
+                
+                // Check if this bar corresponds to a peak frequency
+                let height = 10; // Base height
+                frequencies.forEach(peakFreq => {
+                    if (Math.abs(frequency - peakFreq) < peakFreq * 0.1) {
+                        height = Math.random() * 80 + 60; // Peak height
+                    }
+                });
+                
+                // Random variation for non-peak frequencies
+                if (height === 10) {
+                    height = Math.random() * 30 + 10;
+                }
+                
+                bar.style.height = height + 'px';
+                
+                // Color based on frequency range
+                if (i < 8) {
+                    bar.style.background = 'linear-gradient(to top, #ff6b6b, #ff9ff3)'; // Low frequencies
+                } else if (i < 24) {
+                    bar.style.background = 'linear-gradient(to top, #feca57, #ff9ff3)'; // Mid frequencies
+                } else {
+                    bar.style.background = 'linear-gradient(to top, #00ff88, #4ecdc4)'; // High frequencies
+                }
+                
+                barsContainer.appendChild(bar);
+            }
+        }
+
+        function generateFrequencyReport() {
+            const report = {
+                totalTracks: musicLibrary.length,
+                highFrequency: musicLibrary.filter(track => track.frequency === 'high').length,
+                mediumFrequency: musicLibrary.filter(track => track.frequency === 'medium').length,
+                lowFrequency: musicLibrary.filter(track => track.frequency === 'low').length,
+                consciousContent: musicLibrary.filter(track => track.consciousness === 'high').length,
+                recommendedForTherapy: musicLibrary.filter(track => track.frequency === 'high' && track.consciousness === 'high').length
+            };
+            
+            alert(`Frequency Analysis Report:
+            
+Total Tracks: ${report.totalTracks}
+High Frequency: ${report.highFrequency}
+Medium Frequency: ${report.mediumFrequency}
+Low Frequency: ${report.lowFrequency}
+Conscious Content: ${report.consciousContent}
+Recommended for Therapy: ${report.recommendedForTherapy}
+            
+Report generated for Savo Studio Music Library`);
+        }
+
+        function exportCuratedLibrary() {
+            const curatedLibrary = musicLibrary.filter(track => track.frequency === 'high');
+            const exportData = curatedLibrary.map(track => ({
+                name: track.name,
+                artist: track.artist,
+                frequency: track.frequency,
+                consciousness: track.consciousness
+            }));
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = 'savo-studio-curated-library.json';
+            link.click();
+        }
+
+        // Auto-update frequency bars
+        setInterval(generateFrequencyBars, 3000);
+    </script>
+</body>
+</html>

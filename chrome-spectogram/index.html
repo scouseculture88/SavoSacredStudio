@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chrome Music Lab Spectrogram - Simplified</title>
+    <link rel="stylesheet" href="css/screen.css">
+</head>
+<body>
+    <canvas id="spectrogram"></canvas>
+    <canvas id="legend"></canvas>
+    
+    <div id="record" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="record-rings"></div>
+            <div class="record-rings"></div>
+            <div class="mic-icon">🎤</div>
+            <p>Listening...</p>
+        </div>
+    </div>
+    
+    <!-- Professional Control Panel -->
+    <div id="controlPanel" style="position: fixed; top: 20px; right: 20px; background: rgba(0,0,0,0.9); padding: 20px; border-radius: 12px; min-width: 280px; z-index: 300; font-family: 'Arial', sans-serif;">
+        
+        <!-- Header -->
+        <div style="color: white; font-size: 18px; font-weight: bold; margin-bottom: 15px; text-align: center;">
+            🦋 Cosmic Butterfly Spectrogram
+        </div>
+        
+        <!-- Audio Input Section -->
+        <div style="margin-bottom: 15px;">
+            <div style="color: #ccc; font-size: 12px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Audio Input</div>
+            <div style="display: flex; gap: 8px;">
+                <button id="micBtn" data-mic style="flex: 1; padding: 10px; border: none; border-radius: 6px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; font-size: 12px; cursor: pointer;">🎤 Microphone</button>
+                <button data-src="birds" style="flex: 1; padding: 10px; border: none; border-radius: 6px; background: linear-gradient(135deg, #74ebd5, #acb6e5); color: white; font-size: 12px; cursor: pointer;">🐦 Bird Mode</button>
+            </div>
+        </div>
+        
+        <!-- Wave Type Selector -->
+        <div style="margin-bottom: 15px;">
+            <div style="color: #ccc; font-size: 12px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Wave Type</div>
+            <select id="waveSelect" style="width: 100%; padding: 10px; border: none; border-radius: 6px; background: #333; color: white; font-size: 14px;">
+                <option value="sine">🎵 Sine Wave - Pure Cosmic Flow</option>
+                <option value="square">🎛️ Square Wave - Digital Butterfly</option>
+                <option value="sawtooth">⚡ Sawtooth Wave - Cutting Edge</option>
+                <option value="triangle">🔺 Triangle Wave - Gentle Flutter</option>
+                <option value="custom1">🦋 Butterfly Wave - Harmonic Dance</option>
+                <option value="custom2">🌊 Ocean Wave - Flowing Motion</option>
+                <option value="custom3">✨ Stardust Wave - Cosmic Shimmer</option>
+                <option value="custom4">🌀 Spiral Wave - Vortex Energy</option>
+            </select>
+        </div>
+        
+        <!-- Touch Controls -->
+        <div style="margin-bottom: 15px;">
+            <div style="color: #ccc; font-size: 12px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Touch Synthesis</div>
+            <button id="touchModeBtn" style="width: 100%; padding: 12px; border: none; border-radius: 6px; background: linear-gradient(135deg, #ff6b35, #f7931e); color: white; font-size: 14px; cursor: pointer; margin-bottom: 8px;">👆 Touch Create Mode</button>
+            <button id="trailsToggle" style="width: 100%; padding: 8px; border: none; border-radius: 6px; background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; font-size: 12px; cursor: pointer; margin-bottom: 8px;">🦋 Motion Trails ON</button>
+            <div style="color: #ccc; font-size: 10px; text-align: center; padding: 4px 8px; background: rgba(0,0,0,0.3); border-radius: 4px;">
+                🎭 Gesture Controls:<br>
+                🌀 Circle = Spiral • ⚡ Shake = Tremolo<br>
+                🌊 Sweep = Wave • 🦋 Flutter = Vibrato
+            </div>
+        </div>
+        
+        <!-- Status Display -->
+        <div id="statusDisplay" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 6px; color: #ccc; font-size: 11px; text-align: center;">
+            Ready for audio input
+        </div>
+        
+        <!-- Minimize Button -->
+        <button id="minimizeBtn" style="position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.2); border: none; color: white; width: 24px; height: 24px; border-radius: 50%; font-size: 12px; cursor: pointer;">−</button>
+    </div>
+    
+    <!-- Minimized Control -->
+    <div id="minimizedControl" style="display: none; position: fixed; top: 20px; right: 20px; background: rgba(0,0,0,0.8); padding: 10px; border-radius: 50px; z-index: 300; cursor: pointer;">
+        <span style="color: white; font-size: 20px;">🎛️</span>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="js/spectrogram.js"></script>
+</body>
+</html>

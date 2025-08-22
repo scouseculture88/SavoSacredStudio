@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epic Particle Studio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 20% 80%, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f0f23 100%);
+            color: #e8f5e8;
+            margin: 0;
+            padding: 15px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><defs><pattern id="stars" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="0.5" fill="%23ffffff" opacity="0.3"/><circle cx="80" cy="40" r="0.3" fill="%23ffffff" opacity="0.2"/><circle cx="50" cy="80" r="0.4" fill="%23ffffff" opacity="0.25"/></pattern></defs><rect width="100%" height="100%" fill="url(%23stars)"/></svg>');
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.05);
+            border-radius: 25px;
+            padding: 25px;
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #a7f3d0;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+        }
+
+        .controls {
+            background: rgba(255,255,255,0.08);
+            padding: 20px;
+            border-radius: 15px;
+            height: fit-content;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .control-section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .section-title {
+            color: #4ade80;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            color: #22d3ee;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.2);
+            outline: none;
+            -webkit-appearance: none;
+            margin-bottom: 5px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #4ade80;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+        }
+
+        .value {
+            color: #feca57;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .mode-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 10px;
+            color: #e8f5e8;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .mode-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.02);
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(45deg, #4ade80, #22d3ee);
+            color: white;
+            border-color: transparent;
+        }
+
+        canvas {
+            width: 100%;
+            height: 700px;
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 20px;
+            background: radial-gradient(circle at 50% 50%, #0a0a1a, #000);
+            cursor: crosshair;
+        }
+
+        button {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .action-btn {
+            background: linear-gradient(45deg, #96ceb4, #feca57);
+        }
+
+        @media (max-width: 1000px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            canvas {
+                height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ Epic Particle Studio</h1>
+            <p class="subtitle">Nature's Most Beautiful Light Shows</p>
+        </div>
+
+        <div class="layout">
+            <div class="controls">
+                <div class="control-section">
+                    <div class="section-title">🎭 Effect Modes</div>
+                    <div class="mode-buttons">
+                        <button class="mode-btn active" onclick="setMode('fireworks')">🎆 Fireworks</button>
+                        <button class="mode-btn" onclick="setMode('christmas')">🎄 Christmas Lights</button>
+                        <button class="mode-btn" onclick="setMode('cosmic')">🌌 Cosmic Particles</button>
+                        <button class="mode-btn" onclick="setMode('aurora')">🌈 Aurora Borealis</button>
+                        <button class="mode-btn" onclick="setMode('fireflies')">🌟 Fireflies</button>
+                        <button class="mode-btn" onclick="setMode('constellation')">⭐ Constellation</button>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <div class="section-title">⚡ Particle Physics</div>
+
+                    <div class="control-group">
+                        <label>Particle Count</label>
+                        <input type="range" id="particleCount" min="50" max="1000" value="300" oninput="updateSettings()">
+                        <div class="value" id="particleCountValue">300</div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Speed</label>
+                        <input type="range" id="speed" min="0.1" max="5" step="0.1" value="1.5" oninput="updateSettings()">
+                        <div class="value" id="speedValue">1.5</div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Size Range</label>
+                        <input type="range" id="sizeRange" min="1" max="20" value="8" oninput="updateSettings()">
+                        <div class="value" id="sizeRangeValue">8</div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Gravity</label>
+                        <input type="range" id="gravity" min="-0.5" max="0.5" step="0.05" value="0.1" oninput="updateSettings()">
+                        <div class="value" id="gravityValue">0.1</div>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <div class="section-title">🎨 Visual Effects</div>
+
+                    <div class="control-group">
+                        <label>Color Intensity</label>
+                        <input type="range" id="colorIntensity" min="0.3" max="1" step="0.1" value="0.8" oninput="updateSettings()">
+                        <div class="value" id="colorIntensityValue">0.8</div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Trail Length</label>
+                        <input type="range" id="trailLength" min="0" max="0.3" step="0.05" value="0.1" oninput="updateSettings()">
+                        <div class="value" id="trailLengthValue">0.1</div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Glow Effect</label>
+                        <input type="range" id="glowEffect" min="0" max="20" value="10" oninput="updateSettings()">
+                        <div class="value" id="glowEffectValue">10</div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Twinkle Rate</label>
+                        <input type="range" id="twinkleRate" min="0" max="0.1" step="0.01" value="0.03" oninput="updateSettings()">
+                        <div class="value" id="twinkleRateValue">0.03</div>
+                    </div>
+                </div>
+
+                <button onclick="explodeFireworks()" class="action-btn">💥 Big Explosion</button>
+                <button onclick="resetParticles()">🔄 Reset Scene</button>
+                <button onclick="randomizeAll()">🎲 Random Magic</button>
+                <button onclick="exportCanvas()">💾 Save Creation</button>
+            </div>
+
+            <canvas id="particleCanvas"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let canvas, ctx;
+        let particles = [];
+        let animationId;
+        let currentMode = 'fireworks';
+        let mouseX = 0, mouseY = 0;
+        let settings = {
+            particleCount: 300,
+            speed: 1.5,
+            sizeRange: 8,
+            gravity: 0.1,
+            colorIntensity: 0.8,
+            trailLength: 0.1,
+            glowEffect: 10,
+            twinkleRate: 0.03
+        };
+
+        class Particle {
+            constructor(x, y, mode) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * settings.speed * 4;
+                this.vy = (Math.random() - 0.5) * settings.speed * 4;
+                this.size = Math.random() * settings.sizeRange + 1;
+                this.life = 1;
+                this.decay = Math.random() * 0.02 + 0.005;
+                this.hue = Math.random() * 360;
+                this.mode = mode;
+                this.twinkle = Math.random() * Math.PI * 2;
+                this.originalSize = this.size;
+
+                this.setupMode();
+            }
+
+            setupMode() {
+                switch(this.mode) {
+                    case 'fireworks':
+                        this.vy -= Math.random() * 3 + 2;
+                        this.gravity = 0.1;
+                        this.hue = Math.random() * 60 + (Math.random() > 0.5 ? 0 : 240);
+                        break;
+                    case 'christmas':
+                        this.vx = (Math.random() - 0.5) * 0.5;
+                        this.vy = Math.random() * 0.5;
+                        this.gravity = 0;
+                        this.hue = Math.random() > 0.5 ? (Math.random() * 60) : (Math.random() * 60 + 120);
+                        this.decay = 0.002;
+                        break;
+                    case 'cosmic':
+                        this.vx = (Math.random() - 0.5) * 2;
+                        this.vy = (Math.random() - 0.5) * 2;
+                        this.gravity = 0;
+                        this.hue = Math.random() * 60 + 240;
+                        this.decay = 0.001;
+                        break;
+                    case 'aurora':
+                        this.vx = (Math.random() - 0.5) * 1;
+                        this.vy = Math.random() * -2;
+                        this.gravity = -0.02;
+                        this.hue = Math.random() * 120 + 120;
+                        this.decay = 0.003;
+                        break;
+                    case 'fireflies':
+                        this.vx = (Math.random() - 0.5) * 1;
+                        this.vy = (Math.random() - 0.5) * 1;
+                        this.gravity = 0;
+                        this.hue = Math.random() * 60 + 40;
+                        this.decay = 0.001;
+                        break;
+                    case 'constellation':
+                        this.vx = (Math.random() - 0.5) * 0.2;
+                        this.vy = (Math.random() - 0.5) * 0.2;
+                        this.gravity = 0;
+                        this.hue = Math.random() * 60 + 180;
+                        this.decay = 0.0005;
+                        break;
+                }
+            }
+
+            update() {
+                this.vx *= 0.99;
+                this.vy += this.gravity || settings.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.decay;
+                this.twinkle += settings.twinkleRate;
+
+                // Mode-specific behaviors
+                if (this.mode === 'christmas') {
+                    this.size = Math.max(0.5, this.originalSize + Math.sin(this.twinkle) * 2);
+                }
+
+                if (this.mode === 'fireflies') {
+                    this.size = Math.max(0.5, this.originalSize + Math.sin(this.twinkle * 2) * 3);
+                    this.life = Math.max(0.3, this.life);
+                }
+
+                if (this.mode === 'constellation') {
+                    this.size = Math.max(0.5, this.originalSize + Math.sin(this.twinkle * 0.5) * 1);
+                }
+
+                return this.life > 0 && this.x > -50 && this.x < canvas.width + 50 && 
+                       this.y > -50 && this.y < canvas.height + 50;
+            }
+
+            draw() {
+                const alpha = this.life * settings.colorIntensity;
+                const saturation = this.mode === 'cosmic' ? 100 : 80;
+                const lightness = this.mode === 'fireflies' ? 70 : 60;
+
+                // Ensure size is always positive
+                const drawSize = Math.max(0.1, this.size);
+
+                // Glow effect
+                if (settings.glowEffect > 0) {
+                    ctx.shadowColor = `hsl(${this.hue}, ${saturation}%, ${lightness}%)`;
+                    ctx.shadowBlur = settings.glowEffect;
+                } else {
+                    ctx.shadowBlur = 0;
+                }
+
+                ctx.fillStyle = `hsla(${this.hue}, ${saturation}%, ${lightness}%, ${alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, drawSize, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Extra sparkle for special modes
+                if ((this.mode === 'fireworks' || this.mode === 'cosmic') && Math.random() > 0.95) {
+                    ctx.fillStyle = `hsla(${this.hue + 60}, 100%, 80%, ${alpha * 0.5})`;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, Math.max(0.1, drawSize * 1.5), 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            canvas = document.getElementById('particleCanvas');
+            ctx = canvas.getContext('2d');
+
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Mouse interaction
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouseX = e.clientX - rect.left;
+                mouseY = e.clientY - rect.top;
+            });
+
+            canvas.addEventListener('click', () => {
+                createParticleBurst(mouseX, mouseY, 50);
+            });
+
+            initializeParticles();
+            animate();
+            updateValues();
+        });
+
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            resetParticles();
+        }
+
+        function initializeParticles() {
+            particles = [];
+            for (let i = 0; i < settings.particleCount; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                particles.push(new Particle(x, y, currentMode));
+            }
+        }
+
+        function createParticleBurst(x, y, count) {
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle(x, y, currentMode));
+            }
+        }
+
+        function animate() {
+            // Trail effect
+            ctx.fillStyle = `rgba(0, 0, 0, ${1 - settings.trailLength})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Update and draw particles
+            particles = particles.filter(particle => {
+                const alive = particle.update();
+                if (alive) {
+                    particle.draw();
+                }
+                return alive;
+            });
+
+            // Continuously spawn new particles for some modes
+            if (currentMode === 'christmas' || currentMode === 'cosmic' || 
+                currentMode === 'fireflies' || currentMode === 'constellation') {
+                while (particles.length < settings.particleCount) {
+                    const x = Math.random() * canvas.width;
+                    const y = currentMode === 'aurora' ? canvas.height + 50 : Math.random() * canvas.height;
+                    particles.push(new Particle(x, y, currentMode));
+                }
+            }
+
+            // Auto-spawn fireworks
+            if (currentMode === 'fireworks' && Math.random() > 0.98) {
+                createParticleBurst(
+                    Math.random() * canvas.width, 
+                    canvas.height - 50, 
+                    20
+                );
+            }
+
+            // Auto-spawn aurora
+            if (currentMode === 'aurora' && Math.random() > 0.95) {
+                createParticleBurst(
+                    Math.random() * canvas.width, 
+                    canvas.height, 
+                    15
+                );
+            }
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function updateSettings() {
+            settings.particleCount = parseInt(document.getElementById('particleCount').value);
+            settings.speed = parseFloat(document.getElementById('speed').value);
+            settings.sizeRange = parseFloat(document.getElementById('sizeRange').value);
+            settings.gravity = parseFloat(document.getElementById('gravity').value);
+            settings.colorIntensity = parseFloat(document.getElementById('colorIntensity').value);
+            settings.trailLength = parseFloat(document.getElementById('trailLength').value);
+            settings.glowEffect = parseFloat(document.getElementById('glowEffect').value);
+            settings.twinkleRate = parseFloat(document.getElementById('twinkleRate').value);
+
+            updateValues();
+        }
+
+        function updateValues() {
+            document.getElementById('particleCountValue').textContent = settings.particleCount;
+            document.getElementById('speedValue').textContent = settings.speed;
+            document.getElementById('sizeRangeValue').textContent = settings.sizeRange;
+            document.getElementById('gravityValue').textContent = settings.gravity;
+            document.getElementById('colorIntensityValue').textContent = settings.colorIntensity;
+            document.getElementById('trailLengthValue').textContent = settings.trailLength;
+            document.getElementById('glowEffectValue').textContent = settings.glowEffect;
+            document.getElementById('twinkleRateValue').textContent = settings.twinkleRate;
+        }
+
+        function explodeFireworks() {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    createParticleBurst(
+                        Math.random() * canvas.width,
+                        Math.random() * canvas.height * 0.6,
+                        100
+                    );
+                }, i * 200);
+            }
+        }
+
+        function resetParticles() {
+            particles = [];
+            initializeParticles();
+        }
+
+        function randomizeAll() {
+            document.getElementById('particleCount').value = Math.floor(Math.random() * 800) + 200;
+            document.getElementById('speed').value = (Math.random() * 4 + 0.5).toFixed(1);
+            document.getElementById('sizeRange').value = Math.floor(Math.random() * 15) + 5;
+            document.getElementById('gravity').value = (Math.random() * 0.8 - 0.4).toFixed(2);
+            document.getElementById('colorIntensity').value = (Math.random() * 0.6 + 0.4).toFixed(1);
+            document.getElementById('trailLength').value = (Math.random() * 0.25).toFixed(2);
+            document.getElementById('glowEffect').value = Math.floor(Math.random() * 18) + 2;
+            document.getElementById('twinkleRate').value = (Math.random() * 0.08 + 0.01).toFixed(2);
+
+            updateSettings();
+            resetParticles();
+        }
+
+        function exportCanvas() {
+            const link = document.createElement('a');
+            link.download = `particle-${currentMode}-${Date.now()}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    </script>
+</body>
+</html>

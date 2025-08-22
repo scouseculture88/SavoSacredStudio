@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Nebula v2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000011;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            user-select: none;
+        }
+        
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, #001122 0%, #000000 100%);
+            cursor: crosshair;
+        }
+        
+        .header {
+            position: fixed;
+            top: 15px;
+            left: 20px;
+            z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+        
+        .header.hidden { opacity: 0; }
+        
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00ffaa, #00aaff, #aa00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.5); }
+        }
+        
+        .controls {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 180px;
+            background: rgba(0, 0, 30, 0.8);
+            border: 1px solid rgba(0, 255, 170, 0.5);
+            border-radius: 8px;
+            padding: 15px;
+            transition: transform 0.5s ease;
+            z-index: 100;
+        }
+        
+        .controls.hidden {
+            transform: translateX(220px);
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-label {
+            font-size: 11px;
+            color: #00ffaa;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        select, input[type="range"] {
+            width: 100%;
+            background: #000;
+            color: #00aaff;
+            border: 1px solid #00aaff;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+        
+        select { padding: 5px; }
+        
+        input[type="range"] {
+            height: 20px;
+        }
+        
+        .button {
+            width: 100%;
+            padding: 8px;
+            margin: 3px 0;
+            background: linear-gradient(45deg, rgba(0, 255, 170, 0.3), rgba(0, 170, 255, 0.3));
+            border: 1px solid #00ffaa;
+            border-radius: 4px;
+            color: #00ffaa;
+            cursor: pointer;
+            font-size: 10px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        
+        .button:hover {
+            background: linear-gradient(45deg, rgba(0, 255, 170, 0.5), rgba(0, 170, 255, 0.5));
+            box-shadow: 0 0 10px rgba(0, 255, 170, 0.5);
+        }
+        
+        .toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 30, 0.9);
+            border: 2px solid #00ffaa;
+            border-radius: 50%;
+            color: #00ffaa;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            z-index: 200;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle:hover {
+            box-shadow: 0 0 15px rgba(0, 255, 170, 0.7);
+        }
+        
+        .info {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(0, 0, 30, 0.8);
+            border: 1px solid rgba(0, 255, 170, 0.5);
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 9px;
+            color: #00ffaa;
+            max-width: 250px;
+            transition: opacity 0.5s ease;
+        }
+        
+        .info.hidden { opacity: 0; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div class="header" id="header">
+        <div class="title">AURORA NEBULA</div>
+    </div>
+    
+    <div class="toggle" id="toggle">⚡</div>
+    
+    <div class="controls" id="controls">
+        <div class="control-group">
+            <div class="control-label">Aurora Mode</div>
+            <select id="auroraType">
+                <option value="multi" selected>All Colors</option>
+                <option value="green">Green Only</option>
+                <option value="pink">Pink Only</option>
+                <option value="blue">Blue Only</option>
+            </select>
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Intensity</div>
+            <input type="range" id="intensity" min="0.5" max="2" value="1" step="0.1">
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Speed</div>
+            <input type="range" id="speed" min="0.1" max="1" value="0.3" step="0.1">
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Particles</div>
+            <input type="range" id="particles" min="100" max="500" value="200" step="25">
+        </div>
+        
+        <div class="control-group">
+            <button class="button" id="flare">Solar Flare</button>
+            <button class="button" id="bloom">Nebula Bloom</button>
+            <button class="button" id="reset">Reset</button>
+        </div>
+    </div>
+    
+    <div class="info" id="info">
+        <strong>Aurora Borealis:</strong> Solar wind particles colliding with Earth's magnetosphere create spectacular light displays at 80-400km altitude.
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+        let waves = [];
+        let stars = [];
+        let time = 0;
+        let hidden = false;
+        
+        // Settings
+        let auroraType = 'multi';
+        let intensity = 1;
+        let speed = 0.3;
+        let particleCount = 200;
+        let solarFlare = false;
+        let nebulaBloom = false;
+        
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            init();
+        }
+        
+        function init() {
+            particles = [];
+            waves = [];
+            stars = [];
+            
+            // Create particles with color groups
+            for (let i = 0; i < particleCount; i++) {
+                const colorGroup = Math.floor(Math.random() * 4);
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    energy: Math.random(),
+                    size: 1 + Math.random() * 3,
+                    colorGroup: colorGroup,
+                    vortexAngle: Math.random() * Math.PI * 2,
+                    vortexRadius: 0,
+                    targetX: 0,
+                    targetY: 0,
+                    inVortex: false
+                });
+            }
+            
+            // Create aurora energy streams with mixed colors
+            for (let i = 0; i < 12; i++) {
+                waves.push({
+                    y: height * 0.15 + i * 35,
+                    amp: 25 + Math.random() * 25,
+                    freq: 0.002 + Math.random() * 0.003,
+                    phase: Math.random() * Math.PI * 2,
+                    speed: 0.006 + Math.random() * 0.008,
+                    flow: Math.random() * Math.PI * 2,
+                    energy: 0.4 + Math.random() * 0.6,
+                    colorGroup: i % 4
+                });
+            }
+            
+            // Create stars
+            for (let i = 0; i < 100; i++) {
+                stars.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    brightness: Math.random(),
+                    twinkle: Math.random() * Math.PI
+                });
+            }
+        }
+        
+        function getColor(type, energy, alpha = 1, colorGroup = 0) {
+            const colorGroups = [
+                // Group 0: Green spectrum (classic aurora)
+                () => `rgba(${50 + energy * 100}, ${200 + energy * 55}, ${50 + energy * 50}, ${alpha})`,
+                // Group 1: Pink/Purple spectrum  
+                () => `rgba(${200 + energy * 55}, ${100 + energy * 100}, ${200 + energy * 50}, ${alpha})`,
+                // Group 2: Blue spectrum
+                () => `rgba(${100 + energy * 50}, ${150 + energy * 100}, ${200 + energy * 55}, ${alpha})`,
+                // Group 3: Gold/Orange spectrum
+                () => `rgba(${200 + energy * 55}, ${180 + energy * 55}, ${50 + energy * 100}, ${alpha})`
+            ];
+            
+            switch(type) {
+                case 'green':
+                    return colorGroups[0]();
+                case 'pink':
+                    return colorGroups[1]();
+                case 'blue':
+                    return colorGroups[2]();
+                case 'multi':
+                    return colorGroups[colorGroup % 4]();
+                default:
+                    return colorGroups[colorGroup % 4]();
+            }
+        }
+        
+        function update() {
+            // Create vortex centers for regrouping
+            const vortexCenters = [
+                { x: width * 0.25, y: height * 0.3, group: 0 },
+                { x: width * 0.75, y: height * 0.4, group: 1 },
+                { x: width * 0.4, y: height * 0.6, group: 2 },
+                { x: width * 0.6, y: height * 0.7, group: 3 }
+            ];
+            
+            particles.forEach(p => {
+                // Find matching vortex center
+                const matchingVortex = vortexCenters[p.colorGroup];
+                const distToVortex = Math.sqrt((p.x - matchingVortex.x) ** 2 + (p.y - matchingVortex.y) ** 2);
+                
+                // Vortex attraction for same color group
+                if (distToVortex < 120 && Math.random() < 0.02) {
+                    p.inVortex = true;
+                    p.targetX = matchingVortex.x;
+                    p.targetY = matchingVortex.y;
+                    p.vortexRadius = distToVortex;
+                }
+                
+                if (p.inVortex) {
+                    // Spiral motion toward center
+                    p.vortexAngle += 0.15 + (p.energy * 0.1);
+                    p.vortexRadius *= 0.98;
+                    
+                    const spiralX = p.targetX + Math.cos(p.vortexAngle) * p.vortexRadius;
+                    const spiralY = p.targetY + Math.sin(p.vortexAngle) * p.vortexRadius;
+                    
+                    p.vx = (spiralX - p.x) * 0.1;
+                    p.vy = (spiralY - p.y) * 0.1;
+                    
+                    // Exit vortex when close to center
+                    if (p.vortexRadius < 5) {
+                        p.inVortex = false;
+                        p.vx = (Math.random() - 0.5) * 4;
+                        p.vy = (Math.random() - 0.5) * 4;
+                        p.energy = Math.min(1, p.energy + 0.3);
+                    }
+                } else {
+                    // Normal movement
+                    p.x += p.vx * speed * intensity;
+                    p.y += p.vy * speed * intensity;
+                }
+                
+                // Solar flare effect
+                if (solarFlare) {
+                    const dx = p.x - width/2;
+                    const dy = p.y - height/3;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 150) {
+                        const force = (150 - dist) / 150;
+                        p.vx += (Math.random() - 0.5) * force * 3;
+                        p.vy += (Math.random() - 0.5) * force * 3;
+                        p.energy = Math.min(1, p.energy + force * 0.2);
+                        p.inVortex = false; // Break out of vortex
+                    }
+                }
+                
+                // Boundaries
+                if (p.x < 0) p.x = width;
+                if (p.x > width) p.x = 0;
+                if (p.y < 0) p.y = height;
+                if (p.y > height) p.y = 0;
+                
+                // Energy decay
+                if (!p.inVortex) {
+                    p.energy = Math.max(0.1, p.energy - 0.001);
+                }
+            });
+            
+            // Update aurora energy streams
+            waves.forEach(w => {
+                w.phase += w.speed * speed;
+                w.flow += 0.02;
+                w.energy = 0.4 + 0.4 * Math.sin(w.flow);
+                
+                if (solarFlare) {
+                    w.amp = Math.min(80, w.amp * 1.05);
+                    w.energy = Math.min(1, w.energy + 0.1);
+                } else {
+                    w.amp = Math.max(30, w.amp * 0.998);
+                }
+            });
+        }
+        
+        function draw() {
+            // Clear with slight fade
+            ctx.fillStyle = 'rgba(0, 0, 17, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Draw stars
+            stars.forEach(s => {
+                s.twinkle += 0.05;
+                const brightness = s.brightness * (0.7 + 0.3 * Math.sin(s.twinkle));
+                ctx.fillStyle = `rgba(255, 255, 255, ${brightness})`;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, 1, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // Draw flowing aurora energy streams with all colors
+            waves.forEach((w, index) => {
+                // Use the wave's assigned color group
+                ctx.strokeStyle = getColor(auroraType, w.energy, 0.7 * intensity, w.colorGroup);
+                ctx.lineWidth = 2 + w.energy * 3;
+                ctx.lineCap = 'round';
+                
+                // Draw flowing energy lines with multiple layers
+                for (let offset = -8; offset <= 8; offset += 4) {
+                    const alpha = (1 - Math.abs(offset) / 8) * w.energy * intensity * 0.8;
+                    ctx.strokeStyle = getColor(auroraType, w.energy, alpha, w.colorGroup);
+                    
+                    ctx.beginPath();
+                    let prevX = 0;
+                    let prevY = w.y + offset;
+                    
+                    for (let x = 0; x <= width; x += 6) {
+                        const waveHeight = Math.sin(x * w.freq + w.phase) * w.amp * intensity;
+                        const flowOffset = Math.sin(x * 0.008 + w.flow) * 12;
+                        const y = w.y + waveHeight + flowOffset + offset;
+                        
+                        if (x === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            // Create smooth curves
+                            const cpX = (prevX + x) / 2;
+                            const cpY = (prevY + y) / 2 + Math.sin(x * 0.015 + w.flow) * 6;
+                            ctx.quadraticCurveTo(cpX, cpY, x, y);
+                        }
+                        prevX = x;
+                        prevY = y;
+                    }
+                    ctx.stroke();
+                }
+                
+                // Add energy particles along each stream
+                for (let x = 0; x <= width; x += 15) {
+                    const waveHeight = Math.sin(x * w.freq + w.phase) * w.amp * intensity;
+                    const flowOffset = Math.sin(x * 0.008 + w.flow) * 12;
+                    const y = w.y + waveHeight + flowOffset;
+                    
+                    if (Math.random() < w.energy * 0.4) {
+                        const sparkSize = 1.5 + w.energy * 2.5;
+                        ctx.fillStyle = getColor(auroraType, 1, w.energy * 0.9, w.colorGroup);
+                        ctx.beginPath();
+                        ctx.arc(x, y, sparkSize, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Add glow
+                        ctx.shadowColor = getColor(auroraType, 1, 0.6, w.colorGroup);
+                        ctx.shadowBlur = sparkSize * 4;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+            });
+            
+            // Draw particles with color grouping and trails
+            particles.forEach(p => {
+                const size = p.size * p.energy * intensity;
+                const color = getColor(auroraType, p.energy, p.energy, p.colorGroup);
+                
+                // Draw particle trail
+                if (p.inVortex) {
+                    ctx.strokeStyle = getColor(auroraType, p.energy, p.energy * 0.6, p.colorGroup);
+                    ctx.lineWidth = size * 0.5;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    
+                    // Draw spiral trail
+                    for (let i = 0; i < 5; i++) {
+                        const trailAngle = p.vortexAngle - i * 0.3;
+                        const trailRadius = p.vortexRadius + i * 3;
+                        const trailX = p.targetX + Math.cos(trailAngle) * trailRadius;
+                        const trailY = p.targetY + Math.sin(trailAngle) * trailRadius;
+                        
+                        if (i === 0) {
+                            ctx.moveTo(p.x, p.y);
+                        } else {
+                            ctx.lineTo(trailX, trailY);
+                        }
+                    }
+                    ctx.stroke();
+                }
+                
+                // Main particle
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Glow effect for high energy particles
+                if (p.energy > 0.7 || p.inVortex) {
+                    ctx.shadowColor = color;
+                    ctx.shadowBlur = size * (p.inVortex ? 6 : 3);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+                
+                // Extra sparkle for vortex particles
+                if (p.inVortex && Math.random() < 0.3) {
+                    ctx.fillStyle = getColor(auroraType, 1, 1, p.colorGroup);
+                    ctx.beginPath();
+                    ctx.arc(p.x + (Math.random() - 0.5) * 8, p.y + (Math.random() - 0.5) * 8, 1, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+            
+            // Solar flare effect
+            if (solarFlare) {
+                const flareSize = 150 + Math.sin(time * 0.1) * 50;
+                const gradient = ctx.createRadialGradient(width/2, height/3, 0, width/2, height/3, flareSize);
+                gradient.addColorStop(0, 'rgba(255, 255, 0, 0.4)');
+                gradient.addColorStop(0.5, 'rgba(255, 150, 0, 0.2)');
+                gradient.addColorStop(1, 'rgba(255, 100, 100, 0)');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(width/2, height/3, flareSize, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            // Nebula bloom effect
+            if (nebulaBloom) {
+                const bloomSize = 200 + Math.sin(time * 0.05) * 100;
+                const gradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, bloomSize);
+                gradient.addColorStop(0, getColor(auroraType, 1, 0.3));
+                gradient.addColorStop(0.7, getColor(auroraType, 0.5, 0.1));
+                gradient.addColorStop(1, getColor(auroraType, 0.2, 0));
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(width/2, height/2, bloomSize, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        function animate() {
+            time++;
+            update();
+            draw();
+            requestAnimationFrame(animate);
+        }
+        
+        function toggleUI() {
+            hidden = !hidden;
+            const header = document.getElementById('header');
+            const controls = document.getElementById('controls');
+            const info = document.getElementById('info');
+            const toggle = document.getElementById('toggle');
+            
+            if (hidden) {
+                header.classList.add('hidden');
+                controls.classList.add('hidden');
+                info.classList.add('hidden');
+                toggle.textContent = '👁️';
+            } else {
+                header.classList.remove('hidden');
+                controls.classList.remove('hidden');
+                info.classList.remove('hidden');
+                toggle.textContent = '⚡';
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('toggle').addEventListener('click', toggleUI);
+        
+        document.getElementById('auroraType').addEventListener('change', (e) => {
+            auroraType = e.target.value;
+        });
+        
+        document.getElementById('intensity').addEventListener('input', (e) => {
+            intensity = parseFloat(e.target.value);
+        });
+        
+        document.getElementById('speed').addEventListener('input', (e) => {
+            speed = parseFloat(e.target.value);
+        });
+        
+        document.getElementById('particles').addEventListener('input', (e) => {
+            particleCount = parseInt(e.target.value);
+            init();
+        });
+        
+        document.getElementById('flare').addEventListener('click', () => {
+            solarFlare = true;
+            setTimeout(() => { solarFlare = false; }, 3000);
+        });
+        
+        document.getElementById('bloom').addEventListener('click', () => {
+            nebulaBloom = true;
+            setTimeout(() => { nebulaBloom = false; }, 5000);
+        });
+        
+        document.getElementById('reset').addEventListener('click', () => {
+            solarFlare = false;
+            nebulaBloom = false;
+            time = 0;
+            init();
+        });
+        
+        // Interactive particle effects
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            particles.forEach(p => {
+                const dx = p.x - x;
+                const dy = p.y - y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                
+                if (dist < 80) {
+                    const force = (80 - dist) / 80;
+                    p.vx += (dx / dist) * force * 3;
+                    p.vy += (dy / dist) * force * 3;
+                    p.energy = Math.min(1, p.energy + force * 0.5);
+                }
+            });
+        });
+        
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            particles.forEach(p => {
+                const dx = p.x - x;
+                const dy = p.y - y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                
+                if (dist < 80) {
+                    const force = (80 - dist) / 80;
+                    p.vx += (dx / dist) * force * 3;
+                    p.vy += (dy / dist) * force * 3;
+                    p.energy = Math.min(1, p.energy + force * 0.5);
+                }
+            });
+        });
+        
+        window.addEventListener('resize', resize);
+        
+        // Initialize
+        resize();
+        animate();
+    </script>
+</body>
+</html>

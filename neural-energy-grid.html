@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Energy Grid - Savo Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at center, #0a0a0a 0%, #1a0a2e 40%, #16213e 100%);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            min-height: 100vh;
+        }
+        
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            background: linear-gradient(45deg, #00ff88, #00bcd4, #9c27b0, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.4rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+            text-shadow: 
+                0 0 2px #00ff88,
+                0 0 4px #00ff88,
+                0 0 8px #00bcd4,
+                0 0 12px #9c27b0;
+            filter: drop-shadow(0 0 6px rgba(0, 255, 136, 0.3));
+        }
+        
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        
+        .controls {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid rgba(124, 255, 80, 0.3);
+            height: fit-content;
+            backdrop-filter: blur(10px);
+        }
+        
+        .control-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .control-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .control-section h3 {
+            color: #7cff50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group label {
+            display: block;
+            color: white;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #7cff50, #00ff88);
+            cursor: pointer;
+        }
+        
+        .value-display {
+            color: #00bcd4;
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-left: 10px;
+        }
+        
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .preset-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .preset-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(118, 75, 162, 0.4);
+        }
+        
+        .toggle-btn {
+            background: linear-gradient(45deg, #4a90e2, #7b68ee);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 2px;
+            width: 100%;
+        }
+        
+        .toggle-btn.active {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+        }
+        
+        .toggle-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
+        }
+        
+        .export-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+        
+        .canvas-area {
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid rgba(124, 255, 80, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .canvas-title {
+            color: #00bcd4;
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        #neuralCanvas {
+            border: 2px solid rgba(124, 255, 80, 0.3);
+            border-radius: 15px;
+            background: radial-gradient(circle at center, rgba(5, 5, 15, 1), rgba(0, 0, 0, 1));
+            box-shadow: 0 0 30px rgba(124, 255, 80, 0.2);
+        }
+        
+        .canvas-info {
+            margin-top: 20px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        /* Desktop Layout */
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: 320px 1fr;
+                gap: 25px;
+                padding: 20px;
+            }
+        }
+        
+        /* Mobile Optimizations */
+        @media (max-width: 767px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            #neuralCanvas {
+                width: 100%;
+                max-width: 350px;
+                height: auto;
+            }
+            
+            .controls {
+                padding: 15px;
+            }
+            
+            .preset-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Neural Energy Grid</h1>
+            <p>Consciousness-based neural network visualization with energy pathways</p>
+        </div>
+        
+        <div class="controls">
+            <div class="control-section">
+                <h3>🧠 Neural Network</h3>
+                <div class="control-group">
+                    <label>Node Count: <span class="value-display" id="nodeCountValue">25</span></label>
+                    <input type="range" class="slider" id="nodeCount" min="10" max="60" value="25" oninput="updateVisualization()">
+                </div>
+                <div class="control-group">
+                    <label>Connection Density: <span class="value-display" id="connectionDensityValue">40</span>%</label>
+                    <input type="range" class="slider" id="connectionDensity" min="10" max="80" value="40" oninput="updateVisualization()">
+                </div>
+                <div class="control-group">
+                    <label>Network Size: <span class="value-display" id="networkSizeValue">250</span></label>
+                    <input type="range" class="slider" id="networkSize" min="150" max="350" value="250" oninput="updateVisualization()">
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <h3>⚡ Energy Flow</h3>
+                <div class="control-group">
+                    <label>Pulse Speed: <span class="value-display" id="pulseSpeedValue">1.0</span>x</label>
+                    <input type="range" class="slider" id="pulseSpeed" min="0.1" max="3" step="0.1" value="1.0" oninput="updateVisualization()">
+                </div>
+                <div class="control-group">
+                    <label>Energy Intensity: <span class="value-display" id="energyIntensityValue">80</span>%</label>
+                    <input type="range" class="slider" id="energyIntensity" min="20" max="150" value="80" oninput="updateVisualization()">
+                </div>
+                <div class="control-group">
+                    <label>Flow Frequency: <span class="value-display" id="flowFrequencyValue">2.0</span>Hz</label>
+                    <input type="range" class="slider" id="flowFrequency" min="0.5" max="5" step="0.1" value="2.0" oninput="updateVisualization()">
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <h3>🌈 Visual Effects</h3>
+                <div class="control-group">
+                    <label>Color Spectrum: <span class="value-display" id="colorSpectrumValue">120</span>°</label>
+                    <input type="range" class="slider" id="colorSpectrum" min="60" max="360" value="120" oninput="updateVisualization()">
+                </div>
+                <div class="control-group">
+                    <label>Glow Radius: <span class="value-display" id="glowRadiusValue">15</span>px</label>
+                    <input type="range" class="slider" id="glowRadius" min="5" max="30" value="15" oninput="updateVisualization()">
+                </div>
+                <div class="control-group">
+                    <label>Node Size: <span class="value-display" id="nodeSizeValue">6</span>px</label>
+                    <input type="range" class="slider" id="nodeSize" min="3" max="12" value="6" oninput="updateVisualization()">
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <h3>🎬 Animation</h3>
+                <div class="control-group">
+                    <button class="toggle-btn active" id="animationToggle" onclick="toggleAnimation()">Animation ON</button>
+                </div>
+                <div class="control-group">
+                    <button class="toggle-btn" id="rotationToggle" onclick="toggleRotation()">Rotation OFF</button>
+                </div>
+                <div class="control-group">
+                    <button class="toggle-btn" id="pulseToggle" onclick="togglePulse()">Pulse OFF</button>
+                </div>
+            </div>
+            
+            <div class="preset-buttons">
+                <button class="preset-btn" onclick="loadPreset('consciousness')">🧠 Consciousness</button>
+                <button class="preset-btn" onclick="loadPreset('energy')">⚡ Energy Grid</button>
+                <button class="preset-btn" onclick="loadPreset('meditation')">🧘 Meditation</button>
+                <button class="preset-btn" onclick="loadPreset('cosmic')">🌌 Cosmic</button>
+            </div>
+            
+            <button class="export-btn" onclick="exportVisualization()">💾 Export Neural Grid</button>
+        </div>
+        
+        <div class="canvas-area">
+            <div class="canvas-title">Consciousness Neural Network
+                <button class="zen-btn" onclick="enterZenMode('neural')" style="background: linear-gradient(45deg, #2d1b69, #11998e); color: white; border: none; padding: 8px 15px; border-radius: 15px; margin-left: 15px; cursor: pointer; font-size: 0.9rem;">🧘 Zen Mode</button>
+            </div>
+            <canvas id="neuralCanvas" width="700" height="700"></canvas>
+            <div class="canvas-info">
+                Interactive neural energy visualization • Real-time consciousness mapping
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Canvas and animation variables
+        const canvas = document.getElementById('neuralCanvas');
+        const ctx = canvas.getContext('2d');
+        let animationFrame = 0;
+        let isAnimating = true;
+        let isRotating = false;
+        let isPulsing = false;
+        let animationId;
+        let nodes = [];
+        let connections = [];
+
+        // Current settings
+        let settings = {
+            nodeCount: 25,
+            connectionDensity: 40,
+            networkSize: 250,
+            pulseSpeed: 1.0,
+            energyIntensity: 80,
+            flowFrequency: 2.0,
+            colorSpectrum: 120,
+            glowRadius: 15,
+            nodeSize: 6
+        };
+
+        // Preset configurations
+        const presets = {
+            consciousness: {
+                nodeCount: 35, connectionDensity: 60, networkSize: 280,
+                pulseSpeed: 0.8, energyIntensity: 100, flowFrequency: 1.5,
+                colorSpectrum: 180, glowRadius: 20, nodeSize: 8
+            },
+            energy: {
+                nodeCount: 45, connectionDensity: 70, networkSize: 300,
+                pulseSpeed: 2.0, energyIntensity: 120, flowFrequency: 3.0,
+                colorSpectrum: 240, glowRadius: 25, nodeSize: 7
+            },
+            meditation: {
+                nodeCount: 20, connectionDensity: 30, networkSize: 220,
+                pulseSpeed: 0.5, energyIntensity: 60, flowFrequency: 1.0,
+                colorSpectrum: 90, glowRadius: 12, nodeSize: 5
+            },
+            cosmic: {
+                nodeCount: 50, connectionDensity: 80, networkSize: 320,
+                pulseSpeed: 1.5, energyIntensity: 140, flowFrequency: 2.5,
+                colorSpectrum: 300, glowRadius: 30, nodeSize: 9
+            }
+        };
+
+        // Node class
+        class Node {
+            constructor(x, y, id) {
+                this.x = x;
+                this.y = y;
+                this.id = id;
+                this.energy = Math.random();
+                this.pulsePhase = Math.random() * Math.PI * 2;
+                this.connections = [];
+                this.activity = 0;
+            }
+
+            update(time) {
+                this.energy = 0.3 + 0.7 * Math.sin(time * settings.flowFrequency + this.pulsePhase);
+                this.activity = Math.max(0, this.activity - 0.02);
+            }
+
+            draw(ctx, time) {
+                const pulseIntensity = isPulsing ? (0.5 + 0.5 * Math.sin(time * settings.pulseSpeed + this.pulsePhase)) : 1;
+                const intensity = (settings.energyIntensity / 100) * this.energy * pulseIntensity;
+                const hue = (settings.colorSpectrum + this.id * 10 + time * 20) % 360;
+                
+                // Draw glow
+                ctx.save();
+                ctx.globalCompositeOperation = 'screen';
+                ctx.shadowColor = `hsl(${hue}, 80%, 60%)`;
+                ctx.shadowBlur = settings.glowRadius * intensity;
+                
+                // Draw node
+                ctx.fillStyle = `hsla(${hue}, 70%, ${50 + intensity * 30}%, ${0.8 + intensity * 0.2})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, settings.nodeSize * (0.8 + intensity * 0.4), 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw energy core
+                ctx.fillStyle = `hsla(${hue}, 100%, 80%, ${intensity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, settings.nodeSize * 0.4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.restore();
+            }
+        }
+
+        // Connection class
+        class Connection {
+            constructor(nodeA, nodeB) {
+                this.nodeA = nodeA;
+                this.nodeB = nodeB;
+                this.strength = Math.random() * 0.5 + 0.5;
+                this.flowPhase = Math.random() * Math.PI * 2;
+                this.active = false;
+            }
+
+            update(time) {
+                // Randomly activate connections
+                if (Math.random() < 0.001 * settings.flowFrequency) {
+                    this.active = true;
+                    this.nodeA.activity = 1;
+                    this.nodeB.activity = 1;
+                }
+                
+                if (this.active) {
+                    this.strength = Math.max(0, this.strength - 0.01);
+                    if (this.strength <= 0) {
+                        this.active = false;
+                        this.strength = Math.random() * 0.5 + 0.5;
+                    }
+                }
+            }
+
+            draw(ctx, time) {
+                if (!this.active && Math.random() > 0.1) return;
+                
+                const energyFlow = (settings.energyIntensity / 100) * this.strength;
+                const hue = (settings.colorSpectrum + time * 30 + this.flowPhase * 50) % 360;
+                const alpha = this.active ? energyFlow : energyFlow * 0.3;
+                
+                // Draw connection line
+                ctx.save();
+                ctx.globalCompositeOperation = 'screen';
+                ctx.strokeStyle = `hsla(${hue}, 60%, 50%, ${alpha})`;
+                ctx.lineWidth = 2 * energyFlow;
+                ctx.shadowColor = `hsl(${hue}, 80%, 60%)`;
+                ctx.shadowBlur = 10 * energyFlow;
+                
+                ctx.beginPath();
+                ctx.moveTo(this.nodeA.x, this.nodeA.y);
+                ctx.lineTo(this.nodeB.x, this.nodeB.y);
+                ctx.stroke();
+                
+                // Draw energy particles
+                if (this.active) {
+                    this.drawEnergyParticles(ctx, time, hue, energyFlow);
+                }
+                
+                ctx.restore();
+            }
+
+            drawEnergyParticles(ctx, time, hue, intensity) {
+                const particleCount = 3;
+                const dx = this.nodeB.x - this.nodeA.x;
+                const dy = this.nodeB.y - this.nodeA.y;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const progress = ((time * settings.pulseSpeed + i * 0.3) % 1);
+                    const x = this.nodeA.x + dx * progress;
+                    const y = this.nodeA.y + dy * progress;
+                    
+                    ctx.fillStyle = `hsla(${hue}, 100%, 80%, ${intensity * (1 - progress)})`;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 2 * intensity, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        // Initialize the network
+        function initializeNetwork() {
+            nodes = [];
+            connections = [];
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            // Create nodes in organic distribution
+            for (let i = 0; i < settings.nodeCount; i++) {
+                let x, y;
+                let validPosition = false;
+                let attempts = 0;
+                
+                while (!validPosition && attempts < 50) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const radius = Math.random() * settings.networkSize;
+                    x = centerX + Math.cos(angle) * radius;
+                    y = centerY + Math.sin(angle) * radius;
+                    
+                    // Check distance from other nodes
+                    validPosition = true;
+                    for (let node of nodes) {
+                        const dist = Math.sqrt(Math.pow(x - node.x, 2) + Math.pow(y - node.y, 2));
+                        if (dist < 30) {
+                            validPosition = false;
+                            break;
+                        }
+                    }
+                    attempts++;
+                }
+                
+                if (validPosition) {
+                    nodes.push(new Node(x, y, i));
+                }
+            }
+            
+            // Create connections based on proximity and density
+            const maxConnections = Math.floor(nodes.length * settings.connectionDensity / 100);
+            let connectionCount = 0;
+            
+            for (let i = 0; i < nodes.length && connectionCount < maxConnections; i++) {
+                for (let j = i + 1; j < nodes.length && connectionCount < maxConnections; j++) {
+                    const dist = Math.sqrt(
+                        Math.pow(nodes[i].x - nodes[j].x, 2) + 
+                        Math.pow(nodes[i].y - nodes[j].y, 2)
+                    );
+                    
+                    // Connect nearby nodes with probability based on distance
+                    const connectionProbability = Math.max(0, 1 - (dist / (settings.networkSize * 0.8)));
+                    if (Math.random() < connectionProbability * (settings.connectionDensity / 100)) {
+                        connections.push(new Connection(nodes[i], nodes[j]));
+                        connectionCount++;
+                    }
+                }
+            }
+        }
+
+        // Initialize
+        function init() {
+            updateAllValues();
+            initializeNetwork();
+            startAnimation();
+        }
+
+        // Update all value displays
+        function updateAllValues() {
+            document.getElementById('nodeCountValue').textContent = settings.nodeCount;
+            document.getElementById('connectionDensityValue').textContent = settings.connectionDensity;
+            document.getElementById('networkSizeValue').textContent = settings.networkSize;
+            document.getElementById('pulseSpeedValue').textContent = settings.pulseSpeed.toFixed(1);
+            document.getElementById('energyIntensityValue').textContent = settings.energyIntensity;
+            document.getElementById('flowFrequencyValue').textContent = settings.flowFrequency.toFixed(1);
+            document.getElementById('colorSpectrumValue').textContent = settings.colorSpectrum;
+            document.getElementById('glowRadiusValue').textContent = settings.glowRadius;
+            document.getElementById('nodeSizeValue').textContent = settings.nodeSize;
+        }
+
+        // Update visualization (called by all controls)
+        function updateVisualization() {
+            // Get all current values
+            settings.nodeCount = parseInt(document.getElementById('nodeCount').value);
+            settings.connectionDensity = parseInt(document.getElementById('connectionDensity').value);
+            settings.networkSize = parseInt(document.getElementById('networkSize').value);
+            settings.pulseSpeed = parseFloat(document.getElementById('pulseSpeed').value);
+            settings.energyIntensity = parseInt(document.getElementById('energyIntensity').value);
+            settings.flowFrequency = parseFloat(document.getElementById('flowFrequency').value);
+            settings.colorSpectrum = parseInt(document.getElementById('colorSpectrum').value);
+            settings.glowRadius = parseInt(document.getElementById('glowRadius').value);
+            settings.nodeSize = parseInt(document.getElementById('nodeSize').value);
+            
+            updateAllValues();
+            
+            // Reinitialize network if structural changes
+            const structuralChange = (
+                settings.nodeCount !== nodes.length ||
+                Math.abs(settings.connectionDensity - (connections.length / nodes.length * 100)) > 10
+            );
+            
+            if (structuralChange) {
+                initializeNetwork();
+            }
+        }
+
+        // Load preset
+        function loadPreset(presetName) {
+            const preset = presets[presetName];
+            if (!preset) return;
+
+            // Update settings
+            Object.assign(settings, preset);
+
+            // Update all slider values
+            document.getElementById('nodeCount').value = settings.nodeCount;
+            document.getElementById('connectionDensity').value = settings.connectionDensity;
+            document.getElementById('networkSize').value = settings.networkSize;
+            document.getElementById('pulseSpeed').value = settings.pulseSpeed;
+            document.getElementById('energyIntensity').value = settings.energyIntensity;
+            document.getElementById('flowFrequency').value = settings.flowFrequency;
+            document.getElementById('colorSpectrum').value = settings.colorSpectrum;
+            document.getElementById('glowRadius').value = settings.glowRadius;
+            document.getElementById('nodeSize').value = settings.nodeSize;
+
+            updateAllValues();
+            initializeNetwork();
+        }
+
+        // Toggle functions
+        function toggleAnimation() {
+            isAnimating = !isAnimating;
+            const btn = document.getElementById('animationToggle');
+            
+            if (isAnimating) {
+                btn.textContent = 'Animation ON';
+                btn.classList.add('active');
+                startAnimation();
+            } else {
+                btn.textContent = 'Animation OFF';
+                btn.classList.remove('active');
+                if (animationId) cancelAnimationFrame(animationId);
+            }
+        }
+
+        function toggleRotation() {
+            isRotating = !isRotating;
+            const btn = document.getElementById('rotationToggle');
+            
+            if (isRotating) {
+                btn.textContent = 'Rotation ON';
+                btn.classList.add('active');
+            } else {
+                btn.textContent = 'Rotation OFF';
+                btn.classList.remove('active');
+            }
+        }
+
+        function togglePulse() {
+            isPulsing = !isPulsing;
+            const btn = document.getElementById('pulseToggle');
+            
+            if (isPulsing) {
+                btn.textContent = 'Pulse ON';
+                btn.classList.add('active');
+            } else {
+                btn.textContent = 'Pulse OFF';
+                btn.classList.remove('active');
+            }
+        }
+
+        // Start animation loop
+        function startAnimation() {
+            if (isAnimating) {
+                animationFrame += 0.016; // 60fps
+                draw();
+                animationId = requestAnimationFrame(startAnimation);
+            }
+        }
+
+        // Main drawing function
+        function draw() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const time = animationFrame;
+
+            // Apply rotation if enabled
+            ctx.save();
+            if (isRotating) {
+                ctx.translate(centerX, centerY);
+                ctx.rotate(time * 0.1);
+                ctx.translate(-centerX, -centerY);
+            }
+
+            // Update and draw connections first (behind nodes)
+            connections.forEach(connection => {
+                connection.update(time);
+                connection.draw(ctx, time);
+            });
+
+            // Update and draw nodes
+            nodes.forEach(node => {
+                node.update(time);
+                node.draw(ctx, time);
+            });
+            
+            ctx.restore();
+        }
+
+        // Export high-resolution version
+        function exportVisualization() {
+            // Create high-res canvas
+            const exportCanvas = document.createElement('canvas');
+            const exportCtx = exportCanvas.getContext('2d');
+            exportCanvas.width = 2800; // 4x resolution
+            exportCanvas.height = 2800;
+            
+            // Scale up the drawing
+            const originalCanvas = canvas;
+            const originalCtx = ctx;
+            
+            // Temporarily use export canvas
+            canvas = exportCanvas;
+            ctx = exportCtx;
+            ctx.scale(4, 4);
+            
+            // Draw high-res version
+            draw();
+            
+            // Restore original canvas
+            canvas = originalCanvas;
+            ctx = originalCtx;
+            
+            // Download the image
+            const link = document.createElement('a');
+            link.download = 'neural-energy-grid.png';
+            link.href = exportCanvas.toDataURL();
+            link.click();
+        }
+
+        // Zen Mode function
+        function enterZenMode(mode) {
+            window.location.href = `zen-mode-visualizer.html?mode=${mode}`;
+        }
+
+        // Initialize the application
+        init();
+    </script>
+</body>
+</html>

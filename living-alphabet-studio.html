@@ -1,0 +1,4043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Living Alphabet Studio - Savo Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .living-alphabet {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .studio-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .studio-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 60px;
+        }
+
+        .studio-header h1 {
+            background: linear-gradient(45deg, #ff1744, #9c27b0, #3f51b5, #00bcd4, #4caf50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+            animation: colorShift 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes colorShift {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(30deg); }
+        }
+
+        .studio-header p {
+            color: #ffffff;
+            opacity: 0.9;
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .permanent-mandala-section {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px auto;
+            max-width: 800px;
+            border: 2px solid rgba(124, 255, 80, 0.3);
+            text-align: center;
+        }
+
+        .mandala-video-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mandala-video {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 50%;
+            filter: drop-shadow(0 0 20px rgba(124, 255, 80, 0.4));
+        }
+
+        .mandala-controls {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .control {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control label {
+            color: #7cff50;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .control input[type="range"] {
+            width: 120px;
+        }
+
+        .control span {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .frequency-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .frequency-btn {
+            background: linear-gradient(45deg, #7cff50, #00ff88);
+            color: #1a1a2e;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .frequency-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(124, 255, 80, 0.4);
+        }
+
+        .frequency-btn.playing {
+            background: linear-gradient(45deg, #ff1744, #9c27b0);
+            color: white;
+        }
+
+        .frequency-display {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .frequency-text {
+            color: #7cff50;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .alphabet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .letter-card {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid transparent;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .letter-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.8s ease;
+        }
+
+        .letter-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .letter-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #00ff88;
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.3);
+        }
+
+        .letter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .letter-main {
+            font-size: 4rem;
+            font-weight: 900;
+            text-align: center;
+            background: linear-gradient(45deg, #ff1744, #9c27b0, #3f51b5, #00bcd4, #4caf50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .letter-frequency {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            padding: 8px 15px;
+            color: #7cff50;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .letter-meaning {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .letter-description {
+            color: #ffffff;
+            opacity: 0.8;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .polar-connection {
+            background: rgba(255, 23, 68, 0.1);
+            border: 1px solid rgba(255, 23, 68, 0.3);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 15px;
+        }
+
+        .polar-text {
+            color: #ff6b35;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .aura-visualization {
+            width: 100%;
+            height: 80px;
+            background: radial-gradient(ellipse at center, rgba(0, 255, 136, 0.3) 0%, transparent 70%);
+            border-radius: 10px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .aura-pulse {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: #7cff50;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: auraPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes auraPulse {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(2);
+                opacity: 0.3;
+            }
+        }
+
+        .letter-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-use {
+            background: linear-gradient(45deg, #00ff88, #7cff50);
+            color: #1a1a2e;
+        }
+
+        .btn-frequency {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            color: #ffffff;
+        }
+
+        .btn-ritual {
+            background: linear-gradient(45deg, #9c27b0, #673ab7);
+            color: #ffffff;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .stage-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid rgba(0, 255, 136, 0.5);
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            color: #7cff50;
+            font-weight: 600;
+        }
+
+        .morphology-display {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin: 10px 0;
+            font-size: 0.85rem;
+            color: #ffffff;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .canvas-preview {
+            background: #000000;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .preview-text {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff1744, #9c27b0, #3f51b5, #00bcd4, #4caf50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.3em;
+            margin-bottom: 20px;
+        }
+
+        .combined-frequency {
+            color: #7cff50;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .polar-pairs {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .pairs-title {
+            color: #ff6b35;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .pairs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .pair-connection {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 23, 68, 0.3);
+            text-align: center;
+        }
+
+        .pair-letters {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff1744, #9c27b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .pair-meaning {
+            color: #ff6b35;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .upload-zone {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed rgba(0, 255, 136, 0.5);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-zone:hover {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .upload-text {
+            color: #7cff50;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .upload-hint {
+            color: #ffffff;
+            opacity: 0.7;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .letter-main {
+                font-size: 3rem;
+            }
+            
+            .preview-text {
+                font-size: 2.5rem;
+            }
+            
+            .alphabet-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mandala Animations - Fixed to stay centered */
+        @keyframes spin {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+        
+        @keyframes spinReverse {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(-360deg); }
+        }
+        
+        @keyframes petalPulse {
+            0%, 100% { 
+                opacity: 0.6; 
+                transform: translate(-50%, -50%) scale(1); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1.3); 
+            }
+        }
+        
+        /* 26-Point Star Pulsing */
+        @keyframes starPulse {
+            0%, 100% { 
+                opacity: 0.6; 
+                transform: translate(-50%, -50%) scale(1); 
+                filter: drop-shadow(0 0 10px rgba(124,255,80,0.3));
+            }
+            50% { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1.05); 
+                filter: drop-shadow(0 0 20px rgba(124,255,80,0.6));
+            }
+        }
+        
+        /* Breathing Circles */
+        @keyframes breathe {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1) rotate(0deg); 
+                opacity: 0.4;
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.1) rotate(180deg); 
+                opacity: 0.8;
+            }
+        }
+        
+        /* Mandala Flicker and Rotation */
+        @keyframes mandalaFlicker {
+            0%, 100% { opacity: 0.7; }
+            25% { opacity: 1; }
+            50% { opacity: 0.8; }
+            75% { opacity: 0.9; }
+        }
+        
+        @keyframes mandalaRotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        /* Infinity Symbol Rotation */
+        @keyframes infinityRotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+            25% { transform: translate(-50%, -50%) rotate(90deg) scale(1.1); }
+            50% { transform: translate(-50%, -50%) rotate(180deg) scale(1); }
+            75% { transform: translate(-50%, -50%) rotate(270deg) scale(1.1); }
+            100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
+        }
+        /* Upload Section Styling */
+        .upload-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        /* Edit Controls Styling */
+        .edit-controls {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .edit-controls h4 {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .edit-button {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin: 5px;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .edit-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .upload-title {
+            color: white;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #fff;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .file-upload-area:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: #ffa500;
+        }
+
+        .file-upload-area.dragover {
+            background: rgba(255,165,0,0.3);
+            border-color: #ffa500;
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: white;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        .upload-button {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .upload-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .upload-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .upload-input {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            padding: 10px 15px;
+            color: white;
+            font-size: 1em;
+        }
+
+        .upload-input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .animation-controls {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .animation-controls h4 {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .control-group label {
+            color: white;
+            min-width: 120px;
+        }
+
+        .slider {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.3);
+            outline: none;
+        }
+
+        .toggle-button {
+            background: linear-gradient(45deg, #4a90e2, #7b68ee);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-button.active {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+        }
+
+        .save-upload-button {
+            width: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .save-upload-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        /* Library Section */
+        .mandala-library {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .library-title {
+            color: white;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .library-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .library-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .library-preview {
+            width: 100%;
+            height: 150px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .library-item-title {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .library-item-date {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9em;
+        }
+
+        .use-mandala-button {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .use-mandala-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .upload-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="living-alphabet">
+        <div class="studio-container">
+            <div class="studio-header">
+                <h1>Living Mandala Alphabet Wheel</h1>
+                <p>Journey through 13 Energetic Axes - Microsoft Copilot geometric letters with sacred frequencies and consciousness rituals</p>
+                
+                <div class="frequency-display">
+                    <div class="frequency-text">Universal Frequency: <span id="universalFreq">528 Hz</span> • Current Resonance: <span id="currentResonance">Balance</span></div>
+                </div>
+            </div>
+
+            <!-- Main Mandala Display Box -->
+            <div class="main-mandala-section" id="mainMandalaSection">
+                <h3 style="color: #7cff50; margin-bottom: 20px; font-size: 1.8rem; display: flex; align-items: center; gap: 15px;">
+                    🎨 Your Sacred Mandala Design 
+                    <div style="width: 30px; height: 30px; border-radius: 50%; background: url('./attached_assets/I X J W K V L T M S A R B U C Q D P E O F N G Z H Y_20250729_232114_0000_1753827750210.jpg') center/cover; animation: spin 3s linear infinite; border: 1px solid rgba(124,255,80,0.3);"></div>
+                </h3>
+                <p style="color: #ffffff; opacity: 0.9; margin-bottom: 25px;">Upload your 6-element Canva design for complete control</p>
+                
+                <div class="mandala-display-container" id="mandalaDisplayContainer" style="width: 100%; height: 400px; background: rgba(0,0,0,0.8); border-radius: 15px; border: 2px solid rgba(124,255,80,0.3); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                    <div id="mandalaPlaceholder" style="color: #7cff50; text-align: center; font-size: 1.2rem;">
+                        Upload your 6 elements to see your complete mandala design here
+                    </div>
+                </div>
+
+                <!-- Individual Element Controls -->
+                <div class="individual-element-controls" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                    
+                    <!-- Star Controls -->
+                    <div class="element-control-panel" style="background: rgba(150,0,150,0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(150,0,150,0.3);">
+                        <h5 style="color: #9c27b0; margin-bottom: 10px;">⭐ 26-Point Star</h5>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <label style="color: white; font-size: 12px; min-width: 80px;">Rotation:</label>
+                            <input type="range" min="0" max="360" value="0" style="flex: 1;" 
+                                   oninput="var el = document.getElementById('starElement'); if(el) el.style.transform = 'translate(-50%, -50%) rotate(' + this.value + 'deg)'; this.nextElementSibling.textContent = this.value + '°'">
+                            <span style="color: #9c27b0; font-size: 12px; min-width: 35px;">0°</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <label style="color: white; font-size: 12px; min-width: 80px;">Size:</label>
+                            <input type="range" min="50" max="150" value="100" style="flex: 1;" 
+                                   oninput="var el = document.getElementById('starElement'); if(el) { el.style.width = this.value + '%'; el.style.height = this.value + '%'; } this.nextElementSibling.textContent = this.value + '%'">
+                            <span style="color: #9c27b0; font-size: 12px; min-width: 35px;">100%</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <label style="color: white; font-size: 12px; min-width: 80px;">Opacity:</label>
+                            <input type="range" min="0" max="100" value="90" style="flex: 1;" 
+                                   oninput="var el = document.getElementById('starElement'); if(el) el.style.opacity = this.value / 100; this.nextElementSibling.textContent = this.value + '%'">
+                            <span style="color: #9c27b0; font-size: 12px; min-width: 35px;">90%</span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="var el = document.getElementById('starElement'); if(el) el.style.animation = 'spin 5s linear infinite';" style="padding: 4px 8px; background: #9c27b0; color: white; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Spin</button>
+                            <button onclick="var el = document.getElementById('starElement'); if(el) el.style.animation = 'pulse 3s ease-in-out infinite';" style="padding: 4px 8px; background: #9c27b0; color: white; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Pulse</button>
+                            <button onclick="var el = document.getElementById('starElement'); if(el) el.style.animation = '';" style="padding: 4px 8px; background: #666; color: white; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Stop</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Large Mandala Controls -->
+                    <div class="element-control-panel" style="background: rgba(255,0,0,0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,0,0,0.3);">
+                        <h5 style="color: #ff6b6b; margin-bottom: 10px;">🔴 Red Large Mandala</h5>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <label style="color: white; font-size: 12px; min-width: 80px;">Rotation:</label>
+                            <input type="range" min="0" max="360" value="0" style="flex: 1;" 
+                                   oninput="var el = document.getElementById('largeMandalaElement'); if(el) el.style.transform = 'translate(-50%, -50%) rotate(' + this.value + 'deg)'; this.nextElementSibling.textContent = this.value + '°'">
+                            <span style="color: #ff6b6b; font-size: 12px; min-width: 35px;">0°</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <label style="color: white; font-size: 12px; min-width: 80px;">Size:</label>
+                            <input type="range" min="50" max="120" value="95" style="flex: 1;" 
+                                   oninput="var el = document.getElementById('largeMandalaElement'); if(el) { el.style.width = this.value + '%'; el.style.height = this.value + '%'; } this.nextElementSibling.textContent = this.value + '%'">
+                            <span style="color: #ff6b6b; font-size: 12px; min-width: 35px;">95%</span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="var el = document.getElementById('largeMandalaElement'); if(el) el.style.animation = 'spin 3s linear infinite';" style="padding: 4px 8px; background: #ff6b6b; color: white; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Spin</button>
+                            <button onclick="var el = document.getElementById('largeMandalaElement'); if(el) el.style.animation = 'pulse 2s ease-in-out infinite';" style="padding: 4px 8px; background: #ff6b6b; color: white; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Pulse</button>
+                            <button onclick="var el = document.getElementById('largeMandalaElement'); if(el) el.style.animation = '';" style="padding: 4px 8px; background: #666; color: white; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Stop</button>
+                        </div>
+                    </div>
+
+                    <!-- Circles Controls -->
+                    <div class="element-control-panel" style="background: rgba(0,255,0,0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(0,255,0,0.3);">
+                        <h5 style="color: #7cff50; margin-bottom: 10px;">🟢 Colorful Circles</h5>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <label style="color: white; font-size: 12px; min-width: 80px;">Rotation:</label>
+                            <input type="range" min="0" max="360" value="0" style="flex: 1;" 
+                                   oninput="var el = document.getElementById('circlesElement'); if(el) el.style.transform = 'translate(-50%, -50%) rotate(' + this.value + 'deg)'; this.nextElementSibling.textContent = this.value + '°'">
+                            <span style="color: #7cff50; font-size: 12px; min-width: 35px;">0°</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <label style="color: white; font-size: 12px; min-width: 80px;">Size:</label>
+                            <input type="range" min="50" max="120" value="90" style="flex: 1;" 
+                                   oninput="var el = document.getElementById('circlesElement'); if(el) { el.style.width = this.value + '%'; el.style.height = this.value + '%'; } this.nextElementSibling.textContent = this.value + '%'">
+                            <span style="color: #7cff50; font-size: 12px; min-width: 35px;">90%</span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="var el = document.getElementById('circlesElement'); if(el) el.style.animation = 'spin 4s linear infinite reverse';" style="padding: 4px 8px; background: #7cff50; color: black; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Spin ↺</button>
+                            <button onclick="var el = document.getElementById('circlesElement'); if(el) el.style.animation = 'pulse 1.5s ease-in-out infinite';" style="padding: 4px 8px; background: #7cff50; color: black; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Pulse</button>
+                            <button onclick="var el = document.getElementById('circlesElement'); if(el) el.style.animation = '';" style="padding: 4px 8px; background: #666; color: white; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Stop</button>
+                        </div>
+                    </div>
+
+                    <!-- Spiral Controls -->
+                    <div class="element-control-panel" style="background: rgba(0,150,255,0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(0,150,255,0.3);">
+                        <h5 style="color: #4a90e2; margin-bottom: 10px;">🌀 Luminescent Spiral</h5>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <label style="color: white; font-size: 12px; min-width: 80px;">Rotation:</label>
+                            <input type="range" min="0" max="360" value="0" style="flex: 1;" 
+                                   oninput="var el = document.getElementById('spiralElement'); if(el) el.style.transform = 'translate(-50%, -50%) rotate(' + this.value + 'deg)'; this.nextElementSibling.textContent = this.value + '°'">
+                            <span style="color: #4a90e2; font-size: 12px; min-width: 35px;">0°</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <label style="color: white; font-size: 12px; min-width: 80px;">Size:</label>
+                            <input type="range" min="50" max="120" value="92" style="flex: 1;" 
+                                   oninput="var el = document.getElementById('spiralElement'); if(el) { el.style.width = this.value + '%'; el.style.height = this.value + '%'; } this.nextElementSibling.textContent = this.value + '%'">
+                            <span style="color: #4a90e2; font-size: 12px; min-width: 35px;">92%</span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="var el = document.getElementById('spiralElement'); if(el) el.style.animation = 'spin 6s linear infinite';" style="padding: 4px 8px; background: #4a90e2; color: white; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Spin</button>
+                            <button onclick="var el = document.getElementById('spiralElement'); if(el) el.style.animation = 'pulse 3s ease-in-out infinite';" style="padding: 4px 8px; background: #4a90e2; color: white; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Pulse</button>
+                            <button onclick="var el = document.getElementById('spiralElement'); if(el) el.style.animation = '';" style="padding: 4px 8px; background: #666; color: white; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Stop</button>
+                        </div>
+                    </div>
+
+                    <!-- Letters Controls -->
+                    <div class="element-control-panel" style="background: rgba(255,255,0,0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,0,0.3);">
+                        <h5 style="color: #ffd700; margin-bottom: 10px;">📝 Geometric Letters</h5>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <label style="color: white; font-size: 12px; min-width: 80px;">Rotation:</label>
+                            <input type="range" min="0" max="360" value="0" style="flex: 1;" 
+                                   oninput="var el = document.getElementById('lettersElement'); if(el) el.style.transform = 'translate(-50%, -50%) rotate(' + this.value + 'deg)'; this.nextElementSibling.textContent = this.value + '°'">
+                            <span style="color: #ffd700; font-size: 12px; min-width: 35px;">0°</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <label style="color: white; font-size: 12px; min-width: 80px;">Size:</label>
+                            <input type="range" min="50" max="120" value="95" style="flex: 1;" 
+                                   oninput="var el = document.getElementById('lettersElement'); if(el) { el.style.width = this.value + '%'; el.style.height = this.value + '%'; } this.nextElementSibling.textContent = this.value + '%'">
+                            <span style="color: #ffd700; font-size: 12px; min-width: 35px;">95%</span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="var el = document.getElementById('lettersElement'); if(el) el.style.animation = 'spin 8s linear infinite reverse';" style="padding: 4px 8px; background: #ffd700; color: black; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Spin ↺</button>
+                            <button onclick="var el = document.getElementById('lettersElement'); if(el) el.style.animation = 'pulse 2.5s ease-in-out infinite';" style="padding: 4px 8px; background: #ffd700; color: black; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Pulse</button>
+                            <button onclick="var el = document.getElementById('lettersElement'); if(el) el.style.animation = '';" style="padding: 4px 8px; background: #666; color: white; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Stop</button>
+                        </div>
+                    </div>
+
+                    <!-- Small Mandala Controls -->
+                    <div class="element-control-panel" style="background: rgba(255,0,255,0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,0,255,0.3);">
+                        <h5 style="color: #e91e63; margin-bottom: 10px;">🟣 Small Center Mandala</h5>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <label style="color: white; font-size: 12px; min-width: 80px;">Rotation:</label>
+                            <input type="range" min="0" max="360" value="0" style="flex: 1;" 
+                                   oninput="var el = document.getElementById('smallMandalaElement'); if(el) el.style.transform = 'translate(-50%, -50%) rotate(' + this.value + 'deg)'; this.nextElementSibling.textContent = this.value + '°'">
+                            <span style="color: #e91e63; font-size: 12px; min-width: 35px;">0°</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <label style="color: white; font-size: 12px; min-width: 80px;">Size:</label>
+                            <input type="range" min="15" max="50" value="25" style="flex: 1;" 
+                                   oninput="var el = document.getElementById('smallMandalaElement'); if(el) { el.style.width = this.value + '%'; el.style.height = this.value + '%'; } this.nextElementSibling.textContent = this.value + '%'">
+                            <span style="color: #e91e63; font-size: 12px; min-width: 35px;">25%</span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="var el = document.getElementById('smallMandalaElement'); if(el) el.style.animation = 'spin 2s linear infinite';" style="padding: 4px 8px; background: #e91e63; color: white; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Fast Spin</button>
+                            <button onclick="var el = document.getElementById('smallMandalaElement'); if(el) el.style.animation = 'pulse 1s ease-in-out infinite';" style="padding: 4px 8px; background: #e91e63; color: white; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Pulse</button>
+                            <button onclick="var el = document.getElementById('smallMandalaElement'); if(el) el.style.animation = '';" style="padding: 4px 8px; background: #666; color: white; border: none; border-radius: 8px; font-size: 11px; cursor: pointer;">Stop</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Mandala Preset Selector -->
+                <div style="margin-top: 25px; text-align: center;">
+                    <div style="margin-bottom: 20px;">
+                        <label style="color: #ffffff; font-weight: 600; font-size: 1.1rem; display: block; margin-bottom: 10px;">
+                            🎨 Select Mandala Preset
+                        </label>
+                        <select id="mandalaPresetDropdown" onchange="loadSelectedPreset()" style="
+                            padding: 12px 20px; 
+                            background: rgba(0,0,0,0.7); 
+                            color: #ffffff; 
+                            border: 2px solid rgba(124,255,80,0.5); 
+                            border-radius: 15px; 
+                            font-size: 1rem; 
+                            font-weight: 600;
+                            min-width: 250px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.borderColor='rgba(124,255,80,0.8)'" onmouseout="this.style.borderColor='rgba(124,255,80,0.5)'">
+                            <option value="">Choose a saved mandala...</option>
+                        </select>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                        <button onclick="saveCurrentMandalaToLibrary()" style="
+                            padding: 15px 25px; 
+                            background: linear-gradient(45deg, #28a745, #20c997); 
+                            color: white; 
+                            border: none; 
+                            border-radius: 25px; 
+                            cursor: pointer; 
+                            font-weight: 700; 
+                            font-size: 1rem;
+                            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(40, 167, 69, 0.4)'" onmouseout="this.style.transform=''; this.style.boxShadow='0 4px 15px rgba(40, 167, 69, 0.3)'">
+                            💾 Save Current Mandala
+                        </button>
+                        
+                        <button onclick="cleanMandalaLibrary()" style="
+                            padding: 15px 25px; 
+                            background: linear-gradient(45deg, #ffc107, #fd7e14); 
+                            color: white; 
+                            border: none; 
+                            border-radius: 25px; 
+                            cursor: pointer; 
+                            font-weight: 700; 
+                            font-size: 1rem;
+                            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(255, 193, 7, 0.4)'" onmouseout="this.style.transform=''; this.style.boxShadow='0 4px 15px rgba(255, 193, 7, 0.3)'">
+                            🧹 Clean Library
+                        </button>
+                        
+                        <button onclick="clearMandalaLibrary()" style="
+                            padding: 15px 25px; 
+                            background: linear-gradient(45deg, #dc3545, #c82333); 
+                            color: white; 
+                            border: none; 
+                            border-radius: 25px; 
+                            cursor: pointer; 
+                            font-weight: 700; 
+                            font-size: 1rem;
+                            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(220, 53, 69, 0.4)'" onmouseout="this.style.transform=''; this.style.boxShadow='0 4px 15px rgba(220, 53, 69, 0.3)'">
+                            🗑️ Clear All
+                        </button>
+                    </div>
+                    
+                    <p style="color: #ffffff; opacity: 0.7; margin-top: 15px; font-size: 0.9rem;">
+                        Save different 6-element combinations and switch between them using the dropdown
+                    </p>
+                </div>
+
+
+                <!-- Simple Layer Order Control -->
+                <div style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%); border-radius: 15px; padding: 25px; margin-top: 30px;">
+                    <h3 style="color: #ffffff; text-align: center; margin-bottom: 20px; font-size: 1.3rem;">
+                        🔄 Layer Order Control
+                    </h3>
+                    <div style="color: #ffffff; opacity: 0.9; text-align: center; margin-bottom: 20px; font-size: 0.95rem;">
+                        Use arrow buttons to move layers up (front) or down (back)
+                    </div>
+                    
+                    <!-- Dynamic Layer Order List -->
+                    <div id="dynamicLayerList" style="max-width: 500px; margin: 0 auto;">
+                        <!-- Layer items will be dynamically generated here -->
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="resetLayerOrder()" style="
+                            padding: 12px 25px; 
+                            background: linear-gradient(45deg, #6c757d, #495057); 
+                            color: white; 
+                            border: none; 
+                            border-radius: 20px; 
+                            cursor: pointer; 
+                            font-weight: 600; 
+                            font-size: 0.95rem;
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+                            🔄 Reset to Default Order
+                        </button>
+                    </div>
+                    
+                    <div style="color: rgba(255,255,255,0.7); font-size: 0.85rem; text-align: center; margin-top: 15px;">
+                        Green ▲ = Move Forward (Front) • Red ▼ = Move Back<br>
+                        Elements with uploads show bright colors
+                    </div>
+                </div>
+
+                <!-- Mandala Library Section -->
+                <div class="mandala-library" style="background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); border-radius: 15px; padding: 25px; margin-top: 30px;">
+                    <h3 style="color: #ffffff; text-align: center; margin-bottom: 20px; font-size: 1.3rem;">
+                        📚 Mandala Presets Library
+                    </h3>
+                    <div id="mandalaLibraryContainer" style="max-height: 400px; overflow-y: auto;">
+                        <p style="color: #ffffff; opacity: 0.7; text-align: center; padding: 20px;">
+                            No saved mandala presets yet. Upload and combine 6 elements, then save!
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+                
+
+                
+
+
+            <!-- Element-by-Element Upload System -->
+            <div class="upload-section">
+                <h3 class="upload-title">🎨 Upload Your Canva Elements Separately</h3>
+                <div style="color: white; text-align: center; margin-bottom: 20px; opacity: 0.9;">Upload each element of your Canva mandala to recreate it perfectly</div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px;">
+                    
+                    <!-- Star Upload (Layer 1 - Back) -->
+                    <div class="element-upload" style="background: rgba(147,112,219,0.1); border: 2px dashed rgba(147,112,219,0.5); border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('starUpload').click()">
+                        <div style="font-size: 1.8em; margin-bottom: 8px;">⭐</div>
+                        <div style="color: #9370db; font-weight: 600; margin-bottom: 3px; font-size: 0.9em;">26-Point Star</div>
+                        <div style="color: white; font-size: 0.8em; opacity: 0.8;">Amethyst (Layer 1)</div>
+                        <input type="file" id="starUpload" accept="image/*" style="display: none;" onchange="uploadElement('star', this)">
+                    </div>
+                    
+                    <!-- Large Mandala Upload (Layer 2) -->
+                    <div class="element-upload" style="background: rgba(220,20,60,0.1); border: 2px dashed rgba(220,20,60,0.5); border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('largeMandalaUpload').click()">
+                        <div style="font-size: 1.8em; margin-bottom: 8px;">🔴</div>
+                        <div style="color: #dc143c; font-weight: 600; margin-bottom: 3px; font-size: 0.9em;">Large Mandala</div>
+                        <div style="color: white; font-size: 0.8em; opacity: 0.8;">Red variation (Layer 2)</div>
+                        <input type="file" id="largeMandalaUpload" accept="image/*" style="display: none;" onchange="uploadElement('largeMandala', this)">
+                    </div>
+                    
+                    <!-- Circles Upload (Layer 3) -->
+                    <div class="element-upload" style="background: rgba(255,140,0,0.1); border: 2px dashed rgba(255,140,0,0.5); border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('circlesUpload').click()">
+                        <div style="font-size: 1.8em; margin-bottom: 8px;">🎨</div>
+                        <div style="color: #ff8c00; font-weight: 600; margin-bottom: 3px; font-size: 0.9em;">Colorful Circles</div>
+                        <div style="color: white; font-size: 0.8em; opacity: 0.8;">Animation PNG (Layer 3)</div>
+                        <input type="file" id="circlesUpload" accept="image/*" style="display: none;" onchange="uploadElement('circles', this)">
+                    </div>
+                    
+                    <!-- Spiral Upload (Layer 4) -->
+                    <div class="element-upload" style="background: rgba(124,255,80,0.1); border: 2px dashed rgba(124,255,80,0.5); border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('spiralUpload').click()">
+                        <div style="font-size: 1.8em; margin-bottom: 8px;">🌀</div>
+                        <div style="color: #7cff50; font-weight: 600; margin-bottom: 3px; font-size: 0.9em;">Luminescent Spiral</div>
+                        <div style="color: white; font-size: 0.8em; opacity: 0.8;">Consciousness (Layer 4)</div>
+                        <input type="file" id="spiralUpload" accept="image/*" style="display: none;" onchange="uploadElement('spiral', this)">
+                    </div>
+                    
+                    <!-- Letters Upload (Layer 5) -->
+                    <div class="element-upload" style="background: rgba(0,191,255,0.1); border: 2px dashed rgba(0,191,255,0.5); border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('lettersUpload').click()">
+                        <div style="font-size: 1.8em; margin-bottom: 8px;">🔤</div>
+                        <div style="color: #00bfff; font-weight: 600; margin-bottom: 3px; font-size: 0.9em;">Geometric Letters</div>
+                        <div style="color: white; font-size: 0.8em; opacity: 0.8;">Alphabet (Layer 5)</div>
+                        <input type="file" id="lettersUpload" accept="image/*" style="display: none;" onchange="uploadElement('letters', this)">
+                    </div>
+                    
+                    <!-- Small Mandala Upload (Layer 6 - Front) -->
+                    <div class="element-upload" style="background: rgba(255,20,147,0.1); border: 2px dashed rgba(255,20,147,0.5); border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('smallMandalaUpload').click()">
+                        <div style="font-size: 1.8em; margin-bottom: 8px;">🔮</div>
+                        <div style="color: #ff1493; font-weight: 600; margin-bottom: 3px; font-size: 0.9em;">Small Mandala</div>
+                        <div style="color: white; font-size: 0.8em; opacity: 0.8;">Colorful (Layer 6)</div>
+                        <input type="file" id="smallMandalaUpload" accept="image/*" style="display: none;" onchange="uploadElement('smallMandala', this)">
+                    </div>
+                    
+                </div>
+                
+                <!-- Preview uploaded elements -->
+                <div id="elementPreview" style="display: none; background: rgba(0,0,0,0.3); border-radius: 15px; padding: 20px; margin-bottom: 20px;">
+                    <h4 style="color: #7cff50; margin-bottom: 15px;">🎨 Uploaded Elements Preview (Layer Order)</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <div id="starPreview" style="display: none; text-align: center;">
+                            <div style="color: #9370db; font-size: 0.8em; margin-bottom: 5px;">Star (1)</div>
+                            <img id="starImg" style="width: 60px; height: 60px; border-radius: 10px; object-fit: cover;">
+                        </div>
+                        <div id="largeMandalaPreview" style="display: none; text-align: center;">
+                            <div style="color: #dc143c; font-size: 0.8em; margin-bottom: 5px;">Large (2)</div>
+                            <img id="largeMandalaImg" style="width: 60px; height: 60px; border-radius: 10px; object-fit: cover;">
+                        </div>
+                        <div id="circlesPreview" style="display: none; text-align: center;">
+                            <div style="color: #ff8c00; font-size: 0.8em; margin-bottom: 5px;">Circles (3)</div>
+                            <img id="circlesImg" style="width: 60px; height: 60px; border-radius: 10px; object-fit: cover;">
+                        </div>
+                        <div id="spiralPreview" style="display: none; text-align: center;">
+                            <div style="color: #7cff50; font-size: 0.8em; margin-bottom: 5px;">Spiral (4)</div>
+                            <img id="spiralImg" style="width: 60px; height: 60px; border-radius: 10px; object-fit: cover;">
+                        </div>
+                        <div id="lettersPreview" style="display: none; text-align: center;">
+                            <div style="color: #00bfff; font-size: 0.8em; margin-bottom: 5px;">Letters (5)</div>
+                            <img id="lettersImg" style="width: 60px; height: 60px; border-radius: 10px; object-fit: cover;">
+                        </div>
+                        <div id="smallMandalaPreview" style="display: none; text-align: center;">
+                            <div style="color: #ff1493; font-size: 0.8em; margin-bottom: 5px;">Small (6)</div>
+                            <img id="smallMandalaImg" style="width: 60px; height: 60px; border-radius: 10px; object-fit: cover;">
+                        </div>
+                    </div>
+                    <button onclick="combineElements()" style="width: 100%; background: linear-gradient(45deg, #7cff50, #00ff88); color: black; border: none; padding: 15px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">🔥 Layer All 6 Elements - Perfect Canva Recreation</button>
+                </div>
+                
+                <div class="upload-details" id="consciousnessDetails" style="display: none;">
+                    <input type="text" class="upload-input" id="consciousnessTitleInput" placeholder="Title for your mandala">
+                    <input type="text" class="upload-input" id="consciousnessDescInput" placeholder="Description">
+                </div>
+
+
+
+                <button class="save-upload-button" id="saveConsciousnessUpload" style="display: none;" onclick="saveConsciousnessUpload()">💾 Save to Library</button>
+            </div>
+
+
+
+
+
+
+
+            <div class="polar-pairs">
+                <div class="pairs-title">13 Energetic Axes - Complete Mirror Alphabet</div>
+                <div class="pairs-grid">
+                    <div class="pair-connection" style="border-color: #ff1744;">
+                        <div class="pair-letters" style="background: linear-gradient(45deg, #ff1744, #ff6b35); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">I ↔ U</div>
+                        <div class="pair-meaning">Individual ↔ Universal</div>
+                        <div style="color: #ffffff; opacity: 0.8; font-size: 0.85rem;">Primary Axis - Heart of the System</div>
+                    </div>
+                    <div class="pair-connection" style="border-color: #9c27b0;">
+                        <div class="pair-letters" style="background: linear-gradient(45deg, #9c27b0, #8e44ad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">J ↔ Q</div>
+                        <div class="pair-meaning">Journey ↔ Quest</div>
+                        <div style="color: #ffffff; opacity: 0.8; font-size: 0.85rem;">Path vs Sacred Search</div>
+                    </div>
+                    <div class="pair-connection" style="border-color: #3f51b5;">
+                        <div class="pair-letters" style="background: linear-gradient(45deg, #3f51b5, #6a1b9a); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">K ↔ P</div>
+                        <div class="pair-meaning">Knowledge ↔ Power</div>
+                        <div style="color: #ffffff; opacity: 0.8; font-size: 0.85rem;">Wisdom vs Manifestation</div>
+                    </div>
+                    <div class="pair-connection" style="border-color: #e91e63;">
+                        <div class="pair-letters" style="background: linear-gradient(45deg, #e91e63, #00bcd4); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">L ↔ O</div>
+                        <div class="pair-meaning">Love ↔ Other</div>
+                        <div style="color: #ffffff; opacity: 0.8; font-size: 0.85rem;">Connection vs Boundaries</div>
+                    </div>
+                    <div class="pair-connection" style="border-color: #673ab7;">
+                        <div class="pair-letters" style="background: linear-gradient(45deg, #673ab7, #4caf50); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">M ↔ N</div>
+                        <div class="pair-meaning">Mind ↔ Nature</div>
+                        <div style="color: #ffffff; opacity: 0.8; font-size: 0.85rem;">Cognitive vs Organic</div>
+                    </div>
+                    <div class="pair-connection" style="border-color: #ff9800;">
+                        <div class="pair-letters" style="background: linear-gradient(45deg, #ff9800, #795548); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">A ↔ Z</div>
+                        <div class="pair-meaning">Ascension ↔ Zen</div>
+                        <div style="color: #ffffff; opacity: 0.8; font-size: 0.85rem;">Rising vs Stillness</div>
+                    </div>
+                    <div class="pair-connection" style="border-color: #f44336;">
+                        <div class="pair-letters" style="background: linear-gradient(45deg, #f44336, #ffeb3b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">B ↔ Y</div>
+                        <div class="pair-meaning">Boundary ↔ Yearning</div>
+                        <div style="color: #ffffff; opacity: 0.8; font-size: 0.85rem;">Limits vs Desire</div>
+                    </div>
+                    <div class="pair-connection" style="border-color: #009688;">
+                        <div class="pair-letters" style="background: linear-gradient(45deg, #009688, #607d8b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">C ↔ X</div>
+                        <div class="pair-meaning">Creation ↔ Crossroads</div>
+                        <div style="color: #ffffff; opacity: 0.8; font-size: 0.85rem;">Making vs Choosing</div>
+                    </div>
+                    <div class="pair-connection" style="border-color: #7cff50;">
+                        <div class="pair-letters" style="background: linear-gradient(45deg, #7cff50, #cddc39); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">D ↔ W</div>
+                        <div class="pair-meaning">Destiny ↔ Wandering</div>
+                        <div style="color: #ffffff; opacity: 0.8; font-size: 0.85rem;">Purpose vs Freedom</div>
+                    </div>
+                    <div class="pair-connection" style="border-color: #ff5722;">
+                        <div class="pair-letters" style="background: linear-gradient(45deg, #ff5722, #3f51b5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">E ↔ V</div>
+                        <div class="pair-meaning">Emotion ↔ Vision</div>
+                        <div style="color: #ffffff; opacity: 0.8; font-size: 0.85rem;">Feeling vs Seeing</div>
+                    </div>
+                    <div class="pair-connection" style="border-color: #2196f3;">
+                        <div class="pair-letters" style="background: linear-gradient(45deg, #2196f3, #4caf50); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">F ↔ T</div>
+                        <div class="pair-meaning">Form ↔ Texture</div>
+                        <div style="color: #ffffff; opacity: 0.8; font-size: 0.85rem;">Structure vs Sensation</div>
+                    </div>
+                    <div class="pair-connection" style="border-color: #8bc34a;">
+                        <div class="pair-letters" style="background: linear-gradient(45deg, #8bc34a, #ff1744); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">G ↔ S</div>
+                        <div class="pair-meaning">Growth ↔ Stillness</div>
+                        <div style="color: #ffffff; opacity: 0.8; font-size: 0.85rem;">Expansion vs Peace</div>
+                    </div>
+                    <div class="pair-connection" style="border-color: #ff9800;">
+                        <div class="pair-letters" style="background: linear-gradient(45deg, #ff9800, #9c27b0); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">H ↔ R</div>
+                        <div class="pair-meaning">Harmony ↔ Reflection</div>
+                        <div style="color: #ffffff; opacity: 0.8; font-size: 0.85rem;">Balance vs Awareness</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alphabet-grid" id="livingAlphabet">
+                <!-- Living letters will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== CRITICAL GLOBAL VARIABLES - MUST BE FIRST =====
+        var uploadedElements = {
+            star: null,
+            largeMandala: null,
+            circles: null,
+            spiral: null,
+            letters: null,
+            smallMandala: null
+        };
+        
+        // Layer Order Management System - Initialize immediately after uploadedElements
+        var layerOrder = ['star', 'largeMandala', 'circles', 'spiral', 'letters', 'smallMandala'];
+        var draggedItem = null;
+        
+        var layerInfo = {
+            star: { name: '26-Point Star', icon: '⭐', color: '#9370db' },
+            largeMandala: { name: 'Large Mandala', icon: '🔴', color: '#dc143c' },
+            circles: { name: 'Colorful Circles', icon: '🎨', color: '#ff8c00' },
+            spiral: { name: 'Luminescent Spiral', icon: '🌀', color: '#7cff50' },
+            letters: { name: 'Geometric Letters', icon: '🔤', color: '#00bfff' },
+            smallMandala: { name: 'Small Mandala', icon: '🔮', color: '#ff1493' }
+        };
+        
+        // Complete Living Alphabet with 13 Energetic Axes - Enhanced with Copilot Insights
+        const livingAlphabet = {
+            // Primary Axis - Heart of the System (Stage 1: Threshold)
+            'I': { 
+                frequency: 528, 
+                meaning: 'Individual', 
+                description: 'The spark of individual insight and self-realization - DNA repair frequency', 
+                auraColor: '#ff1744', 
+                polarOpposite: 'U', 
+                axis: 1,
+                morphology: 'crisp staccato pulse',
+                harmonicInterval: 1.22,
+                stage: 1,
+                theme: 'Threshold: Universal ↔ Individual'
+            },
+            'U': { 
+                frequency: 432, 
+                meaning: 'Universal', 
+                description: 'Cosmic tuning - aligns with natural harmonics and Earth resonance', 
+                auraColor: '#ff6b35', 
+                polarOpposite: 'I', 
+                axis: 1,
+                morphology: 'slow enfolding wave',
+                harmonicInterval: 1.22,
+                stage: 1,
+                theme: 'Threshold: Universal ↔ Individual'
+            },
+            
+            // Stage 2: Invitation - Journey & Quest Axis
+            'J': { 
+                frequency: 396, 
+                meaning: 'Journey', 
+                description: 'Liberation frequency - looped tail morphology for personal transformation', 
+                auraColor: '#9c27b0', 
+                polarOpposite: 'Q', 
+                axis: 2,
+                morphology: 'looped tail',
+                stage: 2,
+                theme: 'Invitation → Quest'
+            },
+            'Q': { 
+                frequency: 741, 
+                meaning: 'Quest', 
+                description: 'Expression frequency - angular spur for sacred truth seeking', 
+                auraColor: '#8e44ad', 
+                polarOpposite: 'J', 
+                axis: 2,
+                morphology: 'angular spur',
+                stage: 2,
+                theme: 'Invitation → Quest'
+            },
+            
+            // Stage 3: Knowledge & Power Axis
+            'K': { 
+                frequency: 639, 
+                meaning: 'Knowledge', 
+                description: 'Harmonizing frequency - connecting and understanding relationships', 
+                auraColor: '#3f51b5', 
+                polarOpposite: 'P', 
+                axis: 3,
+                morphology: 'sharp upward stroke',
+                stage: 3,
+                theme: 'Knowledge ↔ Power'
+            },
+            'P': { 
+                frequency: 285, 
+                meaning: 'Power', 
+                description: 'Rapid change frequency - transformation and influence energy', 
+                auraColor: '#6a1b9a', 
+                polarOpposite: 'K', 
+                axis: 3,
+                morphology: 'closed bowl',
+                stage: 3,
+                theme: 'Knowledge ↔ Power'
+            },
+            
+            // Stage 4: Love & Other Axis
+            'L': { 
+                frequency: 528, 
+                meaning: 'Love', 
+                description: 'Love frequency - DNA repair and unconditional heart connection', 
+                auraColor: '#e91e63', 
+                polarOpposite: 'O', 
+                axis: 4,
+                morphology: 'extending base line',
+                stage: 4,
+                theme: 'Love ↔ Other',
+                ritual: 'I channel Love to heal and connect'
+            },
+            'O': { 
+                frequency: 396, 
+                meaning: 'Other', 
+                description: 'Liberation frequency - releasing guilt and recognizing boundaries', 
+                auraColor: '#00bcd4', 
+                polarOpposite: 'L', 
+                axis: 4,
+                morphology: 'perfect circle',
+                stage: 4,
+                theme: 'Love ↔ Other',
+                ritual: 'I honor Other as sacred consciousness'
+            },
+            
+            // Mind & Nature Axis
+            'M': { frequency: 417, meaning: 'Mind', description: 'Cognitive processes and mental clarity activation', auraColor: '#673ab7', polarOpposite: 'N', axis: 5 },
+            'N': { frequency: 741, meaning: 'Nature', description: 'Natural harmony and organic wisdom integration', auraColor: '#4caf50', polarOpposite: 'M', axis: 5 },
+            
+            // Ascension & Zen Axis
+            'A': { frequency: 963, meaning: 'Ascension', description: 'Spiritual elevation and consciousness expansion', auraColor: '#ff9800', polarOpposite: 'Z', axis: 6 },
+            'Z': { frequency: 111, meaning: 'Zen', description: 'Perfect stillness and enlightened awareness', auraColor: '#795548', polarOpposite: 'A', axis: 6 },
+            
+            // Boundary & Yearning Axis
+            'B': { frequency: 432, meaning: 'Boundary', description: 'Sacred limits and protective energetic barriers', auraColor: '#f44336', polarOpposite: 'Y', axis: 7 },
+            'Y': { frequency: 999, meaning: 'Yearning', description: 'Deep soul longing and infinite spiritual desire', auraColor: '#ffeb3b', polarOpposite: 'B', axis: 7 },
+            
+            // Creation & Crossroads Axis
+            'C': { frequency: 256, meaning: 'Creation', description: 'Divine creativity and manifestation potential', auraColor: '#009688', polarOpposite: 'X', axis: 8 },
+            'X': { frequency: 666, meaning: 'Crossroads', description: 'Choice points and transformational decisions', auraColor: '#607d8b', polarOpposite: 'C', axis: 8 },
+            
+            // Destiny & Wandering Axis
+            'D': { frequency: 333, meaning: 'Destiny', description: 'Sacred purpose and divine life mission', auraColor: '#7cff50', polarOpposite: 'W', axis: 9 },
+            'W': { frequency: 555, meaning: 'Wandering', description: 'Exploratory consciousness and freedom seeking', auraColor: '#cddc39', polarOpposite: 'D', axis: 9 },
+            
+            // Emotion & Vision Axis
+            'E': { frequency: 369, meaning: 'Emotion', description: 'Feeling states and heart-centered awareness', auraColor: '#ff5722', polarOpposite: 'V', axis: 10 },
+            'V': { frequency: 1111, meaning: 'Vision', description: 'Future sight and prophetic consciousness activation', auraColor: '#3f51b5', polarOpposite: 'E', axis: 10 },
+            
+            // Form & Texture Axis
+            'F': { frequency: 444, meaning: 'Form', description: 'Physical manifestation and structural integrity', auraColor: '#2196f3', polarOpposite: 'T', axis: 11 },
+            'T': { frequency: 741, meaning: 'Texture', description: 'Sensory experience and tactile consciousness', auraColor: '#4caf50', polarOpposite: 'F', axis: 11 },
+            
+            // Growth & Stillness Axis
+            'G': { frequency: 528, meaning: 'Growth', description: 'Expansion energy and evolutionary development', auraColor: '#8bc34a', polarOpposite: 'S', axis: 12 },
+            'S': { frequency: 396, meaning: 'Stillness', description: 'Perfect peace and meditative tranquility', auraColor: '#ff1744', polarOpposite: 'G', axis: 12 },
+            
+            // Harmony & Reflection Axis
+            'H': { frequency: 639, meaning: 'Harmony', description: 'Perfect balance and resonant frequency alignment', auraColor: '#ff9800', polarOpposite: 'R', axis: 13 },
+            'R': { frequency: 852, meaning: 'Reflection', description: 'Mirror consciousness and self-awareness activation', auraColor: '#9c27b0', polarOpposite: 'H', axis: 13 }
+        };
+
+        // Initialize Living Alphabet Display
+        function initializeLivingAlphabet() {
+            const grid = document.getElementById('livingAlphabet');
+            
+            Object.entries(livingAlphabet).forEach(([letter, data]) => {
+                const letterCard = document.createElement('div');
+                letterCard.className = 'letter-card';
+                letterCard.style.borderColor = data.auraColor + '40';
+                
+                letterCard.innerHTML = `
+                    ${data.stage ? `<div class="stage-indicator">Stage ${data.stage}</div>` : ''}
+                    
+                    <div class="letter-header">
+                        <div class="letter-frequency">${data.frequency} Hz</div>
+                        ${data.polarOpposite ? `<div class="polar-connection"><div class="polar-text">↔ ${data.polarOpposite}</div></div>` : ''}
+                    </div>
+                    
+                    <div class="letter-main" style="background: linear-gradient(45deg, ${data.auraColor}, #ffffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${letter}</div>
+                    
+                    <div class="letter-meaning" style="color: ${data.auraColor};">${data.meaning}</div>
+                    <div class="letter-description">${data.description}</div>
+                    
+                    ${data.morphology ? `<div class="morphology-display">Morphology: ${data.morphology}</div>` : ''}
+                    ${data.theme ? `<div class="morphology-display">Theme: ${data.theme}</div>` : ''}
+                    
+                    <div class="aura-visualization" style="background: radial-gradient(ellipse at center, ${data.auraColor}40 0%, transparent 70%);">
+                        <div class="aura-pulse" style="background: ${data.auraColor};"></div>
+                    </div>
+                    
+                    <div class="letter-actions">
+                        <button class="action-btn btn-use" onclick="addToPreview('${letter}')">Add to Text</button>
+                        <button class="action-btn btn-frequency" onclick="playFrequency(${data.frequency})">Play ${data.frequency}Hz</button>
+                        ${data.polarOpposite ? `<button class="action-btn btn-ritual" onclick="playPairRitual('${letter}', '${data.polarOpposite}')">Pair Ritual</button>` : ''}
+                    </div>
+                `;
+                
+                grid.appendChild(letterCard);
+            });
+        }
+
+        // Add letter to live preview
+        function addToPreview(letter) {
+            const preview = document.getElementById('livePreview');
+            if (preview.textContent.length < 20) {
+                preview.textContent += letter;
+                updateCombinedFrequency();
+            }
+        }
+
+        // Calculate combined frequency
+        function updateCombinedFrequency() {
+            const text = document.getElementById('livePreview').textContent;
+            let totalFreq = 0;
+            let energyTypes = [];
+            
+            for (let char of text) {
+                if (livingAlphabet[char]) {
+                    totalFreq += livingAlphabet[char].frequency;
+                    energyTypes.push(livingAlphabet[char].meaning);
+                }
+            }
+            
+            const combinedFreqEl = document.getElementById('combinedFreq');
+            const harmonicLevelEl = document.getElementById('harmonicLevel');
+            
+            if (combinedFreqEl) combinedFreqEl.textContent = totalFreq + ' Hz';
+            if (harmonicLevelEl) harmonicLevelEl.textContent = energyTypes.length > 0 ? energyTypes.join(' + ') : 'Healing';
+        }
+
+        // Global audio context to prevent limitations
+        let globalAudioContext = null;
+        
+        // Initialize audio context
+        function initAudioContext() {
+            if (!globalAudioContext) {
+                globalAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (globalAudioContext.state === 'suspended') {
+                globalAudioContext.resume();
+            }
+            return globalAudioContext;
+        }
+
+        // Play frequency using Web Audio API
+        function playFrequency(frequency) {
+            try {
+                const audioContext = initAudioContext();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 2);
+                
+                // Clean up after playing
+                oscillator.onended = () => {
+                    oscillator.disconnect();
+                    gainNode.disconnect();
+                };
+                
+                // Visual feedback
+                const universalFreqEl = document.getElementById('universalFreq');
+                if (universalFreqEl) {
+                    universalFreqEl.textContent = frequency + ' Hz';
+                    setTimeout(() => {
+                        universalFreqEl.textContent = '528 Hz';
+                    }, 2000);
+                }
+            } catch (error) {
+                console.log('Audio playback temporarily unavailable, trying again...');
+                setTimeout(() => playFrequency(frequency), 100);
+            }
+        }
+
+        // Global Control Variables
+        let isPlaying = true;
+        let isMuted = false;
+        let lettersVisible = true;
+        let currentStageIndex = 0;
+
+        // Global Control Functions for Unified System (updated for background image)
+
+        // Remove old video functions - now using CSS rotation animation
+
+        function updateGlowEffect(value) {
+            const wheel = document.getElementById('unifiedWheel');
+            const valueSpan = document.getElementById('glowValue');
+            wheel.style.boxShadow = `0 0 ${value}px rgba(124,255,80,0.4)`;
+            valueSpan.textContent = value + 'px';
+        }
+
+        function updatePulseEffect(value) {
+            const valueSpan = document.getElementById('pulseValue');
+            valueSpan.textContent = value;
+            const wheel = document.getElementById('unifiedWheel');
+            if (value > 0) {
+                wheel.style.animation = `pulse ${3/value}s ease-in-out infinite`;
+            } else {
+                wheel.style.animation = 'none';
+            }
+        }
+
+        function toggleLetterRing() {
+            const overlay = document.getElementById('letterRingOverlay');
+            const btn = document.getElementById('letterToggle');
+            lettersVisible = !lettersVisible;
+            overlay.style.opacity = lettersVisible ? '1' : '0';
+            btn.textContent = lettersVisible ? 'Hide Letters' : 'Show Letters';
+        }
+
+        function randomFrequency() {
+            const healingFreqs = [174, 285, 396, 528, 639, 741, 852, 963];
+            const randomFreq = healingFreqs[Math.floor(Math.random() * healingFreqs.length)];
+            playFrequency(randomFreq);
+            updateFrequencyDisplay(randomFreq, 'Random', 'Healing Tone');
+        }
+
+        function changeStage(direction) {
+            if (direction === 'next') {
+                currentStageIndex = (currentStageIndex + 1) % stageSequence.length;
+            } else {
+                currentStageIndex = (currentStageIndex - 1 + stageSequence.length) % stageSequence.length;
+            }
+            updateStageDisplay();
+        }
+
+        function updateStageDisplay() {
+            const currentStage = stageSequence[currentStageIndex];
+            const stageDisplay = document.getElementById('currentStage');
+            const centerText = document.getElementById('centerText');
+            const centerSubtext = document.getElementById('centerSubtext');
+            
+            if (stageDisplay) {
+                stageDisplay.textContent = `Stage ${currentStage.stage}: ${currentStage.axis} ${currentStage.theme}`;
+            }
+            if (centerText) {
+                centerText.textContent = currentStage.axis;
+            }
+            if (centerSubtext) {
+                centerSubtext.textContent = currentStage.center;
+            }
+        }
+
+        // Update frequency display with animation
+        function updateFrequencyDisplay(frequency, letter, meaning) {
+            const freqDisplay = document.getElementById('combinedFreq');
+            const stageDisplay = document.getElementById('journeyStage');
+            
+            if (freqDisplay) {
+                freqDisplay.textContent = `${frequency} Hz`;
+                freqDisplay.style.color = '#7cff50';
+                freqDisplay.style.transform = 'scale(1.2)';
+                freqDisplay.style.textShadow = '0 0 15px rgba(124, 255, 80, 1)';
+            }
+            
+            if (stageDisplay) {
+                stageDisplay.textContent = `${letter} - ${meaning}`;
+            }
+            
+            setTimeout(() => {
+                if (freqDisplay) {
+                    freqDisplay.style.transform = 'scale(1)';
+                    freqDisplay.style.color = '#ffffff';
+                    freqDisplay.style.textShadow = 'none';
+                }
+            }, 2000);
+        }
+
+        // File upload handler for Copilot designs
+        document.getElementById('letterUpload').addEventListener('change', function(e) {
+            const files = e.target.files;
+            
+            for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    // Extract letter from filename or let user specify
+                    const fileName = file.name.toLowerCase();
+                    let detectedLetter = null;
+                    
+                    // Try to detect letter from filename - prioritize exact matches
+                    const letters = Object.keys(livingAlphabet);
+                    
+                    // First, try exact single letter matches
+                    for (let letter of letters) {
+                        const regex = new RegExp(`\\b${letter.toLowerCase()}\\b`, 'i'); // Word boundary for exact match
+                        if (regex.test(fileName)) {
+                            detectedLetter = letter;
+                            break;
+                        }
+                    }
+                    
+                    // If no exact match, try partial matches but prioritize longer letters first
+                    if (!detectedLetter) {
+                        const sortedLetters = letters.sort((a, b) => b.length - a.length);
+                        for (let letter of sortedLetters) {
+                            if (fileName.includes(letter.toLowerCase()) && fileName.indexOf(letter.toLowerCase()) !== -1) {
+                                detectedLetter = letter;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (detectedLetter) {
+                        livingAlphabet[detectedLetter].copilotDesign = event.target.result;
+                        alert(`✨ ${detectedLetter} design uploaded successfully!\n🎵 Frequency: ${livingAlphabet[detectedLetter].frequency}Hz\n🔮 Meaning: ${livingAlphabet[detectedLetter].meaning}`);
+                    } else {
+                        alert(`📁 Image uploaded: ${file.name}\nPlease specify which letter this represents.`);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Mandala Wheel System
+        const stageSequence = [
+            { axis: 'I↔U', stage: 1, theme: 'Individual ↔ Universal', ritual: 'Threshold', letters: ['I', 'U'], center: 'Threshold' },
+            { axis: 'J↔Q', stage: 2, theme: 'Journey ↔ Quest', ritual: 'Path Discovery', letters: ['J', 'Q'], center: 'Path' },
+            { axis: 'K↔P', stage: 3, theme: 'Knowledge ↔ Power', ritual: 'Wisdom Flow', letters: ['K', 'P'], center: 'Wisdom' },
+            { axis: 'L↔O', stage: 4, theme: 'Love ↔ Other', ritual: 'Heart Connection', letters: ['L', 'O'], center: 'Love' },
+            { axis: 'M↔N', stage: 5, theme: 'Mind ↔ Nature', ritual: 'Balance', letters: ['M', 'N'], center: 'Balance' },
+            { axis: 'A↔Z', stage: 6, theme: 'Ascension ↔ Zen', ritual: 'Elevation', letters: ['A', 'Z'], center: 'Ascend' },
+            { axis: 'B↔Y', stage: 7, theme: 'Boundary ↔ Yearning', ritual: 'Sacred Limits', letters: ['B', 'Y'], center: 'Limits' },
+            { axis: 'C↔X', stage: 8, theme: 'Creation ↔ Crossroads', ritual: 'Choice Point', letters: ['C', 'X'], center: 'Create' },
+            { axis: 'D↔W', stage: 9, theme: 'Destiny ↔ Wandering', ritual: 'Purpose Path', letters: ['D', 'W'], center: 'Purpose' },
+            { axis: 'E↔V', stage: 10, theme: 'Emotion ↔ Vision', ritual: 'Heart Sight', letters: ['E', 'V'], center: 'Vision' },
+            { axis: 'F↔T', stage: 11, theme: 'Form ↔ Texture', ritual: 'Structure Sense', letters: ['F', 'T'], center: 'Form' },
+            { axis: 'G↔S', stage: 12, theme: 'Growth ↔ Stillness', ritual: 'Dynamic Peace', letters: ['G', 'S'], center: 'Growth' },
+            { axis: 'H↔R', stage: 13, theme: 'Harmony ↔ Reflection', ritual: 'Perfect Mirror', letters: ['H', 'R'], center: 'Harmony' }
+        ];
+
+        // Wheel rotation variables
+        let wheelRotation = 0;
+        let isDragging = false;
+        let lastMouseAngle = 0;
+
+        // Add wheel rotation functionality
+        function addWheelRotation(wheelElement) {
+            let startAngle = 0;
+            
+            function getMouseAngle(event, element) {
+                const rect = element.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const angle = Math.atan2(event.clientY - centerY, event.clientX - centerX);
+                return angle * (180 / Math.PI);
+            }
+            
+            wheelElement.style.cursor = 'grab';
+            
+            wheelElement.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startAngle = getMouseAngle(e, wheelElement) - wheelRotation;
+                wheelElement.style.cursor = 'grabbing';
+                e.preventDefault();
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const currentAngle = getMouseAngle(e, wheelElement);
+                wheelRotation = currentAngle - startAngle;
+                wheelElement.style.transform = `rotate(${wheelRotation}deg)`;
+            });
+            
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    wheelElement.style.cursor = 'grab';
+                }
+            });
+            
+            // Touch support for mobile
+            wheelElement.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                const touch = e.touches[0];
+                startAngle = getMouseAngle(touch, wheelElement) - wheelRotation;
+                e.preventDefault();
+            });
+            
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                const touch = e.touches[0];
+                const currentAngle = getMouseAngle(touch, wheelElement);
+                wheelRotation = currentAngle - startAngle;
+                wheelElement.style.transform = `rotate(${wheelRotation}deg)`;
+            });
+            
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+        }
+
+        // Initialize upload functionality with proper drag/drop
+        function initializeUploads() {
+            const consciousnessUpload = document.getElementById('consciousnessUpload');
+            const consciousnessUploadArea = document.getElementById('consciousnessUploadArea');
+            
+            if (consciousnessUpload) {
+                consciousnessUpload.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            // Update consciousness wheel background
+                            const wheel = document.getElementById('unifiedWheel');
+                            if (wheel) {
+                                wheel.style.backgroundImage = `url(${event.target.result})`;
+                                wheel.style.backgroundSize = 'cover';
+                                wheel.style.backgroundPosition = 'center';
+                                console.log('🔮 Updated consciousness wheel with uploaded mandala');
+                            }
+                            
+                            // Show upload details and controls
+                            const details = document.getElementById('consciousnessDetails');
+                            const controls = document.getElementById('consciousnessControls');
+                            const saveBtn = document.getElementById('saveConsciousnessUpload');
+                            
+                            if (details) details.style.display = 'grid';
+                            if (controls) controls.style.display = 'block';
+                            if (saveBtn) saveBtn.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+            
+            // Drag and drop support
+            if (consciousnessUploadArea) {
+                consciousnessUploadArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    consciousnessUploadArea.style.background = 'rgba(124,255,80,0.2)';
+                });
+                
+                consciousnessUploadArea.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    consciousnessUploadArea.style.background = '';
+                });
+                
+                consciousnessUploadArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    consciousnessUploadArea.style.background = '';
+                    
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0 && files[0].type.startsWith('image/')) {
+                        // Trigger the file input change event
+                        const fakeEvent = { target: { files: files } };
+                        consciousnessUpload.files = files;
+                        consciousnessUpload.dispatchEvent(new Event('change'));
+                    }
+                });
+            }
+        }
+
+        // Initialize Unified Mandala System
+        function initializeMandalaWheel() {
+            console.log('✨ Living Mandala Alphabet System initialized');
+            
+            // Initialize the unified system with letter overlay
+            initializeUnifiedSystem();
+            
+            // Initialize upload functionality
+            initializeUploads();
+            loadMandalaLibrary();
+        }
+
+        // Create 26-Point Star
+        function create26PointStar() {
+            const starPath = document.getElementById('star26');
+            if (!starPath) return;
+            
+            const points = 26;
+            const outerRadius = 220;
+            const innerRadius = 180;
+            let path = '';
+            
+            for (let i = 0; i < points * 2; i++) {
+                const angle = (i * Math.PI) / points - Math.PI / 2;
+                const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                const x = Math.cos(angle) * radius;
+                const y = Math.sin(angle) * radius;
+                
+                if (i === 0) {
+                    path += `M ${x} ${y}`;
+                } else {
+                    path += ` L ${x} ${y}`;
+                }
+            }
+            path += ' Z';
+            
+            starPath.setAttribute('d', path);
+            starPath.style.animation = 'starPulse 4s ease-in-out infinite';
+        }
+        
+        // Create Breathing Edge Circles
+        function createBreathingCircles() {
+            const container = document.getElementById('breathingCircles');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            // Create 8 breathing circles around the edge
+            for (let i = 0; i < 8; i++) {
+                const circle = document.createElement('div');
+                const angle = (i * 45) - 90;
+                const radius = 200;
+                const x = Math.cos(angle * Math.PI / 180) * radius;
+                const y = Math.sin(angle * Math.PI / 180) * radius;
+                
+                circle.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 30px;
+                    height: 30px;
+                    border: 2px solid rgba(124,255,80,0.6);
+                    border-radius: 50%;
+                    transform: translate(-50%, -50%) translate(${x}px, ${y}px);
+                    animation: breathe ${3 + (i * 0.2)}s ease-in-out infinite;
+                    animation-delay: ${i * 0.15}s;
+                    background: radial-gradient(circle, rgba(124,255,80,0.1), transparent);
+                `;
+                container.appendChild(circle);
+            }
+        }
+        
+        // Create Intricate Mandala Pattern
+        function createIntricateMandala() {
+            const mandalaGroup = document.getElementById('mandalaGroup');
+            if (!mandalaGroup) return;
+            
+            mandalaGroup.innerHTML = '';
+            
+            // Create multiple layers like your reference image
+            const layers = [
+                { radius: 140, petals: 16, stroke: 'rgba(124,255,80,0.4)', strokeWidth: 1 },
+                { radius: 100, petals: 12, stroke: 'rgba(74,144,226,0.5)', strokeWidth: 1.2 },
+                { radius: 70, petals: 8, stroke: 'rgba(124,255,80,0.6)', strokeWidth: 1.5 },
+                { radius: 40, petals: 6, stroke: 'rgba(74,144,226,0.7)', strokeWidth: 2 }
+            ];
+            
+            layers.forEach((layer, layerIndex) => {
+                for (let i = 0; i < layer.petals; i++) {
+                    const angle = (i * 360 / layer.petals) - 90;
+                    
+                    // Create petal-like shapes
+                    const petal = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    const startAngle = angle - 15;
+                    const endAngle = angle + 15;
+                    
+                    const x1 = Math.cos(startAngle * Math.PI / 180) * layer.radius;
+                    const y1 = Math.sin(startAngle * Math.PI / 180) * layer.radius;
+                    const x2 = Math.cos(endAngle * Math.PI / 180) * layer.radius;
+                    const y2 = Math.sin(endAngle * Math.PI / 180) * layer.radius;
+                    const cx = Math.cos(angle * Math.PI / 180) * (layer.radius * 0.7);
+                    const cy = Math.sin(angle * Math.PI / 180) * (layer.radius * 0.7);
+                    
+                    const pathData = `M 0,0 Q ${cx},${cy} ${x1},${y1} A ${layer.radius * 0.3},${layer.radius * 0.3} 0 0,1 ${x2},${y2} Q ${cx},${cy} 0,0`;
+                    
+                    petal.setAttribute('d', pathData);
+                    petal.setAttribute('fill', 'none');
+                    petal.setAttribute('stroke', layer.stroke);
+                    petal.setAttribute('stroke-width', layer.strokeWidth);
+                    petal.style.animation = `mandalaFlicker ${2 + layerIndex * 0.5}s ease-in-out infinite`;
+                    petal.style.animationDelay = `${layerIndex * 0.2}s`;
+                    
+                    mandalaGroup.appendChild(petal);
+                }
+            });
+            
+            // Add rotation to the mandala
+            mandalaGroup.style.animation = 'mandalaRotate 30s linear infinite';
+        }
+        
+        // Setup Infinity Symbol Rotation
+        function setupInfinityRotation() {
+            const infinityCenter = document.getElementById('infinityCenter');
+            if (!infinityCenter) return;
+            
+            infinityCenter.style.animation = 'infinityRotate 8s ease-in-out infinite';
+        }
+
+        // Create Sacred Mandala Pattern in Center
+        function createCenterMandala() {
+            const wheelContainer = document.getElementById('mandalaWheel');
+            
+            // Create mandala background with sacred geometry
+            const mandalaPattern = document.createElement('div');
+            mandalaPattern.className = 'center-mandala';
+            mandalaPattern.style.cssText = `
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 160px;
+                height: 160px;
+                border-radius: 50%;
+                background: 
+                    radial-gradient(circle at 30% 30%, rgba(124,255,80,0.3) 0%, transparent 50%),
+                    radial-gradient(circle at 70% 30%, rgba(74,144,226,0.3) 0%, transparent 50%),
+                    radial-gradient(circle at 30% 70%, rgba(255,107,53,0.3) 0%, transparent 50%),
+                    radial-gradient(circle at 70% 70%, rgba(156,39,176,0.3) 0%, transparent 50%),
+                    radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, transparent 70%);
+                border: 2px solid rgba(124,255,80,0.4);
+                z-index: 1;
+            `;
+            
+            // Add concentric circles for mandala effect with different animations
+            for (let i = 1; i <= 4; i++) {
+                const circle = document.createElement('div');
+                const animationName = `mandalaSpin${Math.min(i, 3)}`;
+                const duration = [6, 12, 20, 30][i-1]; // Different speeds
+                circle.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: ${30 + (i * 25)}px;
+                    height: ${30 + (i * 25)}px;
+                    border-radius: 50%;
+                    border: 2px solid rgba(124,255,80,${0.6 - (i * 0.1)});
+                    animation: ${animationName} ${duration}s linear infinite;
+                    box-shadow: 0 0 10px rgba(124,255,80,0.3);
+                `;
+                mandalaPattern.appendChild(circle);
+            }
+            
+            // Add sacred geometry petals with pulsing animation
+            for (let i = 0; i < 12; i++) {
+                const petal = document.createElement('div');
+                petal.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 30px;
+                    height: 8px;
+                    background: linear-gradient(45deg, rgba(124,255,80,0.8), rgba(74,144,226,0.8));
+                    border-radius: 15px;
+                    transform: translate(-50%, -50%) rotate(${i * 30}deg) translateY(-35px);
+                    transform-origin: center;
+                    animation: petalPulse ${2 + (i * 0.1)}s ease-in-out infinite;
+                    animation-delay: ${i * 0.1}s;
+                    box-shadow: 0 0 5px rgba(124,255,80,0.5);
+                `;
+                mandalaPattern.appendChild(petal);
+            }
+            
+            // Add the mandala pattern to the wheel container
+            wheelContainer.appendChild(mandalaPattern);
+        }
+        
+        // Add CSS animation for mandala with different speeds
+        const mandalaCss = document.createElement('style');
+        mandalaCss.textContent = `
+            @keyframes mandalaSpin1 {
+                from { transform: translate(-50%, -50%) rotate(0deg); }
+                to { transform: translate(-50%, -50%) rotate(360deg); }
+            }
+            @keyframes mandalaSpin2 {
+                from { transform: translate(-50%, -50%) rotate(0deg); }
+                to { transform: translate(-50%, -50%) rotate(-360deg); }
+            }
+            @keyframes mandalaSpin3 {
+                from { transform: translate(-50%, -50%) rotate(0deg); }
+                to { transform: translate(-50%, -50%) rotate(360deg); }
+            }
+            @keyframes petalPulse {
+                0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) rotate(var(--rotation)) translateY(-25px) scale(1); }
+                50% { opacity: 1; transform: translate(-50%, -50%) rotate(var(--rotation)) translateY(-25px) scale(1.2); }
+            }
+        `;
+        document.head.appendChild(mandalaCss);
+
+        // Rotate mandala to different stages
+        function rotateMandala(direction) {
+            if (direction === 'next') {
+                currentStageIndex = (currentStageIndex + 1) % stageSequence.length;
+            } else {
+                currentStageIndex = (currentStageIndex - 1 + stageSequence.length) % stageSequence.length;
+            }
+            updateMandalaDisplay();
+        }
+
+        // Update mandala display for current stage
+        function updateMandalaDisplay() {
+            const currentStage = stageSequence[currentStageIndex];
+            const centerHub = document.querySelector('.central-hub');
+            const stageDisplay = document.getElementById('currentStage');
+            const ritualInstructions = document.getElementById('ritualInstructions');
+            
+            // Update center hub
+            centerHub.innerHTML = `
+                <div style="font-size: 12px;">${currentStage.axis}</div>
+                <div style="font-size: 8px; opacity: 0.9;">${currentStage.center}</div>
+            `;
+            
+            // Update stage display
+            stageDisplay.textContent = `Stage ${currentStage.stage}: ${currentStage.axis} ${currentStage.ritual}`;
+            
+            // Highlight current stage letters
+            document.querySelectorAll('.wheel-letter').forEach(el => {
+                const letter = el.textContent;
+                if (currentStage.letters.includes(letter)) {
+                    el.style.transform = el.style.transform.replace(/scale\([^)]*\)/, '') + ' scale(1.3)';
+                    el.style.boxShadow = `0 0 20px ${livingAlphabet[letter].auraColor}`;
+                    el.style.zIndex = '10';
+                } else {
+                    el.style.transform = el.style.transform.replace(/scale\([^)]*\)/, '') + ' scale(1)';
+                    el.style.boxShadow = `0 0 10px ${livingAlphabet[letter].auraColor}40`;
+                    el.style.zIndex = '1';
+                }
+            });
+            
+            // Update ritual instructions
+            const letter1 = currentStage.letters[0];
+            const letter2 = currentStage.letters[1];
+            const data1 = livingAlphabet[letter1];
+            const data2 = livingAlphabet[letter2];
+            
+            ritualInstructions.innerHTML = `
+                <p><strong>Stage ${currentStage.stage} - ${currentStage.ritual} (${currentStage.axis}):</strong></p>
+                <p>• <strong>${letter1} (${data1.meaning}, ${data1.frequency}Hz):</strong> "${data1.ritual || 'I embrace ' + data1.meaning + ' consciousness'}"</p>
+                <p>• <strong>${letter2} (${data2.meaning}, ${data2.frequency}Hz):</strong> "${data2.ritual || 'I honor ' + data2.meaning + ' energy'}"</p>
+                <p><em>Pen Movement: Draw ${letter1} → pause → draw ${letter2} to activate ${currentStage.theme} axis</em></p>
+                <div style="margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px; border-left: 3px solid ${data1.auraColor};">
+                    <strong style="color: ${data1.auraColor};">Core Teaching:</strong> ${currentStage.theme} represents the dynamic balance between ${data1.meaning.toLowerCase()} and ${data2.meaning.toLowerCase()}. This axis reminds us that both energies are equally vital in consciousness development.
+                </div>
+            `;
+        }
+
+        // Highlight letter pair
+        function highlightLetterPair(letter) {
+            const data = livingAlphabet[letter];
+            if (data.polarOpposite) {
+                playPairRitual(letter, data.polarOpposite);
+                
+                // Find stage with this pair
+                const stageIndex = stageSequence.findIndex(stage => 
+                    stage.letters.includes(letter) && stage.letters.includes(data.polarOpposite)
+                );
+                
+                if (stageIndex !== -1) {
+                    currentStageIndex = stageIndex;
+                    updateMandalaDisplay();
+                }
+            }
+        }
+
+        // Audio Context for Frequency Generation
+        let audioContext;
+        let currentOscillator = null;
+        let gainNode = null;
+
+        // Initialize Audio Context
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                gainNode = audioContext.createGain();
+                gainNode.connect(audioContext.destination);
+                gainNode.gain.value = 0.1; // Low volume
+            }
+            return audioContext;
+        }
+
+        // Play Sacred Frequency
+        function playFrequency(frequency) {
+            console.log(`🎵 Playing ${frequency}Hz frequency`);
+            
+            try {
+                const context = initAudioContext();
+                
+                // Stop current oscillator if playing
+                if (currentOscillator) {
+                    currentOscillator.stop();
+                    currentOscillator = null;
+                }
+                
+                // Create new oscillator
+                currentOscillator = context.createOscillator();
+                currentOscillator.type = 'sine';
+                currentOscillator.frequency.setValueAtTime(frequency, context.currentTime);
+                
+                // Create envelope for smooth fade in/out
+                const envelope = context.createGain();
+                envelope.gain.setValueAtTime(0, context.currentTime);
+                envelope.gain.linearRampToValueAtTime(0.1, context.currentTime + 0.1);
+                envelope.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 2.5);
+                
+                // Connect and play
+                currentOscillator.connect(envelope);
+                envelope.connect(context.destination);
+                currentOscillator.start();
+                currentOscillator.stop(context.currentTime + 3);
+                
+                // Update frequency display
+                const freqDisplay = document.getElementById('combinedFreq');
+                if (freqDisplay) {
+                    freqDisplay.textContent = `${frequency} Hz`;
+                    freqDisplay.style.color = '#7cff50';
+                    freqDisplay.style.textShadow = '0 0 10px rgba(124, 255, 80, 0.8)';
+                    
+                    setTimeout(() => {
+                        freqDisplay.style.color = '#ffffff';
+                        freqDisplay.style.textShadow = 'none';
+                    }, 3000);
+                }
+                
+                // Clear oscillator reference after it ends
+                currentOscillator.onended = () => {
+                    currentOscillator = null;
+                };
+                
+            } catch (error) {
+                console.error('Audio playback error:', error);
+                alert('Click anywhere first to enable audio, then try again.');
+            }
+        }
+
+        // Enhanced pair ritual with mandala integration
+        function playPairRitual(letter1, letter2) {
+            const data1 = livingAlphabet[letter1];
+            const data2 = livingAlphabet[letter2];
+            
+            // Play both frequencies in sequence
+            playFrequency(data1.frequency);
+            setTimeout(() => playFrequency(data2.frequency), 1000);
+            
+            // Visual feedback
+            const currentResonanceEl = document.getElementById('currentResonance');
+            const journeyStageEl = document.getElementById('journeyStage');
+            
+            if (currentResonanceEl) {
+                currentResonanceEl.textContent = `${data1.meaning} ↔ ${data2.meaning}`;
+                setTimeout(() => {
+                    currentResonanceEl.textContent = 'Balance';
+                }, 3000);
+            }
+            
+            // Update journey stage
+            const currentStage = stageSequence[currentStageIndex];
+            if (journeyStageEl) journeyStageEl.textContent = currentStage.ritual;
+        }
+
+        // ===== GLOBAL VARIABLES ALREADY DECLARED AT TOP =====
+
+
+
+
+
+        // Mandala Animation Controls
+        let animationFrame;
+        let startTime = Date.now();
+        
+        // Update slider values for consciousness controls
+        function updateSliderValues() {
+            // Consciousness animation controls
+            const consciousnessRotationSpeed = document.getElementById('consciousnessRotationSpeed');
+            const consciousnessGlow = document.getElementById('consciousnessGlow');
+            const consciousnessPulse = document.getElementById('consciousnessPulse');
+            
+            if (consciousnessRotationSpeed) {
+                const speedValue = document.getElementById('consciousnessSpeedValue');
+                if (speedValue) speedValue.textContent = consciousnessRotationSpeed.value + 's';
+            }
+            
+            if (consciousnessGlow) {
+                const glowValue = document.getElementById('consciousnessGlowValue');
+                if (glowValue) glowValue.textContent = consciousnessGlow.value + 'px';
+            }
+            
+            if (consciousnessPulse) {
+                const pulseValue = document.getElementById('consciousnessPulseValue');
+                if (pulseValue) pulseValue.textContent = consciousnessPulse.value;
+            }
+        }
+        
+        // Animation is handled by CSS rotation on unified wheel
+        // No need for manual animation frame since CSS handles it better
+
+        // Animation controls now use direct inline handlers - no setup needed
+
+        // Rotation control functions
+        function toggleRotation() {
+            const wheel = document.getElementById('unifiedWheel');
+            const button = document.getElementById('playPauseBtn');
+            
+            if (wheel.style.animationPlayState === 'paused') {
+                wheel.style.animationPlayState = 'running';
+                button.textContent = '⏸️ Pause';
+            } else {
+                wheel.style.animationPlayState = 'paused';
+                button.textContent = '▶️ Play';
+            }
+        }
+
+        function restartRotation() {
+            const wheel = document.getElementById('unifiedWheel');
+            wheel.style.animation = 'none';
+            setTimeout(() => {
+                wheel.style.animation = 'rotate 20s linear infinite';
+            }, 10);
+        }
+
+        function changeRotationSpeed(speed) {
+            const wheel = document.getElementById('unifiedWheel');
+            const speedValue = document.getElementById('speedValue');
+            wheel.style.animationDuration = `${speed}s`;
+            speedValue.textContent = `${speed}s`;
+        }
+
+        // Enhanced Interactive Features
+        
+        // Letter Click to Play Frequency
+        function addLetterInteractivity() {
+            const letters = document.querySelectorAll('.wheel-letter');
+            letters.forEach(letterEl => {
+                letterEl.style.cursor = 'pointer';
+                letterEl.style.transition = 'all 0.3s ease';
+                
+                letterEl.addEventListener('click', () => {
+                    const letter = letterEl.textContent.trim();
+                    const data = livingAlphabet[letter];
+                    if (data) {
+                        playFrequency(data.frequency);
+                        
+                        // Visual feedback on click
+                        letterEl.style.transform = 'scale(1.5)';
+                        letterEl.style.boxShadow = `0 0 20px ${data.auraColor}`;
+                        letterEl.style.borderColor = data.auraColor;
+                        
+                        setTimeout(() => {
+                            letterEl.style.transform = 'scale(1)';
+                            letterEl.style.boxShadow = `0 0 8px ${data.auraColor}`;
+                        }, 300);
+                        
+                        // Update current frequency display
+                        updateFrequencyDisplay(data.frequency, letter, data.meaning);
+                    }
+                });
+                
+                // Hover effects
+                letterEl.addEventListener('mouseenter', () => {
+                    const letter = letterEl.textContent.trim();
+                    const data = livingAlphabet[letter];
+                    if (data) {
+                        letterEl.style.boxShadow = `0 0 15px ${data.auraColor}`;
+                        letterEl.style.borderColor = data.auraColor;
+                        letterEl.style.transform = 'scale(1.1)';
+                    }
+                });
+                
+                letterEl.addEventListener('mouseleave', () => {
+                    letterEl.style.transform = 'scale(1)';
+                    letterEl.style.boxShadow = 'none';
+                    letterEl.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                });
+            });
+        }
+
+        // Update frequency display with animation
+        function updateFrequencyDisplay(frequency, letter, meaning) {
+            const freqDisplay = document.getElementById('combinedFreq');
+            const stageDisplay = document.getElementById('journeyStage');
+            
+            if (freqDisplay) {
+                freqDisplay.textContent = `${frequency} Hz`;
+                freqDisplay.style.color = '#7cff50';
+                freqDisplay.style.transform = 'scale(1.2)';
+                freqDisplay.style.textShadow = '0 0 15px rgba(124, 255, 80, 1)';
+            }
+            
+            if (stageDisplay) {
+                stageDisplay.textContent = `${letter} - ${meaning}`;
+            }
+            
+            setTimeout(() => {
+                if (freqDisplay) {
+                    freqDisplay.style.transform = 'scale(1)';
+                    freqDisplay.style.color = '#ffffff';
+                    freqDisplay.style.textShadow = 'none';
+                }
+            }, 2000);
+        }
+
+        // Add breathing animation to the wheel
+        function addBreathingEffect() {
+            const wheel = document.getElementById('mandalaWheel');
+            if (wheel) {
+                let breathPhase = 0;
+                setInterval(() => {
+                    breathPhase += 0.02;
+                    const scale = 1 + Math.sin(breathPhase) * 0.02;
+                    const glow = 20 + Math.sin(breathPhase * 2) * 10;
+                    wheel.style.transform = `scale(${scale})`;
+                    wheel.style.boxShadow = `0 0 ${glow}px rgba(124, 255, 80, 0.3), inset 0 0 40px rgba(255,255,255,0.02)`;
+                }, 50);
+            }
+        }
+
+        // Add energy pulses between polar opposites
+        function createEnergyPulses() {
+            const wheel = document.getElementById('mandalaWheel');
+            setInterval(() => {
+                const pulse = document.createElement('div');
+                pulse.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 4px;
+                    height: 4px;
+                    background: #7cff50;
+                    border-radius: 50%;
+                    transform: translate(-50%, -50%);
+                    box-shadow: 0 0 10px #7cff50;
+                    pointer-events: none;
+                    z-index: 100;
+                `;
+                
+                wheel.appendChild(pulse);
+                
+                // Animate pulse across diameter
+                const angle = Math.random() * 360;
+                const startX = Math.cos(angle * Math.PI / 180) * 160;
+                const startY = Math.sin(angle * Math.PI / 180) * 160;
+                const endX = -startX;
+                const endY = -startY;
+                
+                pulse.style.left = `calc(50% + ${startX}px)`;
+                pulse.style.top = `calc(50% + ${startY}px)`;
+                
+                setTimeout(() => {
+                    pulse.style.transition = 'all 2s ease-in-out';
+                    pulse.style.left = `calc(50% + ${endX}px)`;
+                    pulse.style.top = `calc(50% + ${endY}px)`;
+                    pulse.style.opacity = '0';
+                }, 100);
+                
+                setTimeout(() => {
+                    if (pulse.parentNode) pulse.remove();
+                }, 2200);
+                
+            }, 3000);
+        }
+
+        // Double-click wheel to play random healing frequency
+        function addWheelDoubleClick() {
+            const wheel = document.getElementById('mandalaWheel');
+            if (wheel) {
+                wheel.addEventListener('dblclick', () => {
+                    const healingFreqs = [174, 285, 396, 528, 639, 741, 852, 963];
+                    const randomFreq = healingFreqs[Math.floor(Math.random() * healingFreqs.length)];
+                    playFrequency(randomFreq);
+                    
+                    // Visual effect for double click
+                    wheel.style.transform = 'scale(1.1)';
+                    wheel.style.boxShadow = '0 0 60px rgba(124, 255, 80, 0.8)';
+                    setTimeout(() => {
+                        wheel.style.transform = 'scale(1)';
+                        wheel.style.boxShadow = '0 0 60px rgba(0,0,0,0.8)';
+                    }, 500);
+                });
+            }
+        }
+        
+
+
+        // Initialize Unified System
+        function initializeUnifiedSystem() {
+            console.log('✨ Unified Living Mandala System initialized');
+            
+            const letterOverlay = document.getElementById('letterRingOverlay');
+            if (!letterOverlay) return;
+            
+            // Define polar opposite pairs
+            const polarPairs = [
+                { letter1: 'I', letter2: 'U', angle1: 0 },
+                { letter1: 'J', letter2: 'Q', angle1: 27.69 },
+                { letter1: 'K', letter2: 'P', angle1: 55.38 },
+                { letter1: 'L', letter2: 'O', angle1: 83.08 },
+                { letter1: 'M', letter2: 'N', angle1: 110.77 },
+                { letter1: 'A', letter2: 'Z', angle1: 138.46 },
+                { letter1: 'B', letter2: 'Y', angle1: 166.15 },
+                { letter1: 'C', letter2: 'X', angle1: 193.85 },
+                { letter1: 'D', letter2: 'W', angle1: 221.54 },
+                { letter1: 'E', letter2: 'V', angle1: 249.23 },
+                { letter1: 'F', letter2: 'T', angle1: 276.92 },
+                { letter1: 'G', letter2: 'S', angle1: 304.62 },
+                { letter1: 'H', letter2: 'R', angle1: 332.31 }
+            ];
+            
+            const radius = 170;
+            
+            // Create letter overlay
+            polarPairs.forEach(pair => {
+                [pair.letter1, pair.letter2].forEach((letter, index) => {
+                    const angle = (pair.angle1 + (index * 180)) - 90;
+                    const radian = (angle * Math.PI) / 180;
+                    const x = Math.cos(radian) * radius;
+                    const y = Math.sin(radian) * radius;
+                    
+                    const data = livingAlphabet[letter];
+                    const letterElement = document.createElement('div');
+                    letterElement.className = 'overlay-letter';
+                    letterElement.textContent = letter;
+                    letterElement.style.cssText = `
+                        position: absolute;
+                        left: calc(50% + ${x}px);
+                        top: calc(50% + ${y}px);
+                        transform: translate(-50%, -50%);
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        background: rgba(0, 0, 0, 0.8);
+                        border: 2px solid ${data.auraColor};
+                        color: ${data.auraColor};
+                        font-size: 16px;
+                        font-weight: bold;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        text-shadow: 0 0 5px ${data.auraColor};
+                        backdrop-filter: blur(5px);
+                        z-index: 20;
+                        pointer-events: auto;
+                    `;
+                    
+                    letterElement.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        playFrequency(data.frequency);
+                        updateFrequencyDisplay(data.frequency, letter, data.meaning);
+                        
+                        letterElement.style.transform = 'translate(-50%, -50%) scale(1.4)';
+                        letterElement.style.boxShadow = `0 0 20px ${data.auraColor}`;
+                        
+                        setTimeout(() => {
+                            letterElement.style.transform = 'translate(-50%, -50%) scale(1)';
+                            letterElement.style.boxShadow = 'none';
+                        }, 400);
+                    });
+                    
+                    letterOverlay.appendChild(letterElement);
+                });
+            });
+        }
+
+        // Add pulse animation CSS
+        const pulseCSS = document.createElement('style');
+        pulseCSS.textContent = `
+            @keyframes pulse {
+                0%, 100% { transform: translate(-50%, -50%) scale(1); }
+                50% { transform: translate(-50%, -50%) scale(1.05); }
+            }
+        `;
+        document.head.appendChild(pulseCSS);
+
+        // Initialize everything
+        initializeLivingAlphabet();
+        initializeUnifiedSystem();
+        updateCombinedFrequency();
+
+        console.log('✨ Living Mandala Alphabet Wheel initialized successfully');
+        console.log('🎵 13 Energetic Axes with sacred frequencies active');
+        console.log('🔮 Complete Microsoft Copilot integration ready');
+        console.log('🎨 Mandala animation controls activated');
+
+        // ===== UPLOAD SYSTEM FUNCTIONALITY =====
+        
+        // Upload System Variables
+        let consciousnessUploadData = null;
+        let blankUploadData = null;
+        let mandalaLibrary = [];
+
+        // Initialize Upload Functionality
+        function initializeUploads() {
+            // Consciousness Upload Handler
+            const consciousnessUpload = document.getElementById('consciousnessUpload');
+            if (consciousnessUpload) {
+                consciousnessUpload.addEventListener('change', function(e) {
+                    handleFileUpload(e, 'consciousness');
+                });
+            }
+
+            // Blank Upload Handler
+            const blankUpload = document.getElementById('blankUpload');
+            if (blankUpload) {
+                blankUpload.addEventListener('change', function(e) {
+                    handleFileUpload(e, 'blank');
+                });
+            }
+
+            // Drag and Drop Support
+            setupDragAndDrop('consciousnessUploadArea', 'consciousness');
+            setupDragAndDrop('blankUploadArea', 'blank');
+
+            // Slider Updates
+            setupSliderUpdates();
+        }
+
+        // Handle File Upload
+        function handleFileUpload(event, type) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                
+                if (type === 'consciousness') {
+                    consciousnessUploadData = imageData;
+                    document.getElementById('consciousnessDetails').style.display = 'grid';
+                    document.getElementById('consciousnessAnimations').style.display = 'block';
+                    document.getElementById('saveConsciousnessUpload').style.display = 'block';
+                    
+                    // Update the current mandala immediately
+                    updateConsciousnessWheel(imageData);
+                } else {
+                    blankUploadData = imageData;
+                    document.getElementById('blankDetails').style.display = 'grid';
+                    document.getElementById('blankAnimations').style.display = 'block';
+                    document.getElementById('saveBlankUpload').style.display = 'block';
+                    
+                    // Show preview of blank mandala
+                    showBlankMandalaPreview(imageData);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Update Consciousness Wheel with uploaded image
+        function updateConsciousnessWheel(imageData) {
+            const wheel = document.getElementById('unifiedWheel');
+            if (wheel) {
+                wheel.style.backgroundImage = `url(${imageData})`;
+                wheel.style.backgroundSize = 'cover';
+                wheel.style.backgroundPosition = 'center';
+                console.log('🔮 Updated consciousness wheel with uploaded mandala');
+            }
+        }
+
+        // Show Blank Mandala Preview
+        function showBlankMandalaPreview(imageData) {
+            const uploadArea = document.getElementById('blankUploadArea');
+            if (uploadArea) {
+                uploadArea.style.backgroundImage = `url(${imageData})`;
+                uploadArea.style.backgroundSize = 'cover';
+                uploadArea.style.backgroundPosition = 'center';
+                uploadArea.style.color = 'white';
+                uploadArea.style.textShadow = '0 0 10px rgba(0,0,0,0.8)';
+            }
+        }
+
+        // Setup Drag and Drop
+        function setupDragAndDrop(areaId, type) {
+            const area = document.getElementById(areaId);
+            if (!area) return;
+            
+            area.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                area.classList.add('dragover');
+            });
+
+            area.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                area.classList.remove('dragover');
+            });
+
+            area.addEventListener('drop', function(e) {
+                e.preventDefault();
+                area.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const fakeEvent = { target: { files: files } };
+                    handleFileUpload(fakeEvent, type);
+                }
+            });
+        }
+
+        // Setup Slider Updates
+        function setupSliderUpdates() {
+            // Consciousness sliders
+            const consciousnessSliders = ['consciousnessRotationSpeed', 'consciousnessGlow', 'consciousnessPulse'];
+            consciousnessSliders.forEach(id => {
+                const slider = document.getElementById(id);
+                if (slider) {
+                    slider.addEventListener('input', function() {
+                        const valueSpan = document.getElementById(id + 'Value');
+                        if (valueSpan) {
+                            let value = this.value;
+                            if (id === 'consciousnessRotationSpeed') value += 's';
+                            else if (id === 'consciousnessGlow') value += 'px';
+                            valueSpan.textContent = value;
+                        }
+                        
+                        // Apply real-time changes to consciousness wheel
+                        applyConsciousnessSettings();
+                    });
+                }
+            });
+
+            // Blank sliders
+            const blankSliders = ['blankRotationSpeed', 'blankScale', 'blankOpacity'];
+            blankSliders.forEach(id => {
+                const slider = document.getElementById(id);
+                if (slider) {
+                    slider.addEventListener('input', function() {
+                        const valueSpan = document.getElementById(id + 'Value');
+                        if (valueSpan) {
+                            let value = this.value;
+                            if (id === 'blankRotationSpeed') value += 's';
+                            valueSpan.textContent = value;
+                        }
+                    });
+                }
+            });
+
+            // Enhanced animations toggle
+            const extraAnimsBtn = document.getElementById('consciousnessExtraAnims');
+            if (extraAnimsBtn) {
+                extraAnimsBtn.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const isActive = this.classList.contains('active');
+                    this.textContent = isActive ? 'Disable Enhanced' : 'Enable Enhanced';
+                    
+                    // Apply enhanced animations
+                    applyConsciousnessSettings();
+                });
+            }
+        }
+
+        // Apply Consciousness Settings in Real-time
+        function applyConsciousnessSettings() {
+            const wheel = document.getElementById('unifiedWheel');
+            if (!wheel) return;
+
+            const rotationSpeed = document.getElementById('consciousnessRotationSpeed');
+            const glow = document.getElementById('consciousnessGlow');
+            const pulse = document.getElementById('consciousnessPulse');
+            const enhanced = document.getElementById('consciousnessExtraAnims');
+
+            if (rotationSpeed) {
+                wheel.style.animationDuration = rotationSpeed.value + 's';
+            }
+            
+            if (glow) {
+                const glowValue = glow.value;
+                wheel.style.boxShadow = `0 0 ${glowValue}px rgba(124,255,80,0.${Math.min(9, Math.floor(glowValue/5))})`;
+            }
+            
+            if (enhanced && enhanced.classList.contains('active') && pulse) {
+                const pulseValue = pulse.value;
+                wheel.style.transform = `scale(${1 + pulseValue/50})`;
+                wheel.style.filter = `brightness(${1 + pulseValue/10}) saturate(${1 + pulseValue/5})`;
+            } else {
+                wheel.style.transform = '';
+                wheel.style.filter = '';
+            }
+        }
+
+        // Save Consciousness Upload
+        function saveConsciousnessUpload() {
+            if (!consciousnessUploadData) return;
+
+            const title = document.getElementById('consciousnessTitleInput').value || 'Consciousness Mandala';
+            const description = document.getElementById('consciousnessDescInput').value || 'Custom uploaded mandala';
+            
+            const settings = {
+                rotationSpeed: document.getElementById('consciousnessRotationSpeed').value,
+                glow: document.getElementById('consciousnessGlow').value,
+                pulse: document.getElementById('consciousnessPulse').value,
+                enhanced: document.getElementById('consciousnessExtraAnims').classList.contains('active')
+            };
+
+            const mandalaItem = {
+                id: Date.now(),
+                type: 'consciousness_wheel',
+                title: title,
+                description: description,
+                imageData: consciousnessUploadData,
+                animationSettings: settings,
+                uploadDate: new Date().toLocaleDateString()
+            };
+
+            // Save to localStorage (will integrate with database later)
+            mandalaLibrary.push(mandalaItem);
+            localStorage.setItem('mandalaLibrary', JSON.stringify(mandalaLibrary));
+            
+            // Update library display
+            updateLibraryDisplay();
+            
+            // Show success notification
+            showUploadSuccess('Consciousness mandala saved to library!');
+            
+            // Reset form
+            resetConsciousnessForm();
+        }
+
+        // Save Blank Upload
+        function saveBlankUpload() {
+            if (!blankUploadData) return;
+
+            const title = document.getElementById('blankTitleInput').value || 'Pure Mandala';
+            const description = document.getElementById('blankDescInput').value || 'Clean mandala design';
+            
+            const settings = {
+                rotationSpeed: document.getElementById('blankRotationSpeed').value,
+                scale: document.getElementById('blankScale').value,
+                opacity: document.getElementById('blankOpacity').value
+            };
+
+            const mandalaItem = {
+                id: Date.now(),
+                type: 'blank_mandala',
+                title: title,
+                description: description,
+                imageData: blankUploadData,
+                animationSettings: settings,
+                uploadDate: new Date().toLocaleDateString()
+            };
+
+            // Save to localStorage
+            mandalaLibrary.push(mandalaItem);
+            localStorage.setItem('mandalaLibrary', JSON.stringify(mandalaLibrary));
+            
+            // Update library display
+            updateLibraryDisplay();
+            
+            // Show success notification
+            showUploadSuccess('Pure mandala saved to library!');
+            
+            // Reset form
+            resetBlankForm();
+        }
+
+        // Load Mandala Library
+        function loadMandalaLibrary() {
+            const saved = localStorage.getItem('mandalaLibrary');
+            if (saved) {
+                mandalaLibrary = JSON.parse(saved);
+                updateLibraryDisplay();
+            }
+        }
+
+        // Update Library Display
+        function updateLibraryDisplay() {
+            const grid = document.getElementById('libraryGrid');
+            if (!grid) return;
+
+            grid.innerHTML = '';
+
+            if (mandalaLibrary.length === 0) {
+                grid.innerHTML = '<div style="color: white; text-align: center; grid-column: 1/-1; padding: 40px; opacity: 0.7;">No mandalas uploaded yet. Create your first upload above!</div>';
+                return;
+            }
+
+            mandalaLibrary.forEach(item => {
+                const libraryItem = document.createElement('div');
+                libraryItem.className = 'library-item';
+                libraryItem.innerHTML = `
+                    <img src="${item.imageData}" alt="${item.title}" class="library-preview">
+                    <div class="library-item-title">${item.title}</div>
+                    <div class="library-item-date">${item.uploadDate}</div>
+                    <div style="color: rgba(255,255,255,0.6); font-size: 0.8em; margin: 5px 0;">${item.type === 'consciousness_wheel' ? '🔮 Consciousness' : '🧘 Pure'}</div>
+                    <button class="use-mandala-button" onclick="useMandala(${item.id})">Use This Mandala</button>
+                `;
+                grid.appendChild(libraryItem);
+            });
+        }
+
+        // Use Mandala from Library
+        function useMandala(mandalaId) {
+            const mandala = mandalaLibrary.find(m => m.id === mandalaId);
+            if (!mandala) return;
+
+            if (mandala.type === 'consciousness_wheel') {
+                updateConsciousnessWheel(mandala.imageData);
+                
+                // Apply saved settings
+                const settings = mandala.animationSettings;
+                const rotationSpeed = document.getElementById('consciousnessRotationSpeed');
+                const glow = document.getElementById('consciousnessGlow');
+                const pulse = document.getElementById('consciousnessPulse');
+                const enhanced = document.getElementById('consciousnessExtraAnims');
+                
+                if (rotationSpeed) rotationSpeed.value = settings.rotationSpeed;
+                if (glow) glow.value = settings.glow;
+                if (pulse) pulse.value = settings.pulse;
+                
+                if (settings.enhanced && enhanced) {
+                    enhanced.classList.add('active');
+                    enhanced.textContent = 'Disable Enhanced';
+                }
+                
+                // Update value displays
+                const speedValue = document.getElementById('consciousnessSpeedValue');
+                const glowValue = document.getElementById('consciousnessGlowValue');
+                const pulseValue = document.getElementById('consciousnessPulseValue');
+                
+                if (speedValue) speedValue.textContent = settings.rotationSpeed + 's';
+                if (glowValue) glowValue.textContent = settings.glow + 'px';
+                if (pulseValue) pulseValue.textContent = settings.pulse;
+                
+                applyConsciousnessSettings();
+                showUploadSuccess(`Applied "${mandala.title}" to consciousness wheel!`);
+            } else {
+                // For blank mandalas, show in a modal
+                showBlankMandalaModal(mandala);
+            }
+        }
+
+        // Show Blank Mandala Modal
+        function showBlankMandalaModal(mandala) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.9); z-index: 1000; 
+                display: flex; align-items: center; justify-content: center;
+                backdrop-filter: blur(10px);
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; padding: 30px; max-width: 80vw; max-height: 80vh; position: relative;">
+                    <button onclick="this.parentElement.parentElement.remove()" style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 18px;">×</button>
+                    <h3 style="color: white; text-align: center; margin-bottom: 20px;">${mandala.title}</h3>
+                    <div style="width: min(400px, 70vw); height: min(400px, 70vw); border-radius: 50%; background: url('${mandala.imageData}') center/cover; margin: 0 auto; animation: rotate ${mandala.animationSettings.rotationSpeed}s linear infinite;"></div>
+                    <p style="color: rgba(255,255,255,0.8); text-align: center; margin-top: 15px;">${mandala.description}</p>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        // Reset Forms
+        function resetConsciousnessForm() {
+            const titleInput = document.getElementById('consciousnessTitleInput');
+            const descInput = document.getElementById('consciousnessDescInput');
+            const details = document.getElementById('consciousnessDetails');
+            const animations = document.getElementById('consciousnessAnimations');
+            const saveBtn = document.getElementById('saveConsciousnessUpload');
+            const fileInput = document.getElementById('consciousnessUpload');
+            
+            if (titleInput) titleInput.value = '';
+            if (descInput) descInput.value = '';
+            if (details) details.style.display = 'none';
+            if (animations) animations.style.display = 'none';
+            if (saveBtn) saveBtn.style.display = 'none';
+            if (fileInput) fileInput.value = '';
+            
+            consciousnessUploadData = null;
+        }
+
+        function resetBlankForm() {
+            const titleInput = document.getElementById('blankTitleInput');
+            const descInput = document.getElementById('blankDescInput');
+            const details = document.getElementById('blankDetails');
+            const animations = document.getElementById('blankAnimations');
+            const saveBtn = document.getElementById('saveBlankUpload');
+            const fileInput = document.getElementById('blankUpload');
+            const uploadArea = document.getElementById('blankUploadArea');
+            
+            if (titleInput) titleInput.value = '';
+            if (descInput) descInput.value = '';
+            if (details) details.style.display = 'none';
+            if (animations) animations.style.display = 'none';
+            if (saveBtn) saveBtn.style.display = 'none';
+            if (fileInput) fileInput.value = '';
+            
+            if (uploadArea) {
+                uploadArea.style.backgroundImage = '';
+                uploadArea.style.color = '';
+                uploadArea.style.textShadow = '';
+            }
+            
+            blankUploadData = null;
+        }
+
+        // Show Upload Success Notification
+        function showUploadSuccess(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px; z-index: 10000;
+                background: linear-gradient(45deg, #28a745, #20c997);
+                color: white; padding: 15px 25px; border-radius: 10px;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+                font-weight: 600; transform: translateX(400px);
+                transition: transform 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // ===== 6-ELEMENT MANDALA SYSTEM =====
+        
+        // Upload individual element - MAIN FUNCTION
+        function uploadElement(elementType, input) {
+            console.log('🎨 Upload function called for', elementType);
+            const file = input.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                uploadedElements[elementType] = imageData;
+                
+                // Update preview
+                const previewImg = document.getElementById(elementType + 'Img');
+                const previewDiv = document.getElementById(elementType + 'Preview');
+                if (previewImg && previewDiv) {
+                    previewImg.src = imageData;
+                    previewDiv.style.display = 'block';
+                }
+                
+                // Update upload box styling to show success
+                const uploadBox = input.parentElement;
+                if (uploadBox) {
+                    uploadBox.style.border = '2px solid #7cff50';
+                    uploadBox.style.background = 'rgba(124,255,80,0.2)';
+                    uploadBox.style.boxShadow = '0 0 20px rgba(124,255,80,0.5)';
+                    uploadBox.innerHTML = `<div style="color: #7cff50; font-weight: 600; text-align: center;">✅ ${elementType.charAt(0).toUpperCase() + elementType.slice(1)} Uploaded!</div>`;
+                }
+                
+                // Show element preview section if any elements uploaded
+                const elementPreview = document.getElementById('elementPreview');
+                if (elementPreview && Object.values(uploadedElements).some(el => el !== null)) {
+                    elementPreview.style.display = 'block';
+                }
+                
+                console.log(`✅ ${elementType} element uploaded successfully`);
+                
+                // Auto-combine elements after short delay
+                setTimeout(() => {
+                    combineElements();
+                }, 300);
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Combine all 6 elements into the display
+        function combineElements() {
+            const container = document.getElementById('mandalaDisplayContainer');
+            const placeholder = document.getElementById('mandalaPlaceholder');
+            
+            if (!container) return;
+            
+            // Clear existing content
+            container.innerHTML = '';
+            
+            // Create each element in proper layer order
+            const elements = ['star', 'largeMandala', 'circles', 'spiral', 'letters', 'smallMandala'];
+            const sizes = { star: 100, largeMandala: 95, circles: 90, spiral: 92, letters: 95, smallMandala: 25 };
+            const opacities = { star: 0.9, largeMandala: 1, circles: 1, spiral: 1, letters: 1, smallMandala: 1 };
+            
+            elements.forEach((elementType, index) => {
+                const imageData = uploadedElements[elementType];
+                if (imageData) {
+                    const elementDiv = document.createElement('div');
+                    elementDiv.id = elementType + 'Element';
+                    elementDiv.style.cssText = `
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        width: ${sizes[elementType]}%;
+                        height: ${sizes[elementType]}%;
+                        background-image: url(${imageData});
+                        background-size: contain;
+                        background-repeat: no-repeat;
+                        background-position: center;
+                        opacity: ${opacities[elementType]};
+                        z-index: ${index + 1};
+                        pointer-events: none;
+                    `;
+                    container.appendChild(elementDiv);
+                }
+            });
+            
+            // Show mandala library save section
+            showMandalaLibraryControls();
+            
+            console.log('✨ All 6 elements combined into mandala display');
+        }
+        
+        // Show mandala library controls
+        function showMandalaLibraryControls() {
+            // Create save controls if they don't exist
+            let saveControls = document.getElementById('mandalaLibraryControls');
+            if (!saveControls) {
+                saveControls = document.createElement('div');
+                saveControls.id = 'mandalaLibraryControls';
+                saveControls.style.cssText = `
+                    background: rgba(124,255,80,0.1);
+                    border: 2px solid rgba(124,255,80,0.3);
+                    border-radius: 15px;
+                    padding: 20px;
+                    margin-top: 20px;
+                    text-align: center;
+                `;
+                saveControls.innerHTML = `
+                    <h4 style="color: #7cff50; margin-bottom: 15px;">💾 Save Mandala Combination</h4>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; justify-content: center;">
+                        <input type="text" id="mandalaPresetName" placeholder="Enter preset name..." 
+                               style="padding: 10px; border-radius: 8px; border: 1px solid rgba(124,255,80,0.5); background: rgba(0,0,0,0.5); color: white; flex: 1; max-width: 300px;">
+                        <button onclick="saveMandalaPreset()" 
+                                style="padding: 10px 20px; background: linear-gradient(45deg, #7cff50, #00ff88); color: black; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            💾 Save Preset
+                        </button>
+                    </div>
+                    <div style="color: rgba(255,255,255,0.7); font-size: 0.9em;">Save your 6-element combination for easy loading later</div>
+                `;
+                
+                // Insert after element controls
+                const elementControls = document.querySelector('.individual-element-controls');
+                if (elementControls) {
+                    elementControls.parentNode.insertBefore(saveControls, elementControls.nextSibling);
+                }
+            }
+            saveControls.style.display = 'block';
+        }
+        
+        // Save mandala preset to library
+        function saveMandalaPreset() {
+            const presetName = document.getElementById('mandalaPresetName');
+            if (!presetName || !presetName.value.trim()) {
+                alert('Please enter a name for your mandala preset');
+                return;
+            }
+            
+            // Check if we have at least one element
+            const hasElements = Object.values(uploadedElements).some(el => el !== null);
+            if (!hasElements) {
+                alert('Please upload at least one element before saving');
+                return;
+            }
+            
+            // Get current element settings
+            const elementSettings = {};
+            const elements = ['star', 'largeMandala', 'circles', 'spiral', 'letters', 'smallMandala'];
+            
+            elements.forEach(elementType => {
+                const element = document.getElementById(elementType + 'Element');
+                if (element) {
+                    // Extract current transform values
+                    const transform = element.style.transform || 'translate(-50%, -50%) rotate(0deg)';
+                    const rotationMatch = transform.match(/rotate\((-?\d+)deg\)/);
+                    const rotation = rotationMatch ? parseInt(rotationMatch[1]) : 0;
+                    
+                    elementSettings[elementType] = {
+                        width: element.style.width || '100%',
+                        height: element.style.height || '100%',
+                        opacity: element.style.opacity || '1',
+                        rotation: rotation,
+                        animation: element.style.animation || ''
+                    };
+                }
+            });
+            
+            const presetData = {
+                id: Date.now(),
+                name: presetName.value.trim(),
+                elements: { ...uploadedElements },
+                settings: elementSettings,
+                elementCount: Object.values(uploadedElements).filter(el => el !== null).length,
+                savedDate: new Date().toLocaleDateString(),
+                type: 'six_element_mandala'
+            };
+            
+            // Save to localStorage
+            let savedPresets = JSON.parse(localStorage.getItem('mandalaPresets') || '[]');
+            savedPresets.push(presetData);
+            localStorage.setItem('mandalaPresets', JSON.stringify(savedPresets));
+            
+            // Update library display
+            updateMandalaLibraryDisplay();
+            
+            // Show success message
+            showUploadSuccess(`Mandala preset "${presetName.value}" saved successfully!`);
+            
+            // Clear input
+            presetName.value = '';
+            
+            console.log('✅ Mandala preset saved to library');
+        }
+        
+        // Load mandala preset
+        function loadMandalaPreset(presetId) {
+            const savedPresets = JSON.parse(localStorage.getItem('mandalaPresets') || '[]');
+            const preset = savedPresets.find(p => p.id === presetId);
+            
+            if (!preset) {
+                alert('Preset not found');
+                return;
+            }
+            
+            // Clear current elements
+            clearMandalaDisplay();
+            
+            // Load elements
+            uploadedElements = { ...preset.elements };
+            
+            // Update element previews
+            Object.keys(uploadedElements).forEach(elementType => {
+                const imageData = uploadedElements[elementType];
+                if (imageData) {
+                    const previewImg = document.getElementById(elementType + 'Img');
+                    const previewDiv = document.getElementById(elementType + 'Preview');
+                    if (previewImg && previewDiv) {
+                        previewImg.src = imageData;
+                        previewDiv.style.display = 'block';
+                    }
+                }
+            });
+            
+            // Show element preview section
+            const elementPreview = document.getElementById('elementPreview');
+            if (elementPreview) {
+                elementPreview.style.display = 'block';
+            }
+            
+            // Combine elements
+            combineElements();
+            
+            // Apply saved settings
+            setTimeout(() => {
+                Object.keys(preset.settings).forEach(elementType => {
+                    const element = document.getElementById(elementType + 'Element');
+                    const settings = preset.settings[elementType];
+                    if (element && settings) {
+                        element.style.width = settings.width;
+                        element.style.height = settings.height;
+                        element.style.opacity = settings.opacity;
+                        element.style.transform = `translate(-50%, -50%) rotate(${settings.rotation}deg)`;
+                        element.style.animation = settings.animation;
+                    }
+                });
+            }, 100);
+            
+            showUploadSuccess(`Loaded mandala preset "${preset.name}"`);
+            console.log(`🔄 Loaded mandala preset: ${preset.name}`);
+        }
+        
+        // Clear mandala display
+        function clearMandalaDisplay() {
+            const container = document.getElementById('mandalaDisplayContainer');
+            if (container) {
+                container.innerHTML = '<div id="mandalaPlaceholder" style="color: #7cff50; text-align: center; font-size: 1.2rem;">Upload your 6 elements to see your complete mandala design here</div>';
+            }
+            
+            // Hide element previews
+            Object.keys(uploadedElements).forEach(elementType => {
+                const previewDiv = document.getElementById(elementType + 'Preview');
+                if (previewDiv) {
+                    previewDiv.style.display = 'none';
+                }
+            });
+            
+            // Hide element preview section
+            const elementPreview = document.getElementById('elementPreview');
+            if (elementPreview) {
+                elementPreview.style.display = 'none';
+            }
+            
+            uploadedElements = {
+                star: null,
+                largeMandala: null,
+                circles: null,
+                spiral: null,
+                letters: null,
+                smallMandala: null
+            };
+        }
+        
+        // Update mandala library display
+        function updateMandalaLibraryDisplay() {
+            const grid = document.getElementById('libraryGrid');
+            if (!grid) return;
+            
+            // Load both old and new library items
+            const oldLibrary = JSON.parse(localStorage.getItem('mandalaLibrary') || '[]');
+            const newPresets = JSON.parse(localStorage.getItem('mandalaPresets') || '[]');
+            
+            grid.innerHTML = '';
+            
+            if (oldLibrary.length === 0 && newPresets.length === 0) {
+                grid.innerHTML = '<div style="color: white; text-align: center; grid-column: 1/-1; padding: 40px; opacity: 0.7;">No mandalas saved yet. Create your first mandala above!</div>';
+                return;
+            }
+            
+            // Add old library items
+            oldLibrary.forEach(item => {
+                const libraryItem = document.createElement('div');
+                libraryItem.className = 'library-item';
+                libraryItem.innerHTML = `
+                    <img src="${item.imageData}" alt="${item.title}" class="library-preview">
+                    <div class="library-item-title">${item.title}</div>
+                    <div class="library-item-date">${item.uploadDate}</div>
+                    <div style="color: rgba(255,255,255,0.6); font-size: 0.8em; margin: 5px 0;">${item.type === 'consciousness_wheel' ? '🔮 Consciousness' : '🧘 Pure'}</div>
+                    <button class="use-mandala-button" onclick="useMandala(${item.id})">Use This Mandala</button>
+                `;
+                grid.appendChild(libraryItem);
+            });
+            
+            // Add new 6-element presets
+            newPresets.forEach(preset => {
+                const libraryItem = document.createElement('div');
+                libraryItem.className = 'library-item';
+                
+                // Create preview from first available element
+                const firstElement = Object.values(preset.elements).find(el => el !== null);
+                const previewImage = firstElement || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzdjZmY1MCIgb3BhY2l0eT0iMC4zIi8+PC9zdmc+';
+                
+                libraryItem.innerHTML = `
+                    <img src="${previewImage}" alt="${preset.name}" class="library-preview">
+                    <div class="library-item-title">${preset.name}</div>
+                    <div class="library-item-date">${preset.savedDate}</div>
+                    <div style="color: rgba(124,255,80,0.8); font-size: 0.8em; margin: 5px 0;">🎨 ${preset.elementCount} Elements</div>
+                    <button class="use-mandala-button" onclick="loadMandalaPreset(${preset.id})" style="background: linear-gradient(45deg, #7cff50, #00ff88); color: black;">Load Preset</button>
+                `;
+                grid.appendChild(libraryItem);
+            });
+        }
+
+        // Upload element function for 6-element system (main implementation)
+        function uploadElement(elementType, input) {
+            console.log('🎨 Upload function called for', elementType);
+            const file = input.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                uploadedElements[elementType] = imageData;
+                
+                // Update upload box styling to show success
+                const uploadBox = input.parentElement;
+                if (uploadBox) {
+                    uploadBox.style.border = '2px solid #7cff50';
+                    uploadBox.style.background = 'rgba(124,255,80,0.2)';
+                    uploadBox.style.boxShadow = '0 0 20px rgba(124,255,80,0.5)';
+                    uploadBox.innerHTML = `<div style="color: #7cff50; font-weight: 600; text-align: center;">✅ ${elementType.charAt(0).toUpperCase() + elementType.slice(1)} Uploaded!</div>`;
+                }
+                
+                console.log('✅ Successfully uploaded', elementType, 'element');
+                
+                // Auto-combine elements after short delay
+                setTimeout(() => {
+                    combineElements();
+                }, 300);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Combine all 6 elements in display container
+        function combineElements() {
+            console.log('🎨 Combining elements...');
+            const displayContainer = document.getElementById('mandalaDisplayContainer');
+            if (!displayContainer) {
+                console.error('❌ Display container not found');
+                return;
+            }
+            
+            // Hide placeholder
+            const placeholder = document.getElementById('mandalaPlaceholder');
+            if (placeholder) {
+                placeholder.style.display = 'none';
+            }
+            
+            // Clear and prepare container
+            displayContainer.style.background = 'rgba(0,0,0,1)';
+            displayContainer.innerHTML = '';
+            displayContainer.style.position = 'relative';
+            
+            // Use dynamic layer order - create elements in the order specified by layerOrder array
+            layerOrder.forEach((elementType, index) => {
+                if (uploadedElements[elementType]) {
+                    const layer = document.createElement('div');
+                    layer.id = elementType + 'Element';
+                    
+                    // Set default sizes based on element type
+                    let elementSize = '100%';
+                    if (elementType === 'largeMandala') elementSize = '95%';
+                    if (elementType === 'circles') elementSize = '90%';
+                    if (elementType === 'spiral') elementSize = '85%';
+                    if (elementType === 'letters') elementSize = '80%';
+                    if (elementType === 'smallMandala') elementSize = '25%';
+                    
+                    layer.style.cssText = `
+                        position: absolute; 
+                        top: 50%; 
+                        left: 50%; 
+                        transform: translate(-50%, -50%);
+                        width: ${elementSize}; 
+                        height: ${elementSize}; 
+                        z-index: ${index + 1}; 
+                        pointer-events: none;
+                        background-image: url(${uploadedElements[elementType]});
+                        background-size: contain; 
+                        background-position: center; 
+                        background-repeat: no-repeat;
+                    `;
+                    displayContainer.appendChild(layer);
+                    console.log(`✅ Added ${elementType} at layer ${index + 1}`);
+                }
+            });
+            
+
+            
+            const uploadedCount = Object.values(uploadedElements).filter(e => e !== null).length;
+            console.log(`🎨 Combined ${uploadedCount}/6 elements with custom layer order`);
+            
+            // Update the dynamic layer list display
+            updateDynamicLayerList();
+        }
+
+        // Save current mandala combination to library with storage optimization
+        function saveCurrentMandalaToLibrary() {
+            console.log('💾 Saving mandala to library...');
+            const uploadedCount = Object.values(uploadedElements).filter(element => element !== null).length;
+            
+            if (uploadedCount === 0) {
+                alert('Please upload at least one element before saving to library!');
+                return;
+            }
+            
+            try {
+                // Check storage usage and clean if needed
+                const currentLibrary = JSON.parse(localStorage.getItem('mandalaLibrary') || '[]');
+                
+                // If we have more than 10 presets, remove oldest ones
+                if (currentLibrary.length >= 10) {
+                    const trimmedLibrary = currentLibrary.slice(-5); // Keep only last 5
+                    localStorage.setItem('mandalaLibrary', JSON.stringify(trimmedLibrary));
+                    console.log('🧹 Auto-cleaned library - kept last 5 presets');
+                }
+                
+                const presetName = prompt('Enter a name for this mandala combination:', `Mandala ${currentLibrary.length + 1}`);
+                if (!presetName) return;
+                
+                const newPreset = {
+                    id: Date.now(),
+                    name: presetName,
+                    date: new Date().toISOString(),
+                    elements: {...uploadedElements},
+                    uploadedCount: uploadedCount
+                };
+                
+                const updatedLibrary = JSON.parse(localStorage.getItem('mandalaLibrary') || '[]');
+                updatedLibrary.push(newPreset);
+                
+                // Try to save with error handling
+                localStorage.setItem('mandalaLibrary', JSON.stringify(updatedLibrary));
+                
+                alert(`✅ Saved "${presetName}" to Mandala Library!\nElements saved: ${uploadedCount}/6`);
+                console.log('✅ Mandala saved successfully');
+                console.log('📚 Library updated with', updatedLibrary.length, 'presets');
+                
+                // Refresh the library display and dropdown
+                updateMandalaLibraryDisplay();
+                updatePresetDropdown();
+                
+            } catch (error) {
+                if (error.name === 'QuotaExceededError') {
+                    console.error('💾 Storage quota exceeded, cleaning library...');
+                    // Emergency cleanup - keep only 3 most recent
+                    try {
+                        const library = JSON.parse(localStorage.getItem('mandalaLibrary') || '[]');
+                        const emergencyLibrary = library.slice(-3);
+                        localStorage.setItem('mandalaLibrary', JSON.stringify(emergencyLibrary));
+                        alert('⚠️ Storage was full, kept only 3 most recent presets. Please try saving again.');
+                    } catch (cleanupError) {
+                        localStorage.removeItem('mandalaLibrary');
+                        alert('⚠️ Storage critically full - library cleared. Please try saving again.');
+                    }
+                } else {
+                    console.error('Save error:', error);
+                    alert('❌ Error saving mandala. Please try again.');
+                }
+            }
+        }
+
+        // Clean up invalid entries from mandala library
+        function cleanMandalaLibrary() {
+            const library = JSON.parse(localStorage.getItem('mandalaLibrary') || '[]');
+            const originalCount = library.length;
+            
+            const validEntries = library.filter(entry => {
+                // Keep only entries with valid elements data and structure
+                if (!entry || !entry.elements) return false;
+                
+                // Check if at least one element has valid image data
+                const hasValidElements = Object.values(entry.elements).some(el => 
+                    el && typeof el === 'string' && el.startsWith('data:image/')
+                );
+                
+                return hasValidElements && entry.name && entry.id;
+            });
+            
+            localStorage.setItem('mandalaLibrary', JSON.stringify(validEntries));
+            console.log('🧹 Cleaned library - kept', validEntries.length, 'valid entries');
+            
+            // Refresh the library display and dropdown
+            if (typeof updateMandalaLibraryDisplay === 'function') {
+                updateMandalaLibraryDisplay();
+            }
+            if (typeof updatePresetDropdown === 'function') {
+                updatePresetDropdown();
+            }
+            
+            const removedCount = originalCount - validEntries.length;
+            alert(`🧹 Library cleaned! Kept ${validEntries.length} valid entries and removed ${removedCount} invalid entries.`);
+        }
+        
+        // Emergency storage clear function
+        function clearMandalaLibrary() {
+            if (confirm('⚠️ This will delete ALL saved mandala presets. Are you sure?')) {
+                localStorage.removeItem('mandalaLibrary');
+                console.log('🗑️ Mandala library cleared completely');
+                alert('✅ Mandala library cleared! Storage space freed up.');
+                updateMandalaLibraryDisplay();
+                updatePresetDropdown();
+            }
+        }
+        
+        // Load selected preset from dropdown
+        function loadSelectedPreset() {
+            const dropdown = document.getElementById('mandalaPresetDropdown');
+            const selectedId = dropdown.value;
+            
+            if (!selectedId) return;
+            
+            const library = JSON.parse(localStorage.getItem('mandalaLibrary') || '[]');
+            const preset = library.find(p => p.id == selectedId);
+            
+            if (!preset) {
+                alert('❌ Preset not found!');
+                return;
+            }
+            
+            console.log('📂 Loading preset:', preset.name);
+            
+            // Clear current elements
+            uploadedElements = {
+                star: null,
+                largeMandala: null,
+                circles: null,
+                spiral: null,
+                letters: null,
+                smallMandala: null
+            };
+            
+            // Load preset elements
+            uploadedElements = { ...preset.elements };
+            
+            // Update UI to show loaded elements
+            Object.keys(uploadedElements).forEach(elementType => {
+                const imageData = uploadedElements[elementType];
+                if (imageData) {
+                    // Find the upload box and update it to show success
+                    const uploadBoxes = document.querySelectorAll('.element-upload');
+                    uploadBoxes.forEach(box => {
+                        const text = box.textContent.toLowerCase();
+                        if ((elementType === 'star' && text.includes('star')) ||
+                            (elementType === 'largeMandala' && text.includes('large')) ||
+                            (elementType === 'circles' && text.includes('circle')) ||
+                            (elementType === 'spiral' && text.includes('spiral')) ||
+                            (elementType === 'letters' && text.includes('letter')) ||
+                            (elementType === 'smallMandala' && text.includes('small'))) {
+                            
+                            box.style.border = '2px solid #7cff50';
+                            box.style.background = 'rgba(124,255,80,0.2)';
+                            box.style.boxShadow = '0 0 20px rgba(124,255,80,0.5)';
+                            box.innerHTML = `<div style="color: #7cff50; font-weight: 600; text-align: center;">✅ ${elementType.charAt(0).toUpperCase() + elementType.slice(1)} Loaded!</div>`;
+                        }
+                    });
+                }
+            });
+            
+            // Combine and display elements
+            setTimeout(() => {
+                combineElements();
+                alert(`✅ Loaded "${preset.name}" successfully!\nElements loaded: ${preset.uploadedCount}/6`);
+                console.log('✅ Preset loaded successfully');
+            }, 500);
+        }
+        
+        // Update dropdown with current presets
+        function updatePresetDropdown() {
+            const dropdown = document.getElementById('mandalaPresetDropdown');
+            if (!dropdown) return;
+            
+            const library = JSON.parse(localStorage.getItem('mandalaLibrary') || '[]');
+            
+            // Clear existing options except the first one
+            dropdown.innerHTML = '<option value="">Choose a saved mandala...</option>';
+            
+            // Add presets to dropdown
+            library.forEach(preset => {
+                const option = document.createElement('option');
+                option.value = preset.id;
+                option.textContent = `${preset.name} (${preset.uploadedCount}/6 elements)`;
+                dropdown.appendChild(option);
+            });
+            
+            console.log('📋 Dropdown updated with', library.length, 'presets');
+        }
+        
+
+        // Simple Layer Movement Functions
+        function moveLayerUp(elementType) {
+            const currentIndex = layerOrder.indexOf(elementType);
+            if (currentIndex > 0) {
+                // Swap with the element above (move toward front)
+                [layerOrder[currentIndex], layerOrder[currentIndex - 1]] = [layerOrder[currentIndex - 1], layerOrder[currentIndex]];
+                
+                // Update the visual layer list
+                updateDynamicLayerList();
+                
+                // Refresh the mandala display
+                combineElements();
+                
+                console.log(`🔄 Moved ${elementType} up in layer order`);
+            }
+        }
+        
+        function moveLayerDown(elementType) {
+            const currentIndex = layerOrder.indexOf(elementType);
+            if (currentIndex < layerOrder.length - 1) {
+                // Swap with the element below (move toward back)
+                [layerOrder[currentIndex], layerOrder[currentIndex + 1]] = [layerOrder[currentIndex + 1], layerOrder[currentIndex]];
+                
+                // Update the visual layer list
+                updateDynamicLayerList();
+                
+                // Refresh the mandala display
+                combineElements();
+                
+                console.log(`🔄 Moved ${elementType} down in layer order`);
+            }
+        }
+        
+        function resetLayerOrder() {
+            layerOrder = ['star', 'largeMandala', 'circles', 'spiral', 'letters', 'smallMandala'];
+            updateDynamicLayerList();
+            combineElements();
+            console.log('🔄 Layer order reset to default');
+        }
+        
+        function updateDynamicLayerList() {
+            const listContainer = document.getElementById('dynamicLayerList');
+            if (!listContainer) return;
+            
+            // Clear existing content
+            listContainer.innerHTML = '';
+            
+            // Build the visual list based on current layerOrder
+            layerOrder.forEach((elementType, index) => {
+                const layer = layerInfo[elementType];
+                const isUploaded = uploadedElements[elementType] !== null;
+                const isFirst = index === 0;
+                const isLast = index === layerOrder.length - 1;
+                
+                const layerItem = document.createElement('div');
+                layerItem.style.cssText = `
+                    display: grid; 
+                    grid-template-columns: 40px 1fr 60px 60px; 
+                    gap: 15px; 
+                    align-items: center; 
+                    margin-bottom: 12px;
+                    padding: 15px;
+                    background: ${isUploaded ? 'rgba(124,255,80,0.3)' : 'rgba(100,100,100,0.2)'};
+                    border: 2px solid ${isUploaded ? 'rgba(124,255,80,0.6)' : 'rgba(150,150,150,0.4)'};
+                    border-radius: 12px;
+                    transition: all 0.3s ease;
+                    opacity: ${isUploaded ? '1' : '0.5'};
+                `;
+                
+                layerItem.innerHTML = `
+                    <div style="
+                        background: ${layer.color}; 
+                        color: white; 
+                        font-weight: bold; 
+                        font-size: 14px; 
+                        padding: 8px; 
+                        border-radius: 6px; 
+                        text-align: center;
+                    ">
+                        ${index + 1}
+                    </div>
+                    <div style="
+                        color: white; 
+                        font-weight: 600; 
+                        display: flex; 
+                        align-items: center; 
+                        gap: 12px;
+                    ">
+                        <span style="font-size: 1.2em;">${layer.icon}</span>
+                        <div>
+                            <div style="font-size: 1rem;">${layer.name}</div>
+                            <div style="font-size: 0.8rem; opacity: 0.8; color: ${layer.color};">
+                                ${isUploaded ? 'Uploaded ✅' : 'Empty'}
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="moveLayerUp('${elementType}')" 
+                            ${isFirst ? 'disabled' : ''} 
+                            style="
+                                background: ${isFirst ? '#666' : '#28a745'}; 
+                                color: white; 
+                                border: none; 
+                                border-radius: 8px; 
+                                padding: 10px; 
+                                cursor: ${isFirst ? 'not-allowed' : 'pointer'}; 
+                                font-weight: bold; 
+                                font-size: 16px;
+                                transition: all 0.2s ease;
+                            ">
+                        ▲
+                    </button>
+                    <button onclick="moveLayerDown('${elementType}')" 
+                            ${isLast ? 'disabled' : ''} 
+                            style="
+                                background: ${isLast ? '#666' : '#dc3545'}; 
+                                color: white; 
+                                border: none; 
+                                border-radius: 8px; 
+                                padding: 10px; 
+                                cursor: ${isLast ? 'not-allowed' : 'pointer'}; 
+                                font-weight: bold; 
+                                font-size: 16px;
+                                transition: all 0.2s ease;
+                            ">
+                        ▼
+                    </button>
+                `;
+                
+                listContainer.appendChild(layerItem);
+            });
+            
+            // Add layer order explanation
+            const explanation = document.createElement('div');
+            explanation.style.cssText = `
+                color: rgba(255,255,255,0.7); 
+                font-size: 0.85rem; 
+                text-align: center; 
+                margin-top: 15px; 
+                padding: 10px;
+                background: rgba(0,0,0,0.2);
+                border-radius: 8px;
+            `;
+            explanation.innerHTML = `
+                <strong style="color: #7cff50;">Layer Order Guide:</strong><br>
+                #1 = Front Layer (appears on top) → #6 = Back Layer (appears behind)<br>
+                Green ▲ = Move Forward • Red ▼ = Move Back
+            `;
+            listContainer.appendChild(explanation);
+        }
+
+        function updateLayerOrderDisplay() {
+            const layerOrderList = document.getElementById('layerOrderList');
+            if (!layerOrderList) return;
+            
+            layerOrderList.innerHTML = layerOrder.map((layerKey, index) => {
+                const layer = layerInfo[layerKey];
+                const hasElement = uploadedElements[layerKey] !== null;
+                
+                return `
+                    <div class="layer-item" draggable="true" data-layer="${layerKey}" style="
+                        background: ${hasElement ? 'rgba(124,255,80,0.2)' : 'rgba(255,255,255,0.1)'};
+                        border: 2px solid ${hasElement ? 'rgba(124,255,80,0.5)' : 'rgba(255,255,255,0.3)'};
+                        border-radius: 12px;
+                        padding: 15px;
+                        margin-bottom: 10px;
+                        cursor: grab;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                    " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.3)'" 
+                       onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 1.5em;">${layer.icon}</div>
+                            <div>
+                                <div style="color: ${layer.color}; font-weight: 600; font-size: 1rem;">${layer.name}</div>
+                                <div style="color: white; opacity: 0.8; font-size: 0.8rem;">Layer ${index + 1} - ${hasElement ? 'Uploaded ✅' : 'Empty'}</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="moveLayerUp('${layerKey}')" ${index === 0 ? 'disabled' : ''} style="
+                                background: ${index === 0 ? '#666' : '#28a745'};
+                                color: white;
+                                border: none;
+                                border-radius: 8px;
+                                padding: 6px 10px;
+                                cursor: ${index === 0 ? 'not-allowed' : 'pointer'};
+                                font-size: 0.8rem;
+                                transition: all 0.2s ease;
+                            ">⬆️</button>
+                            <button onclick="moveLayerDown('${layerKey}')" ${index === layerOrder.length - 1 ? 'disabled' : ''} style="
+                                background: ${index === layerOrder.length - 1 ? '#666' : '#dc3545'};
+                                color: white;
+                                border: none;
+                                border-radius: 8px;
+                                padding: 6px 10px;
+                                cursor: ${index === layerOrder.length - 1 ? 'not-allowed' : 'pointer'};
+                                font-size: 0.8rem;
+                                transition: all 0.2s ease;
+                            ">⬇️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Add drag and drop event listeners
+            addDragDropListeners();
+        }
+        
+        function addDragDropListeners() {
+            const layerItems = document.querySelectorAll('.layer-item');
+            
+            layerItems.forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    draggedItem = e.target.dataset.layer;
+                    e.target.style.opacity = '0.5';
+                });
+                
+                item.addEventListener('dragend', (e) => {
+                    e.target.style.opacity = '1';
+                    draggedItem = null;
+                });
+                
+                item.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
+                
+                item.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const targetLayer = e.target.closest('.layer-item')?.dataset.layer;
+                    
+                    if (draggedItem && targetLayer && draggedItem !== targetLayer) {
+                        const draggedIndex = layerOrder.indexOf(draggedItem);
+                        const targetIndex = layerOrder.indexOf(targetLayer);
+                        
+                        // Remove dragged item and insert at target position
+                        layerOrder.splice(draggedIndex, 1);
+                        layerOrder.splice(targetIndex, 0, draggedItem);
+                        
+                        updateLayerOrderDisplay();
+                        combineElements(); // Refresh the mandala with new order
+                        console.log('🔄 Layer order updated:', layerOrder);
+                    }
+                });
+            });
+        }
+        
+        function moveLayerUp(layerKey) {
+            const index = layerOrder.indexOf(layerKey);
+            if (index > 0) {
+                [layerOrder[index], layerOrder[index - 1]] = [layerOrder[index - 1], layerOrder[index]];
+                updateLayerOrderDisplay();
+                combineElements();
+                console.log('⬆️ Moved layer up:', layerKey);
+            }
+        }
+        
+        function moveLayerDown(layerKey) {
+            const index = layerOrder.indexOf(layerKey);
+            if (index < layerOrder.length - 1) {
+                [layerOrder[index], layerOrder[index + 1]] = [layerOrder[index + 1], layerOrder[index]];
+                updateLayerOrderDisplay();
+                combineElements();
+                console.log('⬇️ Moved layer down:', layerKey);
+            }
+        }
+        
+        function resetLayerOrder() {
+            layerOrder = ['star', 'largeMandala', 'circles', 'spiral', 'letters', 'smallMandala'];
+            updateLayerOrderDisplay();
+            combineElements();
+            console.log('🔄 Layer order reset to default');
+            alert('✅ Layer order reset to default!');
+        }
+
+        // Initialize dropdown on page load
+        window.addEventListener('load', function() {
+            console.log('🎨 Initializing mandala preset system...');
+            
+            // Initialize dropdown with existing presets after page loads
+            setTimeout(() => {
+                updatePresetDropdown();
+                updateMandalaLibraryDisplay();
+                updateLayerOrderDisplay();
+                console.log('✅ Preset system initialized');
+            }, 2000);
+        });
+
+        // Update mandala library display
+        function updateMandalaLibraryDisplay() {
+            const library = JSON.parse(localStorage.getItem('mandalaLibrary') || '[]');
+            const libraryContainer = document.getElementById('mandalaLibraryContainer');
+            
+            if (!libraryContainer) {
+                console.log('📚 Library container not found - creating one');
+                return;
+            }
+            
+            if (library.length === 0) {
+                libraryContainer.innerHTML = '<p style="color: #ffffff; opacity: 0.7; text-align: center; padding: 20px;">No saved mandala presets yet. Upload and combine 6 elements, then save!</p>';
+                return;
+            }
+            
+            libraryContainer.innerHTML = library.map(preset => `
+                <div class="library-item" style="
+                    background: rgba(0,0,0,0.3); 
+                    border: 1px solid rgba(124,255,80,0.3); 
+                    border-radius: 10px; 
+                    padding: 15px; 
+                    margin-bottom: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                " onmouseover="this.style.borderColor='rgba(124,255,80,0.6)'" onmouseout="this.style.borderColor='rgba(124,255,80,0.3)'">
+                    <div style="color: #7cff50; font-weight: 600; margin-bottom: 5px;">${preset.name}</div>
+                    <div style="color: #ffffff; opacity: 0.8; font-size: 0.9em; margin-bottom: 8px;">
+                        🎨 ${preset.uploadedCount}/6 Elements | 📅 ${new Date(preset.date).toLocaleDateString()}
+                    </div>
+                    <button onclick="loadMandalaPreset(${preset.id})" style="
+                        background: linear-gradient(45deg, #7cff50, #00ff88); 
+                        color: black; 
+                        border: none; 
+                        padding: 8px 16px; 
+                        border-radius: 20px; 
+                        font-weight: 600; 
+                        cursor: pointer;
+                        margin-right: 10px;
+                        transition: all 0.2s ease;
+                    " onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+                        🔄 Load Preset
+                    </button>
+                    <button onclick="deleteMandalaPreset(${preset.id})" style="
+                        background: linear-gradient(45deg, #dc3545, #c82333); 
+                        color: white; 
+                        border: none; 
+                        padding: 8px 16px; 
+                        border-radius: 20px; 
+                        font-weight: 600; 
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                    " onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+                        🗑️ Delete
+                    </button>
+                </div>
+            `).join('');
+            
+            console.log(`📚 Library updated with ${library.length} presets`);
+        }
+
+        // Load a mandala preset
+        function loadMandalaPreset(presetId) {
+            const library = JSON.parse(localStorage.getItem('mandalaLibrary') || '[]');
+            const preset = library.find(p => p.id === presetId);
+            
+            if (!preset) {
+                alert('❌ Preset not found!');
+                return;
+            }
+            
+            console.log('🔄 Loading preset:', preset.name);
+            
+            // Clear current display
+            const displayContainer = document.getElementById('mandalaDisplayContainer');
+            if (displayContainer) {
+                displayContainer.innerHTML = '';
+                displayContainer.style.background = 'rgba(0,0,0,1)';
+            }
+            
+            // Load the elements
+            uploadedElements = {...preset.elements};
+            
+            // Update preview images
+            Object.keys(uploadedElements).forEach(elementType => {
+                const imageData = uploadedElements[elementType];
+                if (imageData) {
+                    const previewImg = document.getElementById(elementType + 'Img');
+                    const previewDiv = document.getElementById(elementType + 'Preview');
+                    if (previewImg && previewDiv) {
+                        previewImg.src = imageData;
+                        previewDiv.style.display = 'block';
+                    }
+                }
+            });
+            
+            // Show element preview section
+            const elementPreview = document.getElementById('elementPreview');
+            if (elementPreview) {
+                elementPreview.style.display = 'block';
+            }
+            
+            // Combine elements to display them
+            combineElements();
+            
+            alert(`✅ Loaded "${preset.name}" successfully!\nElements loaded: ${preset.uploadedCount}/6`);
+            console.log('✅ Preset loaded successfully');
+        }
+
+        // Delete a mandala preset
+        function deleteMandalaPreset(presetId) {
+            if (!confirm('Are you sure you want to delete this preset?')) return;
+            
+            const library = JSON.parse(localStorage.getItem('mandalaLibrary') || '[]');
+            const updatedLibrary = library.filter(p => p.id !== presetId);
+            
+            localStorage.setItem('mandalaLibrary', JSON.stringify(updatedLibrary));
+            updateMandalaLibraryDisplay();
+            
+            alert('🗑️ Preset deleted successfully!');
+        }
+
+
+
+        // Initialize upload system when page loads
+        setTimeout(() => {
+            initializeUploads();
+            loadMandalaLibrary();
+            updateMandalaLibraryDisplay(); // Also load 6-element presets
+            updateDynamicLayerList(); // Initialize the layer order display
+        }, 1000);
+    </script>
+</body>
+</html>

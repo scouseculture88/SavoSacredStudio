@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Tessellation Studio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 30% 70%, #0a0a1a 0%, #1a0a3a 25%, #2a1a5a 50%, #0f0f23 75%, #000 100%);
+            background-size: 400% 400%;
+            animation: cosmicShift 30s ease infinite;
+            color: #e8f5e8;
+            margin: 0;
+            padding: 15px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        @keyframes cosmicShift {
+            0%, 100% { background-position: 0% 50%; }
+            25% { background-position: 100% 0%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><defs><pattern id="cosmicGrid" width="200" height="200" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.8" fill="%23ffffff" opacity="0.1"/><circle cx="150" cy="50" r="0.6" fill="%23ffffff" opacity="0.08"/><circle cx="100" cy="100" r="1" fill="%23ffffff" opacity="0.12"/><circle cx="50" cy="150" r="0.5" fill="%23ffffff" opacity="0.06"/><circle cx="150" cy="150" r="0.7" fill="%23ffffff" opacity="0.09"/></pattern></defs><rect width="100%" height="100%" fill="url(%23cosmicGrid)"/></svg>');
+            pointer-events: none;
+            z-index: 1;
+            animation: starTwinkle 20s linear infinite;
+        }
+
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.03);
+            border-radius: 30px;
+            padding: 25px;
+            backdrop-filter: blur(40px);
+            border: 2px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 0 50px rgba(138, 43, 226, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+            padding: 25px;
+            background: rgba(75, 0, 130, 0.1);
+            border-radius: 25px;
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: conic-gradient(from 0deg, transparent, rgba(138, 43, 226, 0.1), transparent, rgba(75, 0, 130, 0.1), transparent);
+            animation: cosmicSpin 15s linear infinite;
+        }
+
+        @keyframes cosmicSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff006e, #8338ec, #3a86ff, #06ffa5, #ffbe0b, #fb5607);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: galaxyFlow 8s ease infinite;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes galaxyFlow {
+            0%, 100% { background-position: 0% 50%; }
+            25% { background-position: 100% 0%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+        }
+
+        .subtitle {
+            color: #8338ec;
+            font-size: 1.3rem;
+            font-weight: 600;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 30px;
+        }
+
+        .controls {
+            background: rgba(138, 43, 226, 0.08);
+            padding: 25px;
+            border-radius: 20px;
+            height: fit-content;
+            border: 2px solid rgba(138, 43, 226, 0.2);
+            backdrop-filter: blur(20px);
+        }
+
+        .control-section {
+            margin-bottom: 30px;
+            padding: 18px;
+            background: rgba(75, 0, 130, 0.1);
+            border-radius: 15px;
+            border: 1px solid rgba(138, 43, 226, 0.15);
+        }
+
+        .section-title {
+            color: #06ffa5;
+            font-weight: 800;
+            margin-bottom: 18px;
+            font-size: 1.1rem;
+            text-shadow: 0 0 10px rgba(6, 255, 165, 0.3);
+        }
+
+        .pattern-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .pattern-btn {
+            background: rgba(138, 43, 226, 0.1);
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            border-radius: 12px;
+            padding: 12px 15px;
+            color: #e8f5e8;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pattern-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(138, 43, 226, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .pattern-btn:hover::before {
+            left: 100%;
+        }
+
+        .pattern-btn:hover {
+            background: rgba(138, 43, 226, 0.2);
+            border-color: rgba(138, 43, 226, 0.5);
+            transform: scale(1.03);
+            box-shadow: 0 5px 20px rgba(138, 43, 226, 0.3);
+        }
+
+        .pattern-btn.active {
+            background: linear-gradient(135deg, #8338ec, #3a86ff);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 8px 25px rgba(131, 56, 236, 0.4);
+        }
+
+        .control-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            color: #06ffa5;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            text-shadow: 0 0 5px rgba(6, 255, 165, 0.2);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(138, 43, 226, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #06ffa5, #3a86ff);
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(6, 255, 165, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        input[type="range"]::-webkit-slider-track {
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(138, 43, 226, 0.2);
+        }
+
+        .value {
+            color: #ffbe0b;
+            font-size: 13px;
+            font-weight: 800;
+            text-align: center;
+            text-shadow: 0 0 5px rgba(255, 190, 11, 0.3);
+        }
+
+        canvas {
+            width: 100%;
+            height: 750px;
+            border: 3px solid rgba(138, 43, 226, 0.3);
+            border-radius: 25px;
+            background: radial-gradient(circle at 50% 50%, #000011, #000000);
+            cursor: crosshair;
+            box-shadow: 0 0 40px rgba(138, 43, 226, 0.2);
+        }
+
+        button {
+            background: linear-gradient(135deg, #ff006e, #8338ec, #3a86ff);
+            background-size: 200% 200%;
+            animation: buttonGlow 3s ease infinite;
+            color: white;
+            border: none;
+            padding: 14px 22px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 800;
+            width: 100%;
+            margin-top: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(131, 56, 236, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes buttonGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(131, 56, 236, 0.5);
+        }
+
+        .universe-btn {
+            background: linear-gradient(135deg, #06ffa5, #3a86ff, #8338ec);
+            background-size: 200% 200%;
+        }
+
+        .cosmic-btn {
+            background: linear-gradient(135deg, #ffbe0b, #fb5607, #ff006e);
+            background-size: 200% 200%;
+        }
+
+        @media (max-width: 1100px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            canvas {
+                height: 600px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌌 Cosmic Tessellation Studio</h1>
+            <p class="subtitle">Design the Sacred Geometry of the Universe</p>
+        </div>
+
+        <div class="layout">
+            <div class="controls">
+                <div class="control-section">
+                    <div class="section-title">🌟 Tessellation Patterns</div>
+                    <div class="pattern-buttons">
+                        <button class="pattern-btn active" onclick="setPattern('voronoi')">🕸️ Cosmic Web</button>
+                        <button class="pattern-btn" onclick="setPattern('delaunay')">🔺 Star Triangulation</button>
+                        <button class="pattern-btn" onclick="setPattern('hexagonal')">⬡ Honeycomb Galaxy</button>
+                        <button class="pattern-btn" onclick="setPattern('islamic')">🕌 Sacred Geometry</button>
+                        <button class="pattern-btn" onclick="setPattern('fractal')">🌀 Mandelbrot Space</button>
+                        <button class="pattern-btn" onclick="setPattern('crystalline')">💎 Crystal Lattice</button>
+                        <button class="pattern-btn" onclick="setPattern('nebula')">☁️ Nebula Cells</button>
+                        <button class="pattern-btn" onclick="setPattern('quantum')">⚛️ Quantum Fields</button>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <div class="section-title">🎛️ Universe Parameters</div>
+
+                    <div class="control-group">
+                        <label>Cosmic Density</label>
+                        <input type="range" id="density" min="20" max="500" value="150" oninput="updateTessellation()">
+                        <div class="value" id="densityValue">150</div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Pattern Scale</label>
+                        <input type="range" id="scale" min="0.3" max="3" step="0.1" value="1" oninput="updateTessellation()">
+                        <div class="value" id="scaleValue">1.0</div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Dimension Depth</label>
+                        <input type="range" id="depth" min="1" max="8" value="3" oninput="updateTessellation()">
+                        <div class="value" id="depthValue">3</div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Symmetry Order</label>
+                        <input type="range" id="symmetry" min="3" max="12" value="6" oninput="updateTessellation()">
+                        <div class="value" id="symmetryValue">6</div>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <div class="section-title">🎨 Cosmic Colors</div>
+
+                    <div class="control-group">
+                        <label>Galaxy Hue Shift</label>
+                        <input type="range" id="hueShift" min="0" max="360" value="240" oninput="updateTessellation()">
+                        <div class="value" id="hueShiftValue">240°</div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Nebula Saturation</label>
+                        <input type="range" id="saturation" min="30" max="100" value="80" oninput="updateTessellation()">
+                        <div class="value" id="saturationValue">80%</div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Cosmic Brightness</label>
+                        <input type="range" id="brightness" min="20" max="90" value="60" oninput="updateTessellation()">
+                        <div class="value" id="brightnessValue">60%</div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Energy Opacity</label>
+                        <input type="range" id="opacity" min="0.3" max="1" step="0.1" value="0.8" oninput="updateTessellation()">
+                        <div class="value" id="opacityValue">0.8</div>
+                    </div>
+                </div>
+
+                <button onclick="generateUniverse()" class="universe-btn">🌌 Generate Universe</button>
+                <button onclick="animateCosmos()" class="cosmic-btn" id="animateBtn">✨ Animate Cosmos</button>
+                <button onclick="randomizeCosmos()">🎲 Random Galaxy</button>
+                <button onclick="exportCosmos()">💾 Save Universe</button>
+            </div>
+
+            <canvas id="cosmicCanvas"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let canvas, ctx;
+        let currentPattern = 'voronoi';
+        let animationId;
+        let isAnimating = false;
+        let animationPhase = 0;
+        let points = [];
+
+        const settings = {
+            density: 150,
+            scale: 1,
+            depth: 3,
+            symmetry: 6,
+            hueShift: 240,
+            saturation: 80,
+            brightness: 60,
+            opacity: 0.8
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            canvas = document.getElementById('cosmicCanvas');
+            ctx = canvas.getContext('2d');
+
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            generatePoints();
+            updateTessellation();
+            updateValues();
+        });
+
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+
+        function setPattern(pattern) {
+            currentPattern = pattern;
+            document.querySelectorAll('.pattern-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            generatePoints();
+            updateTessellation();
+        }
+
+        function generatePoints() {
+            points = [];
+            const width = canvas.width;
+            const height = canvas.height;
+
+            switch(currentPattern) {
+                case 'voronoi':
+                    for (let i = 0; i < settings.density; i++) {
+                        points.push({
+                            x: Math.random() * width,
+                            y: Math.random() * height,
+                            id: i
+                        });
+                    }
+                    break;
+
+                case 'hexagonal':
+                    const hexSize = 30 * settings.scale;
+                    for (let y = 0; y < height + hexSize; y += hexSize * 1.5) {
+                        for (let x = 0; x < width + hexSize; x += hexSize * Math.sqrt(3)) {
+                            const offsetX = (y / (hexSize * 1.5)) % 2 === 0 ? 0 : hexSize * Math.sqrt(3) / 2;
+                            points.push({
+                                x: x + offsetX,
+                                y: y,
+                                size: hexSize
+                            });
+                        }
+                    }
+                    break;
+
+                case 'islamic':
+                    const gridSize = 60 * settings.scale;
+                    for (let y = 0; y < height + gridSize; y += gridSize) {
+                        for (let x = 0; x < width + gridSize; x += gridSize) {
+                            points.push({ x, y, size: gridSize });
+                        }
+                    }
+                    break;
+
+                case 'crystalline':
+                    const crystalSize = 40 * settings.scale;
+                    for (let y = 0; y < height + crystalSize; y += crystalSize) {
+                        for (let x = 0; x < width + crystalSize; x += crystalSize) {
+                            const offset = (y / crystalSize) % 2 === 0 ? 0 : crystalSize / 2;
+                            points.push({
+                                x: x + offset,
+                                y: y,
+                                size: crystalSize,
+                                rotation: Math.random() * Math.PI * 2
+                            });
+                        }
+                    }
+                    break;
+
+                default:
+                    for (let i = 0; i < settings.density; i++) {
+                        points.push({
+                            x: Math.random() * width,
+                            y: Math.random() * height,
+                            id: i,
+                            phase: Math.random() * Math.PI * 2
+                        });
+                    }
+                    break;
+            }
+        }
+
+        function updateTessellation() {
+            readSettings();
+            generatePoints();
+            drawTessellation();
+            updateValues();
+        }
+
+        function readSettings() {
+            settings.density = parseInt(document.getElementById('density').value);
+            settings.scale = parseFloat(document.getElementById('scale').value);
+            settings.depth = parseInt(document.getElementById('depth').value);
+            settings.symmetry = parseInt(document.getElementById('symmetry').value);
+            settings.hueShift = parseInt(document.getElementById('hueShift').value);
+            settings.saturation = parseInt(document.getElementById('saturation').value);
+            settings.brightness = parseInt(document.getElementById('brightness').value);
+            settings.opacity = parseFloat(document.getElementById('opacity').value);
+        }
+
+        function drawTessellation() {
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // Clear with cosmic background
+            const gradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, Math.max(width, height));
+            gradient.addColorStop(0, '#000033');
+            gradient.addColorStop(0.3, '#000011');
+            gradient.addColorStop(1, '#000000');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.globalAlpha = settings.opacity;
+
+            switch(currentPattern) {
+                case 'voronoi':
+                    drawCosmicWeb();
+                    break;
+                case 'delaunay':
+                    drawStarTriangulation();
+                    break;
+                case 'hexagonal':
+                    drawHoneycombGalaxy();
+                    break;
+                case 'islamic':
+                    drawSacredGeometry();
+                    break;
+                case 'fractal':
+                    drawMandelbrotSpace();
+                    break;
+                case 'crystalline':
+                    drawCrystalLattice();
+                    break;
+                case 'nebula':
+                    drawNebulaCells();
+                    break;
+                case 'quantum':
+                    drawQuantumFields();
+                    break;
+            }
+
+            ctx.globalAlpha = 1;
+        }
+
+        function drawCosmicWeb() {
+            const imageData = ctx.createImageData(canvas.width, canvas.height);
+            const data = imageData.data;
+
+            for (let x = 0; x < canvas.width; x++) {
+                for (let y = 0; y < canvas.height; y++) {
+                    let minDist = Infinity;
+                    let closestPoint = 0;
+
+                    points.forEach((point, index) => {
+                        const dist = Math.sqrt((x - point.x) ** 2 + (y - point.y) ** 2);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            closestPoint = index;
+                        }
+                    });
+
+                    const hue = (settings.hueShift + closestPoint * 30) % 360;
+                    const intensity = Math.max(0, 1 - minDist / 100);
+                    const rgb = hslToRgb(hue / 360, settings.saturation / 100, settings.brightness / 100 * intensity);
+
+                    const index = (y * canvas.width + x) * 4;
+                    data[index] = rgb[0];
+                    data[index + 1] = rgb[1];
+                    data[index + 2] = rgb[2];
+                    data[index + 3] = intensity * 255;
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+
+            // Draw connection lines
+            ctx.strokeStyle = `hsl(${settings.hueShift}, ${settings.saturation}%, ${settings.brightness + 20}%)`;
+            ctx.lineWidth = 0.5;
+
+            points.forEach((point, i) => {
+                points.forEach((otherPoint, j) => {
+                    if (i < j) {
+                        const dist = Math.sqrt((point.x - otherPoint.x) ** 2 + (point.y - otherPoint.y) ** 2);
+                        if (dist < 80) {
+                            ctx.globalAlpha = (80 - dist) / 80 * 0.3;
+                            ctx.beginPath();
+                            ctx.moveTo(point.x, point.y);
+                            ctx.lineTo(otherPoint.x, otherPoint.y);
+                            ctx.stroke();
+                        }
+                    }
+                });
+            });
+
+            ctx.globalAlpha = settings.opacity;
+        }
+
+        function drawStarTriangulation() {
+            // Delaunay triangulation approximation
+            ctx.strokeStyle = `hsl(${settings.hueShift}, ${settings.saturation}%, ${settings.brightness}%)`;
+            ctx.lineWidth = 1;
+
+            points.forEach((point, i) => {
+                const nearbyPoints = points
+                    .map((p, index) => ({ ...p, index, dist: Math.sqrt((point.x - p.x) ** 2 + (point.y - p.y) ** 2) }))
+                    .filter(p => p.index !== i && p.dist < 120)
+                    .sort((a, b) => a.dist - b.dist)
+                    .slice(0, 6);
+
+                nearbyPoints.forEach((nearPoint, j) => {
+                    if (j < nearbyPoints.length - 1) {
+                        const nextPoint = nearbyPoints[j + 1];
+
+                        const gradient = ctx.createLinearGradient(point.x, point.y, nearPoint.x, nearPoint.y);
+                        gradient.addColorStop(0, `hsl(${settings.hueShift}, ${settings.saturation}%, ${settings.brightness}%)`);
+                        gradient.addColorStop(1, `hsl(${(settings.hueShift + 60) % 360}, ${settings.saturation}%, ${settings.brightness - 20}%)`);
+
+                        ctx.fillStyle = gradient;
+                        ctx.globalAlpha = 0.3;
+                        ctx.beginPath();
+                        ctx.moveTo(point.x, point.y);
+                        ctx.lineTo(nearPoint.x, nearPoint.y);
+                        ctx.lineTo(nextPoint.x, nextPoint.y);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                });
+            });
+        }
+
+        function drawHoneycombGalaxy() {
+            points.forEach((point, i) => {
+                const hue = (settings.hueShift + i * 15) % 360;
+
+                ctx.strokeStyle = `hsl(${hue}, ${settings.saturation}%, ${settings.brightness}%)`;
+                ctx.fillStyle = `hsl(${hue}, ${settings.saturation}%, ${settings.brightness - 30}%)`;
+                ctx.lineWidth = 2;
+                ctx.globalAlpha = 0.7;
+
+                ctx.beginPath();
+                for (let j = 0; j < 6; j++) {
+                    const angle = (j * Math.PI * 2) / 6;
+                    const x = point.x + Math.cos(angle) * point.size / 2;
+                    const y = point.y + Math.sin(angle) * point.size / 2;
+
+                    if (j === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Add center glow
+                const centerGradient = ctx.createRadialGradient(point.x, point.y, 0, point.x, point.y, point.size / 4);
+                centerGradient.addColorStop(0, `hsl(${hue + 60}, 100%, 80%)`);
+                centerGradient.addColorStop(1, 'transparent');
+
+                ctx.fillStyle = centerGradient;
+                ctx.globalAlpha = 0.6;
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, point.size / 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function drawSacredGeometry() {
+            points.forEach((point, i) => {
+                const hue = (settings.hueShift + i * 20) % 360;
+
+                // Draw Islamic star pattern
+                ctx.strokeStyle = `hsl(${hue}, ${settings.saturation}%, ${settings.brightness}%)`;
+                ctx.fillStyle = `hsl(${hue}, ${settings.saturation}%, ${settings.brightness - 40}%)`;
+                ctx.lineWidth = 1.5;
+
+                const starPoints = settings.symmetry;
+                const outerRadius = point.size / 3;
+                const innerRadius = outerRadius * 0.4;
+
+                ctx.beginPath();
+                for (let j = 0; j < starPoints * 2; j++) {
+                    const angle = (j * Math.PI) / starPoints;
+                    const radius = j % 2 === 0 ? outerRadius : innerRadius;
+                    const x = point.x + Math.cos(angle) * radius;
+                    const y = point.y + Math.sin(angle) * radius;
+
+                    if (j === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            });
+        }
+
+        function drawMandelbrotSpace() {
+            const width = canvas.width;
+            const height = canvas.height;
+            const imageData = ctx.createImageData(width, height);
+            const data = imageData.data;
+
+            const zoom = settings.scale * 0.003;
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            for (let x = 0; x < width; x++) {
+                for (let y = 0; y < height; y++) {
+                    const zx = (x - centerX) * zoom;
+                    const zy = (y - centerY) * zoom;
+
+                    let cx = zx, cy = zy;
+                    let iteration = 0;
+                    const maxIteration = 100;
+
+                    while (cx * cx + cy * cy < 4 && iteration < maxIteration) {
+                        const tmp = cx * cx - cy * cy + zx;
+                        cy = 2 * cx * cy + zy;
+                        cx = tmp;
+                        iteration++;
+                    }
+
+                    const hue = (settings.hueShift + iteration * 10) % 360;
+                    const intensity = iteration / maxIteration;
+                    const rgb = hslToRgb(hue / 360, settings.saturation / 100, settings.brightness / 100 * intensity);
+
+                    const index = (y * width + x) * 4;
+                    data[index] = rgb[0];
+                    data[index + 1] = rgb[1];
+                    data[index + 2] = rgb[2];
+                    data[index + 3] = intensity * 255;
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        function drawCrystalLattice() {
+            points.forEach((point, i) => {
+                const hue = (settings.hueShift + i * 25) % 360;
+
+                ctx.save();
+                ctx.translate(point.x, point.y);
+                ctx.rotate(point.rotation + animationPhase);
+
+                // Draw crystal structure
+                ctx.strokeStyle = `hsl(${hue}, ${settings.saturation}%, ${settings.brightness}%)`;
+                ctx.fillStyle = `hsl(${hue}, ${settings.saturation}%, ${settings.brightness - 30}%)`;
+                ctx.lineWidth = 2;
+                ctx.globalAlpha = 0.8;
+
+                // Draw diamond shape
+                ctx.beginPath();
+                ctx.moveTo(0, -point.size / 2);
+                ctx.lineTo(point.size / 3, 0);
+                ctx.lineTo(0, point.size / 2);
+                ctx.lineTo(-point.size / 3, 0);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Add inner glow
+                const innerGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, point.size / 4);
+                innerGradient.addColorStop(0, `hsl(${hue + 120}, 100%, 90%)`);
+                innerGradient.addColorStop(1, 'transparent');
+
+                ctx.fillStyle = innerGradient;
+                ctx.globalAlpha = 0.6;
+                ctx.beginPath();
+                ctx.arc(0, 0, point.size / 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            });
+        }
+
+        function drawNebulaCells() {
+            // Create organic, flowing nebula-like patterns
+            for (let i = 0; i < settings.density / 2; i++) {
+                const centerX = Math.random() * canvas.width;
+                const centerY = Math.random() * canvas.height;
+                const size = (Math.random() * 100 + 50) * settings.scale;
+                const hue = (settings.hueShift + i * 40) % 360;
+
+                const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, size);
+                gradient.addColorStop(0, `hsl(${hue}, ${settings.saturation}%, ${settings.brightness}%)`);
+                gradient.addColorStop(0.5, `hsl(${(hue + 60) % 360}, ${settings.saturation}%, ${settings.brightness - 20}%)`);
+                gradient.addColorStop(1, 'transparent');
+
+                ctx.fillStyle = gradient;
+                ctx.globalAlpha = 0.4;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Add flowing tendrils
+                for (let j = 0; j < 8; j++) {
+                    const angle = (j * Math.PI * 2) / 8 + animationPhase;
+                    const length = size * (0.5 + Math.sin(animationPhase + j) * 0.3);
+
+                    ctx.strokeStyle = `hsl(${hue + j * 15}, ${settings.saturation}%, ${settings.brightness}%)`;
+                    ctx.lineWidth = 3;
+                    ctx.globalAlpha = 0.3;
+
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    const endX = centerX + Math.cos(angle) * length;
+                    const endY = centerY + Math.sin(angle) * length;
+                    ctx.lineTo(endX, endY);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function drawQuantumFields() {
+            const gridSize = 40 * settings.scale;
+
+            for (let x = 0; x < canvas.width + gridSize; x += gridSize) {
+                for (let y = 0; y < canvas.height + gridSize; y += gridSize) {
+                    const fieldStrength = Math.sin(x * 0.01 + animationPhase) * Math.cos(y * 0.01 + animationPhase);
+                    const hue = (settings.hueShift + fieldStrength * 180) % 360;
+                    const size = Math.abs(fieldStrength) * 20 + 5;
+
+                    // Quantum probability cloud
+                    const gradient = ctx.createRadialGradient(x, y, 0, x, y, size);
+                    gradient.addColorStop(0, `hsl(${hue}, ${settings.saturation}%, ${settings.brightness}%)`);
+                    gradient.addColorStop(1, 'transparent');
+
+                    ctx.fillStyle = gradient;
+                    ctx.globalAlpha = Math.abs(fieldStrength) * 0.6;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Quantum entanglement lines
+                    if (Math.random() > 0.8) {
+                        const nearX = x + (Math.random() - 0.5) * gridSize * 3;
+                        const nearY = y + (Math.random() - 0.5) * gridSize * 3;
+
+                        ctx.strokeStyle = `hsl(${hue}, ${settings.saturation}%, ${settings.brightness + 20}%)`;
+                        ctx.lineWidth = 1;
+                        ctx.globalAlpha = 0.4;
+
+                        ctx.beginPath();
+                        ctx.moveTo(x, y);
+                        ctx.lineTo(nearX, nearY);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animateCosmos() {
+            const btn = document.getElementById('animateBtn');
+
+            if (isAnimating) {
+                cancelAnimationFrame(animationId);
+                isAnimating = false;
+                btn.textContent = '✨ Animate Cosmos';
+                btn.style.background = 'linear-gradient(135deg, #ffbe0b, #fb5607, #ff006e)';
+            } else {
+                isAnimating = true;
+                btn.textContent = '⏹️ Stop Animation';
+                btn.style.background = 'linear-gradient(135deg, #ff006e, #8338ec)';
+                animateFrame();
+            }
+        }
+
+        function animateFrame() {
+            if (!isAnimating) return;
+
+            animationPhase += 0.02;
+
+            // Update some points for dynamic effects
+            if (currentPattern === 'voronoi' || currentPattern === 'delaunay') {
+                points.forEach(point => {
+                    point.x += Math.sin(animationPhase + point.phase) * 0.5;
+                    point.y += Math.cos(animationPhase + point.phase) * 0.5;
+                });
+            }
+
+            drawTessellation();
+            animationId = requestAnimationFrame(animateFrame);
+        }
+
+        function generateUniverse() {
+            generatePoints();
+            drawTessellation();
+        }
+
+        function randomizeCosmos() {
+            document.getElementById('density').value = Math.floor(Math.random() * 400) + 100;
+            document.getElementById('scale').value = (Math.random() * 2 + 0.5).toFixed(1);
+            document.getElementById('depth').value = Math.floor(Math.random() * 6) + 2;
+            document.getElementById('symmetry').value = Math.floor(Math.random() * 8) + 4;
+            document.getElementById('hueShift').value = Math.floor(Math.random() * 360);
+            document.getElementById('saturation').value = Math.floor(Math.random() * 50) + 50;
+            document.getElementById('brightness').value = Math.floor(Math.random() * 40) + 40;
+            document.getElementById('opacity').value = (Math.random() * 0.5 + 0.5).toFixed(1);
+
+            updateTessellation();
+        }
+
+        function updateValues() {
+            document.getElementById('densityValue').textContent = settings.density;
+            document.getElementById('scaleValue').textContent = settings.scale;
+            document.getElementById('depthValue').textContent = settings.depth;
+            document.getElementById('symmetryValue').textContent = settings.symmetry;
+            document.getElementById('hueShiftValue').textContent = settings.hueShift + '°';
+            document.getElementById('saturationValue').textContent = settings.saturation + '%';
+            document.getElementById('brightnessValue').textContent = settings.brightness + '%';
+            document.getElementById('opacityValue').textContent = settings.opacity;
+        }
+
+        function exportCosmos() {
+            const link = document.createElement('a');
+            link.download = `cosmic-tessellation-${currentPattern}-${Date.now()}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function hslToRgb(h, s, l) {
+            let r, g, b;
+
+            if (s === 0) {
+                r = g = b = l;
+            } else {
+                const hue2rgb = (p, q, t) => {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1/6) return p + (q - p) * 6 * t;
+                    if (t < 1/2) return q;
+                    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                    return p;
+                };
+
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1/3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1/3);
+            }
+
+            return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        }
+    </script>
+</body>
+</html>

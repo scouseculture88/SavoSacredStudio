@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Pattern Tracer - Savo Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #7cff50, #00d2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #aaa;
+            font-size: 1.1em;
+        }
+
+        .tracer-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .upload-section {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .upload-zone {
+            border: 2px dashed #7cff50;
+            border-radius: 10px;
+            padding: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(124, 255, 80, 0.05);
+        }
+
+        .upload-zone:hover {
+            background: rgba(124, 255, 80, 0.1);
+            border-color: #00d2ff;
+        }
+
+        .canvas-container {
+            position: relative;
+            display: inline-block;
+            margin: 20px 0;
+            border: 2px solid #444;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #canvas {
+            display: block;
+            cursor: crosshair;
+            background: #000;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #7cff50, #00d2ff);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 255, 80, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            text-align: center;
+            color: #aaa;
+        }
+
+        .pattern-info {
+            background: linear-gradient(45deg, rgba(124, 255, 80, 0.1), rgba(0, 210, 255, 0.1));
+            border: 1px solid rgba(124, 255, 80, 0.3);
+            color: #7cff50;
+        }
+
+        .instructions {
+            background: rgba(0, 210, 255, 0.1);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .instructions h3 {
+            color: #00d2ff;
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .instructions li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .instructions li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #7cff50;
+            font-weight: bold;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .tracer-container {
+                padding: 20px;
+            }
+            
+            #canvas {
+                max-width: 100%;
+                height: auto;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Simple Pattern Tracer</h1>
+        <p>Click to place circles, generate positioning blueprint</p>
+    </div>
+
+    <div class="tracer-container">
+        <div class="instructions">
+            <h3>How to Use:</h3>
+            <ul>
+                <li>Upload your sacred geometry image</li>
+                <li>Click anywhere on the image to place circles</li>
+                <li>Each click adds a circle at that exact spot</li>
+                <li>Click "Generate Blueprint" to get positioning instructions</li>
+                <li>Copy the blueprint and manually recreate in Pattern Mathematics</li>
+            </ul>
+        </div>
+
+        <div class="upload-section">
+            <div class="upload-zone" id="uploadZone">
+                <h3>📁 Upload Sacred Geometry Image</h3>
+                <p>Drag & drop or click to select</p>
+            </div>
+            <input type="file" id="imageInput" class="file-input" accept="image/*">
+        </div>
+
+        <div class="canvas-container" style="display: none;" id="canvasContainer">
+            <canvas id="canvas" width="800" height="600"></canvas>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" id="saveBtn" disabled>📋 Generate Blueprint</button>
+            <button class="btn btn-secondary" id="clearBtn">🧹 Clear All Circles</button>
+            <button class="btn btn-secondary" id="undoBtn">↶ Undo Last Circle</button>
+            <a href="pattern-mathematics.html" class="btn btn-secondary">→ Open Pattern Mathematics</a>
+        </div>
+
+        <div class="status" id="status">
+            Upload an image to start tracing circles
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const uploadZone = document.getElementById('uploadZone');
+        const imageInput = document.getElementById('imageInput');
+        const canvasContainer = document.getElementById('canvasContainer');
+        const saveBtn = document.getElementById('saveBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const undoBtn = document.getElementById('undoBtn');
+        const status = document.getElementById('status');
+
+        let currentImage = null;
+        let circles = [];
+
+        // Upload handling
+        uploadZone.addEventListener('click', () => {
+            imageInput.click();
+        });
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.style.background = 'rgba(124, 255, 80, 0.2)';
+        });
+
+        uploadZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadZone.style.background = 'rgba(124, 255, 80, 0.05)';
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.style.background = 'rgba(124, 255, 80, 0.05)';
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                loadImage(files[0]);
+            }
+        });
+
+        imageInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                loadImage(e.target.files[0]);
+            }
+        });
+
+        function loadImage(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    currentImage = img;
+                    
+                    // Resize canvas to fit image while maintaining aspect ratio
+                    const maxWidth = 800;
+                    const maxHeight = 600;
+                    const aspectRatio = img.width / img.height;
+                    
+                    let canvasWidth = maxWidth;
+                    let canvasHeight = maxHeight;
+                    
+                    if (aspectRatio > maxWidth / maxHeight) {
+                        canvasHeight = maxWidth / aspectRatio;
+                    } else {
+                        canvasWidth = maxHeight * aspectRatio;
+                    }
+                    
+                    canvas.width = canvasWidth;
+                    canvas.height = canvasHeight;
+                    
+                    drawImage();
+                    canvasContainer.style.display = 'block';
+                    status.textContent = 'Image loaded! Click on the image to place circles.';
+                    console.log('📁 Image loaded successfully');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function drawImage() {
+            if (!currentImage) return;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw the background image
+            ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
+            
+            // Draw all circles
+            circles.forEach((circle, index) => {
+                const hue = (index * 45) % 360; // Different color for each circle
+                const color = `hsl(${hue}, 70%, 60%)`;
+                
+                // Draw circle outline
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Draw center dot
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(circle.x, circle.y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Draw circle number
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 14px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText((index + 1).toString(), circle.x, circle.y - circle.radius - 10);
+            });
+        }
+
+        // Canvas click handling
+        canvas.addEventListener('click', (e) => {
+            if (!currentImage) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Add circle at click position
+            circles.push({
+                x: x,
+                y: y,
+                radius: 30 // Fixed radius for simplicity
+            });
+            
+            drawImage();
+            updateStatus();
+            saveBtn.disabled = circles.length === 0;
+            
+            console.log(`⭕ Circle ${circles.length} placed at (${Math.round(x)}, ${Math.round(y)})`);
+        });
+
+        function updateStatus() {
+            if (circles.length === 0) {
+                status.textContent = 'Click on the image to place circles.';
+            } else {
+                status.innerHTML = `
+                    <div class="pattern-info">
+                        <strong>⭕ ${circles.length} circles placed</strong><br>
+                        Click to add more, or generate blueprint for Pattern Mathematics!
+                    </div>
+                `;
+            }
+        }
+
+        // Control buttons
+        clearBtn.addEventListener('click', () => {
+            circles = [];
+            drawImage();
+            updateStatus();
+            saveBtn.disabled = true;
+            console.log('🧹 All circles cleared');
+        });
+
+        undoBtn.addEventListener('click', () => {
+            if (circles.length > 0) {
+                circles.pop();
+                drawImage();
+                updateStatus();
+                saveBtn.disabled = circles.length === 0;
+                console.log('↶ Last circle removed');
+            }
+        });
+
+        saveBtn.addEventListener('click', () => {
+            if (circles.length === 0) return;
+            
+            // Generate blueprint instructions instead of saving pattern
+            let blueprint = `📋 **Circle Blueprint for Pattern Mathematics**\n\n`;
+            blueprint += `Total Circles: ${circles.length}\n\n`;
+            blueprint += `**Manual Instructions:**\n`;
+            
+            circles.forEach((circle, index) => {
+                const relativeX = Math.round((circle.x / canvas.width) * 100);
+                const relativeY = Math.round((circle.y / canvas.height) * 100);
+                blueprint += `${index + 1}. Position: ${relativeX}% from left, ${relativeY}% from top\n`;
+            });
+            
+            blueprint += `\n**Steps to recreate in Pattern Mathematics:**\n`;
+            blueprint += `1. Go to Pattern Mathematics\n`;
+            blueprint += `2. Select "Seed of Life" or "Flower of Life" pattern\n`;
+            blueprint += `3. Use Scale and Count sliders to match your design\n`;
+            blueprint += `4. Apply colors and mathematical effects\n`;
+            
+            // Show blueprint in a copyable format
+            status.innerHTML = `
+                <div class="pattern-info">
+                    <strong>📋 Blueprint Generated!</strong><br>
+                    <textarea readonly style="width: 100%; height: 200px; background: #1a1a1a; color: #7cff50; border: 1px solid #444; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 12px;">${blueprint}</textarea>
+                    <br><br>
+                    <em>Copy the blueprint above and use it to manually recreate your pattern in Pattern Mathematics</em><br>
+                    <a href="pattern-mathematics.html" style="color: #7cff50; text-decoration: underline;">Open Pattern Mathematics →</a>
+                </div>
+            `;
+            
+            console.log(`📋 Blueprint generated for ${circles.length} circles`);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 Aurora Borealis Studio - Realistic Northern Lights</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(119, 198, 255, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, #1a1a2e 0%, #0a0a0a 60%, #000000 100%);
+            overflow: hidden;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: white;
+            cursor: none;
+        }
+
+        #auroraCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+            box-shadow: 0 0 6px rgba(255,255,255,0.6);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: shoot 8s linear infinite;
+            box-shadow: 0 0 8px rgba(255,255,255,0.8);
+        }
+        
+        @keyframes shoot {
+            0% { 
+                opacity: 0;
+                transform: translateX(-100px) translateY(-50px);
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                opacity: 0;
+                transform: translateX(calc(100vw + 100px)) translateY(calc(100vh + 50px));
+            }
+        }
+
+        .control-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 20, 40, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(116, 235, 213, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            min-width: 280px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+        
+        .control-section {
+            margin-bottom: 20px;
+            border: 1px solid rgba(116, 235, 213, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: rgba(116, 235, 213, 0.1);
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+        
+        .section-header:hover {
+            background: rgba(116, 235, 213, 0.2);
+        }
+        
+        .section-content {
+            padding: 15px;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        .section-content.collapsed {
+            display: none;
+        }
+        
+        .collapse-arrow {
+            transition: transform 0.3s ease;
+        }
+        
+        .collapse-arrow.rotated {
+            transform: rotate(180deg);
+        }
+
+        .control-title {
+            color: #74ebd5;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(116, 235, 213, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .aurora-preset {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .aurora-preset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);
+        }
+
+        .aurora-preset.active {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .preset-classic { background: linear-gradient(135deg, #00ff88, #00cc66) !important; }
+        .preset-pink { background: linear-gradient(135deg, #ff6b9d, #c44569) !important; }
+        .preset-blue { background: linear-gradient(135deg, #4834d4, #686de0) !important; }
+        .preset-spectrum { background: linear-gradient(135deg, #ff9ff3, #f368e0, #ff6348, #feca57, #48dbfb, #0abde3) !important; }
+        .preset-purple { background: linear-gradient(135deg, #a55eea, #8854d0) !important; }
+        .preset-solar { background: linear-gradient(135deg, #ffa726, #ff7043) !important; }
+
+        .control-section {
+            margin-bottom: 20px;
+        }
+
+        .control-label {
+            color: #ccc;
+            font-size: 12px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .slider-container {
+            margin-bottom: 15px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #74ebd5;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(116, 235, 213, 0.5);
+        }
+
+        .slider-value {
+            color: #74ebd5;
+            font-size: 12px;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .toggle-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(116, 235, 213, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn.active {
+            background: #74ebd5;
+            color: #0a0a0a;
+        }
+
+        .minimize-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #74ebd5;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .minimized-control {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 20, 40, 0.95);
+            padding: 15px;
+            border-radius: 25px;
+            border: 1px solid rgba(116, 235, 213, 0.3);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            cursor: pointer;
+            display: none;
+            transition: all 0.3s ease;
+            color: #74ebd5;
+            font-size: 14px;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(116, 235, 213, 0.3);
+        }
+        
+        .minimized-control:hover {
+            background: rgba(116, 235, 213, 0.1);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(116, 235, 213, 0.4);
+        }
+
+        .back-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 20, 40, 0.9);
+            border: 1px solid rgba(116, 235, 213, 0.3);
+            color: #74ebd5;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .back-btn:hover {
+            background: rgba(116, 235, 213, 0.1);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .control-panel {
+                left: 10px;
+                right: 10px;
+                top: 10px;
+                min-width: auto;
+                max-height: 70vh;
+                font-size: 13px;
+            }
+            
+            .back-btn {
+                bottom: 10px;
+                right: 10px;
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+            
+            .control-section {
+                margin-bottom: 8px;
+            }
+            
+            .aurora-preset {
+                padding: 8px 12px;
+                font-size: 11px;
+                margin: 2px;
+            }
+            
+            .slider {
+                height: 8px;
+            }
+            
+            .toggle-btn {
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+            
+            /* Optimize touch targets */
+            .section-header {
+                padding: 12px 8px;
+                min-height: 44px;
+            }
+            
+            .minimized-control {
+                padding: 12px 16px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Starfield Background -->
+    <div class="stars" id="starfield"></div>
+
+    <!-- Aurora Canvas -->
+    <canvas id="auroraCanvas"></canvas>
+
+    <!-- Control Panel -->
+    <div class="control-panel" id="controlPanel">
+        <button class="minimize-btn" id="minimizeBtn">−</button>
+        <div class="control-title">🌌 Aurora Controls</div>
+        
+        <!-- Presets removed per user request -->
+
+        <!-- Particle Swarm Controls -->
+        <div class="control-section">
+            <div class="section-header" data-section="particles">
+                <span>✨ Particle Flow Control</span>
+                <span class="collapse-arrow">▼</span>
+            </div>
+            <div class="section-content" id="particles-content">
+                <div class="control-label">Flow Intensity</div>
+                <div class="slider-container">
+                    <input type="range" class="slider" id="particleIntensity" min="0" max="2" step="0.1" value="1">
+                    <div class="slider-value" id="particleIntensityValue">1</div>
+                </div>
+                
+                <div class="control-label">Particle Count</div>
+                <div class="slider-container">
+                    <input type="range" class="slider" id="particleCount" min="20" max="150" step="10" value="80">
+                    <div class="slider-value" id="particleCountValue">80</div>
+                </div>
+                
+                <div class="control-label">Swarm Speed</div>
+                <div class="slider-container">
+                    <input type="range" class="slider" id="swarmSpeed" min="0.005" max="0.05" step="0.005" value="0.02">
+                    <div class="slider-value" id="swarmSpeedValue">0.02</div>
+                </div>
+                
+                <div class="control-label">Trail Length</div>
+                <div class="slider-container">
+                    <input type="range" class="slider" id="trailLength" min="5" max="50" step="5" value="25">
+                    <div class="slider-value" id="trailLengthValue">25</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Light controls removed per user request -->
+
+        <!-- Performance Optimizer -->
+        <div class="control-section">
+            <div class="section-header" data-section="performance">
+                <span>⚡ Performance Optimizer</span>
+                <span class="collapse-arrow">▼</span>
+            </div>
+            <div class="section-content collapsed" id="performance-content">
+                <div style="font-size: 11px; color: rgba(255,255,255,0.7); margin-bottom: 8px; line-height: 1.3;">
+                    Real-time performance monitoring with automatic optimization when FPS drops below 30. 
+                    System dynamically adjusts particle count and trail length to maintain smooth experience.
+                </div>
+                
+                <div class="control-label">Auto-Optimize</div>
+                <button class="toggle-btn active" id="autoOptimizeToggle">Auto-Optimize ON</button>
+                
+                <div class="control-label">Performance Display</div>
+                <button class="toggle-btn active" id="performanceDisplayToggle">Show Stats</button>
+                
+                <button class="toggle-btn" id="disableOptimizationBtn" style="background: rgba(255,100,100,0.3);">🚫 Disable Auto-Opt (60s)</button>
+                
+                <div style="font-size: 10px; color: rgba(116,235,213,0.8); margin-top: 8px; line-height: 1.2;">
+                    <strong>Live Stats:</strong><br>
+                    • Green = Optimal (60+ FPS)<br>
+                    • Yellow = Warning (48+ FPS)<br>
+                    • Red = Poor (&lt;30 FPS)<br>
+                    • Auto-optimization triggers at &lt;30 FPS
+                </div>
+            </div>
+        </div>
+
+        <!-- Touch Effects -->
+        <div class="control-section">
+            <div class="section-header" data-section="touchEffects">
+                <span>🌌 Particle Touch Effects</span>
+                <span class="collapse-arrow">▼</span>
+            </div>
+            <div class="section-content collapsed" id="touchEffects-content">
+                <div style="font-size: 11px; color: rgba(255,255,255,0.7); margin-bottom: 8px; line-height: 1.3;">
+                    <strong>Touch Duration Controls:</strong><br>
+                    • <span style="color: #FFD700;">Quick Tap</span> - Energy burst (pushes particles away)<br>
+                    • <span style="color: #00FFFF;">Hold 300ms</span> - Vortex spiral (swirling motion)<br>
+                    • <span style="color: #191970;">Hold 500ms</span> - Gravity well (pulls particles in)<br>
+                    • <span style="color: #8A2BE2;">Hold 800ms</span> - Time dilation field (slows particles)
+                </div>
+                
+                <div style="font-size: 10px; color: rgba(116,235,213,0.8); margin-top: 8px; line-height: 1.2;">
+                    <strong>Visual Effects:</strong><br>
+                    🟡 Golden waves = Energy burst<br>
+                    🔵 Cyan spirals = Vortex field<br>
+                    ⚫ Dark well = Gravity attraction<br>
+                    🟣 Purple ripples = Time dilation
+                </div>
+            </div>
+        </div>
+
+        <!-- Sky Explorer -->
+        <div class="control-section">
+            <div class="section-header" data-section="explorer">
+                <span>🧭 Sky Explorer</span>
+                <span class="collapse-arrow">▼</span>
+            </div>
+            <div class="section-content" id="explorer-content">
+                <div style="font-size: 11px; color: rgba(255,255,255,0.7); margin-bottom: 8px; line-height: 1.3;">
+                    Navigate the aurora sky:<br>
+                    📱 <strong>Mobile:</strong> Swipe to explore, touch for particle effects, double-tap to center<br>
+                    🖥️ <strong>Desktop:</strong> Arrow Keys/WASD, mouse movement, spacebar to center
+                </div>
+                <button class="toggle-btn" onclick="auroraStudio.camera.targetX = 0; auroraStudio.camera.targetY = 0; console.log('🌌 Returning to aurora center');">🌌 Return to Center</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Minimized Control -->
+    <div class="minimized-control" id="minimizedControl">
+        🌌 Show Aurora Controls
+    </div>
+
+
+
+    <script>
+        class AuroraBorealisStudio {
+            constructor() {
+                this.canvas = document.getElementById('auroraCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.animationId = null;
+                this.time = 0;
+                
+                // Aurora parameters
+                this.currentPreset = 'classic';
+                this.animationEnabled = true;
+                
+                // Particle controls
+                this.particleIntensity = 1;
+                this.particleCount = 80;
+                this.swarmSpeed = 0.02;
+                this.trailLength = 25;
+                
+                // Layer opacity controls  
+                this.curtainOpacity = 0.3;
+                this.pillarOpacity = 0.2;
+                this.strandOpacity = 0.1;
+                this.sparkleOpacity = 0;
+                
+                // Performance monitoring
+                this.performanceStats = {
+                    fps: 60,
+                    frameTime: 0,
+                    particleCount: 0,
+                    renderTime: 0,
+                    lastFrameTime: performance.now(),
+                    frameHistory: [],
+                    autoOptimize: true,
+                    targetFPS: 60,
+                    minFPS: 30,
+                    optimizing: false,
+                    lastOptimization: 0,
+                    lastManualChange: 0
+                };
+                this.showPerformanceStats = true;
+                
+                // Camera/exploration system
+                this.camera = {
+                    x: 0,
+                    y: 0,
+                    targetX: 0,
+                    targetY: 0,
+                    zoom: 1,
+                    smoothing: 0.05
+                };
+                
+                // Advanced touch interaction system
+                this.touchEffects = {
+                    activeFields: [],
+                    dilationField: null,
+                    attractionField: null,
+                    repulsionField: null,
+                    vortexField: null,
+                    gravityWells: [],
+                    temporalRifts: []
+                };
+                
+                // Aurora wave points and particles
+                this.auroraLayers = [];
+                this.auroraParticles = [];
+                this.lightPillars = [];
+                this.auroraStrands = [];
+                this.explosions = [];
+                this.skyRegions = [];
+                this.initializeAuroraLayers();
+                this.initializeParticles();
+                this.initializeAuroraStrands();
+                this.initializeSkyRegions();
+                
+                this.setupCanvas();
+                this.setupControls();
+                this.generateStars();
+                this.startAnimation();
+                
+                // Add mouse and keyboard interaction for exploration
+                this.setupMouseInteraction();
+                this.setupKeyboardControls();
+                
+                console.log('🌌 Aurora Borealis Studio initialized');
+            }
+            
+            setupCanvas() {
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+            }
+            
+            resizeCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            
+            initializeAuroraLayers() {
+                this.auroraLayers = [];
+                
+                // Wait for canvas to be sized
+                if (this.canvas.width === 0) {
+                    setTimeout(() => this.initializeAuroraLayers(), 100);
+                    return;
+                }
+                
+                // Create multiple aurora layers for depth
+                for (let layer = 0; layer < 5; layer++) {
+                    const points = [];
+                    const numPoints = 20 + layer * 5;
+                    
+                    for (let i = 0; i < numPoints; i++) {
+                        points.push({
+                            x: (i / (numPoints - 1)) * this.canvas.width,
+                            baseY: this.canvas.height * (0.2 + layer * 0.15),
+                            amplitude: 80 + layer * 40,
+                            frequency: 0.01 + layer * 0.002,
+                            phase: Math.random() * Math.PI * 2,
+                            opacity: Math.max(0.1, 0.8 - layer * 0.15)
+                        });
+                    }
+                    
+                    this.auroraLayers.push({
+                        points: points,
+                        color: this.getAuroraColors()[0],
+                        depth: layer
+                    });
+                }
+                
+                console.log('🌌 Aurora layers initialized with canvas size:', this.canvas.width, 'x', this.canvas.height);
+            }
+            
+            initializeParticles() {
+                this.auroraParticles = [];
+                this.lightPillars = [];
+                this.energySwarms = [];
+                
+                // Create flowing energy swarms for fluid aurora dynamics
+                for (let swarm = 0; swarm < 3; swarm++) {
+                    const particles = [];
+                    for (let i = 0; i < 80; i++) {
+                        particles.push({
+                            x: Math.random() * this.canvas.width,
+                            y: Math.random() * this.canvas.height,
+                            vx: 0,
+                            vy: 0,
+                            size: Math.random() * 3 + 1,
+                            mass: Math.random() * 0.5 + 0.5,
+                            attraction: 0.002 + Math.random() * 0.003,
+                            maxSpeed: 2 + Math.random() * 2,
+                            trail: [],
+                            trailLength: 15 + Math.random() * 10,
+                            color: swarm,
+                            energy: Math.random() * 0.8 + 0.2
+                        });
+                    }
+                    
+                    this.energySwarms.push({
+                        particles: particles,
+                        center: { 
+                            x: this.canvas.width * (0.2 + swarm * 0.3), 
+                            y: this.canvas.height * 0.4,
+                            targetX: this.canvas.width * (0.2 + swarm * 0.3),
+                            targetY: this.canvas.height * 0.4
+                        },
+                        flow: Math.random() * 0.02 + 0.01,
+                        intensity: 0.7 + Math.random() * 0.3
+                    });
+                }
+                
+                // Add gold particle flows as requested
+                this.goldFlows = [
+                    // Left corner flow to top right
+                    {
+                        particles: [],
+                        startX: 0,
+                        startY: this.canvas.height * 0.8,
+                        targetX: this.canvas.width,
+                        targetY: 0,
+                        color: 'gold',
+                        active: true
+                    },
+                    // Bottom left flowing upwards
+                    {
+                        particles: [],
+                        startX: this.canvas.width * 0.1,
+                        startY: this.canvas.height,
+                        targetX: this.canvas.width * 0.9,
+                        targetY: 0,
+                        color: 'gold',
+                        active: true
+                    },
+                    // Additional upward flow
+                    {
+                        particles: [],
+                        startX: this.canvas.width * 0.05,
+                        startY: this.canvas.height * 0.9,
+                        targetX: this.canvas.width * 0.95,
+                        targetY: this.canvas.height * 0.1,
+                        color: 'gold',
+                        active: true
+                    }
+                ];
+                
+                // Initialize gold particles with better visibility
+                this.goldFlows.forEach(flow => {
+                    for (let i = 0; i < 25; i++) {
+                        flow.particles.push({
+                            x: flow.startX + Math.random() * 30,
+                            y: flow.startY + Math.random() * 30,
+                            vx: (flow.targetX - flow.startX) * 0.008, // Faster, more directional movement
+                            vy: (flow.targetY - flow.startY) * 0.008,
+                            size: Math.random() * 2 + 1.5, // Consistent size
+                            opacity: Math.random() * 0.7 + 0.5, // More consistent opacity
+                            life: 0,
+                            maxLife: 180 + Math.random() * 60, // Shorter life for continuous flow
+                            trail: [] // Add trail for flow effect
+                        });
+                    }
+                });
+                
+                // Create floating aurora particles (reduced for balance)
+                for (let i = 0; i < 20; i++) {
+                    this.auroraParticles.push({
+                        x: Math.random() * this.canvas.width * 3, // Wider world
+                        y: Math.random() * this.canvas.height * 2, // Taller world
+                        size: Math.random() * 8 + 2,
+                        speedX: (Math.random() - 0.5) * 1.5,
+                        speedY: (Math.random() - 0.5) * 1,
+                        opacity: Math.random() * 0.7 + 0.2,
+                        life: Math.random() * 400 + 300,
+                        maxLife: 400,
+                        color: Math.floor(Math.random() * 5),
+                        angle: Math.random() * Math.PI * 2,
+                        spin: (Math.random() - 0.5) * 0.05
+                    });
+                }
+                
+                // Create light pillars (reduced and spread across wider area)
+                for (let i = 0; i < 6; i++) {
+                    this.lightPillars.push({
+                        x: Math.random() * this.canvas.width * 3,
+                        baseY: this.canvas.height * (0.5 + Math.random() * 0.3),
+                        height: Math.random() * 300 + 200,
+                        width: Math.random() * 25 + 10,
+                        intensity: Math.random() * 0.5 + 0.3,
+                        sway: Math.random() * 0.02 + 0.01,
+                        phase: Math.random() * Math.PI * 2,
+                        pulsation: Math.random() * 0.015 + 0.01
+                    });
+                }
+            }
+            
+            initializeAuroraStrands() {
+                this.auroraStrands = [];
+                
+                // Simple, clean aurora - going back to what worked
+                for (let i = 0; i < 6; i++) {
+                    const points = [];
+                    const numPoints = 15;
+                    
+                    for (let j = 0; j < numPoints; j++) {
+                        points.push({
+                            x: (j / (numPoints - 1)) * this.canvas.width,
+                            y: Math.random() * this.canvas.height * 0.8,
+                            targetY: Math.random() * this.canvas.height * 0.8,
+                            amplitude: Math.random() * 100 + 50,
+                            frequency: Math.random() * 0.02 + 0.01,
+                            phase: Math.random() * Math.PI * 2
+                        });
+                    }
+                    
+                    this.auroraStrands.push({
+                        points: points,
+                        color: i % 5,
+                        opacity: Math.random() * 0.6 + 0.3,
+                        thickness: Math.random() * 60 + 30,
+                        speed: Math.random() * 2 + 1,
+                        direction: Math.random() < 0.5 ? 1 : -1
+                    });
+                }
+            }
+            
+            initializeSkyRegions() {
+                this.skyRegions = [
+                    { x: 0, y: 0, name: "Northern Crown", intensity: 0.8 },
+                    { x: this.canvas.width, y: 0, name: "Eastern Pillars", intensity: 0.6 },
+                    { x: this.canvas.width * 2, y: 0, name: "Cosmic Heart", intensity: 1.0 },
+                    { x: 0, y: this.canvas.height, name: "Southern Streams", intensity: 0.7 },
+                    { x: this.canvas.width, y: this.canvas.height, name: "Central Aurora", intensity: 0.9 }
+                ];
+            }
+            
+            getAuroraColors() {
+                const presets = {
+                    classic: ['#00ff88', '#00cc66', '#009944'],
+                    pink: ['#ff6b9d', '#c44569', '#ff4757'],
+                    blue: ['#4834d4', '#686de0', '#40407a'],
+                    spectrum: ['#ff9ff3', '#f368e0', '#ff6348', '#feca57', '#48dbfb'],
+                    purple: ['#a55eea', '#8854d0', '#5f27cd'],
+                    solar: ['#ffa726', '#ff7043', '#ff5722']
+                };
+                
+                return presets[this.currentPreset] || presets.classic;
+            }
+            
+            generateStars() {
+                const starfield = document.getElementById('starfield');
+                starfield.innerHTML = '';
+                
+                // Generate regular stars with nebula effect
+                for (let i = 0; i < 400; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    
+                    // Create different star sizes for depth
+                    const size = Math.random() * 5 + 0.5;
+                    star.style.width = star.style.height = size + 'px';
+                    
+                    // Add cosmic colors to some stars
+                    if (Math.random() < 0.1) {
+                        const colors = ['#ff6b9d', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
+                        star.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    }
+                    
+                    star.style.animationDelay = Math.random() * 3 + 's';
+                    star.style.animationDuration = (Math.random() * 3 + 1.5) + 's';
+                    starfield.appendChild(star);
+                }
+                
+                // Generate shooting stars
+                for (let i = 0; i < 3; i++) {
+                    const shootingStar = document.createElement('div');
+                    shootingStar.className = 'shooting-star';
+                    shootingStar.style.top = Math.random() * 50 + '%';
+                    shootingStar.style.animationDelay = Math.random() * 8 + 's';
+                    shootingStar.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                    starfield.appendChild(shootingStar);
+                }
+            }
+            
+            drawAurora() {
+                const colors = this.getAuroraColors();
+                
+                this.auroraLayers.forEach((layer, layerIndex) => {
+                    const color = colors[layerIndex % colors.length];
+                    
+                    // Create gradient for aurora curtain effect
+                    const gradient = this.ctx.createLinearGradient(0, layer.points[0].baseY - 200, 0, layer.points[0].baseY + 200);
+                    gradient.addColorStop(0, 'rgba(0,0,0,0)'); // Transparent top
+                    
+                    // Convert hex to rgba for proper transparency
+                    const r = parseInt(color.slice(1, 3), 16) || 0;
+                    const g = parseInt(color.slice(3, 5), 16) || 0;
+                    const b = parseInt(color.slice(5, 7), 16) || 0;
+                    const alpha1 = Math.min(1, Math.max(0, (this.brightness || 0.8) * (layer.opacity || 0.5)));
+                    const alpha2 = Math.min(1, Math.max(0, (this.brightness || 0.8) * (layer.opacity || 0.5) * 0.8));
+                    
+                    gradient.addColorStop(0.3, `rgba(${r},${g},${b},${alpha1})`);
+                    gradient.addColorStop(0.7, `rgba(${r},${g},${b},${alpha2})`);
+                    gradient.addColorStop(1, 'rgba(0,0,0,0)'); // Transparent bottom
+                    
+                    this.ctx.fillStyle = gradient;
+                    this.ctx.globalCompositeOperation = 'screen';
+                    
+                    // Draw aurora curtain with more dramatic effects
+                    this.ctx.beginPath();
+                    
+                    const topPoints = [];
+                    const bottomPoints = [];
+                    
+                    layer.points.forEach((point, index) => {
+                        const wave1 = Math.sin(this.time * (this.curtainFlow || 0.05) + point.phase) * point.amplitude;
+                        const wave2 = Math.sin(this.time * (this.curtainFlow || 0.05) * 1.5 + point.phase + 1) * point.amplitude * 0.5;
+                        const solarVariation = Math.sin(this.time * 0.01) * (this.solarActivity || 6) * 15;
+                        
+                        const x = point.x;
+                        const centerY = point.baseY + wave1 + wave2 + solarVariation;
+                        
+                        topPoints.push({ x, y: centerY - 200 });
+                        bottomPoints.push({ x, y: centerY + 200 });
+                    });
+                    
+                    // Draw top edge
+                    topPoints.forEach((point, index) => {
+                        if (index === 0) {
+                            this.ctx.moveTo(point.x, point.y);
+                        } else {
+                            this.ctx.lineTo(point.x, point.y);
+                        }
+                    });
+                    
+                    // Draw bottom edge (reversed)
+                    bottomPoints.reverse().forEach(point => {
+                        this.ctx.lineTo(point.x, point.y);
+                    });
+                    
+
+                    
+                    this.ctx.closePath();
+                    this.ctx.fill();
+                    
+                });
+                
+                // Light effects removed per user request
+                // this.drawAuroraStrands();
+                // this.drawLightPillars();
+                
+                // Draw floating particles
+                this.drawAuroraParticles();
+                
+                // Draw gold particle flows
+                this.drawGoldFlows();
+                
+                // Draw explosions
+                this.drawExplosions();
+                
+                // Shimmer effect also disabled per user request  
+                // this.drawShimmerEffect(colors[0]);
+                
+                this.ctx.globalCompositeOperation = 'source-over';
+            }
+            
+            drawLightPillars() {
+                this.ctx.save();
+                this.ctx.translate(-this.camera.x, -this.camera.y);
+                
+                this.lightPillars.forEach(pillar => {
+                    const colors = ['#00ff88', '#4834d4', '#a55eea', '#ff6b9d', '#4ecdc4'];
+                    const color = colors[Math.floor(this.time * 0.008) % colors.length];
+                    
+                    const r = parseInt(color.slice(1, 3), 16) || 0;
+                    const g = parseInt(color.slice(3, 5), 16) || 0;
+                    const b = parseInt(color.slice(5, 7), 16) || 0;
+                    
+                    const sway = Math.sin(this.time * pillar.sway + pillar.phase) * 30;
+                    const pulse = Math.sin(this.time * pillar.pulsation) * 0.2 + 0.8;
+                    const topX = pillar.x + sway;
+                    
+                    // Softer, more ethereal pillars
+                    for (let layer = 0; layer < 2; layer++) {
+                        const layerIntensity = pillar.intensity * pulse * (1 - layer * 0.4);
+                        const layerWidth = pillar.width * (1 + layer * 0.3);
+                        
+                        const gradient = this.ctx.createLinearGradient(pillar.x, pillar.baseY, topX, pillar.baseY - pillar.height);
+                        gradient.addColorStop(0, `rgba(${r},${g},${b},${layerIntensity * 0.6})`);
+                        gradient.addColorStop(0.4, `rgba(${r},${g},${b},${layerIntensity * 0.4})`);
+                        gradient.addColorStop(1, `rgba(${r},${g},${b},0)`);
+                        
+                        this.ctx.fillStyle = gradient;
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(pillar.x - layerWidth/2, pillar.baseY);
+                        this.ctx.lineTo(pillar.x + layerWidth/2, pillar.baseY);
+                        this.ctx.lineTo(topX + layerWidth/3, pillar.baseY - pillar.height);
+                        this.ctx.lineTo(topX - layerWidth/3, pillar.baseY - pillar.height);
+                        this.ctx.closePath();
+                        this.ctx.fill();
+                    }
+                });
+                
+                this.ctx.restore();
+            }
+            
+            drawAuroraStrands() {
+                this.auroraStrands.forEach((strand, strandIndex) => {
+                    const colors = ['#00ff88', '#4834d4', '#a55eea', '#ff6b9d', '#4ecdc4'];
+                    const color = colors[strand.color];
+                    
+                    const r = parseInt(color.slice(1, 3), 16) || 0;
+                    const g = parseInt(color.slice(3, 5), 16) || 0;
+                    const b = parseInt(color.slice(5, 7), 16) || 0;
+                    
+                    // Simple wave movement
+                    strand.points.forEach(point => {
+                        const wave = Math.sin(this.time * point.frequency + point.phase) * point.amplitude;
+                        point.y += (point.targetY + wave - point.y) * 0.02;
+                        
+                        if (Math.random() < 0.005) {
+                            point.targetY = Math.random() * this.canvas.height * 0.8;
+                        }
+                    });
+                    
+                    // Draw simple, clean aurora strands
+                    this.ctx.globalCompositeOperation = 'screen';
+                    
+                    for (let i = 0; i < strand.points.length - 1; i++) {
+                        const p1 = strand.points[i];
+                        const p2 = strand.points[i + 1];
+                        
+                        const thickness = strand.thickness * (1 + Math.sin(this.time * 0.05 + i) * 0.3);
+                        
+                        const gradient = this.ctx.createLinearGradient(p1.x, p1.y - thickness/2, p1.x, p1.y + thickness/2);
+                        gradient.addColorStop(0, `rgba(${r},${g},${b},0)`);
+                        gradient.addColorStop(0.5, `rgba(${r},${g},${b},${strand.opacity})`);
+                        gradient.addColorStop(1, `rgba(${r},${g},${b},0)`);
+                        
+                        this.ctx.strokeStyle = gradient;
+                        this.ctx.lineWidth = thickness;
+                        this.ctx.lineCap = 'round';
+                        
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(p1.x, p1.y);
+                        this.ctx.lineTo(p2.x, p2.y);
+                        this.ctx.stroke();
+                    }
+                });
+                
+                this.ctx.globalCompositeOperation = 'source-over';
+            }
+            
+            drawAuroraParticles() {
+                this.ctx.save();
+                this.ctx.translate(-this.camera.x, -this.camera.y);
+                
+                this.auroraParticles.forEach((particle, index) => {
+                    const colors = ['#00ff88', '#4834d4', '#a55eea', '#ff6b9d', '#4ecdc4'];
+                    const color = colors[particle.color];
+                    
+                    const r = parseInt(color.slice(1, 3), 16) || 0;
+                    const g = parseInt(color.slice(3, 5), 16) || 0;
+                    const b = parseInt(color.slice(5, 7), 16) || 0;
+                    
+                    this.ctx.save();
+                    this.ctx.translate(particle.x, particle.y);
+                    this.ctx.rotate(particle.angle);
+                    
+                    const gradient = this.ctx.createRadialGradient(0, 0, 0, 0, 0, particle.size);
+                    gradient.addColorStop(0, `rgba(${r},${g},${b},${particle.opacity})`);
+                    gradient.addColorStop(0.7, `rgba(${r},${g},${b},${particle.opacity * 0.3})`);
+                    gradient.addColorStop(1, `rgba(${r},${g},${b},0)`);
+                    
+                    this.ctx.fillStyle = gradient;
+                    this.ctx.beginPath();
+                    this.ctx.arc(0, 0, particle.size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    
+                    this.ctx.restore();
+                    
+                    // Update particle with gentle movement
+                    particle.x += particle.speedX + Math.sin(this.time * 0.005 + particle.y * 0.01) * 0.2;
+                    particle.y += particle.speedY + Math.cos(this.time * 0.005 + particle.x * 0.01) * 0.1;
+                    particle.angle += particle.spin;
+                    particle.life--;
+                    particle.opacity = (particle.life / particle.maxLife) * 0.6;
+                    
+                    // Wrap around in larger world space
+                    if (particle.x < -100) particle.x = this.canvas.width * 3 + 100;
+                    if (particle.x > this.canvas.width * 3 + 100) particle.x = -100;
+                    if (particle.y < -100) particle.y = this.canvas.height * 2 + 100;
+                    if (particle.y > this.canvas.height * 2 + 100) particle.y = -100;
+                    
+                    // Reset particle if life is over
+                    if (particle.life <= 0) {
+                        particle.life = particle.maxLife;
+                        particle.opacity = Math.random() * 0.7 + 0.2;
+                        particle.speedX = (Math.random() - 0.5) * 1.5;
+                        particle.speedY = (Math.random() - 0.5) * 1;
+                    }
+                });
+                
+                this.ctx.restore();
+            }
+            
+            drawGoldFlows() {
+                if (!this.goldFlows) return;
+                
+                this.ctx.save();
+                this.ctx.globalCompositeOperation = 'lighter';
+                
+                this.goldFlows.forEach(flow => {
+                    if (!flow.active) return;
+                    
+                    flow.particles.forEach(particle => {
+                        // Update particle position
+                        // Add current position to trail
+                        particle.trail.push({ x: particle.x, y: particle.y });
+                        if (particle.trail.length > 8) {
+                            particle.trail.shift();
+                        }
+                        
+                        // Update gold particle movement for flowing streams
+                        particle.x += particle.vx;
+                        particle.y += particle.vy;
+                        particle.life++;
+                        
+                        // Add slight curve to the flow path
+                        const flowCurve = Math.sin(particle.life * 0.05) * 0.5;
+                        particle.x += flowCurve;
+                        
+                        // Reset particle when it reaches end of life or target area
+                        if (particle.life >= particle.maxLife || 
+                            (particle.x > this.canvas.width * 0.8 && particle.y < this.canvas.height * 0.3)) {
+                            particle.x = flow.startX + Math.random() * 30;
+                            particle.y = flow.startY + Math.random() * 30;
+                            particle.life = 0;
+                            particle.trail = [];
+                        }
+                        
+                        // Draw flowing gold particle trail first
+                        if (particle.trail.length > 1) {
+                            this.ctx.strokeStyle = `rgba(255, 215, 0, 0.3)`;
+                            this.ctx.lineWidth = particle.size * 0.8;
+                            this.ctx.lineCap = 'round';
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(particle.trail[0].x, particle.trail[0].y);
+                            for (let i = 1; i < particle.trail.length; i++) {
+                                this.ctx.lineTo(particle.trail[i].x, particle.trail[i].y);
+                            }
+                            this.ctx.stroke();
+                        }
+                        
+                        // Draw bright gold particle
+                        const fadeAlpha = Math.min(0.9, particle.opacity * (1 - particle.life / particle.maxLife));
+                        
+                        this.ctx.fillStyle = `rgba(255, 215, 0, ${fadeAlpha})`;
+                        this.ctx.beginPath();
+                        this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                        this.ctx.fill();
+                        
+                        // Add bright inner core for glow effect
+                        this.ctx.fillStyle = `rgba(255, 255, 150, ${fadeAlpha * 0.6})`;
+                        this.ctx.beginPath();
+                        this.ctx.arc(particle.x, particle.y, particle.size * 0.5, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    });
+                });
+                
+                this.ctx.shadowBlur = 0;
+                this.ctx.globalCompositeOperation = 'source-over';
+                this.ctx.restore();
+            }
+            
+            createExplosion(x, y, color) {
+                const r = parseInt(color.slice(1, 3), 16) || 0;
+                const g = parseInt(color.slice(3, 5), 16) || 0;
+                const b = parseInt(color.slice(5, 7), 16) || 0;
+                
+                this.explosions.push({
+                    x: x,
+                    y: y,
+                    particles: [],
+                    life: 120,
+                    maxLife: 120,
+                    color: {r, g, b}
+                });
+                
+                // Create explosion particles
+                const explosion = this.explosions[this.explosions.length - 1];
+                for (let i = 0; i < 30; i++) {
+                    const angle = (i / 30) * Math.PI * 2;
+                    const speed = Math.random() * 8 + 2;
+                    explosion.particles.push({
+                        x: x,
+                        y: y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        size: Math.random() * 8 + 2,
+                        opacity: 1,
+                        life: Math.random() * 60 + 30
+                    });
+                }
+            }
+            
+            drawExplosions() {
+                this.explosions.forEach((explosion, index) => {
+                    explosion.particles.forEach(particle => {
+                        if (particle.life > 0) {
+                            const gradient = this.ctx.createRadialGradient(
+                                particle.x, particle.y, 0,
+                                particle.x, particle.y, particle.size
+                            );
+                            gradient.addColorStop(0, `rgba(${explosion.color.r},${explosion.color.g},${explosion.color.b},${particle.opacity})`);
+                            gradient.addColorStop(1, `rgba(${explosion.color.r},${explosion.color.g},${explosion.color.b},0)`);
+                            
+                            this.ctx.fillStyle = gradient;
+                            this.ctx.beginPath();
+                            this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                            this.ctx.fill();
+                            
+                            // Update particle
+                            particle.x += particle.vx;
+                            particle.y += particle.vy;
+                            particle.vx *= 0.98;
+                            particle.vy *= 0.98;
+                            particle.life--;
+                            particle.opacity = particle.life / 60;
+                        }
+                    });
+                    
+                    explosion.life--;
+                    if (explosion.life <= 0) {
+                        this.explosions.splice(index, 1);
+                    }
+                });
+            }
+            
+            drawEnergySwarms() {
+                const colors = [
+                    { r: 0, g: 255, b: 136 },    // Classic aurora green
+                    { r: 72, g: 52, b: 212 },    // Deep blue
+                    { r: 165, g: 94, b: 234 }    // Purple
+                ];
+                
+                this.energySwarms.forEach((swarm, swarmIndex) => {
+                    const color = colors[swarmIndex % colors.length];
+                    
+                    // Update swarm center with flowing motion using swarmSpeed
+                    swarm.center.targetX += Math.sin(this.time * this.swarmSpeed) * 2;
+                    swarm.center.targetY += Math.cos(this.time * this.swarmSpeed * 0.7) * 1;
+                    swarm.center.x += (swarm.center.targetX - swarm.center.x) * 0.02;
+                    swarm.center.y += (swarm.center.targetY - swarm.center.y) * 0.02;
+                    
+                    // Create fluid flow field
+                    swarm.particles.forEach(particle => {
+                        // Calculate distance to center
+                        const dx = swarm.center.x - particle.x;
+                        const dy = swarm.center.y - particle.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        // Add swirling flow forces
+                        const angle = Math.atan2(dy, dx);
+                        const swirl = angle + Math.PI * 0.5;
+                        const flowForce = 1 / (distance * 0.01 + 1);
+                        
+                        // Attraction to center with flowing motion
+                        particle.vx += (dx * particle.attraction) + Math.cos(swirl) * flowForce * 0.5;
+                        particle.vy += (dy * particle.attraction) + Math.sin(swirl) * flowForce * 0.5;
+                        
+                        // Add turbulence for organic movement
+                        particle.vx += (Math.random() - 0.5) * 0.3;
+                        particle.vy += (Math.random() - 0.5) * 0.3;
+                        
+                        // Apply velocity limits
+                        const speed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
+                        if (speed > particle.maxSpeed) {
+                            particle.vx = (particle.vx / speed) * particle.maxSpeed;
+                            particle.vy = (particle.vy / speed) * particle.maxSpeed;
+                        }
+                        
+                        // Update position
+                        particle.x += particle.vx;
+                        particle.y += particle.vy;
+                        
+                        // Apply friction
+                        particle.vx *= 0.99;
+                        particle.vy *= 0.99;
+                        
+                        // Update trail
+                        particle.trail.push({ x: particle.x, y: particle.y });
+                        if (particle.trail.length > particle.trailLength) {
+                            particle.trail.shift();
+                        }
+                        
+                        // Handle burst particles lifecycle
+                        if (particle.isBurstParticle) {
+                            particle.burstLife--;
+                            if (particle.burstLife <= 0) {
+                                // Mark for removal
+                                particle.removeMe = true;
+                            }
+                        }
+                        
+                        // Keep particles in bounds
+                        if (particle.x < 0) particle.x = this.canvas.width;
+                        if (particle.x > this.canvas.width) particle.x = 0;
+                        if (particle.y < 0) particle.y = this.canvas.height;
+                        if (particle.y > this.canvas.height) particle.y = 0;
+                    });
+                    
+                    // Remove expired burst particles
+                    swarm.particles = swarm.particles.filter(p => !p.removeMe);
+                    
+                    // Draw flowing energy streams
+                    this.ctx.globalCompositeOperation = 'screen';
+                    
+                    swarm.particles.forEach(particle => {
+                        // Draw particle trails as flowing streams
+                        if (particle.trail.length > 1) {
+                            for (let i = 1; i < particle.trail.length; i++) {
+                                const current = particle.trail[i];
+                                const previous = particle.trail[i - 1];
+                                const alpha = (i / particle.trail.length) * particle.energy * swarm.intensity;
+                                
+                                const gradient = this.ctx.createLinearGradient(
+                                    previous.x, previous.y, current.x, current.y
+                                );
+                                gradient.addColorStop(0, `rgba(${color.r},${color.g},${color.b},${alpha * 0.3})`);
+                                gradient.addColorStop(1, `rgba(${color.r},${color.g},${color.b},${alpha * 0.8})`);
+                                
+                                this.ctx.strokeStyle = gradient;
+                                this.ctx.lineWidth = particle.size * (alpha + 0.3);
+                                this.ctx.lineCap = 'round';
+                                
+                                this.ctx.beginPath();
+                                this.ctx.moveTo(previous.x, previous.y);
+                                this.ctx.lineTo(current.x, current.y);
+                                this.ctx.stroke();
+                            }
+                        }
+                        
+                        // Draw particle core
+                        const coreGradient = this.ctx.createRadialGradient(
+                            particle.x, particle.y, 0,
+                            particle.x, particle.y, particle.size * 2
+                        );
+                        coreGradient.addColorStop(0, `rgba(${color.r},${color.g},${color.b},${particle.energy * 0.8})`);
+                        coreGradient.addColorStop(0.3, `rgba(${color.r},${color.g},${color.b},${particle.energy * 0.6})`);
+                        coreGradient.addColorStop(1, `rgba(${color.r},${color.g},${color.b},0)`);
+                        
+                        this.ctx.fillStyle = coreGradient;
+                        this.ctx.beginPath();
+                        this.ctx.arc(particle.x, particle.y, particle.size * 2, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    });
+                });
+                
+                this.ctx.globalCompositeOperation = 'source-over';
+            }
+            
+            drawShimmerEffect(baseColor) {
+                for (let i = 0; i < 8; i++) {
+                    const x = Math.random() * this.canvas.width;
+                    const y = this.canvas.height * 0.1 + Math.random() * this.canvas.height * 0.6;
+                    const size = Math.random() * 25 + 5;
+                    
+                    const r = parseInt(baseColor.slice(1, 3), 16) || 0;
+                    const g = parseInt(baseColor.slice(3, 5), 16) || 0;
+                    const b = parseInt(baseColor.slice(5, 7), 16) || 0;
+                    
+                    const shimmerGradient = this.ctx.createRadialGradient(x, y, 0, x, y, size);
+                    shimmerGradient.addColorStop(0, `rgba(${r},${g},${b},0.6)`);
+                    shimmerGradient.addColorStop(0.7, `rgba(${r},${g},${b},0.2)`);
+                    shimmerGradient.addColorStop(1, `rgba(${r},${g},${b},0)`);
+                    
+                    this.ctx.fillStyle = shimmerGradient;
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+            }
+            
+            animate() {
+                const frameStart = performance.now();
+                this.updatePerformanceStats(frameStart);
+                
+                if (!this.animationEnabled) {
+                    this.animationId = requestAnimationFrame(() => this.animate());
+                    return;
+                }
+                
+                const renderStart = performance.now();
+                
+                // Create deep cosmic background with nebula effects
+                const cosmicGradient = this.ctx.createRadialGradient(
+                    this.canvas.width/2, this.canvas.height/2, 0,
+                    this.canvas.width/2, this.canvas.height/2, Math.max(this.canvas.width, this.canvas.height)
+                );
+                cosmicGradient.addColorStop(0, 'rgba(26, 26, 46, 0.85)');
+                cosmicGradient.addColorStop(0.3, 'rgba(15, 15, 35, 0.9)');
+                cosmicGradient.addColorStop(0.7, 'rgba(8, 8, 20, 0.95)');
+                cosmicGradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
+                
+                this.ctx.fillStyle = cosmicGradient;
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Add subtle nebula clouds
+                for (let i = 0; i < 3; i++) {
+                    const nebX = (this.canvas.width * 0.2) + (i * this.canvas.width * 0.3) + Math.sin(this.time * 0.001 + i) * 100;
+                    const nebY = (this.canvas.height * 0.3) + Math.cos(this.time * 0.0015 + i) * 50;
+                    const nebRadius = 200 + Math.sin(this.time * 0.002 + i) * 50;
+                    
+                    const nebColors = [
+                        {r: 120, g: 119, b: 198, a: 0.1},
+                        {r: 255, g: 119, b: 198, a: 0.08},
+                        {r: 119, g: 198, b: 255, a: 0.12}
+                    ];
+                    const nebColor = nebColors[i];
+                    
+                    const nebGradient = this.ctx.createRadialGradient(nebX, nebY, 0, nebX, nebY, nebRadius);
+                    nebGradient.addColorStop(0, `rgba(${nebColor.r},${nebColor.g},${nebColor.b},${nebColor.a})`);
+                    nebGradient.addColorStop(1, 'rgba(0,0,0,0)');
+                    
+                    this.ctx.fillStyle = nebGradient;
+                    this.ctx.beginPath();
+                    this.ctx.arc(nebX, nebY, nebRadius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+                
+                // Update camera with smooth movement
+                this.camera.x += (this.camera.targetX - this.camera.x) * this.camera.smoothing;
+                this.camera.y += (this.camera.targetY - this.camera.y) * this.camera.smoothing;
+                
+                // Keep camera within bounds
+                this.camera.x = Math.max(-this.canvas.width, Math.min(this.canvas.width * 2, this.camera.x));
+                this.camera.y = Math.max(-this.canvas.height, Math.min(this.canvas.height, this.camera.y));
+                
+                // Count particles for performance monitoring
+                this.performanceStats.particleCount = this.energySwarms.reduce((count, swarm) => count + swarm.particles.length, 0);
+                
+                // Apply touch effects to particles
+                this.applyTouchEffects();
+                
+                // Draw layers with opacity controls
+                if (this.curtainOpacity > 0) this.drawAurora();
+                this.drawEnergySwarms();
+                // Light effects disabled per user request
+                // if (this.pillarOpacity > 0) this.drawLightPillars();
+                // if (this.strandOpacity > 0) this.drawAuroraStrands();
+                // Sparkle effects also disabled per user request
+                // if (this.sparkleOpacity > 0) this.drawSparkleEffect();
+                
+                // Draw active touch effects
+                this.drawTouchEffects();
+                
+                // Record render time and display performance
+                this.performanceStats.renderTime = performance.now() - renderStart;
+                this.drawPerformanceStats();
+                
+                // Auto-optimize if performance is poor
+                if (this.performanceStats.autoOptimize && !this.performanceStats.optimizing) {
+                    this.autoOptimizePerformance();
+                }
+                
+                this.time += 1;
+                this.animationId = requestAnimationFrame(() => this.animate());
+            }
+            
+
+            
+            startAnimation() {
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                }
+                this.animate();
+            }
+            
+            setupControls() {
+                // Collapsible sections
+                document.querySelectorAll('.section-header').forEach(header => {
+                    header.addEventListener('click', () => {
+                        const sectionName = header.dataset.section;
+                        const content = document.getElementById(`${sectionName}-content`);
+                        const arrow = header.querySelector('.collapse-arrow');
+                        
+                        content.classList.toggle('collapsed');
+                        arrow.classList.toggle('rotated');
+                        
+                        console.log(`📋 Section ${sectionName} ${content.classList.contains('collapsed') ? 'collapsed' : 'expanded'}`);
+                    });
+                });
+                
+                // Preset buttons removed per user request
+                
+                // Particle control sliders
+                document.getElementById('particleIntensity').addEventListener('input', (e) => {
+                    this.particleIntensity = parseFloat(e.target.value);
+                    document.getElementById('particleIntensityValue').textContent = this.particleIntensity;
+                    this.updateParticleProperties();
+                });
+                
+                document.getElementById('particleCount').addEventListener('input', (e) => {
+                    this.particleCount = parseInt(e.target.value);
+                    document.getElementById('particleCountValue').textContent = this.particleCount;
+                    this.updateParticleCount();
+                    // Mark manual change to prevent immediate auto-optimization
+                    this.performanceStats.lastManualChange = Date.now();
+                });
+                
+                document.getElementById('swarmSpeed').addEventListener('input', (e) => {
+                    this.swarmSpeed = parseFloat(e.target.value);
+                    document.getElementById('swarmSpeedValue').textContent = this.swarmSpeed;
+                });
+                
+                document.getElementById('trailLength').addEventListener('input', (e) => {
+                    this.trailLength = parseInt(e.target.value);
+                    document.getElementById('trailLengthValue').textContent = this.trailLength;
+                    this.updateTrailLength();
+                });
+                
+                // Layer controls and animation toggle removed per user request
+                
+                // Performance optimization toggles
+                document.getElementById('autoOptimizeToggle').addEventListener('click', (e) => {
+                    this.performanceStats.autoOptimize = !this.performanceStats.autoOptimize;
+                    e.target.textContent = this.performanceStats.autoOptimize ? 'Auto-Optimize ON' : 'Auto-Optimize OFF';
+                    e.target.classList.toggle('active', this.performanceStats.autoOptimize);
+                    console.log(`⚡ Auto-optimization ${this.performanceStats.autoOptimize ? 'enabled' : 'disabled'}`);
+                });
+                
+                document.getElementById('performanceDisplayToggle').addEventListener('click', (e) => {
+                    this.showPerformanceStats = !this.showPerformanceStats;
+                    e.target.textContent = this.showPerformanceStats ? 'Show Stats' : 'Hide Stats';
+                    e.target.classList.toggle('active', this.showPerformanceStats);
+                    console.log(`⚡ Performance display ${this.showPerformanceStats ? 'enabled' : 'disabled'}`);
+                });
+                
+                document.getElementById('disableOptimizationBtn').addEventListener('click', (e) => {
+                    // Temporarily disable auto-optimization for 60 seconds
+                    this.performanceStats.tempDisabled = Date.now() + 60000;
+                    e.target.textContent = '🚫 Auto-Opt Disabled (60s)';
+                    e.target.style.background = 'rgba(255,100,100,0.6)';
+                    
+                    setTimeout(() => {
+                        this.performanceStats.tempDisabled = 0;
+                        e.target.textContent = '🚫 Disable Auto-Opt (60s)';
+                        e.target.style.background = 'rgba(255,100,100,0.3)';
+                    }, 60000);
+                    
+                    console.log('⚡ Auto-optimization temporarily disabled for 60 seconds');
+                });
+                
+                // Panel minimize/maximize
+                document.getElementById('minimizeBtn').addEventListener('click', () => {
+                    const panel = document.getElementById('controlPanel');
+                    const minimized = document.getElementById('minimizedControl');
+                    
+                    panel.style.transform = 'translateX(-100%)';
+                    panel.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        panel.style.display = 'none';
+                        minimized.style.display = 'block';
+                        setTimeout(() => {
+                            minimized.style.transform = 'scale(1)';
+                            minimized.style.opacity = '1';
+                        }, 50);
+                    }, 300);
+                    
+                    console.log('🌌 Aurora controls minimized');
+                });
+                
+                document.getElementById('minimizedControl').addEventListener('click', () => {
+                    const panel = document.getElementById('controlPanel');
+                    const minimized = document.getElementById('minimizedControl');
+                    
+                    minimized.style.transform = 'scale(0)';
+                    minimized.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        minimized.style.display = 'none';
+                        panel.style.display = 'block';
+                        panel.style.transform = 'translateX(0)';
+                        panel.style.opacity = '1';
+                    }, 200);
+                    
+                    console.log('🌌 Aurora controls expanded');
+                });
+                
+                console.log('🎛️ Aurora controls initialized');
+            }
+            
+            updateParticleProperties() {
+                this.energySwarms.forEach(swarm => {
+                    swarm.intensity = this.particleIntensity;
+                    swarm.particles.forEach(particle => {
+                        particle.energy = this.particleIntensity * (Math.random() * 0.6 + 0.4);
+                    });
+                });
+            }
+            
+            updateParticleCount() {
+                this.energySwarms.forEach(swarm => {
+                    const currentCount = swarm.particles.length;
+                    if (currentCount < this.particleCount) {
+                        // Add particles
+                        const needed = this.particleCount - currentCount;
+                        for (let i = 0; i < needed; i++) {
+                            swarm.particles.push({
+                                x: Math.random() * this.canvas.width,
+                                y: Math.random() * this.canvas.height,
+                                vx: 0,
+                                vy: 0,
+                                size: Math.random() * 3 + 1,
+                                mass: Math.random() * 0.5 + 0.5,
+                                attraction: 0.002 + Math.random() * 0.003,
+                                maxSpeed: 2 + Math.random() * 2,
+                                trail: [],
+                                trailLength: this.trailLength,
+                                color: Math.floor(Math.random() * 3),
+                                energy: this.particleIntensity * (Math.random() * 0.6 + 0.4)
+                            });
+                        }
+                    } else if (currentCount > this.particleCount) {
+                        // Remove particles
+                        swarm.particles = swarm.particles.slice(0, this.particleCount);
+                    }
+                });
+            }
+            
+            updateTrailLength() {
+                this.energySwarms.forEach(swarm => {
+                    swarm.particles.forEach(particle => {
+                        particle.trailLength = this.trailLength;
+                        if (particle.trail.length > this.trailLength) {
+                            particle.trail = particle.trail.slice(-this.trailLength);
+                        }
+                    });
+                });
+            }
+            
+            setupMouseInteraction() {
+                let mouseX = this.canvas.width / 2;
+                let mouseY = this.canvas.height / 2;
+                
+                this.canvas.addEventListener('mousemove', (e) => {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                    
+                    // Gentle camera movement towards mouse
+                    this.camera.targetX += (mouseX - this.canvas.width / 2) * 0.1;
+                    this.camera.targetY += (mouseY - this.canvas.height / 2) * 0.1;
+                });
+                
+                this.canvas.addEventListener('click', (e) => {
+                    this.createTouchEffect(e.clientX, e.clientY, 'burst');
+                });
+            }
+            
+            setupKeyboardControls() {
+                // Keyboard controls for desktop
+                document.addEventListener('keydown', (e) => {
+                    const moveSpeed = 50;
+                    
+                    switch(e.key) {
+                        case 'ArrowLeft':
+                        case 'a':
+                        case 'A':
+                            this.camera.targetX -= moveSpeed;
+                            console.log('🌌 Exploring western aurora');
+                            break;
+                        case 'ArrowRight':
+                        case 'd':
+                        case 'D':
+                            this.camera.targetX += moveSpeed;
+                            console.log('🌌 Exploring eastern aurora');
+                            break;
+                        case 'ArrowUp':
+                        case 'w':
+                        case 'W':
+                            this.camera.targetY -= moveSpeed;
+                            console.log('🌌 Looking towards cosmic crown');
+                            break;
+                        case 'ArrowDown':
+                        case 's':
+                        case 'S':
+                            this.camera.targetY += moveSpeed;
+                            console.log('🌌 Gazing at aurora streams');
+                            break;
+                        case ' ':
+                            // Return to center
+                            this.camera.targetX = 0;
+                            this.camera.targetY = 0;
+                            console.log('🌌 Returning to aurora center');
+                            e.preventDefault();
+                            break;
+                    }
+                });
+                
+                // Touch controls for mobile
+                this.setupTouchControls();
+            }
+            
+            setupTouchControls() {
+                let touchStartX = 0;
+                let touchStartY = 0;
+                let isSwiping = false;
+                
+                this.canvas.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    touchStartX = touch.clientX;
+                    touchStartY = touch.clientY;
+                    isSwiping = false;
+                }, { passive: false });
+                
+                this.canvas.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    if (e.touches.length === 1) {
+                        const touch = e.touches[0];
+                        const deltaX = touch.clientX - touchStartX;
+                        const deltaY = touch.clientY - touchStartY;
+                        
+                        // Only start swiping after minimum distance
+                        if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
+                            isSwiping = true;
+                            
+                            // Move camera in opposite direction of swipe (like scrolling)
+                            this.camera.targetX += deltaX * 0.5;
+                            this.camera.targetY += deltaY * 0.5;
+                            
+                            touchStartX = touch.clientX;
+                            touchStartY = touch.clientY;
+                        }
+                    }
+                }, { passive: false });
+                
+                this.canvas.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    
+                    // Enhanced touch effects based on duration and touches
+                    if (!isSwiping && e.changedTouches.length === 1) {
+                        const touch = e.changedTouches[0];
+                        const rect = this.canvas.getBoundingClientRect();
+                        const x = touch.clientX - rect.left;
+                        const y = touch.clientY - rect.top;
+                        
+                        // Determine touch effect based on duration
+                        const touchDuration = Date.now() - (this.touchStartTime || Date.now());
+                        let effectType = 'burst';
+                        
+                        if (touchDuration > 800) effectType = 'timeDilation';
+                        else if (touchDuration > 500) effectType = 'gravityWell';
+                        else if (touchDuration > 300) effectType = 'vortex';
+                        
+                        this.createTouchEffect(x, y, effectType);
+                    }
+                    
+                    isSwiping = false;
+                }, { passive: false });
+                
+                // Track touch start time for duration-based effects
+                this.canvas.addEventListener('touchstart', (e) => {
+                    this.touchStartTime = Date.now();
+                }, { passive: false });
+                
+                // Double-tap to return to center
+                let lastTouchTime = 0;
+                this.canvas.addEventListener('touchstart', (e) => {
+                    const currentTime = Date.now();
+                    if (currentTime - lastTouchTime < 300) {
+                        // Double tap detected
+                        this.camera.targetX = 0;
+                        this.camera.targetY = 0;
+                        console.log('🌌 Double-tap: Returning to aurora center');
+                        e.preventDefault();
+                    }
+                    lastTouchTime = currentTime;
+                });
+            }
+            
+            drawSparkleEffect() {
+                // Disabled - user wants no sparkle effects
+                return;
+            }
+            
+            updatePerformanceStats(frameStart) {
+                this.performanceStats.frameTime = frameStart - this.performanceStats.lastFrameTime;
+                this.performanceStats.lastFrameTime = frameStart;
+                
+                // Calculate FPS
+                if (this.performanceStats.frameTime > 0) {
+                    const currentFPS = 1000 / this.performanceStats.frameTime;
+                    this.performanceStats.frameHistory.push(currentFPS);
+                    
+                    // Keep only last 30 frames for rolling average
+                    if (this.performanceStats.frameHistory.length > 30) {
+                        this.performanceStats.frameHistory.shift();
+                    }
+                    
+                    // Calculate average FPS
+                    this.performanceStats.fps = this.performanceStats.frameHistory.reduce((a, b) => a + b, 0) / this.performanceStats.frameHistory.length;
+                }
+            }
+            
+            drawPerformanceStats() {
+                if (!this.showPerformanceStats) return;
+                
+                this.ctx.save();
+                this.ctx.font = '11px monospace';
+                this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
+                this.ctx.lineWidth = 2;
+                
+                const x = 10;
+                const y = 30;
+                const lineHeight = 14;
+                
+                const stats = [
+                    `FPS: ${Math.round(this.performanceStats.fps)}`,
+                    `Particles: ${this.performanceStats.particleCount}`,
+                    `Render: ${Math.round(this.performanceStats.renderTime)}ms`,
+                    `Frame: ${Math.round(this.performanceStats.frameTime)}ms`
+                ];
+                
+                // Performance status indicator
+                let statusColor = 'rgba(0, 255, 0, 0.8)'; // Green for good
+                if (this.performanceStats.fps < this.performanceStats.minFPS) {
+                    statusColor = 'rgba(255, 0, 0, 0.8)'; // Red for poor
+                } else if (this.performanceStats.fps < this.performanceStats.targetFPS * 0.8) {
+                    statusColor = 'rgba(255, 255, 0, 0.8)'; // Yellow for warning
+                }
+                
+                // Draw background
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                this.ctx.fillRect(x - 5, y - 15, 120, stats.length * lineHeight + 15);
+                
+                // Draw status indicator
+                this.ctx.fillStyle = statusColor;
+                this.ctx.fillRect(x - 5, y - 15, 3, stats.length * lineHeight + 15);
+                
+                // Draw stats text
+                stats.forEach((stat, index) => {
+                    this.ctx.strokeText(stat, x, y + index * lineHeight);
+                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                    this.ctx.fillText(stat, x, y + index * lineHeight);
+                });
+                
+                // Auto-optimize indicator
+                if (this.performanceStats.optimizing) {
+                    this.ctx.fillStyle = 'rgba(255, 165, 0, 0.9)';
+                    this.ctx.strokeText('OPTIMIZING...', x, y + stats.length * lineHeight);
+                    this.ctx.fillText('OPTIMIZING...', x, y + stats.length * lineHeight);
+                }
+                
+                this.ctx.restore();
+            }
+            
+            autoOptimizePerformance() {
+                // Only optimize if performance is consistently poor and we're not already optimizing
+                const now = Date.now();
+                if (this.performanceStats.fps < this.performanceStats.minFPS && 
+                    this.performanceStats.frameHistory.length > 20 && 
+                    !this.performanceStats.optimizing &&
+                    (now - this.performanceStats.lastOptimization) > 8000 &&
+                    (now - this.performanceStats.lastManualChange) > 3000 &&
+                    (!this.performanceStats.tempDisabled || now > this.performanceStats.tempDisabled)) {
+                    
+                    // Check if last 10 frames are all below minimum FPS
+                    const recentFrames = this.performanceStats.frameHistory.slice(-10);
+                    const allPoor = recentFrames.every(fps => fps < this.performanceStats.minFPS);
+                    
+                    if (!allPoor) return;
+                    
+                    this.performanceStats.optimizing = true;
+                    this.performanceStats.lastOptimization = Date.now();
+                    
+                    // Reduce particle count by 15% (less aggressive)
+                    if (this.particleCount > 30) {
+                        const newCount = Math.max(30, Math.floor(this.particleCount * 0.85));
+                        this.particleCount = newCount;
+                        document.getElementById('particleCount').value = newCount;
+                        document.getElementById('particleCountValue').textContent = newCount;
+                        this.updateParticleCount();
+                        
+                        console.log(`⚡ Performance optimization: Reduced particles to ${newCount}`);
+                    }
+                    
+                    // Only reduce trail length if particles are already at minimum
+                    if (this.particleCount <= 30 && this.trailLength > 10) {
+                        const newLength = Math.max(10, Math.floor(this.trailLength * 0.8));
+                        this.trailLength = newLength;
+                        document.getElementById('trailLength').value = newLength;
+                        document.getElementById('trailLengthValue').textContent = newLength;
+                        this.updateTrailLength();
+                        
+                        console.log(`⚡ Performance optimization: Reduced trail length to ${newLength}`);
+                    }
+                    
+                    // Reset optimization flag after 5 seconds
+                    setTimeout(() => {
+                        this.performanceStats.optimizing = false;
+                    }, 5000);
+                }
+            }
+            
+            createTouchEffect(x, y, type) {
+                const effect = {
+                    x: x,
+                    y: y,
+                    type: type,
+                    life: 0,
+                    maxLife: type === 'timeDilation' ? 600 : type === 'gravityWell' ? 400 : 200,
+                    intensity: 1,
+                    radius: 50,
+                    maxRadius: type === 'timeDilation' ? 200 : type === 'gravityWell' ? 150 : 100,
+                    id: Date.now() + Math.random()
+                };
+                
+                this.touchEffects.activeFields.push(effect);
+                this.createEffectParticles(x, y, type);
+                
+                console.log(`🌌 ${type} effect created at ${x}, ${y}`);
+            }
+            
+            createEffectParticles(x, y, type) {
+                const particleCount = type === 'timeDilation' ? 25 : type === 'gravityWell' ? 20 : 15;
+                
+                this.energySwarms.forEach(swarm => {
+                    for (let i = 0; i < particleCount; i++) {
+                        const angle = (Math.PI * 2 * i) / particleCount;
+                        const distance = Math.random() * 60 + 20;
+                        
+                        swarm.particles.push({
+                            x: x + Math.cos(angle) * distance,
+                            y: y + Math.sin(angle) * distance,
+                            vx: Math.cos(angle) * (type === 'burst' ? 4 : 2),
+                            vy: Math.sin(angle) * (type === 'burst' ? 4 : 2),
+                            size: Math.random() * 5 + 2,
+                            mass: Math.random() * 0.8 + 0.3,
+                            attraction: 0.006 + Math.random() * 0.004,
+                            maxSpeed: type === 'timeDilation' ? 1 : 4,
+                            trail: [],
+                            trailLength: this.trailLength,
+                            color: swarm.particles[0]?.color || 0,
+                            energy: this.particleIntensity * (Math.random() * 0.8 + 0.7),
+                            burstLife: type === 'timeDilation' ? 800 : 300,
+                            isBurstParticle: true,
+                            effectType: type
+                        });
+                    }
+                });
+            }
+            
+            applyTouchEffects() {
+                this.touchEffects.activeFields = this.touchEffects.activeFields.filter(effect => {
+                    effect.life++;
+                    effect.radius = Math.min(effect.maxRadius, effect.radius + 2);
+                    effect.intensity = 1 - (effect.life / effect.maxLife);
+                    
+                    this.energySwarms.forEach(swarm => {
+                        swarm.particles.forEach(particle => {
+                            const dx = particle.x - effect.x;
+                            const dy = particle.y - effect.y;
+                            const distance = Math.sqrt(dx * dx + dy * dy);
+                            
+                            if (distance < effect.radius) {
+                                const force = effect.intensity * (1 - distance / effect.radius);
+                                
+                                switch (effect.type) {
+                                    case 'timeDilation':
+                                        particle.vx *= (1 - force * 0.8);
+                                        particle.vy *= (1 - force * 0.8);
+                                        particle.energy *= (1 + force * 0.5);
+                                        break;
+                                        
+                                    case 'gravityWell':
+                                        const pullForce = force * 0.15;
+                                        particle.vx -= dx / distance * pullForce;
+                                        particle.vy -= dy / distance * pullForce;
+                                        break;
+                                        
+                                    case 'vortex':
+                                        const angle = Math.atan2(dy, dx);
+                                        const swirl = force * 0.1;
+                                        particle.vx += Math.cos(angle + Math.PI/2) * swirl;
+                                        particle.vy += Math.sin(angle + Math.PI/2) * swirl;
+                                        break;
+                                        
+                                    case 'burst':
+                                        if (distance > 5) {
+                                            const pushForce = force * 0.2;
+                                            particle.vx += dx / distance * pushForce;
+                                            particle.vy += dy / distance * pushForce;
+                                        }
+                                        break;
+                                }
+                            }
+                        });
+                    });
+                    
+                    return effect.life < effect.maxLife;
+                });
+            }
+            
+            drawTouchEffects() {
+                this.ctx.save();
+                
+                this.touchEffects.activeFields.forEach(effect => {
+                    const alpha = effect.intensity * 0.3;
+                    
+                    switch (effect.type) {
+                        case 'timeDilation':
+                            const dilationGradient = this.ctx.createRadialGradient(
+                                effect.x, effect.y, 0, effect.x, effect.y, effect.radius
+                            );
+                            dilationGradient.addColorStop(0, `rgba(138, 43, 226, ${alpha})`);
+                            dilationGradient.addColorStop(0.5, `rgba(75, 0, 130, ${alpha * 0.5})`);
+                            dilationGradient.addColorStop(1, 'rgba(75, 0, 130, 0)');
+                            
+                            this.ctx.fillStyle = dilationGradient;
+                            this.ctx.beginPath();
+                            this.ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2);
+                            this.ctx.fill();
+                            
+                            for (let i = 0; i < 3; i++) {
+                                const rippleRadius = effect.radius * (0.3 + i * 0.3);
+                                this.ctx.strokeStyle = `rgba(138, 43, 226, ${alpha * (1 - i * 0.3)})`;
+                                this.ctx.lineWidth = 2;
+                                this.ctx.beginPath();
+                                this.ctx.arc(effect.x, effect.y, rippleRadius, 0, Math.PI * 2);
+                                this.ctx.stroke();
+                            }
+                            break;
+                            
+                        case 'gravityWell':
+                            const gravityGradient = this.ctx.createRadialGradient(
+                                effect.x, effect.y, 0, effect.x, effect.y, effect.radius
+                            );
+                            gravityGradient.addColorStop(0, `rgba(0, 0, 0, ${alpha * 0.8})`);
+                            gravityGradient.addColorStop(0.7, `rgba(25, 25, 112, ${alpha * 0.4})`);
+                            gravityGradient.addColorStop(1, 'rgba(25, 25, 112, 0)');
+                            
+                            this.ctx.fillStyle = gravityGradient;
+                            this.ctx.beginPath();
+                            this.ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2);
+                            this.ctx.fill();
+                            break;
+                            
+                        case 'vortex':
+                            this.ctx.strokeStyle = `rgba(0, 255, 255, ${alpha})`;
+                            this.ctx.lineWidth = 3;
+                            
+                            for (let i = 0; i < 5; i++) {
+                                const spiralRadius = effect.radius * (0.2 + i * 0.2);
+                                const spiralAngle = (effect.life * 0.1 + i) * Math.PI;
+                                
+                                this.ctx.beginPath();
+                                for (let a = 0; a < Math.PI * 4; a += 0.1) {
+                                    const r = spiralRadius * (a / (Math.PI * 4));
+                                    const x = effect.x + Math.cos(a + spiralAngle) * r;
+                                    const y = effect.y + Math.sin(a + spiralAngle) * r;
+                                    
+                                    if (a === 0) this.ctx.moveTo(x, y);
+                                    else this.ctx.lineTo(x, y);
+                                }
+                                this.ctx.stroke();
+                            }
+                            break;
+                            
+                        case 'burst':
+                            // Very subtle sonar ray effect - no more blinding flash
+                            this.ctx.strokeStyle = `rgba(100, 150, 200, ${alpha * 0.15})`;
+                            this.ctx.lineWidth = 0.5;
+                            
+                            // Draw very subtle radiating sonar rays 
+                            for (let i = 0; i < 6; i++) {
+                                const angle = (i / 6) * Math.PI * 2;
+                                const rayLength = effect.radius * 0.6;
+                                
+                                this.ctx.beginPath();
+                                this.ctx.moveTo(effect.x, effect.y);
+                                this.ctx.lineTo(
+                                    effect.x + Math.cos(angle) * rayLength,
+                                    effect.y + Math.sin(angle) * rayLength
+                                );
+                                this.ctx.stroke();
+                            }
+                            
+                            // Subtle sonar ring
+                            this.ctx.strokeStyle = `rgba(100, 150, 200, ${alpha * 0.1})`;
+                            this.ctx.lineWidth = 0.5;
+                            this.ctx.beginPath();
+                            this.ctx.arc(effect.x, effect.y, effect.radius * 0.5, 0, Math.PI * 2);
+                            this.ctx.stroke();
+                            break;
+                    }
+                });
+                
+                this.ctx.restore();
+            }
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.auroraStudio = new AuroraBorealisStudio();
+        });
+    </script>
+</body>
+  </html>

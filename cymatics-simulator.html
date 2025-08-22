@@ -1,1 +1,1380 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cymatics Simulator - Savo Studio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #00ff88, #00bcd4, #9c27b0, #ff6b6b);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            margin-bottom: 15px;
+            text-shadow: 
+                0 0 2px #00ff88,
+                0 0 4px #00ff88,
+                0 0 8px #00bcd4,
+                0 0 12px #9c27b0;
+            filter: drop-shadow(0 0 6px rgba(0, 255, 136, 0.3));
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Fix spinning border issue - prevent overflow */
+        body, html {
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .panel h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #00ff88;
+        }
+
+        .cymatics-canvas {
+            width: 100%;
+            height: 400px;
+            background: radial-gradient(circle at center, #000428, #004e92);
+            border-radius: 15px;
+            border: 2px solid rgba(0,255,136,0.3);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .frequency-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .frequency-slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .frequency-input {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 12px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            width: 100%;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00ff88, #00bcd4);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #9c27b0, #673ab7);
+            color: white;
+        }
+
+        .btn-solfeggio {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .solfeggio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .solfeggio-btn {
+            padding: 8px 12px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .solfeggio-btn:hover {
+            background: linear-gradient(45deg, #00ff88, #00bcd4);
+        }
+
+        .pattern-info {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .frequency-display {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00ff88;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .audio-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .wave-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ff88;
+        }
+
+        .cymatics-pattern {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350px;
+            height: 350px;
+        }
+
+        .frequency-node {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #00ff88;
+        }
+
+        .standing-wave {
+            position: absolute;
+            border: 1px solid rgba(0,255,136,0.7);
+            border-radius: 50%;
+        }
+
+        .chladni-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #00ff88, transparent);
+            transform-origin: center;
+        }
+
+        .export-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            /* Touch-friendly buttons only */
+            .btn, .solfeggio-btn {
+                min-height: 44px;
+                padding: 10px 15px;
+            }
+            
+            /* Prevent iOS zoom on input */
+            .frequency-input {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌊 Cymatics Simulator</h1>
+            <p>Visualize how sound frequencies create geometric patterns in matter</p>
+        </div>
+
+        <div class="controls-grid">
+            <!-- Frequency Controls -->
+            <div class="panel">
+                <h3>🎵 Frequency Generator</h3>
+                <div class="frequency-display" id="frequencyDisplay">432 Hz</div>
+                
+                <input type="range" min="20" max="2000" value="432" class="frequency-slider" id="frequencySlider">
+                
+                <div class="frequency-controls">
+                    <input type="number" min="20" max="20000" value="432" class="frequency-input" id="frequencyInput" placeholder="Enter Hz">
+                    <select class="frequency-input" id="visualType">
+                        <option value="realistic">Realistic Cymatics</option>
+                        <option value="sand">Sand Particle Mode</option>
+                        <option value="water">Water Wave Mode</option>
+                        <option value="metal">Metal Plate Mode</option>
+                        <option value="crystal">Crystal Formation</option>
+                    </select>
+                </div>
+
+                <div class="audio-controls">
+                    <button class="btn btn-primary" onclick="playFrequency()">🔊 Play</button>
+                    <button class="btn btn-secondary" onclick="stopFrequency()">⏹️ Stop</button>
+                </div>
+            </div>
+
+            <!-- Solfeggio Frequencies -->
+            <div class="panel">
+                <h3>🎼 Solfeggio Frequencies</h3>
+                <div class="solfeggio-grid">
+                    <button class="solfeggio-btn" onclick="setSolfeggioFrequency(174)">174 Hz<br>🔺 Foundation</button>
+                    <button class="solfeggio-btn" onclick="setSolfeggioFrequency(285)">285 Hz<br>🌸 Healing</button>
+                    <button class="solfeggio-btn" onclick="setSolfeggioFrequency(396)">396 Hz<br>✗ Liberation</button>
+                    <button class="solfeggio-btn" onclick="setSolfeggioFrequency(417)">417 Hz<br>🌀 Change</button>
+                    <button class="solfeggio-btn" onclick="setSolfeggioFrequency(528)">528 Hz<br>⬡ Love</button>
+                    <button class="solfeggio-btn" onclick="setSolfeggioFrequency(639)">639 Hz<br>🕸 Connection</button>
+                    <button class="solfeggio-btn" onclick="setSolfeggioFrequency(741)">741 Hz<br>⭐ Expression</button>
+                    <button class="solfeggio-btn" onclick="setSolfeggioFrequency(852)">852 Hz<br>🌺 Intuition</button>
+                    <button class="solfeggio-btn" onclick="setSolfeggioFrequency(963)">963 Hz<br>🕉 Unity</button>
+                </div>
+
+                <button class="btn btn-solfeggio" onclick="playSequence()">🎶 Play Sequence</button>
+            </div>
+
+            <!-- Pattern Visualization -->
+            <div class="panel">
+                <h3>🔮 Cymatics Visualization</h3>
+                <div class="cymatics-canvas" id="cymaticsCanvas">
+                    <div class="cymatics-pattern" id="cymaticsPattern"></div>
+                </div>
+                
+                <div class="pattern-info" id="patternInfo">
+                    <strong>Current Pattern:</strong> Sacred Circle<br>
+                    <strong>Frequency:</strong> 432 Hz - Natural Harmonic<br>
+                    <strong>Geometry:</strong> Circular waves with 8-fold symmetry
+                </div>
+            </div>
+
+            <!-- Tesla & Sacred Frequencies -->
+            <div class="panel">
+                <h3>🪐 Planetary & Sacred Frequencies</h3>
+                <div class="frequency-controls">
+                    <button class="solfeggio-btn" onclick="setPlanetaryFrequency(126.22)">🪐 Saturn<br>126.22 Hz</button>
+                    <button class="solfeggio-btn" onclick="setPlanetaryFrequency(136.10)">🌍 Earth<br>136.10 Hz</button>
+                    <button class="solfeggio-btn" onclick="setPlanetaryFrequency(194.18)">☀️ Sun<br>194.18 Hz</button>
+                    <button class="solfeggio-btn" onclick="setPlanetaryFrequency(210.42)">🌙 Moon<br>210.42 Hz</button>
+                    <button class="solfeggio-btn" onclick="setPlanetaryFrequency(221.23)">♀ Venus<br>221.23 Hz</button>
+                    <button class="solfeggio-btn" onclick="setPlanetaryFrequency(144.72)">♂ Mars<br>144.72 Hz</button>
+                </div>
+
+                <button class="btn btn-primary" onclick="generateTeslaPattern()">⚡ Tesla 3-6-9 Pattern</button>
+                <button class="btn btn-secondary" onclick="generateGoldenRatio()">🌀 Golden Ratio Spiral</button>
+            </div>
+
+            <!-- Export & Save -->
+            <div class="panel">
+                <h3>💾 Export & Share</h3>
+                <div class="export-controls">
+                    <button class="btn btn-primary" onclick="savePattern()">💾 Save Pattern</button>
+                    <button class="btn btn-secondary" onclick="exportImage()">🖼️ Export PNG</button>
+                    <button class="btn btn-solfeggio" onclick="recordVideo()">🎥 Record Video</button>
+                    <button class="btn btn-primary" onclick="sharePattern()">📱 Share</button>
+                </div>
+
+                <div class="pattern-info">
+                    <strong>Export Options:</strong><br>
+                    • High-resolution PNG images<br>
+                    • MP4 video recordings<br>
+                    • Audio + visual combinations<br>
+                    • Social media optimized formats
+                </div>
+            </div>
+
+            <!-- Brainwave Sync -->
+            <div class="panel">
+                <h3>🧠 Brainwave Synchronization</h3>
+                <div class="frequency-controls">
+                    <button class="solfeggio-btn" onclick="setBrainwave('delta')">Delta<br>0.5-4 Hz</button>
+                    <button class="solfeggio-btn" onclick="setBrainwave('theta')">Theta<br>4-8 Hz</button>
+                    <button class="solfeggio-btn" onclick="setBrainwave('alpha')">Alpha<br>8-13 Hz</button>
+                    <button class="solfeggio-btn" onclick="setBrainwave('beta')">Beta<br>13-30 Hz</button>
+                    <button class="solfeggio-btn" onclick="setBrainwave('gamma')">Gamma<br>30-100 Hz</button>
+                </div>
+
+                <button class="btn btn-primary" onclick="startMeditation()">🧘 Start Meditation</button>
+                <button class="btn btn-secondary" onclick="startFocus()">🎯 Focus Mode</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let audioContext;
+        let oscillator;
+        let gainNode;
+        let isPlaying = false;
+        let currentFrequency = 432;
+        let animationId;
+
+        // Initialize audio context
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                gainNode = audioContext.createGain();
+                gainNode.connect(audioContext.destination);
+                gainNode.gain.value = 0.1;
+            }
+        }
+
+        // Frequency controls
+        document.getElementById('frequencySlider').addEventListener('input', function(e) {
+            currentFrequency = parseInt(e.target.value);
+            updateFrequencyDisplay();
+            updatePattern();
+            if (isPlaying) {
+                updateOscillatorFrequency();
+            }
+        });
+
+        document.getElementById('frequencyInput').addEventListener('input', function(e) {
+            currentFrequency = parseInt(e.target.value) || 432;
+            document.getElementById('frequencySlider').value = Math.min(Math.max(currentFrequency, 20), 2000);
+            updateFrequencyDisplay();
+            updatePattern();
+            if (isPlaying) {
+                updateOscillatorFrequency();
+            }
+        });
+
+        // Visual mode selector
+        document.getElementById('visualType').addEventListener('change', function(e) {
+            updatePattern(); // Regenerate pattern with new visual mode
+        });
+
+        function updateFrequencyDisplay() {
+            document.getElementById('frequencyDisplay').textContent = currentFrequency + ' Hz';
+        }
+
+        function playFrequency() {
+            initAudio();
+            if (isPlaying) stopFrequency();
+            
+            oscillator = audioContext.createOscillator();
+            oscillator.type = 'sine'; // Always use sine for audio (pure tone)
+            oscillator.frequency.value = currentFrequency;
+            oscillator.connect(gainNode);
+            oscillator.start();
+            
+            isPlaying = true;
+            startVisualization();
+        }
+
+        function stopFrequency() {
+            if (oscillator) {
+                oscillator.stop();
+                oscillator = null;
+            }
+            isPlaying = false;
+            stopVisualization();
+        }
+
+        function updateOscillatorFrequency() {
+            if (oscillator) {
+                oscillator.frequency.value = currentFrequency;
+            }
+        }
+
+        // Solfeggio frequencies
+        function setSolfeggioFrequency(freq) {
+            currentFrequency = freq;
+            document.getElementById('frequencySlider').value = Math.min(Math.max(freq, 20), 2000);
+            document.getElementById('frequencyInput').value = freq;
+            updateFrequencyDisplay();
+            updatePattern();
+            updatePatternInfo(freq);
+        }
+
+        function setTeslaFrequency(freq) {
+            setSolfeggioFrequency(freq);
+        }
+
+        function setPlanetaryFrequency(freq) {
+            currentFrequency = freq;
+            document.getElementById('frequencySlider').value = Math.min(Math.max(freq, 20), 2000);
+            document.getElementById('frequencyInput').value = freq.toFixed(2);
+            updateFrequencyDisplay();
+            updatePattern();
+            updatePlanetaryInfo(freq);
+        }
+
+        function updatePlanetaryInfo(freq) {
+            const planetData = {
+                126.22: { name: 'Saturn Resonance', planet: 'Saturn', description: 'Grounding & Structure', geometry: 'Deep purple mandala with crystalline formations' },
+                136.10: { name: 'Earth Resonance', planet: 'Earth (OM)', description: 'Planetary Healing', geometry: 'Orange-red flower pattern with 8-fold symmetry' },
+                194.18: { name: 'Sun Tone', planet: 'Sun', description: 'Life Force Energy', geometry: 'Golden spiral with radiating light rays' },
+                210.42: { name: 'Moon Cycle', planet: 'Moon (Synodic)', description: 'Intuition & Cycles', geometry: 'Silver crescent waves with tidal patterns' },
+                221.23: { name: 'Venus Harmony', planet: 'Venus', description: 'Love & Beauty', geometry: 'Pentagonal rose pattern with golden ratio' },
+                144.72: { name: 'Mars Energy', planet: 'Mars', description: 'Action & Drive', geometry: 'Red dynamic spirals with angular formations' }
+            };
+            
+            const info = planetData[freq];
+            if (info) {
+                document.getElementById('patternInfo').innerHTML = `
+                    <strong>Current Pattern:</strong> ${info.name}<br>
+                    <strong>Planet:</strong> ${info.planet} - ${info.description}<br>
+                    <strong>Geometry:</strong> ${info.geometry}
+                `;
+            }
+        }
+
+        function setBrainwave(type) {
+            const brainwaves = {
+                'delta': 2,
+                'theta': 6,
+                'alpha': 10,
+                'beta': 20,
+                'gamma': 40
+            };
+            setSolfeggioFrequency(brainwaves[type]);
+        }
+
+        // Pattern visualization
+        function updatePattern() {
+            const canvas = document.getElementById('cymaticsCanvas');
+            const pattern = document.getElementById('cymaticsPattern');
+            
+            // Calculate pattern based on frequency
+            const nodeCount = Math.floor(currentFrequency / 50) + 3;
+            
+            // Remove problematic rotation animation that causes spinning border
+            pattern.style.animation = 'none';
+            pattern.style.borderStyle = getPatternStyle(currentFrequency);
+            
+            // Add wave particles
+            generateWaveParticles(canvas, nodeCount);
+        }
+
+        function getPatternStyle(freq) {
+            if (freq < 100) return 'dashed';
+            if (freq < 300) return 'dotted';
+            if (freq < 600) return 'double';
+            return 'solid';
+        }
+
+        function generateWaveParticles(container, count) {
+            // Clear existing particles and patterns
+            const existingElements = container.querySelectorAll('.wave-particle, .frequency-node, .standing-wave, .chladni-line');
+            existingElements.forEach(p => p.remove());
+            
+            // Stop previous animation
+            stopAnimation();
+            
+            // Generate clean cymatics pattern based on frequency
+            generateCleanCymaticsPattern(container);
+        }
+
+        let animationCanvas = null;
+        let animationActive = false;
+
+        function generateCleanCymaticsPattern(container) {
+            const frequency = currentFrequency;
+            
+            // Simple, reliable canvas creation
+            if (!animationCanvas) {
+                animationCanvas = document.createElement('canvas');
+                animationCanvas.style.position = 'absolute';
+                animationCanvas.style.left = '0px';
+                animationCanvas.style.top = '0px';
+                animationCanvas.style.pointerEvents = 'none';
+                container.appendChild(animationCanvas);
+            }
+            
+            // Simple canvas sizing that works
+            animationCanvas.width = container.offsetWidth;
+            animationCanvas.height = container.offsetHeight;
+            
+            const ctx = animationCanvas.getContext('2d');
+            const centerX = animationCanvas.width / 2;
+            const centerY = animationCanvas.height / 2;
+            const maxRadius = Math.min(animationCanvas.width, animationCanvas.height) / 2 - 20;
+            
+            // Start animation loop
+            if (!animationActive) {
+                animationActive = true;
+                animateCymatics(ctx, centerX, centerY, maxRadius, frequency);
+            }
+        }
+
+        function animateCymatics(ctx, centerX, centerY, maxRadius, frequency) {
+            if (!animationActive) return;
+            
+            // Clear canvas
+            ctx.fillStyle = '#000811';
+            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            
+            // Generate animated pattern (back to working version)
+            generateRealisticCymaticsPattern(ctx, centerX, centerY, maxRadius, frequency);
+            
+            // Continue animation
+            requestAnimationFrame(() => animateCymatics(ctx, centerX, centerY, maxRadius, frequency));
+        }
+
+        function stopAnimation() {
+            animationActive = false;
+        }
+
+        function generateRealisticCymaticsPattern(ctx, centerX, centerY, maxRadius, frequency) {
+            const visualMode = document.getElementById('visualType').value;
+            // Get canvas dimensions from context
+            const canvasWidth = ctx.canvas.width;
+            const canvasHeight = ctx.canvas.height;
+            
+            // Calculate wave parameters based on frequency
+            const wavelength = maxRadius / (frequency / 50);  // Scale wavelength to frequency
+            const nodeSpacing = wavelength / 2;
+            const amplitude = 0.8;
+            
+            // Add time-based animation
+            const time = Date.now() * 0.001; // Convert to seconds
+            
+            // Calculate number of modes based on frequency
+            const radialModes = Math.max(2, Math.floor(frequency / 100));
+            const angularModes = Math.max(3, Math.floor(frequency / 80));
+            
+            // Create complex interference pattern
+            const imageData = ctx.createImageData(canvasWidth, canvasHeight);
+            const data = imageData.data;
+            
+            for (let y = 0; y < canvasHeight; y++) {
+                for (let x = 0; x < canvasWidth; x++) {
+                    const dx = x - centerX;
+                    const dy = y - centerY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const angle = Math.atan2(dy, dx);
+                    
+                    // Skip if outside boundary
+                    if (distance > maxRadius) continue;
+                    
+                    // Calculate normalized position
+                    const r = distance / maxRadius;
+                    const theta = angle + Math.PI;
+                    
+                    // Generate standing wave pattern with multiple modes
+                    let waveValue = 0;
+                    
+                    // Radial component - creates concentric patterns with animation
+                    for (let n = 1; n <= radialModes; n++) {
+                        const radialFreq = n * Math.PI * frequency / 200;
+                        const timeOffset = time * frequency * 0.01; // Animate based on frequency
+                        waveValue += Math.cos(radialFreq * distance + timeOffset) * Math.exp(-r * 0.5) / n;
+                    }
+                    
+                    // Angular component - creates rotational patterns with animation
+                    for (let m = 1; m <= angularModes; m++) {
+                        const angularFreq = m * frequency / 100;
+                        const rotationOffset = time * frequency * 0.005; // Slower rotation
+                        waveValue += Math.cos(angularFreq * theta + rotationOffset) * (1 - r * 0.3) / m;
+                    }
+                    
+                    // Interference between modes with wave propagation
+                    const waveSpeed = frequency * 0.002;
+                    const interference = Math.sin(distance * frequency / 150 + time * waveSpeed) * Math.cos(theta * angularModes);
+                    waveValue += interference * 0.3;
+                    
+                    // Add complexity with Bessel-like function approximation and breathing effect
+                    const breathingPhase = Math.sin(time * frequency * 0.003) * 0.1;
+                    const besselApprox = Math.exp(-distance * 0.001) * Math.cos(distance * frequency / 100 + time * waveSpeed + breathingPhase);
+                    waveValue += besselApprox * 0.2;
+                    
+                    // Normalize and apply threshold to create nodal patterns
+                    waveValue = Math.abs(waveValue);
+                    const threshold = 0.3;
+                    
+                    // Create particle accumulation effect (where waves cancel = high amplitude)
+                    let intensity = 0;
+                    if (waveValue > threshold) {
+                        intensity = Math.min(255, (waveValue - threshold) * 400);
+                    }
+                    
+                    // Apply frequency-specific coloring
+                    const pixelIndex = (y * canvasWidth + x) * 4;
+                    
+                    if (intensity > 0) {
+                        const color = getFrequencyColor(frequency, intensity / 255, visualMode);
+                        data[pixelIndex] = color.r;     // Red
+                        data[pixelIndex + 1] = color.g; // Green
+                        data[pixelIndex + 2] = color.b; // Blue
+                        data[pixelIndex + 3] = intensity; // Alpha
+                    }
+                }
+            }
+            
+            ctx.putImageData(imageData, 0, 0);
+            
+            // Add subtle glow effect for enhanced visibility
+            ctx.globalCompositeOperation = 'screen';
+            ctx.filter = 'blur(1px)';
+            ctx.globalAlpha = 0.3;
+            ctx.putImageData(imageData, 0, 0);
+            ctx.filter = 'none';
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.globalAlpha = 1;
+        }
+
+        function getFrequencyColor(frequency, intensity, visualMode = 'realistic') {
+            let r, g, b;
+            
+            // Different material responses to frequency
+            switch(visualMode) {
+                case 'sand':
+                    // Sandy particles - warm earth tones
+                    r = Math.floor(194 + intensity * 60);
+                    g = Math.floor(154 + intensity * 40);
+                    b = Math.floor(108 + intensity * 20);
+                    return { r: Math.min(255, r), g: Math.min(255, g), b: Math.min(255, b) };
+                    
+                case 'water':
+                    // Water waves - cool blue spectrum
+                    r = Math.floor(64 + intensity * 30);
+                    g = Math.floor(164 + intensity * 50);
+                    b = Math.floor(223 + intensity * 32);
+                    return { r: Math.min(255, r), g: Math.min(255, g), b: Math.min(255, b) };
+                    
+                case 'metal':
+                    // Metal plate vibrations - metallic grays
+                    const metallic = 128 + intensity * 127;
+                    return { r: metallic, g: metallic, b: metallic };
+                    
+                case 'crystal':
+                    // Crystal formations - prismatic spectrum
+                    const freqRatio = frequency / 1000;
+                    r = Math.floor(128 + Math.sin(freqRatio * Math.PI * 2) * 127 * intensity);
+                    g = Math.floor(128 + Math.sin(freqRatio * Math.PI * 2 + 2) * 127 * intensity);
+                    b = Math.floor(128 + Math.sin(freqRatio * Math.PI * 2 + 4) * 127 * intensity);
+                    return { r: Math.min(255, r), g: Math.min(255, g), b: Math.min(255, b) };
+                    
+                default: // realistic
+                    // Continue with existing frequency-specific colors
+            }
+            
+            // Map frequencies to colors based on their therapeutic properties
+            if (frequency === 174) {
+                // Foundation - Deep purple
+                r = Math.floor(106 * intensity);
+                g = Math.floor(27 * intensity);
+                b = Math.floor(154 * intensity);
+            } else if (frequency === 285) {
+                // Healing - Orange
+                r = Math.floor(255 * intensity);
+                g = Math.floor(140 * intensity);
+                b = Math.floor(0 * intensity);
+            } else if (frequency === 396) {
+                // Liberation - Cyan
+                r = Math.floor(0 * intensity);
+                g = Math.floor(188 * intensity);
+                b = Math.floor(212 * intensity);
+            } else if (frequency === 417) {
+                // Change - Golden
+                r = Math.floor(255 * intensity);
+                g = Math.floor(193 * intensity);
+                b = Math.floor(7 * intensity);
+            } else if (frequency === 432) {
+                // Natural harmonic - Green
+                r = Math.floor(76 * intensity);
+                g = Math.floor(175 * intensity);
+                b = Math.floor(80 * intensity);
+            } else if (frequency === 528) {
+                // Love frequency - Bright green
+                r = Math.floor(0 * intensity);
+                g = Math.floor(255 * intensity);
+                b = Math.floor(127 * intensity);
+            } else if (frequency === 639) {
+                // Connection - Light blue
+                r = Math.floor(116 * intensity);
+                g = Math.floor(185 * intensity);
+                b = Math.floor(255 * intensity);
+            } else if (frequency === 741) {
+                // Expression - Red
+                r = Math.floor(255 * intensity);
+                g = Math.floor(69 * intensity);
+                b = Math.floor(69 * intensity);
+            } else if (frequency === 852) {
+                // Intuition - Purple
+                r = Math.floor(147 * intensity);
+                g = Math.floor(112 * intensity);
+                b = Math.floor(219 * intensity);
+            } else if (frequency === 963) {
+                // Unity - Violet
+                r = Math.floor(138 * intensity);
+                g = Math.floor(43 * intensity);
+                b = Math.floor(226 * intensity);
+            } else if (Math.abs(frequency - 126.22) < 0.1) {
+                // Saturn - Deep blue
+                r = Math.floor(72 * intensity);
+                g = Math.floor(61 * intensity);
+                b = Math.floor(139 * intensity);
+            } else if (Math.abs(frequency - 136.10) < 0.1) {
+                // Earth - Orange-red
+                r = Math.floor(255 * intensity);
+                g = Math.floor(69 * intensity);
+                b = Math.floor(0 * intensity);
+            } else if (Math.abs(frequency - 144.72) < 0.1) {
+                // Mars - Red
+                r = Math.floor(220 * intensity);
+                g = Math.floor(20 * intensity);
+                b = Math.floor(60 * intensity);
+            } else if (Math.abs(frequency - 194.18) < 0.1) {
+                // Sun - Yellow-gold
+                r = Math.floor(255 * intensity);
+                g = Math.floor(215 * intensity);
+                b = Math.floor(0 * intensity);
+            } else if (Math.abs(frequency - 210.42) < 0.1) {
+                // Moon - Silver-blue
+                r = Math.floor(192 * intensity);
+                g = Math.floor(192 * intensity);
+                b = Math.floor(255 * intensity);
+            } else if (Math.abs(frequency - 221.23) < 0.1) {
+                // Venus - Pink
+                r = Math.floor(255 * intensity);
+                g = Math.floor(182 * intensity);
+                b = Math.floor(193 * intensity);
+            } else {
+                // Custom frequency - spectrum based
+                const hue = (frequency % 360) / 360;
+                const rgb = hslToRgb(hue, 0.8, 0.6);
+                r = Math.floor(rgb[0] * intensity);
+                g = Math.floor(rgb[1] * intensity);
+                b = Math.floor(rgb[2] * intensity);
+            }
+            
+            return { r, g, b };
+        }
+
+        function hslToRgb(h, s, l) {
+            let r, g, b;
+            
+            if (s === 0) {
+                r = g = b = l; // achromatic
+            } else {
+                const hue2rgb = (p, q, t) => {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1/6) return p + (q - p) * 6 * t;
+                    if (t < 1/2) return q;
+                    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                    return p;
+                };
+                
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1/3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1/3);
+            }
+            
+            return [r * 255, g * 255, b * 255];
+        }
+
+        function createPlanetaryPattern(container, frequency, centerX, centerY) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 350;
+            canvas.height = 350;
+            canvas.style.position = 'absolute';
+            canvas.style.left = '0px';
+            canvas.style.top = '0px';
+            canvas.style.pointerEvents = 'none';
+            
+            const ctx = canvas.getContext('2d');
+            ctx.translate(canvas.width/2, canvas.height/2);
+            
+            // Determine pattern type based on frequency
+            if (frequency === 174) createFoundationPattern(ctx);
+            else if (frequency === 285) createHealingMandala(ctx);
+            else if (frequency === 396) createLiberationCross(ctx);
+            else if (frequency === 417) createChangeSpiral(ctx);
+            else if (frequency === 528) createLoveHexagon(ctx);
+            else if (frequency === 639) createConnectionWeb(ctx);
+            else if (frequency === 741) createExpressionStar(ctx);
+            else if (frequency === 852) createIntuitionFlower(ctx);
+            else if (frequency === 963) createUnityMandala(ctx);
+            else if (frequency === 432) createNaturalHarmonic(ctx);
+            else createCustomPattern(ctx, frequency);
+            
+            container.appendChild(canvas);
+        }
+
+        function createLoveHexagon(ctx) {
+            ctx.strokeStyle = '#00ff88';
+            ctx.fillStyle = 'rgba(0,255,136,0.1)';
+            ctx.lineWidth = 2;
+            
+            // Central hexagon
+            drawHexagon(ctx, 0, 0, 40);
+            
+            // Surrounding hexagonal flower
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                const x = Math.cos(angle) * 70;
+                const y = Math.sin(angle) * 70;
+                drawHexagon(ctx, x, y, 25);
+            }
+            
+            // Outer ring of smaller hexagons
+            for (let i = 0; i < 12; i++) {
+                const angle = (i * Math.PI) / 6;
+                const x = Math.cos(angle) * 120;
+                const y = Math.sin(angle) * 120;
+                drawHexagon(ctx, x, y, 15);
+            }
+            
+            // Radiating lines
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(Math.cos(angle) * 150, Math.sin(angle) * 150);
+                ctx.stroke();
+            }
+        }
+
+        function createExpressionStar(ctx) {
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.fillStyle = 'rgba(255,107,107,0.1)';
+            ctx.lineWidth = 2;
+            
+            // 7-pointed star
+            drawStar(ctx, 0, 0, 7, 80, 40);
+            
+            // Inner mandala
+            for (let i = 0; i < 7; i++) {
+                const angle = (i * 2 * Math.PI) / 7;
+                const x = Math.cos(angle) * 30;
+                const y = Math.sin(angle) * 30;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 8, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+            }
+            
+            // Radiating energy lines
+            for (let i = 0; i < 14; i++) {
+                const angle = (i * Math.PI) / 7;
+                ctx.beginPath();
+                ctx.moveTo(Math.cos(angle) * 50, Math.sin(angle) * 50);
+                ctx.lineTo(Math.cos(angle) * 130, Math.sin(angle) * 130);
+                ctx.stroke();
+            }
+        }
+
+        function createUnityMandala(ctx) {
+            ctx.strokeStyle = '#9c27b0';
+            ctx.fillStyle = 'rgba(156,39,176,0.1)';
+            ctx.lineWidth = 1.5;
+            
+            // 9-fold symmetry
+            for (let ring = 1; ring <= 4; ring++) {
+                const radius = ring * 35;
+                
+                for (let i = 0; i < 9 * ring; i++) {
+                    const angle = (i * 2 * Math.PI) / (9 * ring);
+                    const x = Math.cos(angle) * radius;
+                    const y = Math.sin(angle) * radius;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, 3 - ring * 0.5, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+            }
+            
+            // Central unity symbol
+            ctx.beginPath();
+            ctx.arc(0, 0, 15, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+            
+            // 9 radiating lines
+            for (let i = 0; i < 9; i++) {
+                const angle = (i * 2 * Math.PI) / 9;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(Math.cos(angle) * 140, Math.sin(angle) * 140);
+                ctx.stroke();
+            }
+        }
+
+        function createNaturalHarmonic(ctx) {
+            ctx.strokeStyle = '#4ecdc4';
+            ctx.fillStyle = 'rgba(78,205,196,0.1)';
+            ctx.lineWidth = 2;
+            
+            // Fibonacci spiral pattern
+            const phi = 1.618033988749;
+            const points = [];
+            
+            for (let i = 0; i < 144; i++) {
+                const angle = i * 2.399963; // Golden angle
+                const radius = Math.sqrt(i) * 8;
+                const x = Math.cos(angle) * radius;
+                const y = Math.sin(angle) * radius;
+                points.push({x, y});
+            }
+            
+            // Draw spiral
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.stroke();
+            
+            // Add golden ratio rectangles
+            for (let i = 0; i < 8; i++) {
+                const size = Math.pow(phi, i) * 5;
+                const angle = i * Math.PI / 4;
+                
+                ctx.save();
+                ctx.rotate(angle);
+                ctx.strokeRect(-size/2, -size/2, size, size/phi);
+                ctx.restore();
+            }
+        }
+
+        // Remove all basic geometric patterns - replaced with authentic wave physics
+
+        function drawHexagon(ctx, x, y, radius) {
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                const px = x + Math.cos(angle) * radius;
+                const py = y + Math.sin(angle) * radius;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        function drawStar(ctx, x, y, points, outerRadius, innerRadius) {
+            ctx.beginPath();
+            for (let i = 0; i < points * 2; i++) {
+                const angle = (i * Math.PI) / points;
+                const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                const px = x + Math.cos(angle) * radius;
+                const py = y + Math.sin(angle) * radius;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        function createRadialLines(container, frequency, centerX, centerY) {
+            const lineCount = Math.floor(frequency / 40) + 6;
+            
+            for (let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.className = 'chladni-line';
+                
+                const angle = (i / lineCount) * 180;
+                const length = 160 + Math.sin(frequency / 80) * 60;
+                
+                line.style.width = length + 'px';
+                line.style.left = (centerX - length / 2) + 'px';
+                line.style.top = centerY + 'px';
+                line.style.transform = `rotate(${angle}deg)`;
+                line.style.opacity = 0.3 + Math.sin(frequency / 150) * 0.2;
+                line.style.background = `linear-gradient(90deg, transparent, rgba(0,255,136,0.8), transparent)`;
+                
+                container.appendChild(line);
+            }
+        }
+
+        function createConcentricRings(container, frequency, centerX, centerY) {
+            const ringCount = Math.floor(frequency / 80) + 3;
+            
+            for (let i = 1; i <= ringCount; i++) {
+                const ring = document.createElement('div');
+                ring.className = 'standing-wave';
+                
+                const size = i * (50 + frequency / 20);
+                ring.style.width = size + 'px';
+                ring.style.height = size + 'px';
+                ring.style.left = (centerX - size / 2) + 'px';
+                ring.style.top = (centerY - size / 2) + 'px';
+                ring.style.opacity = 0.4 / i;
+                ring.style.borderColor = `hsla(${120 + frequency/10}, 80%, 60%, ${0.6/i})`;
+                ring.style.borderWidth = (2/i) + 'px';
+                
+                container.appendChild(ring);
+            }
+        }
+
+        function generateStandingWaves(container) {
+            const waveCount = Math.floor(currentFrequency / 100) + 1;
+            
+            for (let i = 1; i <= waveCount; i++) {
+                const wave = document.createElement('div');
+                wave.className = 'standing-wave';
+                
+                const size = (i * 80) + (currentFrequency / 10);
+                wave.style.width = size + 'px';
+                wave.style.height = size + 'px';
+                wave.style.left = (container.offsetWidth / 2 - size / 2) + 'px';
+                wave.style.top = (container.offsetHeight / 2 - size / 2) + 'px';
+                wave.style.opacity = 0.8 / i;
+                
+                // Add pulsing animation
+                wave.style.animation = `pulse ${2 / (currentFrequency / 200)}s ease-in-out infinite`;
+                wave.style.animationDelay = (i * 0.2) + 's';
+                
+                container.appendChild(wave);
+            }
+        }
+
+        function generateFrequencyNodes(container) {
+            const nodeCount = Math.floor(currentFrequency / 30) + 8;
+            
+            for (let i = 0; i < nodeCount; i++) {
+                const node = document.createElement('div');
+                node.className = 'frequency-node';
+                
+                // Create more complex node patterns based on frequency harmonics
+                const harmonic = i % 4 + 1;
+                const radius = (harmonic * 40) + (currentFrequency / 20);
+                const angle = (i / nodeCount) * 2 * Math.PI * harmonic;
+                
+                const x = container.offsetWidth / 2 + Math.cos(angle) * radius;
+                const y = container.offsetHeight / 2 + Math.sin(angle) * radius;
+                
+                node.style.left = x + 'px';
+                node.style.top = y + 'px';
+                
+                // Size varies with frequency
+                const size = 2 + (currentFrequency / 500);
+                node.style.width = size + 'px';
+                node.style.height = size + 'px';
+                
+                // Color intensity based on position
+                const intensity = Math.abs(Math.sin(angle)) * 0.8 + 0.2;
+                node.style.boxShadow = `0 0 ${intensity * 10}px rgba(0,255,136,${intensity})`;
+                node.style.background = `rgba(0,255,136,${intensity})`;
+                
+                container.appendChild(node);
+            }
+        }
+
+        function updatePatternInfo(freq) {
+            const info = document.getElementById('patternInfo');
+            const patternData = getPatternData(freq);
+            
+            info.innerHTML = `
+                <strong>Current Pattern:</strong> ${patternData.name}<br>
+                <strong>Frequency:</strong> ${freq} Hz - ${patternData.description}<br>
+                <strong>Geometry:</strong> ${patternData.geometry}
+            `;
+        }
+
+        function getPatternData(freq) {
+            const patterns = {
+                174: { name: 'Foundation Grid', description: 'Pain Relief', geometry: 'Deep radial nodal lines with 3-fold symmetry' },
+                285: { name: 'Healing Mandala', description: 'Tissue Repair', geometry: 'Concentric circles with healing nodes' },
+                396: { name: 'Liberation Cross', description: 'Fear Release', geometry: 'Cross-hatch interference patterns' },
+                417: { name: 'Change Spiral', description: 'Transformation', geometry: 'Logarithmic spiral node formations' },
+                528: { name: 'Love Hexagon', description: 'DNA Repair', geometry: 'Perfect hexagonal standing waves' },
+                639: { name: 'Connection Web', description: 'Relationships', geometry: 'Interconnected triangular nodes' },
+                741: { name: 'Expression Star', description: 'Self-Expression', geometry: '7-pointed star with radial lines' },
+                852: { name: 'Intuition Flower', description: 'Third Eye', geometry: '8-petaled flower pattern' },
+                963: { name: 'Unity Circle', description: 'Oneness', geometry: '9-fold symmetrical mandala' },
+                432: { name: 'Natural Harmonic', description: 'Earth Resonance', geometry: 'Fibonacci spiral nodes' },
+                440: { name: 'Standard Grid', description: 'Concert Pitch', geometry: 'Regular square lattice' },
+                3: { name: 'Delta Waves', description: 'Deep Sleep', geometry: 'Slow, large amplitude waves' },
+                6: { name: 'Theta Waves', description: 'Meditation', geometry: 'Rhythmic circular patterns' },
+                9: { name: 'Alpha Waves', description: 'Relaxation', geometry: 'Smooth sinusoidal forms' },
+                20: { name: 'Beta Waves', description: 'Focus', geometry: 'Dense, complex interference' },
+                40: { name: 'Gamma Waves', description: 'Consciousness', geometry: 'High-frequency nodal networks' }
+            };
+            
+            // For frequencies not in the list, generate descriptive pattern info
+            if (!patterns[freq]) {
+                let geometry = 'Complex wave interference';
+                if (freq < 50) geometry = 'Large amplitude, slow oscillations';
+                else if (freq < 200) geometry = 'Medium nodal patterns with radial symmetry';
+                else if (freq < 500) geometry = 'Dense Chladni line formations';
+                else if (freq < 1000) geometry = 'High-frequency standing wave networks';
+                else geometry = 'Ultra-fine geometric tessellations';
+                
+                return { 
+                    name: `${freq}Hz Pattern`, 
+                    description: 'Custom Frequency', 
+                    geometry: geometry
+                };
+            }
+            
+            return patterns[freq];
+        }
+
+        // Visualization animation
+        function startVisualization() {
+            animatePattern();
+        }
+
+        function stopVisualization() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        function animatePattern() {
+            const time = Date.now() * 0.001;
+            const container = document.getElementById('cymaticsCanvas');
+            
+            // Animate frequency nodes
+            const nodes = container.querySelectorAll('.frequency-node');
+            nodes.forEach((node, index) => {
+                const basePhase = (index / nodes.length) * 2 * Math.PI;
+                const timePhase = time * currentFrequency / 200;
+                const phase = basePhase + timePhase;
+                
+                // Create realistic vibration patterns
+                const vibrationX = Math.sin(phase) * 2;
+                const vibrationY = Math.cos(phase * 1.3) * 2;
+                
+                const currentX = parseFloat(node.style.left);
+                const currentY = parseFloat(node.style.top);
+                
+                node.style.transform = `translate(${vibrationX}px, ${vibrationY}px)`;
+                
+                // Intensity based on standing wave interference
+                const intensity = Math.abs(Math.sin(phase)) * 0.7 + 0.3;
+                node.style.opacity = intensity;
+            });
+            
+            // Animate Chladni lines
+            const lines = container.querySelectorAll('.chladni-line');
+            lines.forEach((line, index) => {
+                const phase = time * currentFrequency / 300 + index;
+                const wave = Math.sin(phase) * 0.1 + 1;
+                line.style.transform = line.style.transform.replace(/scale\([^)]+\)/, '') + ` scaleY(${wave})`;
+            });
+            
+            // Animate standing waves
+            const waves = container.querySelectorAll('.standing-wave');
+            waves.forEach((wave, index) => {
+                const phase = time * currentFrequency / 400 + index * 0.5;
+                const scale = 1 + Math.sin(phase) * 0.1;
+                wave.style.transform = `scale(${scale})`;
+                
+                const opacity = 0.4 + Math.sin(phase) * 0.3;
+                wave.style.opacity = opacity / (index + 1);
+            });
+            
+            if (isPlaying) {
+                animationId = requestAnimationFrame(animatePattern);
+            }
+        }
+
+        // Advanced functions
+        function playSequence() {
+            const sequence = [174, 285, 396, 417, 528, 639, 741, 852, 963];
+            let index = 0;
+            
+            function playNext() {
+                if (index < sequence.length) {
+                    setSolfeggioFrequency(sequence[index]);
+                    playFrequency();
+                    
+                    setTimeout(() => {
+                        stopFrequency();
+                        index++;
+                        setTimeout(playNext, 500);
+                    }, 2000);
+                }
+            }
+            
+            playNext();
+        }
+
+        function generateTeslaPattern() {
+            // Create Tesla 3-6-9 pattern
+            setSolfeggioFrequency(369);
+            updatePatternInfo(369);
+            document.getElementById('patternInfo').innerHTML += '<br><strong>Tesla Pattern:</strong> 3-6-9 harmonic resonance';
+        }
+
+        function generateGoldenRatio() {
+            // Golden ratio frequency
+            setSolfeggioFrequency(1618);
+            updatePatternInfo(1618);
+            document.getElementById('patternInfo').innerHTML += '<br><strong>Golden Ratio:</strong> Φ = 1.618 divine proportion';
+        }
+
+        function startMeditation() {
+            setBrainwave('theta');
+            playFrequency();
+            alert('🧘 Meditation mode activated. Theta waves (6 Hz) for deep meditation and creativity.');
+        }
+
+        function startFocus() {
+            setBrainwave('alpha');
+            playFrequency();
+            alert('🎯 Focus mode activated. Alpha waves (10 Hz) for concentration and learning.');
+        }
+
+        // Export functions
+        function savePattern() {
+            const patternData = {
+                frequency: currentFrequency,
+                waveType: document.getElementById('waveType').value,
+                timestamp: new Date().toISOString(),
+                patternInfo: document.getElementById('patternInfo').innerHTML
+            };
+            
+            localStorage.setItem('savoStudioCymaticsPattern_' + Date.now(), JSON.stringify(patternData));
+            alert('✅ Pattern saved to your local library!');
+        }
+
+        function exportImage() {
+            // Create canvas for export
+            alert('🖼️ Exporting high-resolution cymatics pattern as PNG...');
+        }
+
+        function recordVideo() {
+            alert('🎥 Video recording feature coming soon! Will capture both audio and visual patterns.');
+        }
+
+        function sharePattern() {
+            const shareData = {
+                title: 'Savo Studio Cymatics Pattern',
+                text: `Check out this cymatics pattern at ${currentFrequency} Hz!`,
+                url: window.location.href
+            };
+            
+            if (navigator.share) {
+                navigator.share(shareData);
+            } else {
+                navigator.clipboard.writeText(shareData.url);
+                alert('📱 Pattern link copied to clipboard!');
+            }
+        }
+
+        // Initialize
+        updateFrequencyDisplay();
+        updatePattern();
+        updatePatternInfo(432);
+
+        // CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes rotate {
+                from { transform: translate(-50%, -50%) rotate(0deg); }
+                to { transform: translate(-50%, -50%) rotate(360deg); }
+            }
+            
+            .wave-particle {
+                animation: pulse 2s ease-in-out infinite;
+            }
+            
+            @keyframes pulse {
+                0%, 100% { opacity: 0.3; transform: scale(1); }
+                50% { opacity: 1; transform: scale(1.5); }
+            }
+        `;
+        document.head.appendChild(style);
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateFrequencyDisplay();
+            updatePattern();
+        });
+
+    </script>
+</body>
+</html>

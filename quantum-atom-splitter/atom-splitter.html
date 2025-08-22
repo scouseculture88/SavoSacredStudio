@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Atom Splitter</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at center, #001122 0%, #000000 100%);
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            user-select: none;
+        }
+        
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 15px 20px;
+            background: linear-gradient(180deg, rgba(0, 17, 34, 0.95) 0%, rgba(0, 17, 34, 0) 100%);
+            backdrop-filter: blur(15px);
+        }
+        
+        .title {
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, #ff0080, #00ffff, #ffff00, #ff0080);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+            animation: quantumShimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes quantumShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .subtitle {
+            font-size: 12px;
+            color: rgba(0, 255, 255, 0.8);
+            font-weight: 300;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 2px;
+        }
+        
+        #canvas {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            cursor: crosshair;
+        }
+        
+        .controls {
+            position: absolute;
+            top: 70px;
+            right: 10px;
+            width: 180px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+        
+        .control-group {
+            background: rgba(0, 17, 34, 0.95);
+            border: 1px solid rgba(255, 0, 128, 0.4);
+            border-radius: 6px;
+            padding: 8px;
+            backdrop-filter: blur(20px);
+        }
+        
+        .control-label {
+            font-family: 'Orbitron', monospace;
+            font-size: 9px;
+            color: rgba(0, 255, 255, 0.9);
+            margin-bottom: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        select, input[type="range"] {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 0, 128, 0.4);
+            border-radius: 3px;
+            color: #ff0080;
+            font-size: 9px;
+            outline: none;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        select { padding: 4px; }
+        
+        input[type="range"] {
+            height: 3px;
+            -webkit-appearance: none;
+            background: rgba(255, 0, 128, 0.2);
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff0080, #00ffff);
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(255, 0, 128, 0.8);
+        }
+        
+        .value-display {
+            font-family: 'Orbitron', monospace;
+            font-size: 7px;
+            color: rgba(255, 255, 0, 0.9);
+            margin-top: 2px;
+            text-align: center;
+            font-weight: 700;
+        }
+        
+        .button {
+            background: linear-gradient(135deg, rgba(255, 0, 128, 0.3), rgba(0, 255, 255, 0.2));
+            border: 1px solid rgba(255, 0, 128, 0.5);
+            border-radius: 3px;
+            color: #ff0080;
+            padding: 6px 8px;
+            font-size: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+            margin: 1px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        
+        .button:hover {
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.6);
+        }
+        
+        .rakim-quote {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 17, 34, 0.95);
+            border: 1px solid rgba(255, 0, 128, 0.4);
+            border-radius: 6px;
+            padding: 6px;
+            backdrop-filter: blur(20px);
+            font-family: 'Orbitron', monospace;
+            font-size: 7px;
+            color: rgba(0, 255, 255, 0.9);
+            max-width: 250px;
+            line-height: 1.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">ATOM SPLITTER</div>
+            <div class="subtitle">"Atom splitter, complex, it's quantum physics"</div>
+        </div>
+        
+        <canvas id="canvas"></canvas>
+        
+        <div class="controls">
+            <div class="control-group">
+                <div class="control-label">Energy</div>
+                <input type="range" id="energy" min="1" max="10" value="5" step="0.5">
+                <div class="value-display" id="energyValue">5.0 TeV</div>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">Particles</div>
+                <input type="range" id="particleCount" min="50" max="300" value="150" step="10">
+                <div class="value-display" id="particleValue">150</div>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">Quantum State</div>
+                <select id="quantumState">
+                    <option value="superposition">Superposition</option>
+                    <option value="entanglement">Entanglement</option>
+                    <option value="tunneling">Tunneling</option>
+                    <option value="uncertainty">Uncertainty</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">Wave Mode</div>
+                <select id="waveFunction">
+                    <option value="probability">Probability</option>
+                    <option value="interference">Interference</option>
+                    <option value="collapse">Collapse</option>
+                    <option value="duality">Duality</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <button class="button" id="splitBtn">SPLIT</button>
+                <button class="button" id="collapseBtn">COLLAPSE</button>
+                <button class="button" id="resetBtn">RESET</button>
+            </div>
+        </div>
+        
+        <div class="rakim-quote">
+            "Atom splitter, complex, it's quantum physics<br>
+            Walkin' paradox, I made them all believers"<br>
+            <span style="color: rgba(255, 0, 128, 0.9);">- Rakim Allah</span>
+        </div>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height, centerX, centerY;
+        let time = 0;
+        let particles = [];
+        let splittingEvent = false;
+        let waveCollapse = 0;
+        
+        let energyLevel = 5;
+        let particleCount = 150;
+        let quantumState = 'superposition';
+        let waveFunction = 'probability';
+        
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            centerX = width / 2;
+            centerY = height / 2;
+            initParticles();
+        }
+        
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: centerX + (Math.random() - 0.5) * 100,
+                    y: centerY + (Math.random() - 0.5) * 100,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    energy: Math.random() * energyLevel,
+                    spin: Math.random() * Math.PI * 2,
+                    charge: Math.random() > 0.5 ? 1 : -1,
+                    probability: Math.random(),
+                    phase: Math.random() * Math.PI * 2,
+                    type: Math.random() > 0.5 ? 'matter' : 'antimatter'
+                });
+            }
+        }
+        
+        function getParticleColor(particle, alpha = 1) {
+            if (particle.type === 'matter') {
+                return particle.charge > 0 ? 
+                    `rgba(255, 100, 180, ${alpha})` : `rgba(100, 255, 255, ${alpha})`;
+            } else {
+                return particle.charge > 0 ? 
+                    `rgba(255, 255, 100, ${alpha})` : `rgba(180, 100, 255, ${alpha})`;
+            }
+        }
+        
+        function updateParticles() {
+            particles.forEach(particle => {
+                // Quantum effects
+                if (quantumState === 'uncertainty') {
+                    particle.vx += (Math.random() - 0.5) * 0.1;
+                    particle.vy += (Math.random() - 0.5) * 0.1;
+                }
+                
+                if (quantumState === 'superposition') {
+                    particle.probability = 0.5 + 0.5 * Math.sin(time * 0.02 + particle.phase);
+                }
+                
+                if (quantumState === 'tunneling' && Math.random() < 0.005) {
+                    particle.x = Math.random() * width;
+                    particle.y = Math.random() * height;
+                }
+                
+                // Movement
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                
+                // Boundaries
+                if (particle.x < 0 || particle.x > width) particle.vx *= -0.8;
+                if (particle.y < 0 || particle.y > height) particle.vy *= -0.8;
+                
+                particle.x = Math.max(0, Math.min(width, particle.x));
+                particle.y = Math.max(0, Math.min(height, particle.y));
+                
+                particle.spin += 0.05;
+                particle.phase += 0.03;
+                
+                // Splitting effects
+                if (splittingEvent) {
+                    const dist = Math.sqrt((particle.x - centerX) ** 2 + (particle.y - centerY) ** 2);
+                    if (dist < 100) {
+                        const angle = Math.atan2(particle.y - centerY, particle.x - centerX);
+                        particle.vx += Math.cos(angle) * energyLevel * 0.5;
+                        particle.vy += Math.sin(angle) * energyLevel * 0.5;
+                        particle.energy = Math.min(energyLevel, particle.energy + 1);
+                    }
+                }
+            });
+        }
+        
+        function drawParticles() {
+            particles.forEach(particle => {
+                const size = Math.max(2, 3 + particle.energy);
+                const alpha = particle.probability * 0.8 + 0.2;
+                
+                // Quantum cloud
+                if (waveFunction === 'probability') {
+                    const cloudSize = 15 + particle.energy * 3;
+                    const gradient = ctx.createRadialGradient(
+                        particle.x, particle.y, 0,
+                        particle.x, particle.y, cloudSize
+                    );
+                    gradient.addColorStop(0, getParticleColor(particle, alpha * 0.3));
+                    gradient.addColorStop(1, getParticleColor(particle, 0));
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, cloudSize, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // Wave interference
+                if (waveFunction === 'interference') {
+                    for (let r = 5; r < 40; r += 8) {
+                        const waveAlpha = (1 - r / 40) * alpha * 0.4;
+                        ctx.strokeStyle = getParticleColor(particle, waveAlpha);
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.arc(particle.x, particle.y, r + Math.sin(time * 0.1 - r * 0.1) * 3, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                }
+                
+                // Main particle
+                ctx.fillStyle = getParticleColor(particle, alpha);
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // High energy glow
+                if (particle.energy > energyLevel * 0.7) {
+                    ctx.shadowColor = getParticleColor(particle, 0.8);
+                    ctx.shadowBlur = size * 4;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+                
+                // Entanglement lines
+                if (quantumState === 'entanglement' && Math.random() < 0.01) {
+                    const nearParticle = particles.find(p => p !== particle && 
+                        Math.sqrt((p.x - particle.x) ** 2 + (p.y - particle.y) ** 2) < 100);
+                    
+                    if (nearParticle) {
+                        ctx.strokeStyle = 'rgba(255, 0, 255, 0.4)';
+                        ctx.lineWidth = 1;
+                        ctx.setLineDash([3, 3]);
+                        ctx.beginPath();
+                        ctx.moveTo(particle.x, particle.y);
+                        ctx.lineTo(nearParticle.x, nearParticle.y);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                }
+            });
+        }
+        
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+            ctx.fillRect(0, 0, width, height);
+            
+            drawParticles();
+            
+            // Splitting explosion
+            if (splittingEvent) {
+                const explosionRadius = (time % 100) * 8;
+                const alpha = 1 - (time % 100) / 100;
+                
+                const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, explosionRadius);
+                gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha * 0.8})`);
+                gradient.addColorStop(0.5, `rgba(255, 0, 128, ${alpha * 0.4})`);
+                gradient.addColorStop(1, `rgba(0, 255, 255, 0)`);
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, explosionRadius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                if (time % 100 > 95) splittingEvent = false;
+            }
+            
+            waveCollapse *= 0.95;
+        }
+        
+        function animate() {
+            time += 1;
+            updateParticles();
+            draw();
+            requestAnimationFrame(animate);
+        }
+        
+        function splitAtom() {
+            splittingEvent = true;
+            
+            for (let i = 0; i < 15; i++) {
+                const angle = (i / 15) * Math.PI * 2;
+                const speed = 3 + Math.random() * 8;
+                particles.push({
+                    x: centerX,
+                    y: centerY,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    energy: energyLevel * (0.5 + Math.random() * 0.5),
+                    spin: Math.random() * Math.PI * 2,
+                    charge: Math.random() > 0.5 ? 1 : -1,
+                    probability: 1,
+                    phase: Math.random() * Math.PI * 2,
+                    type: Math.random() > 0.5 ? 'matter' : 'antimatter'
+                });
+            }
+            
+            if (particles.length > particleCount * 1.5) {
+                particles.splice(0, particles.length - particleCount);
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('energy').addEventListener('input', (e) => {
+            energyLevel = parseFloat(e.target.value);
+            document.getElementById('energyValue').textContent = energyLevel.toFixed(1) + ' TeV';
+        });
+        
+        document.getElementById('particleCount').addEventListener('input', (e) => {
+            particleCount = parseInt(e.target.value);
+            document.getElementById('particleValue').textContent = particleCount;
+            initParticles();
+        });
+        
+        document.getElementById('quantumState').addEventListener('change', (e) => {
+            quantumState = e.target.value;
+        });
+        
+        document.getElementById('waveFunction').addEventListener('change', (e) => {
+            waveFunction = e.target.value;
+        });
+        
+        document.getElementById('splitBtn').addEventListener('click', splitAtom);
+        
+        document.getElementById('collapseBtn').addEventListener('click', () => {
+            waveCollapse = 1;
+            particles.forEach(p => p.probability = Math.random() > 0.5 ? 1 : 0);
+        });
+        
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            initParticles();
+            splittingEvent = false;
+            waveCollapse = 0;
+            time = 0;
+        });
+        
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            particles.forEach(p => {
+                const dist = Math.sqrt((p.x - x) ** 2 + (p.y - y) ** 2);
+                if (dist < 80) {
+                    const angle = Math.atan2(p.y - y, p.x - x);
+                    p.vx += Math.cos(angle) * energyLevel * 0.3;
+                    p.vy += Math.sin(angle) * energyLevel * 0.3;
+                }
+            });
+        });
+        
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            particles.forEach(p => {
+                const dist = Math.sqrt((p.x - x) ** 2 + (p.y - y) ** 2);
+                if (dist < 80) {
+                    const angle = Math.atan2(p.y - y, p.x - x);
+                    p.vx += Math.cos(angle) * energyLevel * 0.3;
+                    p.vy += Math.sin(angle) * energyLevel * 0.3;
+                }
+            });
+        });
+        
+        window.addEventListener('resize', resizeCanvas);
+        
+        resizeCanvas();
+        animate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Butterfly Draw Studio - Savo Studio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            overflow: hidden;
+            touch-action: none;
+            user-select: none;
+            position: relative;
+        }
+
+        /* Hidden colorful universe layer */
+        .universe-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at 20% 50%, #ff0080 0%, transparent 50%), 
+                        radial-gradient(circle at 80% 20%, #8000ff 0%, transparent 50%), 
+                        radial-gradient(circle at 40% 80%, #0080ff 0%, transparent 50%), 
+                        radial-gradient(circle at 0% 100%, #00ff80 0%, transparent 50%), 
+                        radial-gradient(circle at 80% 100%, #ff8000 0%, transparent 50%), 
+                        radial-gradient(circle at 0% 0%, #ff0040 0%, transparent 50%), 
+                        radial-gradient(circle at 100% 0%, #8040ff 0%, transparent 50%);
+            z-index: -1;
+            animation: universeShift 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes universeShift {
+            0% { transform: scale(1) rotate(0deg); }
+            100% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(116, 235, 213, 0.3);
+        }
+
+        .header h1 {
+            color: #74ebd5;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(116, 235, 213, 0.5);
+        }
+
+        .canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: transparent;
+        }
+
+        #drawingCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .controls {
+            position: fixed;
+            top: 70px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 15px;
+            border: 1px solid rgba(116, 235, 213, 0.3);
+            backdrop-filter: blur(10px);
+            z-index: 110;
+        }
+
+        .control-btn {
+            padding: 8px 12px;
+            background: linear-gradient(45deg, #74ebd5, #acb6e5);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: none;
+            min-width: 80px;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(116, 235, 213, 0.4);
+        }
+
+        .control-btn.active {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+        }
+
+        .stamp-mode {
+            background: linear-gradient(45deg, #ff9a9e, #feca57) !important;
+        }
+
+        .universe-cutout {
+            mix-blend-mode: screen;
+            opacity: 0.9;
+        }
+
+        .magic-sparkle {
+            position: absolute;
+            pointer-events: none;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: magicSparkle 2s ease-out forwards;
+        }
+
+        @keyframes magicSparkle {
+            0% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+                box-shadow: 0 0 15px currentColor;
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.5) rotate(180deg);
+                box-shadow: 0 0 25px currentColor;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.2) rotate(360deg);
+                box-shadow: 0 0 35px currentColor;
+            }
+        }
+
+        .stamp-element {
+            position: absolute;
+            pointer-events: none;
+            font-size: 30px;
+            animation: stampReveal 1.5s ease-out forwards;
+        }
+
+        @keyframes stampReveal {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+                filter: brightness(2);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+                filter: brightness(1.5);
+            }
+            100% {
+                opacity: 0.9;
+                transform: scale(1);
+                filter: brightness(1);
+            }
+        }
+
+        .butterfly-trail {
+            position: absolute;
+            pointer-events: none;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, #74ebd5, transparent);
+            border-radius: 50%;
+            animation: sparkle 1.5s ease-out forwards;
+        }
+
+        @keyframes sparkle {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+                box-shadow: 0 0 10px #74ebd5;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.3);
+                box-shadow: 0 0 20px #74ebd5;
+            }
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            width: 4px;
+            height: 4px;
+            background: #74ebd5;
+            border-radius: 50%;
+            animation: float 2s ease-out forwards;
+        }
+
+        @keyframes float {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.2);
+            }
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 101;
+            padding: 10px 15px;
+            background: rgba(116, 235, 213, 0.2);
+            color: #74ebd5;
+            text-decoration: none;
+            border-radius: 15px;
+            border: 1px solid rgba(116, 235, 213, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(116, 235, 213, 0.3);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.4rem;
+            }
+            
+            .controls {
+                bottom: 10px;
+                padding: 10px;
+                gap: 10px;
+            }
+            
+            .control-btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="universe-layer"></div>
+    
+    <a href="index.html" class="back-btn">← Home</a>
+    
+    <div class="header">
+        <h1>🦋 Butterfly Draw Studio 🦋</h1>
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="drawingCanvas"></canvas>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="toggleStampMode()" id="stampBtn">🎯 Stamp</button>
+        <button class="control-btn" onclick="cycleStamp()" id="stampTypeBtn">❤️</button>
+        <button class="control-btn" onclick="clearCanvas()">Clear</button>
+        <button class="control-btn" onclick="saveDrawing()">Save</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let stampMode = false;
+        let lastX = 0;
+        let lastY = 0;
+        let currentStamp = 0;
+        
+        // Stamp options
+        const stamps = ['❤️', '⭐', '🔮', '🦋', '✨', '💫', '🌟', '💎', '🌙', '☄️', '🎭', '🎨'];
+
+        // Set canvas size
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Color palette for butterfly trails
+        const colors = [
+            '#74ebd5', '#acb6e5', '#ff9a9e', '#feca57', 
+            '#48cae4', '#f72585', '#b5179e', '#7209b7'
+        ];
+
+        function getRandomColor() {
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Cookie cutter stamp effect - reveals universe colors
+        function createUniverseStamp(x, y, stampText) {
+            // Clear circular area to reveal universe background
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(x, y, 25, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Add stamp emoji with universe blend
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.font = '30px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'white';
+            ctx.fillText(stampText, x, y + 10);
+            
+            // Create sparkle effect around cutout
+            for (let i = 0; i < 8; i++) {
+                const angle = (i / 8) * Math.PI * 2;
+                const sparkleX = x + Math.cos(angle) * 35;
+                const sparkleY = y + Math.sin(angle) * 35;
+                
+                const sparkle = document.createElement('div');
+                sparkle.className = 'magic-sparkle';
+                sparkle.style.left = sparkleX + 'px';
+                sparkle.style.top = sparkleY + 'px';
+                sparkle.style.background = getRandomColor();
+                sparkle.style.color = getRandomColor();
+                document.body.appendChild(sparkle);
+                
+                setTimeout(() => sparkle.remove(), 2000);
+            }
+        }
+
+        // Create butterfly particle effect (simple version)
+        function createButterflyTrail(x, y) {
+            // Create main sparkle
+            const sparkle = document.createElement('div');
+            sparkle.className = 'butterfly-trail';
+            sparkle.style.left = x - 4 + 'px';
+            sparkle.style.top = y - 4 + 'px';
+            sparkle.style.background = `radial-gradient(circle, ${getRandomColor()}, transparent)`;
+            document.body.appendChild(sparkle);
+            
+            // Create floating particles
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = (x + (Math.random() - 0.5) * 20) + 'px';
+                    particle.style.top = (y + (Math.random() - 0.5) * 20) + 'px';
+                    particle.style.background = getRandomColor();
+                    document.body.appendChild(particle);
+                    
+                    setTimeout(() => particle.remove(), 2000);
+                }, i * 100);
+            }
+            
+            setTimeout(() => sparkle.remove(), 1500);
+        }
+
+        // Universe cutout stamp functionality
+        function createStamp(x, y) {
+            if (!stampMode) return;
+            
+            const stamp = document.createElement('div');
+            stamp.className = 'stamp-element';
+            stamp.style.left = (x - 15) + 'px';
+            stamp.style.top = (y - 15) + 'px';
+            stamp.textContent = stamps[currentStamp];
+            document.body.appendChild(stamp);
+            
+            // Create universe cutout effect
+            createUniverseStamp(x, y, stamps[currentStamp]);
+            
+            setTimeout(() => stamp.remove(), 1500);
+        }
+
+        // Drawing functions
+        function startDrawing(e) {
+            if (stampMode) {
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.clientX || e.touches[0].clientX) - rect.left;
+                const y = (e.clientY || e.touches[0].clientY) - rect.top;
+                createStamp(x, y);
+                return;
+            }
+            
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            lastX = (e.clientX || e.touches[0].clientX) - rect.left;
+            lastY = (e.clientY || e.touches[0].clientY) - rect.top;
+            
+            createButterflyTrail(lastX, lastY);
+        }
+
+        function draw(e) {
+            if (!isDrawing || stampMode) return;
+            
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const currentX = (e.clientX || e.touches[0].clientX) - rect.left;
+            const currentY = (e.clientY || e.touches[0].clientY) - rect.top;
+            
+            // Draw sparkler-like trail on canvas
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.strokeStyle = getRandomColor();
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.globalAlpha = 0.8;
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(currentX, currentY);
+            ctx.stroke();
+            
+            // Add glow effect
+            ctx.shadowColor = ctx.strokeStyle;
+            ctx.shadowBlur = 10;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+            
+            // Create butterfly trail
+            createButterflyTrail(currentX, currentY);
+            
+            lastX = currentX;
+            lastY = currentY;
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        // Event listeners
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        // Touch events
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDrawing);
+
+        // Control functions
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Remove all existing particles
+            document.querySelectorAll('.butterfly-trail, .particle').forEach(el => el.remove());
+            
+            // Clear effect
+            const clearEffect = document.createElement('div');
+            clearEffect.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: radial-gradient(circle, transparent 0%, rgba(116, 235, 213, 0.1) 100%);
+                pointer-events: none;
+                z-index: 50;
+                animation: clearPulse 0.5s ease-out forwards;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes clearPulse {
+                    0% { opacity: 0; transform: scale(0); }
+                    50% { opacity: 1; transform: scale(1.1); }
+                    100% { opacity: 0; transform: scale(1); }
+                }
+            `;
+            document.head.appendChild(style);
+            document.body.appendChild(clearEffect);
+            
+            setTimeout(() => {
+                clearEffect.remove();
+                style.remove();
+            }, 500);
+        }
+
+        // Control functions
+        function toggleStampMode() {
+            stampMode = !stampMode;
+            const btn = document.getElementById('stampBtn');
+            if (stampMode) {
+                btn.classList.add('stamp-mode', 'active');
+                canvas.style.cursor = 'pointer';
+            } else {
+                btn.classList.remove('stamp-mode', 'active');
+                canvas.style.cursor = 'crosshair';
+            }
+        }
+
+        function cycleStamp() {
+            currentStamp = (currentStamp + 1) % stamps.length;
+            document.getElementById('stampTypeBtn').textContent = stamps[currentStamp];
+        }
+
+        function saveDrawing() {
+            const link = document.createElement('a');
+            link.download = 'butterfly-drawing-' + new Date().getTime() + '.png';
+            link.href = canvas.toDataURL();
+            link.click();
+            
+            // Save effect
+            const saveEffect = document.createElement('div');
+            saveEffect.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(116, 235, 213, 0.9);
+                color: #1a1a2e;
+                padding: 15px 25px;
+                border-radius: 10px;
+                font-weight: 600;
+                z-index: 200;
+                animation: saveNotification 2s ease-out forwards;
+            `;
+            saveEffect.textContent = '✨ Drawing Saved! ✨';
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes saveNotification {
+                    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+                    20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+                    80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+                }
+            `;
+            document.head.appendChild(style);
+            document.body.appendChild(saveEffect);
+            
+            setTimeout(() => {
+                saveEffect.remove();
+                style.remove();
+            }, 2000);
+        }
+
+        // Initialize
+        console.log('🦋 Butterfly Draw Studio initialized');
+        console.log('✨ Universe cutout stamps and butterfly effects ready');
+    </script>
+</body>
+</html>

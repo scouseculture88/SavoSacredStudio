@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Visualization Studio - Savo Studio</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌌</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e6e6e6;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .cosmic-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .cosmic-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, 
+                rgba(116, 235, 213, 0.1) 0%,
+                rgba(255, 107, 107, 0.05) 30%,
+                transparent 70%);
+        }
+
+        .controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(116, 235, 213, 0.3);
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            color: #74ebd5;
+            margin-bottom: 5px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .control-group input[type="range"] {
+            width: 150px;
+            margin-right: 10px;
+        }
+
+        .control-group select {
+            background: rgba(0, 0, 0, 0.5);
+            color: #e6e6e6;
+            border: 1px solid rgba(116, 235, 213, 0.3);
+            border-radius: 5px;
+            padding: 5px;
+            width: 100%;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(116, 235, 213, 0.2);
+            color: #74ebd5;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(116, 235, 213, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(116, 235, 213, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .cosmic-wave {
+            position: absolute;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            animation: cosmicWave 8s ease-in-out infinite;
+        }
+
+        @keyframes cosmicWave {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+                border-color: rgba(116, 235, 213, 0.8);
+            }
+            100% {
+                transform: scale(20);
+                opacity: 0;
+                border-color: rgba(255, 107, 107, 0.2);
+            }
+        }
+
+        .energy-spiral {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            border-radius: 50%;
+            animation: energySpiral 12s linear infinite;
+        }
+
+        @keyframes energySpiral {
+            0% {
+                transform: rotate(0deg) scale(0.5);
+                opacity: 0.3;
+            }
+            50% {
+                transform: rotate(180deg) scale(1.2);
+                opacity: 0.8;
+            }
+            100% {
+                transform: rotate(360deg) scale(0.5);
+                opacity: 0.3;
+            }
+        }
+
+        .nebula-cloud {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, 
+                rgba(150, 206, 180, 0.2) 0%,
+                rgba(254, 202, 87, 0.1) 50%,
+                transparent 100%);
+            animation: nebulaDrift 15s ease-in-out infinite;
+        }
+
+        @keyframes nebulaDrift {
+            0%, 100% {
+                transform: translateX(-20px) translateY(-10px) scale(1);
+                opacity: 0.4;
+            }
+            50% {
+                transform: translateX(20px) translateY(10px) scale(1.3);
+                opacity: 0.7;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                top: 10px;
+                left: 10px;
+                padding: 15px;
+                width: calc(100% - 20px);
+            }
+
+            .back-button {
+                top: auto;
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmic-container">
+        <canvas id="cosmicCanvas" class="cosmic-canvas"></canvas>
+        
+        <div class="controls">
+            <h3 style="color: #74ebd5; margin-bottom: 15px;">🌌 Cosmic Controls</h3>
+            
+            <div class="control-group">
+                <label>Particle Count</label>
+                <input type="range" id="particleCount" min="50" max="500" value="150">
+                <span id="particleDisplay">150</span>
+            </div>
+            
+            <div class="control-group">
+                <label>Energy Flow</label>
+                <input type="range" id="energyFlow" min="0.1" max="3" step="0.1" value="1">
+                <span id="energyDisplay">1.0</span>
+            </div>
+            
+            <div class="control-group">
+                <label>Cosmic Mode</label>
+                <select id="cosmicMode">
+                    <option value="galaxy">Galaxy Spiral</option>
+                    <option value="nebula">Nebula Clouds</option>
+                    <option value="constellation">Constellation Web</option>
+                    <option value="aurora">Cosmic Aurora</option>
+                    <option value="vortex">Energy Vortex</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Color Scheme</label>
+                <select id="colorScheme">
+                    <option value="cyan">Cyan Dreams</option>
+                    <option value="fire">Fire Cosmos</option>
+                    <option value="ocean">Ocean Deep</option>
+                    <option value="forest">Forest Magic</option>
+                    <option value="rainbow">Rainbow Spectrum</option>
+                </select>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-button">← Back to Savo Studio</a>
+    </div>
+
+    <script>
+        class CosmicVisualization {
+            constructor() {
+                this.canvas = document.getElementById('cosmicCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.waves = [];
+                this.spirals = [];
+                this.nebulae = [];
+                
+                this.config = {
+                    particleCount: 150,
+                    energyFlow: 1,
+                    mode: 'galaxy',
+                    colorScheme: 'cyan'
+                };
+                
+                this.colors = {
+                    cyan: ['116, 235, 213', '78, 205, 196', '69, 183, 209'],
+                    fire: ['255, 107, 107', '254, 202, 87', '255, 165, 0'],
+                    ocean: ['69, 183, 209', '78, 205, 196', '116, 235, 213'],
+                    forest: ['150, 206, 180', '96, 206, 123', '78, 205, 196'],
+                    rainbow: ['255, 107, 107', '254, 202, 87', '116, 235, 213', '150, 206, 180', '155, 89, 182']
+                };
+                
+                this.init();
+                this.setupControls();
+                this.animate();
+            }
+            
+            init() {
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+                this.createParticles();
+                this.createCosmicElements();
+            }
+            
+            resizeCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            
+            createParticles() {
+                this.particles = [];
+                for (let i = 0; i < this.config.particleCount; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        vx: (Math.random() - 0.5) * this.config.energyFlow,
+                        vy: (Math.random() - 0.5) * this.config.energyFlow,
+                        size: Math.random() * 3 + 1,
+                        color: this.getRandomColor(),
+                        alpha: Math.random() * 0.8 + 0.2,
+                        pulse: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+            
+            createCosmicElements() {
+                this.waves = [];
+                this.spirals = [];
+                this.nebulae = [];
+                
+                // Create cosmic waves
+                for (let i = 0; i < 5; i++) {
+                    this.waves.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        radius: 0,
+                        maxRadius: Math.random() * 300 + 100,
+                        speed: Math.random() * 2 + 1,
+                        alpha: Math.random() * 0.5 + 0.2,
+                        color: this.getRandomColor()
+                    });
+                }
+                
+                // Create energy spirals
+                for (let i = 0; i < 3; i++) {
+                    this.spirals.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        radius: Math.random() * 150 + 50,
+                        rotation: 0,
+                        rotationSpeed: (Math.random() - 0.5) * 0.02,
+                        color: this.getRandomColor(),
+                        alpha: Math.random() * 0.6 + 0.2
+                    });
+                }
+                
+                // Create nebula clouds
+                for (let i = 0; i < 4; i++) {
+                    this.nebulae.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        size: Math.random() * 200 + 100,
+                        drift: Math.random() * 0.5 + 0.2,
+                        color: this.getRandomColor(),
+                        alpha: Math.random() * 0.3 + 0.1
+                    });
+                }
+            }
+            
+            getRandomColor() {
+                const scheme = this.colors[this.config.colorScheme];
+                return scheme[Math.floor(Math.random() * scheme.length)];
+            }
+            
+            setupControls() {
+                const particleSlider = document.getElementById('particleCount');
+                const energySlider = document.getElementById('energyFlow');
+                const modeSelect = document.getElementById('cosmicMode');
+                const colorSelect = document.getElementById('colorScheme');
+                
+                particleSlider.addEventListener('input', (e) => {
+                    this.config.particleCount = parseInt(e.target.value);
+                    document.getElementById('particleDisplay').textContent = e.target.value;
+                    this.createParticles();
+                });
+                
+                energySlider.addEventListener('input', (e) => {
+                    this.config.energyFlow = parseFloat(e.target.value);
+                    document.getElementById('energyDisplay').textContent = e.target.value;
+                    this.createParticles();
+                });
+                
+                modeSelect.addEventListener('change', (e) => {
+                    this.config.mode = e.target.value;
+                    this.createCosmicElements();
+                });
+                
+                colorSelect.addEventListener('change', (e) => {
+                    this.config.colorScheme = e.target.value;
+                    this.createParticles();
+                    this.createCosmicElements();
+                });
+            }
+            
+            animate() {
+                this.ctx.fillStyle = 'rgba(12, 12, 12, 0.1)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.updateAndDrawParticles();
+                this.drawCosmicElements();
+                this.connectParticles();
+                
+                requestAnimationFrame(() => this.animate());
+            }
+            
+            updateAndDrawParticles() {
+                this.particles.forEach(particle => {
+                    // Update position
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    
+                    // Wrap around screen
+                    if (particle.x < 0) particle.x = this.canvas.width;
+                    if (particle.x > this.canvas.width) particle.x = 0;
+                    if (particle.y < 0) particle.y = this.canvas.height;
+                    if (particle.y > this.canvas.height) particle.y = 0;
+                    
+                    // Update pulse
+                    particle.pulse += 0.02;
+                    const pulseAlpha = particle.alpha + Math.sin(particle.pulse) * 0.3;
+                    
+                    // Draw particle with glow
+                    this.ctx.save();
+                    this.ctx.shadowBlur = 20;
+                    this.ctx.shadowColor = `rgba(${particle.color}, ${pulseAlpha})`;
+                    this.ctx.beginPath();
+                    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = `rgba(${particle.color}, ${Math.max(0.3, pulseAlpha)})`;
+                    this.ctx.fill();
+                    this.ctx.restore();
+                });
+            }
+            
+            drawCosmicElements() {
+                // Draw waves
+                this.waves.forEach(wave => {
+                    wave.radius += wave.speed;
+                    if (wave.radius > wave.maxRadius) {
+                        wave.radius = 0;
+                        wave.x = Math.random() * this.canvas.width;
+                        wave.y = Math.random() * this.canvas.height;
+                    }
+                    
+                    this.ctx.save();
+                    this.ctx.strokeStyle = `rgba(${wave.color}, ${wave.alpha * (1 - wave.radius / wave.maxRadius)})`;
+                    this.ctx.lineWidth = 2;
+                    this.ctx.beginPath();
+                    this.ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
+                    this.ctx.stroke();
+                    this.ctx.restore();
+                });
+                
+                // Draw spirals
+                this.spirals.forEach(spiral => {
+                    spiral.rotation += spiral.rotationSpeed;
+                    
+                    this.ctx.save();
+                    this.ctx.translate(spiral.x, spiral.y);
+                    this.ctx.rotate(spiral.rotation);
+                    this.ctx.strokeStyle = `rgba(${spiral.color}, ${spiral.alpha})`;
+                    this.ctx.lineWidth = 1;
+                    this.ctx.beginPath();
+                    
+                    for (let i = 0; i < 50; i++) {
+                        const angle = (i / 50) * Math.PI * 4;
+                        const radius = (i / 50) * spiral.radius;
+                        const x = Math.cos(angle) * radius;
+                        const y = Math.sin(angle) * radius;
+                        
+                        if (i === 0) {
+                            this.ctx.moveTo(x, y);
+                        } else {
+                            this.ctx.lineTo(x, y);
+                        }
+                    }
+                    
+                    this.ctx.stroke();
+                    this.ctx.restore();
+                });
+                
+                // Draw nebulae
+                this.nebulae.forEach(nebula => {
+                    this.ctx.save();
+                    const gradient = this.ctx.createRadialGradient(
+                        nebula.x, nebula.y, 0,
+                        nebula.x, nebula.y, nebula.size
+                    );
+                    gradient.addColorStop(0, `rgba(${nebula.color}, ${nebula.alpha})`);
+                    gradient.addColorStop(1, 'transparent');
+                    
+                    this.ctx.fillStyle = gradient;
+                    this.ctx.beginPath();
+                    this.ctx.arc(nebula.x, nebula.y, nebula.size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    this.ctx.restore();
+                });
+            }
+            
+            connectParticles() {
+                for (let i = 0; i < this.particles.length; i++) {
+                    for (let j = i + 1; j < this.particles.length; j++) {
+                        const dx = this.particles[i].x - this.particles[j].x;
+                        const dy = this.particles[i].y - this.particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < 120) {
+                            const alpha = (120 - distance) / 120 * 0.3;
+                            this.ctx.save();
+                            this.ctx.strokeStyle = `rgba(${this.getRandomColor()}, ${alpha})`;
+                            this.ctx.lineWidth = 1;
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
+                            this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
+                            this.ctx.stroke();
+                            this.ctx.restore();
+                        }
+                    }
+                }
+            }
+        }
+
+        // Initialize the cosmic visualization
+        window.addEventListener('load', () => {
+            new CosmicVisualization();
+        });
+    </script>
+</body>
+</html>

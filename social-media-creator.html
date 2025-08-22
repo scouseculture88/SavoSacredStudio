@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Creator - Savo Studio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #feca57);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            margin-bottom: 15px;
+            text-shadow: 
+                0 0 2px #ff6b6b,
+                0 0 4px #4ecdc4,
+                0 0 8px #45b7d1,
+                0 0 12px #feca57;
+            filter: drop-shadow(0 0 6px rgba(255, 107, 107, 0.3));
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .creator-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .main-panel {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .panel h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #4ecdc4;
+        }
+
+        .video-canvas {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(45deg, #000428, #004e92);
+            border-radius: 15px;
+            border: 2px solid rgba(78, 205, 196, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .canvas-content {
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        .format-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .format-btn {
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .format-btn:hover,
+        .format-btn.active {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            border-color: #4ecdc4;
+        }
+
+        .content-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .content-btn {
+            padding: 12px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .content-btn:hover {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-export {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .preset-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .preset-item:hover {
+            background: rgba(78, 205, 196, 0.2);
+            border-color: #4ecdc4;
+        }
+
+        .settings-group {
+            margin-bottom: 20px;
+        }
+
+        .settings-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .settings-input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .settings-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .preview-section {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .live-preview {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            max-width: 80%;
+        }
+
+        .preview-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #4ecdc4;
+        }
+
+        .preview-description {
+            font-size: 1rem;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            .creator-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .format-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 Social Media Creator</h1>
+            <p>Create viral content from your Savo Studio visualizations</p>
+        </div>
+
+        <div class="creator-grid">
+            <!-- Main Creation Panel -->
+            <div class="main-panel">
+                <h3>🎬 Content Creator</h3>
+                
+                <!-- Video Canvas -->
+                <div class="video-canvas" id="videoCanvas">
+                    <canvas id="patternCanvas" width="400" height="400" style="max-width: 100%; max-height: 100%;"></canvas>
+                    <div class="live-preview" id="livePreview">
+                        <div class="preview-title">Sacred Geometry Visualization</div>
+                        <div class="preview-description">
+                            Discover the mathematical patterns that connect consciousness to the universe
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Format Selection -->
+                <div class="format-selector">
+                    <div class="format-btn active" data-format="instagram-story">
+                        Instagram<br>Story<br>9:16
+                    </div>
+                    <div class="format-btn" data-format="instagram-post">
+                        Instagram<br>Post<br>1:1
+                    </div>
+                    <div class="format-btn" data-format="tiktok">
+                        TikTok<br>Vertical<br>9:16
+                    </div>
+                    <div class="format-btn" data-format="youtube-shorts">
+                        YouTube<br>Shorts<br>9:16
+                    </div>
+                    <div class="format-btn" data-format="twitter">
+                        Twitter<br>Video<br>16:9
+                    </div>
+                    <div class="format-btn" data-format="linkedin">
+                        LinkedIn<br>Post<br>16:9
+                    </div>
+                </div>
+
+                <!-- Content Source Options -->
+                <div class="content-options">
+                    <button class="content-btn" onclick="loadSacredGeometry()">🔮 Sacred Geometry</button>
+                    <button class="content-btn" onclick="loadNeuralGrid()">🧠 Neural Grid</button>
+                    <button class="content-btn" onclick="loadFrequencySpirograph()">🌊 Frequency Spirograph</button>
+                    <button class="content-btn" onclick="loadCymatics()">🎵 Cymatics</button>
+                    <button class="content-btn" onclick="loadMandala()">🌸 Mandala</button>
+                    <button class="content-btn" onclick="loadTeslaPattern()">⚡ Tesla Pattern</button>
+                </div>
+                
+                <!-- Quick Start Guide -->
+                <div class="quick-guide" style="background: rgba(78, 205, 196, 0.1); border: 1px solid #4ecdc4; border-radius: 10px; padding: 15px; margin: 20px 0;">
+                    <h4 style="color: #4ecdc4; margin-bottom: 10px;">📋 How to Use:</h4>
+                    <ol style="color: white; line-height: 1.6;">
+                        <li>Click a content button above (🔮 Sacred Geometry, 🧠 Neural Grid, etc.)</li>
+                        <li>Choose your social media format (Instagram, TikTok, etc.)</li>
+                        <li>Pick a template on the right (Consciousness, Tesla, etc.)</li>
+                        <li>Click "Generate Video" to create your content</li>
+                        <li>Use "Export" to download your creation</li>
+                    </ol>
+                </div>
+
+                <!-- Export Controls -->
+                <div class="export-options">
+                    <button class="btn btn-primary" onclick="generateVideo()">🎬 Generate Video</button>
+                    <button class="btn btn-secondary" onclick="addMusic()">🎵 Add Music</button>
+                    <button class="btn btn-export" onclick="exportContent()">📤 Export</button>
+                </div>
+            </div>
+
+            <!-- Side Panels -->
+            <div class="side-panel">
+                <!-- Content Templates -->
+                <div class="panel">
+                    <h3>📋 Content Templates</h3>
+                    <div class="preset-grid">
+                        <div class="preset-item" onclick="loadTemplate('consciousness')">
+                            🧘<br>Consciousness<br>Quote
+                        </div>
+                        <div class="preset-item" onclick="loadTemplate('sacred-math')">
+                            🔢<br>Sacred<br>Mathematics
+                        </div>
+                        <div class="preset-item" onclick="loadTemplate('frequency')">
+                            🌊<br>Frequency<br>Healing
+                        </div>
+                        <div class="preset-item" onclick="loadTemplate('tesla')">
+                            ⚡<br>Tesla<br>Wisdom
+                        </div>
+                        <div class="preset-item" onclick="loadTemplate('golden-ratio')">
+                            🌀<br>Golden<br>Ratio
+                        </div>
+                        <div class="preset-item" onclick="loadTemplate('music-flow')">
+                            🎵<br>Music<br>Flow
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text & Captions -->
+                <div class="panel">
+                    <h3>✏️ Text & Captions</h3>
+                    <div class="settings-group">
+                        <label>Main Title:</label>
+                        <input type="text" class="settings-input" id="mainTitle" placeholder="Sacred Geometry Secrets" value="Sacred Geometry Visualization">
+                    </div>
+                    <div class="settings-group">
+                        <label>Description:</label>
+                        <textarea class="settings-input" id="description" rows="3" placeholder="Discover the mathematical patterns...">Discover the mathematical patterns that connect consciousness to the universe</textarea>
+                    </div>
+                    <div class="settings-group">
+                        <label>Hashtags:</label>
+                        <input type="text" class="settings-input" id="hashtags" placeholder="#sacredgeometry #consciousness" value="#sacredgeometry #consciousness #tesla #fibonacci #spirituality">
+                    </div>
+                </div>
+
+                <!-- Visual Settings -->
+                <div class="panel">
+                    <h3>🎨 Visual Settings</h3>
+                    <div class="settings-group">
+                        <label>Animation Speed:</label>
+                        <input type="range" min="0.5" max="3" step="0.1" value="1" class="settings-input" id="animationSpeed">
+                    </div>
+                    <div class="settings-group">
+                        <label>Color Scheme:</label>
+                        <select class="settings-input" id="colorScheme">
+                            <option value="neon">Neon Glow</option>
+                            <option value="cosmic">Cosmic Purple</option>
+                            <option value="earth">Earth Tones</option>
+                            <option value="fire">Fire Energy</option>
+                            <option value="water">Water Flow</option>
+                        </select>
+                    </div>
+                    <div class="settings-group">
+                        <label>Background:</label>
+                        <select class="settings-input" id="background">
+                            <option value="gradient">Gradient</option>
+                            <option value="stars">Starfield</option>
+                            <option value="sacred">Sacred Geometry</option>
+                            <option value="particles">Particles</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Audio Settings -->
+                <div class="panel">
+                    <h3>🎵 Audio Settings</h3>
+                    <div class="settings-group">
+                        <label>Music Type:</label>
+                        <select class="settings-input" id="musicType">
+                            <option value="binaural">Binaural Beats</option>
+                            <option value="solfeggio">Solfeggio Frequencies</option>
+                            <option value="ambient">Ambient</option>
+                            <option value="conscious-rap">Conscious Rap</option>
+                            <option value="meditation">Meditation</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary" onclick="previewAudio()">🔊 Preview Audio</button>
+                </div>
+
+                <!-- Export Options -->
+                <div class="panel">
+                    <h3>📤 Export Options</h3>
+                    <div class="preview-section">
+                        <strong>Current Format:</strong> Instagram Story (9:16)<br>
+                        <strong>Duration:</strong> 15 seconds<br>
+                        <strong>Quality:</strong> 1080p
+                    </div>
+                    <button class="btn btn-primary" onclick="downloadMP4()">📱 Download MP4</button>
+                    <button class="btn btn-secondary" onclick="shareToSocial()">🌐 Share Direct</button>
+                    <button class="btn btn-export" onclick="saveToDrafts()">💾 Save Draft</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentFormat = 'instagram-story';
+        let currentTemplate = 'consciousness';
+        let contentSource = 'sacred-geometry';
+
+        // Format selection
+        document.querySelectorAll('.format-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentFormat = this.dataset.format;
+                updateCanvasSize();
+                updatePreview();
+            });
+        });
+
+        function updateCanvasSize() {
+            const canvas = document.getElementById('videoCanvas');
+            const formatRatios = {
+                'instagram-story': { width: '315px', height: '560px' },
+                'instagram-post': { width: '400px', height: '400px' },
+                'tiktok': { width: '315px', height: '560px' },
+                'youtube-shorts': { width: '315px', height: '560px' },
+                'twitter': { width: '400px', height: '225px' },
+                'linkedin': { width: '400px', height: '225px' }
+            };
+            
+            const ratio = formatRatios[currentFormat];
+            canvas.style.width = ratio.width;
+            canvas.style.height = ratio.height;
+        }
+
+        // Content source functions
+        function loadSacredGeometry() {
+            contentSource = 'sacred-geometry';
+            drawSacredGeometry();
+            updatePreview();
+            showSuccessMessage('🔮 Sacred Geometry patterns loaded');
+        }
+
+        function drawSacredGeometry() {
+            const canvas = document.getElementById('patternCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 80;
+            
+            // Flower of Life pattern
+            ctx.strokeStyle = '#4ecdc4';
+            ctx.lineWidth = 2;
+            ctx.globalAlpha = 0.8;
+            
+            // Central circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // Six surrounding circles
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            // Add glow effect
+            ctx.shadowColor = '#4ecdc4';
+            ctx.shadowBlur = 10;
+            ctx.globalAlpha = 0.6;
+            
+            // Redraw with glow
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+
+        function loadNeuralGrid() {
+            contentSource = 'neural-grid';
+            drawNeuralGrid();
+            updatePreview();
+            showSuccessMessage('🧠 Neural Energy Grid loaded');
+        }
+
+        function drawNeuralGrid() {
+            const canvas = document.getElementById('patternCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Neural network visualization
+            ctx.strokeStyle = '#00ff88';
+            ctx.fillStyle = '#00ff88';
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = 0.7;
+            
+            // Create nodes
+            const nodes = [];
+            for (let i = 0; i < 20; i++) {
+                nodes.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 4 + 2
+                });
+            }
+            
+            // Draw connections
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const distance = Math.sqrt(
+                        Math.pow(nodes[i].x - nodes[j].x, 2) + 
+                        Math.pow(nodes[i].y - nodes[j].y, 2)
+                    );
+                    
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        ctx.globalAlpha = 0.3 * (1 - distance / 100);
+                        ctx.stroke();
+                    }
+                }
+            }
+            
+            // Draw nodes
+            ctx.globalAlpha = 0.8;
+            nodes.forEach(node => {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function loadFrequencySpirograph() {
+            contentSource = 'frequency-spirograph';
+            updatePreview();
+            showSuccessMessage('🌊 Frequency Spirograph loaded');
+        }
+
+        function loadCymatics() {
+            contentSource = 'cymatics';
+            drawCymatics();
+            updatePreview();
+            showSuccessMessage('🎵 Cymatics visualization loaded');
+        }
+
+        function drawCymatics() {
+            const canvas = document.getElementById('patternCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            // Cymatics wave pattern
+            ctx.strokeStyle = '#feca57';
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = 0.6;
+            
+            // Create concentric wave circles
+            for (let r = 10; r < 200; r += 15) {
+                ctx.beginPath();
+                
+                for (let angle = 0; angle < Math.PI * 2; angle += 0.1) {
+                    const waveOffset = Math.sin(angle * 8) * 8 + Math.sin(angle * 3) * 4;
+                    const radius = r + waveOffset;
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    
+                    if (angle === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.closePath();
+                ctx.stroke();
+            }
+            
+            // Add nodal points
+            ctx.fillStyle = '#ff9ff3';
+            ctx.globalAlpha = 0.8;
+            
+            for (let i = 0; i < 12; i++) {
+                const angle = (i * Math.PI * 2) / 12;
+                for (let r = 30; r < 150; r += 40) {
+                    const x = centerX + Math.cos(angle) * r;
+                    const y = centerY + Math.sin(angle) * r;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        function loadMandala() {
+            contentSource = 'mandala';
+            updatePreview();
+            showSuccessMessage('🌸 Mandala patterns loaded');
+        }
+
+        function loadTeslaPattern() {
+            contentSource = 'tesla-pattern';
+            updatePreview();
+            showSuccessMessage('⚡ Tesla 3-6-9 patterns loaded');
+        }
+
+        // Template functions
+        function loadTemplate(templateType) {
+            currentTemplate = templateType;
+            const templates = {
+                'consciousness': {
+                    title: 'Consciousness Expansion',
+                    description: 'Explore the mathematical patterns of awareness and universal connection',
+                    hashtags: '#consciousness #awakening #sacredgeometry #spirituality #mindfulness'
+                },
+                'sacred-math': {
+                    title: 'Sacred Mathematics',
+                    description: 'The golden ratio, Fibonacci sequences, and divine proportions revealed',
+                    hashtags: '#sacredmath #fibonacci #goldenratio #mathematics #patterns'
+                },
+                'frequency': {
+                    title: 'Frequency Healing',
+                    description: 'How sound frequencies create geometric patterns and promote healing',
+                    hashtags: '#frequencyhealing #solfeggio #binaural #soundtherapy #vibration'
+                },
+                'tesla': {
+                    title: 'Tesla Wisdom',
+                    description: 'Understanding the universe through the power of 3, 6, and 9',
+                    hashtags: '#tesla #369 #energy #frequency #vibration #universe'
+                },
+                'golden-ratio': {
+                    title: 'Golden Ratio Magic',
+                    description: 'The divine proportion found throughout nature and consciousness',
+                    hashtags: '#goldenratio #fibonacci #nature #divine #proportion #beauty'
+                },
+                'music-flow': {
+                    title: 'Music & Flow States',
+                    description: 'How conscious rap and frequency music enhance creativity and focus',
+                    hashtags: '#musicflow #consciousrap #creativity #focus #frequencies #flow'
+                }
+            };
+            
+            const template = templates[templateType];
+            document.getElementById('mainTitle').value = template.title;
+            document.getElementById('description').value = template.description;
+            document.getElementById('hashtags').value = template.hashtags;
+            
+            updatePreview();
+            showSuccessMessage(`✅ ${template.title} template loaded`);
+        }
+
+        function updatePreview() {
+            const title = document.getElementById('mainTitle').value;
+            const description = document.getElementById('description').value;
+            
+            document.querySelector('.preview-title').textContent = title;
+            document.querySelector('.preview-description').textContent = description;
+            
+            // Update background based on content source
+            const canvas = document.getElementById('videoCanvas');
+            const backgrounds = {
+                'sacred-geometry': 'linear-gradient(45deg, #667eea, #764ba2)',
+                'neural-grid': 'linear-gradient(45deg, #00ff88, #00bcd4)',
+                'frequency-spirograph': 'linear-gradient(45deg, #ff6b6b, #4ecdc4)',
+                'cymatics': 'linear-gradient(45deg, #feca57, #ff9ff3)',
+                'mandala': 'linear-gradient(45deg, #ff6b9d, #c44569)',
+                'tesla-pattern': 'linear-gradient(45deg, #74b9ff, #0984e3)'
+            };
+            
+            canvas.style.background = backgrounds[contentSource] || backgrounds['sacred-geometry'];
+        }
+
+        // Audio functions
+        function addMusic() {
+            const musicType = document.getElementById('musicType').value;
+            showSuccessMessage(`🎵 ${musicType} audio track added`);
+        }
+
+        function previewAudio() {
+            const musicType = document.getElementById('musicType').value;
+            showSuccessMessage(`🔊 Previewing ${musicType} audio...`);
+        }
+
+        // Export functions
+        function generateVideo() {
+            showSuccessMessage('🎬 Generating video with current settings...');
+            
+            // Simulate video generation
+            setTimeout(() => {
+                showSuccessMessage('✅ Video generated successfully! Ready for export.');
+            }, 2000);
+        }
+
+        function exportContent() {
+            const format = currentFormat;
+            const title = document.getElementById('mainTitle').value;
+            
+            showSuccessMessage(`📤 Exporting ${title} for ${format}...`);
+            
+            // Simulate export process
+            setTimeout(() => {
+                showSuccessMessage('✅ Content exported successfully!');
+            }, 1500);
+        }
+
+        function downloadMP4() {
+            showSuccessMessage('📱 Downloading MP4 file...');
+        }
+
+        function shareToSocial() {
+            showSuccessMessage('🌐 Opening social media sharing options...');
+        }
+
+        function saveToDrafts() {
+            const contentData = {
+                format: currentFormat,
+                template: currentTemplate,
+                source: contentSource,
+                title: document.getElementById('mainTitle').value,
+                description: document.getElementById('description').value,
+                hashtags: document.getElementById('hashtags').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('savoStudioDraft_' + Date.now(), JSON.stringify(contentData));
+            showSuccessMessage('💾 Content saved to drafts!');
+        }
+
+        function showSuccessMessage(message) {
+            // Create temporary success message
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(45deg, #4ecdc4, #44a08d);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                z-index: 1000;
+                font-weight: 600;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                animation: slideIn 0.3s ease;
+            `;
+            successDiv.textContent = message;
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.remove();
+            }, 3000);
+        }
+
+        // Initialize
+        updateCanvasSize();
+        updatePreview();
+        loadTemplate('consciousness');
+        drawSacredGeometry(); // Show default pattern
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Live preview updates
+        document.getElementById('mainTitle').addEventListener('input', updatePreview);
+        document.getElementById('description').addEventListener('input', updatePreview);
+    </script>
+</body>
+</html>

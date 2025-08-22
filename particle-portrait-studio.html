@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Portrait Studio - Savo Studio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            overflow: hidden;
+            color: white;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(116, 235, 213, 0.3);
+        }
+
+        .header h1 {
+            color: #74ebd5;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(116, 235, 213, 0.5);
+        }
+
+        .main-container {
+            display: flex;
+            height: 100vh;
+            padding-top: 80px;
+        }
+
+        .controls-panel {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(116, 235, 213, 0.3);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .canvas-area {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #particleCanvas {
+            border: 1px solid rgba(116, 235, 213, 0.3);
+            background: #000;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .upload-section {
+            margin-bottom: 20px;
+        }
+
+        .upload-label {
+            display: block;
+            margin-bottom: 10px;
+            color: #74ebd5;
+            font-weight: 600;
+        }
+
+        .file-input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(116, 235, 213, 0.1);
+            border: 1px solid rgba(116, 235, 213, 0.3);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #74ebd5;
+            font-size: 0.9rem;
+        }
+
+        .slider {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(116, 235, 213, 0.3);
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #74ebd5;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #74ebd5;
+            cursor: pointer;
+            border: none;
+        }
+
+        .material-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .material-btn {
+            padding: 8px 12px;
+            background: rgba(116, 235, 213, 0.1);
+            border: 1px solid rgba(116, 235, 213, 0.3);
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .material-btn:hover, .material-btn.active {
+            background: rgba(116, 235, 213, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            padding: 12px;
+            background: linear-gradient(45deg, #74ebd5, #acb6e5);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(116, 235, 213, 0.4);
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 101;
+            padding: 10px 15px;
+            background: rgba(116, 235, 213, 0.2);
+            color: #74ebd5;
+            text-decoration: none;
+            border-radius: 15px;
+            border: 1px solid rgba(116, 235, 213, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(116, 235, 213, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .hidden-canvas {
+            display: none;
+        }
+
+        .value-display {
+            color: #acb6e5;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .controls-panel {
+                width: 100%;
+                height: auto;
+                max-height: 40vh;
+            }
+            
+            .header h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← Home</a>
+    
+    <div class="header">
+        <h1>🎨 Particle Portrait Studio 🎨</h1>
+    </div>
+
+    <div class="main-container">
+        <div class="controls-panel">
+            <div class="upload-section">
+                <label class="upload-label">Upload Image</label>
+                <input type="file" id="imageUpload" class="file-input" accept="image/*">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Material Type</label>
+                <div class="material-selector">
+                    <button class="material-btn active" data-material="salt">🧂 Salt</button>
+                    <button class="material-btn" data-material="sand">🏖️ Sand</button>
+                    <button class="material-btn" data-material="weed">🌿 Weed</button>
+                    <button class="material-btn" data-material="cosmic">⭐ Cosmic</button>
+                    <button class="material-btn" data-material="ember">🔥 Ember</button>
+                    <button class="material-btn" data-material="crystal">💎 Crystal</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Particle Count <span class="value-display" id="particleCountValue">5000</span></label>
+                <input type="range" id="particleCount" class="slider" min="1000" max="15000" value="5000">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Particle Size <span class="value-display" id="particleSizeValue">2</span></label>
+                <input type="range" id="particleSize" class="slider" min="1" max="8" value="2">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Attraction Force <span class="value-display" id="attractionValue">0.5</span></label>
+                <input type="range" id="attraction" class="slider" min="0.1" max="2" step="0.1" value="0.5">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Motion Speed <span class="value-display" id="motionSpeedValue">0.3</span></label>
+                <input type="range" id="motionSpeed" class="slider" min="0.1" max="1" step="0.1" value="0.3">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Detail Level <span class="value-display" id="detailLevelValue">50</span></label>
+                <input type="range" id="detailLevel" class="slider" min="20" max="100" value="50">
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" onclick="generatePortrait()">🎨 Generate Portrait</button>
+                <button class="action-btn" onclick="animateParticles()">⚡ Animate</button>
+                <button class="action-btn" onclick="resetParticles()">🔄 Reset</button>
+                <button class="action-btn" onclick="savePortrait()">💾 Save</button>
+            </div>
+        </div>
+
+        <div class="canvas-area">
+            <canvas id="particleCanvas" width="800" height="600"></canvas>
+        </div>
+    </div>
+
+    <canvas id="hiddenCanvas" class="hidden-canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        const hiddenCanvas = document.getElementById('hiddenCanvas');
+        const hiddenCtx = hiddenCanvas.getContext('2d');
+        
+        let particles = [];
+        let imageData = null;
+        let animationId = null;
+        let currentMaterial = 'salt';
+        let isAnimating = false;
+
+        // Material properties
+        const materials = {
+            salt: { color: '#ffffff', opacity: 0.95, glow: false },
+            sand: { color: '#d4a574', opacity: 0.9, glow: false },
+            weed: { color: '#6b8e23', opacity: 0.85, glow: false },
+            cosmic: { color: '#74ebd5', opacity: 0.8, glow: true },
+            ember: { color: '#ff6b35', opacity: 0.9, glow: true },
+            crystal: { color: '#b19cd9', opacity: 0.95, glow: true }
+        };
+
+        class Particle {
+            constructor(x, y, targetX, targetY) {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.targetX = targetX;
+                this.targetY = targetY;
+                this.vx = 0;
+                this.vy = 0;
+                this.size = parseFloat(document.getElementById('particleSize').value);
+                this.opacity = Math.random() * 0.5 + 0.5;
+            }
+
+            update() {
+                const attraction = parseFloat(document.getElementById('attraction').value);
+                const speed = parseFloat(document.getElementById('motionSpeed').value);
+                
+                const dx = this.targetX - this.x;
+                const dy = this.targetY - this.y;
+                
+                this.vx += dx * attraction * 0.01;
+                this.vy += dy * attraction * 0.01;
+                
+                this.vx *= 0.9;
+                this.vy *= 0.9;
+                
+                this.x += this.vx * speed;
+                this.y += this.vy * speed;
+            }
+
+            draw() {
+                const material = materials[currentMaterial];
+                
+                // Ensure particle is within canvas bounds
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    return;
+                }
+                
+                ctx.save();
+                ctx.globalAlpha = material.opacity * this.opacity;
+                
+                if (material.glow) {
+                    ctx.shadowColor = material.color;
+                    ctx.shadowBlur = this.size * 3;
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                }
+                
+                ctx.fillStyle = material.color;
+                ctx.beginPath();
+                
+                // Different shapes for different materials
+                if (currentMaterial === 'crystal') {
+                    // Diamond shape
+                    ctx.moveTo(this.x, this.y - this.size);
+                    ctx.lineTo(this.x + this.size, this.y);
+                    ctx.lineTo(this.x, this.y + this.size);
+                    ctx.lineTo(this.x - this.size, this.y);
+                    ctx.closePath();
+                } else if (currentMaterial === 'weed') {
+                    // Irregular organic shape
+                    const segments = 6;
+                    for (let i = 0; i < segments; i++) {
+                        const angle = (i / segments) * Math.PI * 2;
+                        const radius = this.size * (0.7 + Math.random() * 0.4);
+                        const x = this.x + Math.cos(angle) * radius;
+                        const y = this.y + Math.sin(angle) * radius;
+                        if (i === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                } else {
+                    // Circle for other materials (salt, sand, cosmic, ember)
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                }
+                
+                ctx.fill();
+                
+                // Add extra glow for cosmic materials
+                if (material.glow && currentMaterial === 'cosmic') {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size * 0.5, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                    ctx.fill();
+                }
+                
+                ctx.restore();
+            }
+        }
+
+        // File upload handler
+        document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                alert('Please select a valid image file!');
+                return;
+            }
+
+            console.log(`📁 Loading image: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    console.log(`🖼️ Image loaded: ${img.width}x${img.height}`);
+                    processImage(img);
+                };
+                img.onerror = function() {
+                    alert('Error loading image. Please try a different file.');
+                };
+                img.src = e.target.result;
+            };
+            reader.onerror = function() {
+                alert('Error reading file. Please try again.');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function processImage(img) {
+            // Set canvas size based on image aspect ratio
+            const maxSize = 600;
+            let width = img.width;
+            let height = img.height;
+            
+            if (width > height) {
+                if (width > maxSize) {
+                    height = (height * maxSize) / width;
+                    width = maxSize;
+                }
+            } else {
+                if (height > maxSize) {
+                    width = (width * maxSize) / height;
+                    height = maxSize;
+                }
+            }
+            
+            // Ensure minimum size and round to integers
+            width = Math.max(200, Math.round(width));
+            height = Math.max(200, Math.round(height));
+            
+            canvas.width = width;
+            canvas.height = height;
+            hiddenCanvas.width = width;
+            hiddenCanvas.height = height;
+            
+            // Clear and draw image to hidden canvas for analysis
+            hiddenCtx.clearRect(0, 0, width, height);
+            hiddenCtx.fillStyle = '#fff';
+            hiddenCtx.fillRect(0, 0, width, height);
+            hiddenCtx.drawImage(img, 0, 0, width, height);
+            
+            try {
+                imageData = hiddenCtx.getImageData(0, 0, width, height);
+                console.log(`✅ Image processed: ${width}x${height} pixels`);
+                console.log(`🎨 Ready for particle generation with ${imageData.data.length} data points`);
+            } catch (error) {
+                console.error('❌ Error processing image:', error);
+                alert('Error processing image. Please try a different image.');
+            }
+        }
+
+        function generatePortrait() {
+            if (!imageData || !imageData.data) {
+                alert('Please upload an image first!');
+                return;
+            }
+
+            particles = [];
+            const particleCount = parseInt(document.getElementById('particleCount').value);
+            const detailLevel = parseInt(document.getElementById('detailLevel').value);
+            
+            console.log(`🎨 Generating ${particleCount} particles from ${imageData.width}x${imageData.height} image...`);
+            
+            // Calculate sampling step based on detail level
+            const step = Math.max(1, Math.floor(Math.min(imageData.width, imageData.height) / (detailLevel * 2)));
+            const targetPixels = [];
+            
+            // Sample pixels across the image
+            for (let y = 0; y < imageData.height; y += step) {
+                for (let x = 0; x < imageData.width; x += step) {
+                    const index = (y * imageData.width + x) * 4;
+                    
+                    // Safety check for array bounds
+                    if (index + 2 < imageData.data.length) {
+                        const r = imageData.data[index] || 0;
+                        const g = imageData.data[index + 1] || 0;
+                        const b = imageData.data[index + 2] || 0;
+                        const brightness = (r + g + b) / 3;
+                        
+                        // Create particles in darker areas (portrait logic)
+                        if (brightness < 180) {
+                            // More particles for darker areas
+                            const density = Math.ceil((200 - brightness) / 60);
+                            for (let i = 0; i < density && targetPixels.length < particleCount * 2; i++) {
+                                targetPixels.push({
+                                    x: x + (Math.random() - 0.5) * step * 0.8,
+                                    y: y + (Math.random() - 0.5) * step * 0.8,
+                                    brightness: brightness
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            
+            console.log(`🔍 Found ${targetPixels.length} target pixels`);
+            
+            // If we don't have enough target pixels, fill with random sampling
+            if (targetPixels.length < particleCount) {
+                console.log('🎯 Adding additional random sampling...');
+                const additionalSamples = particleCount - targetPixels.length;
+                for (let i = 0; i < additionalSamples; i++) {
+                    const x = Math.random() * imageData.width;
+                    const y = Math.random() * imageData.height;
+                    const index = (Math.floor(y) * imageData.width + Math.floor(x)) * 4;
+                    
+                    if (index + 2 < imageData.data.length) {
+                        const r = imageData.data[index] || 0;
+                        const g = imageData.data[index + 1] || 0;
+                        const b = imageData.data[index + 2] || 0;
+                        const brightness = (r + g + b) / 3;
+                        
+                        if (brightness < 200) {
+                            targetPixels.push({ x, y, brightness });
+                        }
+                    }
+                }
+            }
+            
+            // Select particles and create them
+            const selectedPixels = targetPixels
+                .sort(() => Math.random() - 0.5)
+                .slice(0, particleCount);
+            
+            selectedPixels.forEach(pixel => {
+                // Ensure coordinates are within canvas bounds
+                const targetX = Math.max(0, Math.min(canvas.width, pixel.x));
+                const targetY = Math.max(0, Math.min(canvas.height, pixel.y));
+                
+                particles.push(new Particle(
+                    Math.random() * canvas.width,
+                    Math.random() * canvas.height,
+                    targetX,
+                    targetY
+                ));
+            });
+            
+            console.log(`✅ ${particles.length} particles generated and ready to animate`);
+            
+            // Force immediate draw
+            setTimeout(() => {
+                drawParticles();
+                console.log(`🎨 Portrait rendered with ${particles.length} particles`);
+            }, 100);
+        }
+
+        function drawParticles() {
+            // Clear canvas with black background
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw all particles
+            particles.forEach(particle => {
+                particle.draw();
+            });
+            
+            console.log(`🎨 Drew ${particles.length} particles on canvas`);
+        }
+
+        function animateParticles() {
+            if (particles.length === 0) {
+                alert('Generate particles first!');
+                return;
+            }
+            
+            isAnimating = !isAnimating;
+            
+            if (isAnimating) {
+                document.querySelector('[onclick="animateParticles()"]').textContent = '⏸️ Pause';
+                animate();
+            } else {
+                document.querySelector('[onclick="animateParticles()"]').textContent = '⚡ Animate';
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            if (isAnimating) {
+                animationId = requestAnimationFrame(animate);
+            }
+        }
+
+        function resetParticles() {
+            isAnimating = false;
+            cancelAnimationFrame(animationId);
+            particles = [];
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            document.querySelector('[onclick="animateParticles()"]').textContent = '⚡ Animate';
+        }
+
+        function savePortrait() {
+            if (particles.length === 0) {
+                alert('Generate a portrait first!');
+                return;
+            }
+            
+            // Render final high-quality version
+            drawParticles();
+            
+            const link = document.createElement('a');
+            link.download = `particle-portrait-${currentMaterial}-${Date.now()}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+            
+            console.log('💾 Portrait saved successfully');
+        }
+
+        // Material selector
+        document.querySelectorAll('.material-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.material-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentMaterial = btn.dataset.material;
+                
+                if (particles.length > 0) {
+                    drawParticles();
+                }
+            });
+        });
+
+        // Slider value displays
+        document.getElementById('particleCount').addEventListener('input', (e) => {
+            document.getElementById('particleCountValue').textContent = e.target.value;
+        });
+
+        document.getElementById('particleSize').addEventListener('input', (e) => {
+            document.getElementById('particleSizeValue').textContent = e.target.value;
+            particles.forEach(particle => particle.size = parseFloat(e.target.value));
+            if (particles.length > 0) drawParticles();
+        });
+
+        document.getElementById('attraction').addEventListener('input', (e) => {
+            document.getElementById('attractionValue').textContent = e.target.value;
+        });
+
+        document.getElementById('motionSpeed').addEventListener('input', (e) => {
+            document.getElementById('motionSpeedValue').textContent = e.target.value;
+        });
+
+        document.getElementById('detailLevel').addEventListener('input', (e) => {
+            document.getElementById('detailLevelValue').textContent = e.target.value;
+        });
+
+        // Initialize canvas
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        console.log('🎨 Particle Portrait Studio initialized');
+        console.log('🔬 Ready for cymatics-style particle portraits');
+    </script>
+</body>
+</html>

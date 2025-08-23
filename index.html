@@ -219,13 +219,30 @@
         .bar {
             width: 25px;
             height: 3px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
-            background-size: 400% 400%;
-            animation: gradientShift 3s ease-in-out infinite;
+            background: linear-gradient(45deg, #667eea, #764ba2);
             margin: 3px 0;
-            transition: 0.3s;
+            transition: all 0.6s ease;
             border-radius: 2px;
             box-shadow: 0 0 8px rgba(116, 235, 213, 0.4);
+        }
+
+        /* Sacred Geometry Hamburger Animation */
+        .hamburger.active .bar:nth-child(1) {
+            transform: rotate(120deg) scale(1.5);
+            border-radius: 50%;
+            box-shadow: 0 0 30px #667eea;
+        }
+
+        .hamburger.active .bar:nth-child(2) {
+            transform: rotate(0deg) scale(1.5);
+            border-radius: 50%;
+            box-shadow: 0 0 30px #764ba2;
+        }
+
+        .hamburger.active .bar:nth-child(3) {
+            transform: rotate(240deg) scale(1.5);
+            border-radius: 50%;
+            box-shadow: 0 0 30px #667eea;
         }
 
         @keyframes gradientShift {
@@ -418,6 +435,16 @@
                         <a href="social-media-creator.html" class="nav-link" style="background: linear-gradient(45deg, #ff6b6b, #ee5a24, #ffa502); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">📱 Social Creator 📱</a>
                     </li>
                     <li class="nav-item">
+                        <a href="consciousness-therapy-studio.html" class="nav-link" style="background: linear-gradient(45deg, #2d1b69, #667eea, #764ba2); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🧘 Consciousness Therapy 🧘</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="northern-lights/northern-lights-aurora.html" class="nav-link" style="background: linear-gradient(45deg, #667eea, #764ba2, #74ebd5); color: #ffffff; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">✨ Northern Lights ✨</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="infinite-consciousness-zoom.html" class="nav-link" style="background: linear-gradient(45deg, #4a90e2, #667eea, #74ebd5); color: #ffffff; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🌌 Infinite Mind Zoom 🌌</a>
+                    </li>
+                    <li class="nav-item">
                         <a href="binaural-beats.html" class="nav-link" style="background: linear-gradient(45deg, #ff6b35, #ff8c42); color: #74ebd5; text-shadow: 0 0 10px rgba(116, 235, 213, 0.5); padding: 8px 16px; border-radius: 20px; margin-left: 10px; font-weight: 600;">🎧 Sound Therapy 🎧</a>
                     </li>
                     <li class="nav-item">
@@ -475,21 +502,17 @@
     <section id="home" class="hero">
         <div class="hero-background" id="heroBackground">
             <div class="hero-bg-slides">
-                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Mountain landscape" class="hero-bg-image active">
-                <img src="https://images.unsplash.com/photo-1519904981063-b0cf448d479e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Forest wilderness" class="hero-bg-image">
-                <img src="https://images.unsplash.com/photo-1464822759844-d150ad6fa52d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Mountain peaks" class="hero-bg-image">
-                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Forest path" class="hero-bg-image">
-                <img src="https://images.unsplash.com/photo-1545558014-8692077e9b5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Alpine lake" class="hero-bg-image">
-                <img src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Mountain valley" class="hero-bg-image">
-                <img src="https://images.unsplash.com/photo-1439066615861-d1af74d74000?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Rocky peaks" class="hero-bg-image">
-                <img src="https://images.unsplash.com/photo-1502780402662-acc01917589e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Misty mountains" class="hero-bg-image">
+                <!-- Consciousness Camo backgrounds handled by CSS animation -->
             </div>
             
             <!-- Cosmic animations removed to prevent freezing -->
         </div>
+        <!-- Secret consciousness particle system -->
+        <div class="consciousness-particles" id="consciousnessParticles"></div>
+        
         <div class="hero-content">
             <div class="hero-text">
-                <h1 class="hero-title">
+                <h1 class="hero-title" id="heroTitle">
                     <span class="hero-title-main">DESIGN</span>
                     <span class="hero-title-sub">YOUR</span>
                     <span class="hero-title-emphasis">FUTURE</span>
@@ -1270,4 +1293,4 @@
         });
     </script>
 </body>
-  </html>
+</html>

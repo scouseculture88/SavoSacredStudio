@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Consciousness Zoom - Savo Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/infinite-zoom.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-text">SAVO STUDIO</span>
+            </a>
+            
+            <div class="hamburger" id="hamburger">
+                <div class="hamburger-lines">
+                    <span class="line line1"></span>
+                    <span class="line line2"></span>
+                    <span class="line line3"></span>
+                </div>
+            </div>
+            
+            <ul class="nav-menu" id="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="consciousness-therapy-studio.html" class="nav-link">Consciousness Therapy</a>
+                </li>
+                <li class="nav-item">
+                    <a href="pattern-variation-engine.html" class="nav-link">Pattern Engine</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="zoom-container" id="zoomContainer">
+        <!-- Cosmic Background -->
+        <div class="cosmic-background" id="cosmicBackground"></div>
+        
+        <!-- Zoom Universe -->
+        <div class="universe" id="universe">
+            <!-- Central Consciousness Planet -->
+            <div class="consciousness-planet" id="centralPlanet">
+                <div class="planet-core">
+                    <div class="planet-text" id="planetText">Your Mind Universe</div>
+                    <div class="planet-subtitle">Click to explore deeper</div>
+                </div>
+                <div class="planet-atmosphere"></div>
+            </div>
+        </div>
+
+        <!-- Improved UI Controls - Better for Final Healing Tool -->
+        <div class="cosmic-ui">
+            <!-- Quick Access Buttons -->
+            <div class="quick-controls">
+                <button class="cosmic-btn-large pulse" id="addIdea" title="Add New Healing Intention">
+                    <i data-feather="plus-circle"></i>
+                    <span>Add Healing Intention</span>
+                </button>
+                <button class="cosmic-btn-large" id="zoomOut" disabled title="Return to Previous Level">
+                    <i data-feather="arrow-left"></i>
+                    <span>Go Back</span>
+                </button>
+            </div>
+            
+            <!-- Healing Progress Display -->
+            <div class="healing-progress">
+                <div class="consciousness-level">
+                    <span class="level-label">Healing Depth:</span>
+                    <span class="level-value" id="currentLevel">0</span>
+                    <span class="level-infinity">/ ∞</span>
+                </div>
+            </div></div>
+
+            <!-- Enhanced Healing Intention Input -->
+            <div class="healing-input" id="ideaInput" style="display: none;">
+                <div class="input-container">
+                    <input type="text" id="newIdeaText" placeholder="Express your healing intention or therapeutic goal..." maxlength="100">
+                    <div class="input-help">
+                        <span class="input-hint">Press Enter to manifest • Esc to cancel</span>
+                        <span class="char-count" id="charCount">0/100</span>
+                    </div>
+                </div>
+                <div class="healing-actions">
+                    <button class="healing-btn primary" id="saveIdea">
+                        <i data-feather="heart"></i>
+                        Manifest Healing
+                    </button>
+                    <button class="healing-btn secondary" id="cancelIdea">
+                        <i data-feather="x"></i>
+                        Cancel
+                    </button>
+                </div>
+            </div>
+
+            <div class="exploration-info">
+                <div class="current-focus" id="currentFocus">
+                    Exploring: <span>Main Consciousness</span>
+                </div>
+                <div class="depth-indicator">
+                    <div class="depth-bar">
+                        <div class="depth-fill" id="depthFill" style="width: 0%"></div>
+                    </div>
+                    <span>Consciousness Depth</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Constellation Connections -->
+        <svg class="constellation-layer" id="constellationLayer">
+            <!-- Dynamic constellation lines will be drawn here -->
+        </svg>
+
+        <!-- Cosmic Particles -->
+        <canvas class="particle-canvas" id="particleCanvas"></canvas>
+    </div>
+
+    <!-- Welcome Modal -->
+    <div class="cosmic-modal" id="welcomeModal">
+        <div class="modal-content">
+            <h2>🌌 Welcome to Infinite Mind Universe</h2>
+            <p>Explore infinite depths of consciousness through procedurally generated cosmic worlds. Each idea becomes a unique visual planet with algorithmic cosmic patterns.</p>
+            <div class="modal-features">
+                <div class="feature">
+                    <strong>🪐 Click planets</strong> to zoom deeper into AI-generated worlds
+                </div>
+                <div class="feature">
+                    <strong>➕ Add ideas</strong> and watch cosmic patterns generate instantly
+                </div>
+                <div class="feature">
+                    <strong>🎨 Procedural visuals</strong> unique algorithmic patterns for each concept
+                </div>
+                <div class="feature">
+                    <strong>∞ Infinite exploration</strong> with limitless AI creativity
+                </div>
+            </div>
+            <button class="cosmic-btn large" id="startExploration">
+                <i data-feather="zap"></i>
+                Begin Consciousness Journey
+            </button>
+        </div>
+    </div>
+
+    <script src="js/infinite-zoom.js"></script>
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+        
+        // Initialize Infinite Zoom
+        document.addEventListener('DOMContentLoaded', function() {
+            const infiniteZoom = new InfiniteConsciousnessZoom();
+            infiniteZoom.init();
+        });
+    </script>
+</body>
+</html>

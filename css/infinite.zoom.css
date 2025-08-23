@@ -535,6 +535,7 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
 }
+}
 
 .cosmic-btn.small {
     padding: 0.5rem 1rem;

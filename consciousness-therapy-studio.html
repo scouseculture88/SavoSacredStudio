@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consciousness Therapy Studio - Savo Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/consciousness-therapy.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        /* Add cosmic background animation */
+        body {
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(116,235,213,0.1) 2px, transparent 2px),
+                radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.1) 1px, transparent 1px),
+                radial-gradient(circle at 60% 20%, rgba(116,235,213,0.08) 1.5px, transparent 1.5px);
+            background-size: 200px 200px, 150px 150px, 100px 100px;
+            animation: cosmicDrift 20s linear infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        @keyframes cosmicDrift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-200px, -200px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-text">SAVO STUDIO</span>
+            </a>
+            
+            <div class="hamburger" id="hamburger">
+                <div class="hamburger-lines">
+                    <span class="line line1"></span>
+                    <span class="line line2"></span>
+                    <span class="line line3"></span>
+                </div>
+            </div>
+            
+            <ul class="nav-menu" id="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="pattern-variation-engine.html" class="nav-link">Pattern Engine</a>
+                </li>
+                <li class="nav-item">
+                    <a href="sacred-geometry-studio.html" class="nav-link">Sacred Geometry</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <header class="therapy-header">
+            <h1>🧘 Consciousness Therapy Studio</h1>
+            <p>Healing frequencies with therapeutic visualizations for meditation, sleep, and focus</p>
+        </header>
+
+        <!-- Therapy Categories -->
+        <div class="therapy-categories">
+            <button class="category-btn active" data-category="meditation">🧘‍♀️ Meditation</button>
+            <button class="category-btn" data-category="sleep">😴 Deep Sleep</button>
+            <button class="category-btn" data-category="focus">🎯 Focus & Study</button>
+            <button class="category-btn" data-category="healing">💚 Energy Healing</button>
+            <button class="category-btn" data-category="stress">🌊 Stress Relief</button>
+            <button class="category-btn" data-category="chakra">⚡ Chakra Balancing</button>
+        </div>
+
+        <!-- Therapy Sessions Grid -->
+        <div class="sessions-grid" id="sessionsGrid">
+            <!-- Sessions will be populated by JavaScript -->
+        </div>
+
+        <!-- Active Session Display -->
+        <div class="active-session" id="activeSession" style="display: none;">
+            <div class="session-visual" id="sessionVisual">
+                <canvas id="visualCanvas" width="800" height="400"></canvas>
+                <div class="session-overlay">
+                    <h2 id="sessionTitle"></h2>
+                    <p id="sessionDescription"></p>
+                    <div class="session-info">
+                        <span id="sessionFrequency"></span>
+                        <span id="sessionDuration"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="session-controls">
+                <button class="control-btn" id="playBtn">
+                    <i data-feather="play"></i>
+                    <span>Start Session</span>
+                </button>
+                <button class="control-btn" id="pauseBtn" style="display: none;">
+                    <i data-feather="pause"></i>
+                    <span>Pause</span>
+                </button>
+                <button class="control-btn" id="stopBtn">
+                    <i data-feather="stop"></i>
+                    <span>Stop</span>
+                </button>
+                <button class="control-btn" id="fullscreenBtn">
+                    <i data-feather="maximize"></i>
+                    <span>Fullscreen</span>
+                </button>
+            </div>
+            
+            <div class="session-timer">
+                <div class="timer-display" id="timerDisplay">00:00</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/consciousness-therapy.js"></script>
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+        
+        // Initialize Consciousness Therapy Studio
+        document.addEventListener('DOMContentLoaded', function() {
+            const therapyStudio = new ConsciousnessTherapyStudio();
+            therapyStudio.init();
+        });
+    </script>
+</body>
+</html>

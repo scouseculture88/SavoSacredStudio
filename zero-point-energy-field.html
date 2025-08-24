@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero Point Energy Field</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;700;900&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #000000 0%, #001111 50%, #000022 100%);
+            color: #fff; overflow: hidden; height: 100vh; user-select: none;
+        }
+        
+        #canvas {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at center, #000022 0%, #000000 100%);
+            cursor: crosshair;
+        }
+        
+        .header {
+            position: fixed; top: 15px; left: 20px; z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+        .header.hidden { opacity: 0; }
+        
+        .title {
+            font-size: 32px; font-weight: 900; margin-bottom: 5px;
+            background: linear-gradient(135deg, #00ffff, #ff00ff, #ffff00, #00ffff);
+            background-size: 400% 400%; -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
+            animation: quantumShimmer 3s ease-in-out infinite; letter-spacing: 2px;
+        }
+        
+        @keyframes quantumShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            25% { background-position: 100% 0%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+        }
+        
+        .subtitle {
+            font-size: 11px; color: rgba(0, 255, 255, 0.8);
+            font-weight: 300; letter-spacing: 1px; text-transform: uppercase;
+        }
+        
+        .controls {
+            position: fixed; top: 90px; right: 15px; width: 200px;
+            background: rgba(0, 0, 34, 0.9); border: 1px solid rgba(0, 255, 255, 0.5);
+            border-radius: 8px; padding: 12px; transition: transform 0.5s ease;
+            z-index: 100; max-height: calc(100vh - 120px); overflow-y: auto;
+            backdrop-filter: blur(20px);
+        }
+        .controls.hidden { transform: translateX(230px); }
+        
+        .control-group { margin-bottom: 10px; }
+        .control-label {
+            font-size: 9px; color: #00ffff; margin-bottom: 4px;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+        }
+        
+        select, input[type="range"] {
+            width: 100%; background: rgba(0, 0, 0, 0.8); color: #ff00ff;
+            border: 1px solid rgba(255, 0, 255, 0.4); border-radius: 4px;
+            font-size: 9px; font-family: 'Orbitron', monospace;
+        }
+        select { padding: 4px; }
+        
+        input[type="range"] {
+            height: 16px; -webkit-appearance: none;
+            background: rgba(255, 0, 255, 0.2);
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%;
+            background: linear-gradient(135deg, #00ffff, #ff00ff); cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+        
+        .value-display {
+            font-size: 7px; color: #ffff00; margin-top: 2px;
+            text-align: center; font-weight: 700;
+        }
+        
+        .button {
+            width: 100%; padding: 6px; margin: 2px 0;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.3), rgba(255, 0, 255, 0.3));
+            border: 1px solid rgba(0, 255, 255, 0.5); border-radius: 4px;
+            color: #00ffff; cursor: pointer; font-size: 8px; text-transform: uppercase;
+            font-family: 'Orbitron', monospace; font-weight: 700; letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.5), rgba(255, 0, 255, 0.5));
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+        }
+        
+        .toggle {
+            position: fixed; top: 20px; right: 20px; width: 45px; height: 45px;
+            background: rgba(0, 0, 34, 0.9); border: 2px solid #00ffff;
+            border-radius: 50%; color: #00ffff; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; z-index: 200; transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .toggle:hover { box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); }
+        
+        .info {
+            position: fixed; bottom: 15px; left: 15px;
+            background: rgba(0, 0, 34, 0.9); border: 1px solid rgba(0, 255, 255, 0.5);
+            border-radius: 8px; padding: 10px; font-size: 8px; color: #00ffff;
+            max-width: 300px; line-height: 1.4; transition: opacity 0.5s ease;
+            backdrop-filter: blur(20px);
+        }
+        .info.hidden { opacity: 0; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div class="header" id="header">
+        <div class="title">ZERO POINT ENERGY</div>
+        <div class="subtitle">Quantum Vacuum • Virtual Particles • Infinite Potential</div>
+    </div>
+    
+    <div class="toggle" id="toggle">⚛️</div>
+    
+    <div class="controls" id="controls">
+        <div class="control-group">
+            <div class="control-label">Field Type</div>
+            <select id="fieldType">
+                <option value="vacuum">Quantum Vacuum</option>
+                <option value="virtual">Virtual Particles</option>
+                <option value="casimir">Casimir Effect</option>
+                <option value="consciousness">Consciousness</option>
+            </select>
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Energy Density</div>
+            <input type="range" id="density" min="0.1" max="3" value="1.5" step="0.1">
+            <div class="value-display" id="densityVal">1.5</div>
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Fluctuation Rate</div>
+            <input type="range" id="fluctuation" min="0.1" max="5" value="2" step="0.1">
+            <div class="value-display" id="fluctuationVal">2.0</div>
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Coherence</div>
+            <input type="range" id="coherence" min="0" max="1" value="0.7" step="0.1">
+            <div class="value-display" id="coherenceVal">0.7</div>
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Particles</div>
+            <input type="range" id="particles" min="50" max="300" value="120" step="10">
+            <div class="value-display" id="particlesVal">120</div>
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Consciousness</div>
+            <input type="range" id="consciousness" min="0" max="2" value="0.8" step="0.1">
+            <div class="value-display" id="consciousnessVal">0.8</div>
+        </div>
+        
+        <div class="control-group">
+            <button class="button" id="collapseBtn">Wave Collapse</button>
+            <button class="button" id="healingBtn">Healing Field</button>
+            <button class="button" id="entangleBtn">Entanglement</button>
+            <button class="button" id="resetBtn">Reset</button>
+        </div>
+    </div>
+    
+    <div class="info" id="info">
+        <strong>Zero Point Energy:</strong> Even in "empty" space, quantum fields fluctuate with infinite energy. Virtual particle pairs appear and disappear, creating potential that consciousness can access for healing and manifestation.
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height, centerX, centerY, time = 0, hidden = false;
+        let particles = [], nodes = [], field = [], waves = [];
+        
+        // Settings
+        let fieldType = 'vacuum', density = 1.5, fluctuation = 2, coherence = 0.7;
+        let particleCount = 120, consciousnessLevel = 0.8;
+        let waveCollapse = false, healingField = false, entangled = false;
+        
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            centerX = width / 2; centerY = height / 2;
+            init();
+        }
+        
+        function init() {
+            particles = []; nodes = []; field = []; waves = [];
+            
+            // Virtual particles
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width, y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 4, vy: (Math.random() - 0.5) * 4,
+                    energy: Math.random(), phase: Math.random() * Math.PI * 2,
+                    lifetime: 0.5 + Math.random() * 2, age: 0,
+                    type: Math.random() > 0.5 ? 'matter' : 'antimatter',
+                    size: 2 + Math.random() * 3
+                });
+            }
+            
+            // Energy nodes
+            const gridSize = 70;
+            for (let x = gridSize; x < width; x += gridSize) {
+                for (let y = gridSize; y < height; y += gridSize) {
+                    nodes.push({
+                        x: x + (Math.random() - 0.5) * 20,
+                        y: y + (Math.random() - 0.5) * 20,
+                        energy: Math.random(), resonance: Math.random() * Math.PI * 2,
+                        connections: []
+                    });
+                }
+            }
+            
+            // Connect nodes
+            nodes.forEach((node, i) => {
+                nodes.forEach((other, j) => {
+                    if (i !== j && Math.sqrt((node.x - other.x) ** 2 + (node.y - other.y) ** 2) < 120) {
+                        if (Math.random() < 0.25) node.connections.push(j);
+                    }
+                });
+            });
+            
+            // Quantum field
+            const res = 25;
+            for (let x = 0; x < width; x += res) {
+                for (let y = 0; y < height; y += res) {
+                    field.push({
+                        x: x, y: y, amplitude: 0, phase: Math.random() * Math.PI * 2,
+                        frequency: 0.02 + Math.random() * 0.03
+                    });
+                }
+            }
+            
+            // Consciousness waves
+            for (let i = 0; i < 6; i++) {
+                waves.push({
+                    centerX: Math.random() * width, centerY: Math.random() * height,
+                    radius: 0, maxRadius: 80 + Math.random() * 120,
+                    frequency: 0.01 + Math.random() * 0.02, intensity: Math.random()
+                });
+            }
+        }
+        
+        function getColor(type, energy, alpha = 1) {
+            switch(type) {
+                case 'vacuum': return `rgba(${energy * 100}, ${200 + energy * 55}, 255, ${alpha})`;
+                case 'virtual': return energy > 0.5 ? 
+                    `rgba(255, ${100 + energy * 155}, ${200 + energy * 55}, ${alpha})` :
+                    `rgba(${100 + energy * 155}, 255, ${200 + energy * 55}, ${alpha})`;
+                case 'casimir': return `rgba(${150 + energy * 105}, ${50 + energy * 150}, ${200 + energy * 55}, ${alpha})`;
+                case 'consciousness': return `rgba(255, ${150 + energy * 105}, ${100 + energy * 155}, ${alpha})`;
+                default: return `rgba(${energy * 255}, ${energy * 255}, 255, ${alpha})`;
+            }
+        }
+        
+        function update() {
+            // Update particles
+            particles.forEach(p => {
+                p.age += 0.016; p.phase += fluctuation * 0.05;
+                
+                // Quantum tunneling
+                if (Math.random() < 0.008) {
+                    p.x = Math.random() * width; p.y = Math.random() * height;
+                }
+                
+                // Movement with uncertainty
+                p.vx += (Math.random() - 0.5) * 0.3 * fluctuation;
+                p.vy += (Math.random() - 0.5) * 0.3 * fluctuation;
+                p.x += p.vx; p.y += p.vy;
+                p.vx *= 0.98; p.vy *= 0.98;
+                
+                // Consciousness influence
+                if (consciousnessLevel > 0.5) {
+                    const dist = Math.sqrt((p.x - centerX) ** 2 + (p.y - centerY) ** 2);
+                    if (dist < 200) {
+                        p.energy = Math.min(1, p.energy + (1 - dist / 200) * consciousnessLevel * 0.03);
+                    }
+                }
+                
+                // Boundaries
+                if (p.x < 0) p.x = width; if (p.x > width) p.x = 0;
+                if (p.y < 0) p.y = height; if (p.y > height) p.y = 0;
+                
+                // Recreate when lifetime ends
+                if (p.age > p.lifetime) {
+                    p.age = 0; p.x = Math.random() * width; p.y = Math.random() * height;
+                    p.energy = Math.random() * density; p.lifetime = 0.5 + Math.random() * 2;
+                    p.type = Math.random() > 0.5 ? 'matter' : 'antimatter';
+                }
+                
+                // Energy fluctuation
+                p.energy = Math.max(0, Math.min(1, p.energy + (Math.random() - 0.5) * 0.08 * fluctuation));
+            });
+            
+            // Update nodes
+            nodes.forEach(n => {
+                n.resonance += 0.04; n.energy = 0.3 + 0.7 * Math.abs(Math.sin(n.resonance)) * density;
+                
+                if (healingField) {
+                    const dist = Math.sqrt((n.x - centerX) ** 2 + (n.y - centerY) ** 2);
+                    if (dist < 250) n.energy = Math.min(1, n.energy * 1.4);
+                }
+            });
+            
+            // Update field
+            field.forEach(f => {
+                f.phase += f.frequency * fluctuation;
+                f.amplitude = density * 0.3 * Math.abs(Math.sin(f.phase));
+                
+                if (coherence > 0.5) {
+                    const dist = Math.sqrt((f.x - centerX) ** 2 + (f.y - centerY) ** 2);
+                    f.amplitude += Math.exp(-dist / (250 * coherence)) * consciousnessLevel * 0.4;
+                }
+            });
+            
+            // Update waves
+            waves.forEach(w => {
+                w.radius += 1.5;
+                if (w.radius > w.maxRadius) {
+                    w.radius = 0; w.centerX = Math.random() * width; w.centerY = Math.random() * height;
+                    w.intensity = Math.random() * consciousnessLevel;
+                }
+            });
+        }
+        
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 34, 0.05)'; ctx.fillRect(0, 0, width, height);
+            
+            // Draw field
+            field.forEach(f => {
+                if (f.amplitude > 0.1) {
+                    const size = f.amplitude * 6, alpha = f.amplitude * 0.5;
+                    ctx.fillStyle = getColor(fieldType, f.amplitude, alpha);
+                    ctx.beginPath(); ctx.arc(f.x, f.y, size, 0, Math.PI * 2); ctx.fill();
+                }
+            });
+            
+            // Draw connections
+            nodes.forEach(n => {
+                n.connections.forEach(ci => {
+                    const c = nodes[ci]; if (!c) return;
+                    const avgE = (n.energy + c.energy) / 2, alpha = avgE * coherence * 0.6;
+                    if (alpha > 0.1) {
+                        ctx.strokeStyle = getColor(fieldType, avgE, alpha);
+                        ctx.lineWidth = 1 + avgE; ctx.beginPath();
+                        ctx.moveTo(n.x, n.y); ctx.lineTo(c.x, c.y); ctx.stroke();
+                    }
+                });
+            });
+            
+            // Draw nodes
+            nodes.forEach(n => {
+                const size = 3 + n.energy * 4, alpha = n.energy * 0.8;
+                ctx.fillStyle = getColor(fieldType, n.energy, alpha);
+                ctx.beginPath(); ctx.arc(n.x, n.y, size, 0, Math.PI * 2); ctx.fill();
+                
+                if (n.energy > 0.6) {
+                    const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, size * 2);
+                    grad.addColorStop(0, getColor(fieldType, n.energy, alpha * 0.5));
+                    grad.addColorStop(1, getColor(fieldType, n.energy, 0));
+                    ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(n.x, n.y, size * 2, 0, Math.PI * 2); ctx.fill();
+                }
+            });
+            
+            // Draw particles
+            particles.forEach(p => {
+                const size = p.size * p.energy, alpha = (1 - p.age / p.lifetime) * p.energy;
+                ctx.fillStyle = p.type === 'matter' ? getColor(fieldType, p.energy, alpha) : getColor(fieldType, 1 - p.energy, alpha);
+                ctx.beginPath(); ctx.arc(p.x, p.y, size, 0, Math.PI * 2); ctx.fill();
+                
+                // Uncertainty visualization
+                if (p.energy > 0.8) {
+                    for (let i = 0; i < 2; i++) {
+                        ctx.fillStyle = getColor(fieldType, p.energy, alpha * 0.3);
+                        ctx.beginPath();
+                        ctx.arc(p.x + (Math.random() - 0.5) * 8, p.y + (Math.random() - 0.5) * 8, 1, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            });
+            
+            // Draw consciousness waves
+            if (consciousnessLevel > 0.3) {
+                waves.forEach(w => {
+                    if (w.radius > 8) {
+                        const alpha = (1 - w.radius / w.maxRadius) * w.intensity * consciousnessLevel;
+                        ctx.strokeStyle = getColor('consciousness', w.intensity, alpha);
+                        ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(w.centerX, w.centerY, w.radius, 0, Math.PI * 2); ctx.stroke();
+                    }
+                });
+            }
+            
+            // Effects
+            if (waveCollapse) {
+                const size = 50 + Math.sin(time * 0.2) * 25;
+                const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, size);
+                grad.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+                grad.addColorStop(0.5, getColor(fieldType, 1, 0.5));
+                grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(centerX, centerY, size, 0, Math.PI * 2); ctx.fill();
+            }
+            
+            if (healingField) {
+                const size = 180 + Math.sin(time * 0.08) * 40;
+                const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, size);
+                grad.addColorStop(0, getColor('consciousness', 1, 0.3));
+                grad.addColorStop(0.7, getColor('consciousness', 0.7, 0.1));
+                grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(centerX, centerY, size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+        
+        function animate() { time++; update(); draw(); requestAnimationFrame(animate); }
+        
+        function toggleUI() {
+            hidden = !hidden;
+            ['header', 'controls', 'info'].forEach(id => {
+                document.getElementById(id).classList.toggle('hidden', hidden);
+            });
+            document.getElementById('toggle').textContent = hidden ? '👁️' : '⚛️';
+        }
+        
+        // Event listeners
+        document.getElementById('toggle').onclick = toggleUI;
+        document.getElementById('fieldType').onchange = e => fieldType = e.target.value;
+        document.getElementById('density').oninput = e => { 
+            density = +e.target.value; 
+            document.getElementById('densityVal').textContent = density.toFixed(1);
+        };
+        document.getElementById('fluctuation').oninput = e => { 
+            fluctuation = +e.target.value; 
+            document.getElementById('fluctuationVal').textContent = fluctuation.toFixed(1);
+        };
+        document.getElementById('coherence').oninput = e => { 
+            coherence = +e.target.value; 
+            document.getElementById('coherenceVal').textContent = coherence.toFixed(1);
+        };
+        document.getElementById('particles').oninput = e => { 
+            particleCount = +e.target.value; 
+            document.getElementById('particlesVal').textContent = particleCount;
+            init();
+        };
+        document.getElementById('consciousness').oninput = e => { 
+            consciousnessLevel = +e.target.value; 
+            document.getElementById('consciousnessVal').textContent = consciousnessLevel.toFixed(1);
+        };
+        
+        document.getElementById('collapseBtn').onclick = () => {
+            waveCollapse = true;
+            setTimeout(() => waveCollapse = false, 3000);
+        };
+        
+        document.getElementById('healingBtn').onclick = () => {
+            healingField = true;
+            setTimeout(() => healingField = false, 5000);
+        };
+        
+        document.getElementById('entangleBtn').onclick = () => {
+            entangled = !entangled;
+            if (entangled) {
+                for (let i = 0; i < particles.length - 1; i += 2) {
+                    particles[i].entangled = i + 1;
+                    particles[i + 1].entangled = i;
+                }
+            }
+        };
+        
+        document.getElementById('resetBtn').onclick = () => {
+            waveCollapse = healingField = entangled = false;
+            time = 0; init();
+        };
+        
+        canvas.onclick = e => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left, y = e.clientY - rect.top;
+            particles.forEach(p => {
+                const dist = Math.sqrt((p.x - x) ** 2 + (p.y - y) ** 2);
+                if (dist < 60) {
+                    p.energy = Math.min(1, p.energy + 0.5);
+                    p.vx += (p.x - x) / dist * 2; p.vy += (p.y - y) / dist * 2;
+                }
+            });
+        };
+        
+        canvas.ontouchstart = e => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const x = touch.clientX - rect.left, y = touch.clientY - rect.top;
+            particles.forEach(p => {
+                const dist = Math.sqrt((p.x - x) ** 2 + (p.y - y) ** 2);
+                if (dist < 60) {
+                    p.energy = Math.min(1, p.energy + 0.5);
+                    p.vx += (p.x - x) / dist * 2; p.vy += (p.y - y) / dist * 2;
+                }
+            });
+        };
+        
+        window.onresize = resize;
+        resize(); animate();
+    </script>
+</body>
+</html>

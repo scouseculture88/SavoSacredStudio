@@ -51,6 +51,12 @@ const genai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY
 });
 
+// OpenAI setup for pattern detection
+const OpenAI = require('openai');
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+});
+
 const server = http.createServer(async (req, res) => {
     const parsedUrl = url.parse(req.url, true);
     const pathname = parsedUrl.pathname;
@@ -170,6 +176,54 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // Image Generation API for Mind Universe
+    if (pathname === '/api/generate-image' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+        req.on('end', async () => {
+            try {
+                const { prompt, aspectRatio = '1:1' } = JSON.parse(body);
+                
+                if (!openai) {
+                    throw new Error('OpenAI not configured');
+                }
+                
+                console.log('🎨 Generating AI image for Mind Universe:', prompt);
+                
+                const response = await openai.images.generate({
+                    model: "dall-e-3",
+                    prompt: prompt,
+                    n: 1,
+                    size: aspectRatio === '1:1' ? "1024x1024" : "1024x1792",
+                    quality: "standard",
+                });
+                
+                const imageUrl = response.data[0].url;
+                
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ 
+                    success: true, 
+                    imageUrl: imageUrl,
+                    prompt: prompt
+                }));
+                
+                console.log('✨ AI image generated successfully');
+                
+            } catch (error) {
+                console.error('Image generation error:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ 
+                    success: false, 
+                    error: error.message,
+                    fallback: 'cosmic-gradient'
+                }));
+            }
+        });
+        return;
+    }
+
     // API endpoint to check if Gemini key is available
     if (pathname === '/api/check-gemini-key' && req.method === 'GET') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -177,6 +231,193 @@ const server = http.createServer(async (req, res) => {
             hasKey: !!process.env.GEMINI_API_KEY,
             status: process.env.GEMINI_API_KEY ? 'connected' : 'not_configured'
         }));
+        return;
+    }
+
+    // API endpoint for AI circle detection
+    if (pathname === '/api/detect-circles' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        
+        req.on('end', async () => {
+            try {
+                const { image, patternType } = JSON.parse(body);
+
+                if (!image) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'No image provided' }));
+                    return;
+                }
+
+                if (!process.env.OPENAI_API_KEY) {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'OpenAI API key not configured' }));
+                    return;
+                }
+
+                // Use OpenAI Vision to analyze the image
+                const response = await openai.chat.completions.create({
+                    model: "gpt-4o",
+                    messages: [
+                        {
+                            role: "system",
+                            content: `You are an expert in sacred geometry and pattern recognition. Analyze images to detect circular elements and intersection points that would be ideal for circle placement in sacred geometry patterns like Flower of Life, Seed of Life, Metatron's Cube, etc.
+
+                            Return your analysis as JSON with this exact format:
+                            {
+                                "circles": [
+                                    {"x": number, "y": number, "radius": number, "confidence": number}
+                                ],
+                                "patternType": "string",
+                                "confidence": number,
+                                "analysis": "string description"
+                            }
+
+                            - x,y coordinates should be relative to an 800x600 canvas
+                            - radius should typically be between 30-50 pixels for sacred geometry
+                            - confidence should be 0-1 for each detection
+                            - Identify key intersection points, circle centers, and geometric focal points
+                            - For Flower of Life patterns, focus on the center and surrounding petal centers
+                            - For other sacred geometry, identify primary geometric anchor points`
+                        },
+                        {
+                            role: "user",
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Analyze this sacred geometry image and detect the optimal positions for circles. Pattern type hint: ${patternType || 'unknown'}`
+                                },
+                                {
+                                    type: "image_url",
+                                    image_url: {
+                                        url: image
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    response_format: { type: "json_object" },
+                    max_tokens: 1000
+                });
+
+                const result = JSON.parse(response.choices[0].message.content);
+
+                // Validate and ensure proper format
+                const circles = result.circles || [];
+                const validCircles = circles.filter(circle => 
+                    typeof circle.x === 'number' && 
+                    typeof circle.y === 'number' && 
+                    typeof circle.radius === 'number' &&
+                    circle.x >= 0 && circle.x <= 800 &&
+                    circle.y >= 0 && circle.y <= 600
+                );
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: true,
+                    circles: validCircles,
+                    patternType: result.patternType || 'Sacred Geometry',
+                    confidence: result.confidence || 0.8,
+                    analysis: result.analysis || 'AI detected key geometric points in the pattern'
+                }));
+
+            } catch (error) {
+                console.error('Circle detection error:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ 
+                    success: false, 
+                    error: 'AI detection failed. Please try again.' 
+                }));
+            }
+        });
+        return;
+    }
+
+    // API endpoint for pattern analysis
+    if (pathname === '/api/analyze-pattern' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        
+        req.on('end', async () => {
+            try {
+                const { image } = JSON.parse(body);
+
+                if (!image) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'No image provided' }));
+                    return;
+                }
+
+                if (!process.env.OPENAI_API_KEY) {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'OpenAI API key not configured' }));
+                    return;
+                }
+
+                // Use OpenAI Vision to analyze the sacred geometry pattern
+                const response = await openai.chat.completions.create({
+                    model: "gpt-4o",
+                    messages: [
+                        {
+                            role: "system",
+                            content: `You are an expert in sacred geometry, symbolism, and spiritual mathematics. Analyze sacred geometry images to provide deep insights about the pattern, its meaning, and practical applications.
+
+                            Return your analysis as JSON with this exact format:
+                            {
+                                "patternName": "Name of the sacred geometry pattern",
+                                "symbolism": "Spiritual and symbolic meaning",
+                                "geometry": "Mathematical and geometric properties",
+                                "recommendations": "Practical advice for working with this pattern"
+                            }
+
+                            Focus on:
+                            - Identifying specific sacred geometry patterns (Flower of Life, Seed of Life, Metatron's Cube, Sri Yantra, etc.)
+                            - Explaining the spiritual significance and symbolism
+                            - Describing the mathematical relationships and proportions
+                            - Providing practical guidance for meditation, healing, or creative work
+                            - Noting any Tesla 3-6-9 connections or Fibonacci relationships
+                            - Suggesting how to work with this pattern for therapeutic purposes`
+                        },
+                        {
+                            role: "user",
+                            content: [
+                                {
+                                    type: "text",
+                                    text: "Analyze this sacred geometry pattern. Provide insights about its meaning, symbolism, and how to work with it therapeutically."
+                                },
+                                {
+                                    type: "image_url",
+                                    image_url: {
+                                        url: image
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    response_format: { type: "json_object" },
+                    max_tokens: 1500
+                });
+
+                const result = JSON.parse(response.choices[0].message.content);
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: true,
+                    patternName: result.patternName || 'Sacred Geometry Pattern',
+                    symbolism: result.symbolism || 'This pattern carries deep spiritual significance',
+                    geometry: result.geometry || 'Mathematical relationships create harmony',
+                    recommendations: result.recommendations || 'Use for meditation and healing focus'
+                }));
+
+            } catch (error) {
+                console.error('Pattern analysis error:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ 
+                    success: false, 
+                    error: 'Pattern analysis failed. Please try again.' 
+                }));
+            }
+        });
         return;
     }
 
@@ -396,6 +637,9 @@ const server = http.createServer(async (req, res) => {
     let filePath = '.' + pathname;
     if (pathname === '/') {
         filePath = './index.html';
+    } else if (pathname.endsWith('/')) {
+        // Handle directory requests by serving index.html
+        filePath = '.' + pathname + 'index.html';
     }
 
     const extname = String(path.extname(filePath)).toLowerCase();

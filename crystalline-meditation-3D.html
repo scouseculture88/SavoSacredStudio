@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crystalline Meditation 3D</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@300;700;900&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Orbitron', monospace; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2a 50%, #2a0a3a 100%);
+            color: #fff; overflow: hidden; height: 100vh; user-select: none;
+        }
+        
+        #canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; cursor: grab; }
+        #canvas:active { cursor: grabbing; }
+        
+        .header { position: fixed; top: 15px; left: 20px; z-index: 100; transition: opacity 0.5s ease; }
+        .header.hidden { opacity: 0; }
+        
+        .title {
+            font-size: 32px; font-weight: 900; margin-bottom: 5px;
+            background: linear-gradient(135deg, #ff69b4, #9370db, #20b2aa, #ff1493);
+            background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: crystalShimmer 4s ease-in-out infinite; letter-spacing: 2px;
+        }
+        
+        @keyframes crystalShimmer {
+            0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 100%; }
+        }
+        
+        .subtitle { font-size: 12px; color: rgba(255, 105, 180, 0.8); letter-spacing: 1px; }
+        
+        .controls {
+            position: fixed; top: 90px; right: 15px; width: 200px;
+            background: rgba(26, 10, 42, 0.9); border: 1px solid rgba(255, 105, 180, 0.5);
+            border-radius: 8px; padding: 12px; transition: transform 0.5s ease; z-index: 100;
+            max-height: calc(100vh - 120px); overflow-y: auto; backdrop-filter: blur(20px);
+        }
+        .controls.hidden { transform: translateX(230px); }
+        
+        .control-group { margin-bottom: 10px; }
+        .control-label {
+            font-size: 9px; color: #ff69b4; margin-bottom: 4px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        
+        select, input[type="range"] {
+            width: 100%; background: rgba(0, 0, 0, 0.8); color: #9370db;
+            border: 1px solid rgba(147, 112, 219, 0.4); border-radius: 4px;
+            font-size: 9px; font-family: 'Orbitron', monospace;
+        }
+        select { padding: 4px; }
+        
+        input[type="range"] { height: 16px; -webkit-appearance: none; background: rgba(147, 112, 219, 0.2); }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%;
+            background: linear-gradient(135deg, #ff69b4, #9370db); cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
+        }
+        
+        .value-display { font-size: 7px; color: #20b2aa; margin-top: 2px; text-align: center; font-weight: 700; }
+        
+        .button {
+            width: 100%; padding: 6px; margin: 2px 0;
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.3), rgba(147, 112, 219, 0.3));
+            border: 1px solid rgba(255, 105, 180, 0.5); border-radius: 4px; color: #ff69b4;
+            cursor: pointer; font-size: 8px; text-transform: uppercase; font-family: 'Orbitron', monospace;
+            font-weight: 700; letter-spacing: 1px; transition: all 0.3s ease;
+        }
+        .button:hover { box-shadow: 0 0 15px rgba(255, 105, 180, 0.6); }
+        
+        .toggle {
+            position: fixed; top: 20px; right: 20px; width: 45px; height: 45px;
+            background: rgba(26, 10, 42, 0.9); border: 2px solid #ff69b4; border-radius: 50%;
+            color: #ff69b4; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 18px; z-index: 200; transition: all 0.3s ease; backdrop-filter: blur(10px);
+        }
+        .toggle:hover { box-shadow: 0 0 20px rgba(255, 105, 180, 0.8); }
+        
+        .info {
+            position: fixed; bottom: 15px; left: 15px; background: rgba(26, 10, 42, 0.9);
+            border: 1px solid rgba(255, 105, 180, 0.5); border-radius: 8px; padding: 10px;
+            font-size: 8px; color: #ff69b4; max-width: 300px; line-height: 1.4;
+            transition: opacity 0.5s ease; backdrop-filter: blur(20px);
+        }
+        .info.hidden { opacity: 0; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div class="header" id="header">
+        <div class="title">CRYSTALLINE MEDITATION</div>
+        <div class="subtitle">Sacred Geometry • Healing Frequencies • 3D Crystal Growth</div>
+    </div>
+    
+    <div class="toggle" id="toggle">💎</div>
+    
+    <div class="controls" id="controls">
+        <div class="control-group">
+            <div class="control-label">Crystal Type</div>
+            <select id="crystalType">
+                <option value="quartz">Clear Quartz</option>
+                <option value="amethyst">Amethyst</option>
+                <option value="citrine">Citrine</option>
+                <option value="rose">Rose Quartz</option>
+                <option value="obsidian">Obsidian</option>
+                <option value="rainbow">Rainbow Crystal</option>
+            </select>
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Growth Rate</div>
+            <input type="range" id="growthRate" min="0.1" max="3" value="1" step="0.1">
+            <div class="value-display" id="growthVal">1.0</div>
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Crystal Size</div>
+            <input type="range" id="crystalSize" min="0.5" max="2.5" value="1.2" step="0.1">
+            <div class="value-display" id="sizeVal">1.2</div>
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Rotation</div>
+            <input type="range" id="rotationSpeed" min="0" max="2" value="0.5" step="0.1">
+            <div class="value-display" id="rotationVal">0.5</div>
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Resonance</div>
+            <input type="range" id="resonance" min="0.1" max="3" value="1.5" step="0.1">
+            <div class="value-display" id="resonanceVal">1.5</div>
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Energy Field</div>
+            <input type="range" id="energyField" min="0" max="2" value="1" step="0.1">
+            <div class="value-display" id="energyVal">1.0</div>
+        </div>
+        
+        <div class="control-group">
+            <button class="button" id="healingBtn">Healing Mode</button>
+            <button class="button" id="purifyBtn">Purification</button>
+            <button class="button" id="manifestBtn">Manifestation</button>
+            <button class="button" id="resetBtn">Reset</button>
+        </div>
+    </div>
+    
+    <div class="info" id="info">
+        <strong>Crystal Meditation:</strong> Sacred geometric structures resonate at healing frequencies, amplifying consciousness through mathematical perfection and crystalline energy.
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height, centerX, centerY, time = 0, hidden = false;
+        let crystals = [], particles = [], waves = [];
+        let mouseX = 0, mouseY = 0, isDragging = false, rotationX = 0, rotationY = 0;
+        
+        let crystalType = 'quartz', growthRate = 1, crystalSize = 1.2, rotationSpeed = 0.5;
+        let resonance = 1.5, energyField = 1;
+        let healingActive = false, purifyActive = false, manifestActive = false;
+        
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            centerX = width / 2; centerY = height / 2;
+            init();
+        }
+        
+        function init() {
+            crystals = []; particles = []; waves = [];
+            
+            // Main crystal
+            crystals.push({
+                x: 0, y: 0, z: 0, size: 60 * crystalSize, growth: 0,
+                faces: [], rotation: { x: 0, y: 0, z: 0 }, energy: 1, resonancePhase: 0, type: 'main'
+            });
+            
+            // Generate crystal faces
+            for (let i = 0; i < 8; i++) {
+                const phi = Math.acos(1 - 2 * Math.random());
+                const theta = Math.random() * 2 * Math.PI;
+                crystals[0].faces.push({
+                    x: Math.sin(phi) * Math.cos(theta),
+                    y: Math.sin(phi) * Math.sin(theta),
+                    z: Math.cos(phi),
+                    brightness: Math.random()
+                });
+            }
+            
+            // Satellite crystals
+            for (let i = 0; i < 6; i++) {
+                const angle = (i / 6) * Math.PI * 2;
+                const distance = 80 + Math.random() * 40;
+                crystals.push({
+                    x: Math.cos(angle) * distance, y: Math.sin(angle) * distance,
+                    z: (Math.random() - 0.5) * 60, size: 20 + Math.random() * 30 * crystalSize,
+                    growth: Math.random(), faces: [], rotation: { 
+                        x: Math.random() * Math.PI, y: Math.random() * Math.PI, z: Math.random() * Math.PI 
+                    },
+                    energy: 0.5 + Math.random() * 0.5, resonancePhase: Math.random() * Math.PI * 2,
+                    type: 'satellite'
+                });
+                
+                // Generate faces for each satellite
+                for (let j = 0; j < 6; j++) {
+                    const phi = Math.acos(1 - 2 * Math.random());
+                    const theta = Math.random() * 2 * Math.PI;
+                    crystals[crystals.length - 1].faces.push({
+                        x: Math.sin(phi) * Math.cos(theta),
+                        y: Math.sin(phi) * Math.sin(theta),
+                        z: Math.cos(phi),
+                        brightness: Math.random()
+                    });
+                }
+            }
+            
+            // Energy particles
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: (Math.random() - 0.5) * 300, y: (Math.random() - 0.5) * 300, z: (Math.random() - 0.5) * 300,
+                    vx: 0, vy: 0, vz: 0, energy: Math.random(), life: 1, size: 2 + Math.random() * 2,
+                    resonance: Math.random() * Math.PI * 2
+                });
+            }
+            
+            // Resonance waves
+            for (let i = 0; i < 6; i++) {
+                waves.push({
+                    radius: 0, maxRadius: 100 + Math.random() * 80, frequency: 0.02 + Math.random() * 0.02,
+                    intensity: Math.random(), plane: i % 3
+                });
+            }
+        }
+        
+        function getCrystalColor(type, energy, alpha = 1) {
+            const colors = {
+                quartz: () => `rgba(${200 + energy * 55}, ${200 + energy * 55}, ${240 + energy * 15}, ${alpha})`,
+                amethyst: () => `rgba(${180 + energy * 75}, ${120 + energy * 80}, ${200 + energy * 55}, ${alpha})`,
+                citrine: () => `rgba(255, ${200 + energy * 55}, ${100 + energy * 100}, ${alpha})`,
+                rose: () => `rgba(255, ${150 + energy * 105}, ${180 + energy * 75}, ${alpha})`,
+                obsidian: () => `rgba(${50 + energy * 100}, ${30 + energy * 70}, ${80 + energy * 120}, ${alpha})`,
+                rainbow: () => {
+                    const hue = (time * 0.5 + energy * 180) % 360;
+                    return `hsla(${hue}, 80%, ${60 + energy * 30}%, ${alpha})`;
+                }
+            };
+            return colors[type]();
+        }
+        
+        function project3D(x, y, z) {
+            const cosX = Math.cos(rotationX), sinX = Math.sin(rotationX);
+            const cosY = Math.cos(rotationY), sinY = Math.sin(rotationY);
+            
+            const x1 = cosY * x + sinY * z;
+            const z1 = -sinY * x + cosY * z;
+            const y2 = cosX * y - sinX * z1;
+            const z2 = sinX * y + cosX * z1;
+            
+            const perspective = 600;
+            const scale = perspective / (perspective + z2);
+            
+            return { x: centerX + x1 * scale, y: centerY + y2 * scale, z: z2, scale: scale };
+        }
+        
+        function update() {
+            time += 1;
+            
+            if (!isDragging && rotationSpeed > 0) {
+                rotationY += rotationSpeed * 0.01;
+                rotationX += rotationSpeed * 0.005;
+            }
+            
+            crystals.forEach(crystal => {
+                crystal.growth = Math.min(1, crystal.growth + growthRate * 0.008);
+                crystal.resonancePhase += resonance * 0.03;
+                crystal.energy = 0.5 + 0.5 * Math.abs(Math.sin(crystal.resonancePhase)) * resonance;
+                
+                crystal.rotation.x += 0.005; crystal.rotation.y += 0.008; crystal.rotation.z += 0.003;
+                
+                if (healingActive) crystal.energy = Math.min(2, crystal.energy * 1.3);
+                if (purifyActive) crystal.energy = Math.max(0.8, crystal.energy);
+                if (manifestActive) crystal.size = Math.min(crystal.size * 1.01, crystal.size * 1.5);
+            });
+            
+            particles.forEach(particle => {
+                particle.resonance += 0.08;
+                
+                crystals.forEach(crystal => {
+                    const dx = crystal.x - particle.x, dy = crystal.y - particle.y, dz = crystal.z - particle.z;
+                    const distance = Math.sqrt(dx*dx + dy*dy + dz*dz);
+                    
+                    if (distance < 150) {
+                        const force = (150 - distance) / 150 * crystal.energy * 0.0008;
+                        particle.vx += dx * force; particle.vy += dy * force; particle.vz += dz * force;
+                    }
+                });
+                
+                particle.x += particle.vx; particle.y += particle.vy; particle.z += particle.vz;
+                particle.vx *= 0.99; particle.vy *= 0.99; particle.vz *= 0.99;
+                
+                const boundary = 250;
+                if (Math.abs(particle.x) > boundary) particle.vx *= -0.5;
+                if (Math.abs(particle.y) > boundary) particle.vy *= -0.5;
+                if (Math.abs(particle.z) > boundary) particle.vz *= -0.5;
+                
+                particle.life = Math.max(0, Math.min(1, particle.life + (Math.random() - 0.5) * 0.02));
+            });
+            
+            waves.forEach(wave => {
+                wave.radius += 1.5 * resonance;
+                if (wave.radius > wave.maxRadius) {
+                    wave.radius = 0; wave.intensity = Math.random() * resonance;
+                }
+            });
+        }
+        
+        function drawCrystal(crystal) {
+            const projected = project3D(crystal.x, crystal.y, crystal.z);
+            const size = crystal.size * crystal.growth * projected.scale;
+            
+            if (projected.z > -400 && size > 2) {
+                // Draw crystal faces
+                crystal.faces.forEach(face => {
+                    const faceX = projected.x + face.x * size * 0.4;
+                    const faceY = projected.y + face.y * size * 0.4;
+                    const brightness = Math.abs(face.z) * crystal.energy * face.brightness;
+                    const alpha = brightness * 0.5 + 0.2;
+                    
+                    ctx.fillStyle = getCrystalColor(crystalType, brightness, alpha);
+                    ctx.beginPath();
+                    
+                    for (let i = 0; i < 6; i++) {
+                        const angle = (i / 6) * Math.PI * 2 + crystal.rotation.z;
+                        const faceSize = size * 0.25 * (0.8 + brightness * 0.4);
+                        const x = faceX + Math.cos(angle) * faceSize;
+                        const y = faceY + Math.sin(angle) * faceSize;
+                        
+                        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath(); ctx.fill();
+                    
+                    if (brightness > 0.6) {
+                        ctx.strokeStyle = getCrystalColor(crystalType, 1, brightness);
+                        ctx.lineWidth = 1; ctx.stroke();
+                    }
+                });
+                
+                // Crystal core
+                const coreSize = size * 0.5;
+                const gradient = ctx.createRadialGradient(projected.x, projected.y, 0, projected.x, projected.y, coreSize);
+                gradient.addColorStop(0, getCrystalColor(crystalType, crystal.energy, 0.8));
+                gradient.addColorStop(0.5, getCrystalColor(crystalType, crystal.energy * 0.7, 0.4));
+                gradient.addColorStop(1, getCrystalColor(crystalType, crystal.energy * 0.3, 0));
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath(); ctx.arc(projected.x, projected.y, coreSize, 0, Math.PI * 2); ctx.fill();
+                
+                // Energy rays
+                if (crystal.energy > 1) {
+                    for (let i = 0; i < 6; i++) {
+                        const angle = (i / 6) * Math.PI * 2 + crystal.resonancePhase;
+                        const rayLength = size * crystal.energy * 0.4;
+                        const endX = projected.x + Math.cos(angle) * rayLength;
+                        const endY = projected.y + Math.sin(angle) * rayLength;
+                        
+                        ctx.strokeStyle = getCrystalColor(crystalType, 1, crystal.energy * 0.3);
+                        ctx.lineWidth = 2; ctx.beginPath();
+                        ctx.moveTo(projected.x, projected.y); ctx.lineTo(endX, endY); ctx.stroke();
+                    }
+                }
+            }
+        }
+        
+        function draw() {
+            ctx.fillStyle = 'rgba(10, 10, 26, 0.06)'; ctx.fillRect(0, 0, width, height);
+            
+            // Draw resonance waves
+            waves.forEach(wave => {
+                if (wave.radius > 8) {
+                    const alpha = (1 - wave.radius / wave.maxRadius) * wave.intensity * energyField;
+                    const projected = project3D(0, 0, 0);
+                    
+                    ctx.strokeStyle = getCrystalColor(crystalType, wave.intensity, alpha);
+                    ctx.lineWidth = 2; ctx.beginPath();
+                    ctx.arc(projected.x, projected.y, wave.radius * projected.scale, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            });
+            
+            // Draw particles
+            particles.forEach(particle => {
+                const projected = project3D(particle.x, particle.y, particle.z);
+                const size = particle.size * particle.energy * projected.scale;
+                
+                if (projected.z > -300 && size > 0.5) {
+                    const alpha = particle.life * particle.energy * energyField;
+                    ctx.fillStyle = getCrystalColor(crystalType, particle.energy, alpha);
+                    ctx.beginPath(); ctx.arc(projected.x, projected.y, size, 0, Math.PI * 2); ctx.fill();
+                    
+                    if (particle.energy > 0.8) {
+                        ctx.shadowColor = getCrystalColor(crystalType, 1, 0.6);
+                        ctx.shadowBlur = size * 2; ctx.fill(); ctx.shadowBlur = 0;
+                    }
+                }
+            });
+            
+            // Sort and draw crystals
+            crystals.sort((a, b) => {
+                const projA = project3D(a.x, a.y, a.z);
+                const projB = project3D(b.x, b.y, b.z);
+                return projB.z - projA.z;
+            });
+            crystals.forEach(drawCrystal);
+            
+            // Special effects
+            if (healingActive) {
+                const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 180);
+                grad.addColorStop(0, getCrystalColor('rose', 1, 0.3));
+                grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                ctx.fillStyle = grad;
+                ctx.beginPath(); ctx.arc(centerX, centerY, 180 + Math.sin(time * 0.08) * 30, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            if (purifyActive) {
+                ctx.strokeStyle = getCrystalColor('quartz', 1, 0.5); ctx.lineWidth = 2;
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i / 6) * Math.PI * 2 + time * 0.02;
+                    const radius = 120 + Math.sin(time * 0.04 + i) * 20;
+                    ctx.beginPath(); ctx.arc(centerX, centerY, radius, angle, angle + Math.PI / 3);
+                    ctx.stroke();
+                }
+            }
+            
+            if (manifestActive) {
+                for (let i = 0; i < 8; i++) {
+                    const angle = (i / 8) * Math.PI * 2 + time * 0.02;
+                    const x = centerX + Math.cos(angle) * 140;
+                    const y = centerY + Math.sin(angle) * 140;
+                    
+                    ctx.fillStyle = getCrystalColor('rainbow', 1, 0.6);
+                    ctx.beginPath(); ctx.arc(x, y, 3 + Math.sin(time * 0.08 + i) * 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+        
+        function animate() { update(); draw(); requestAnimationFrame(animate); }
+        
+        function toggleUI() {
+            hidden = !hidden;
+            ['header', 'controls', 'info'].forEach(id => {
+                document.getElementById(id).classList.toggle('hidden', hidden);
+            });
+            document.getElementById('toggle').textContent = hidden ? '👁️' : '💎';
+        }
+        
+        // Mouse controls
+        canvas.onmousedown = e => { isDragging = true; mouseX = e.clientX; mouseY = e.clientY; };
+        canvas.onmousemove = e => {
+            if (isDragging) {
+                rotationY += (e.clientX - mouseX) * 0.01; rotationX += (e.clientY - mouseY) * 0.01;
+                mouseX = e.clientX; mouseY = e.clientY;
+            }
+        };
+        canvas.onmouseup = () => isDragging = false;
+        
+        // Touch controls
+        canvas.ontouchstart = e => {
+            e.preventDefault(); isDragging = true;
+            const touch = e.touches[0]; mouseX = touch.clientX; mouseY = touch.clientY;
+        };
+        canvas.ontouchmove = e => {
+            e.preventDefault();
+            if (isDragging && e.touches[0]) {
+                const touch = e.touches[0];
+                rotationY += (touch.clientX - mouseX) * 0.01;
+                rotationX += (touch.clientY - mouseY) * 0.01;
+                mouseX = touch.clientX; mouseY = touch.clientY;
+            }
+        };
+        canvas.ontouchend = e => { e.preventDefault(); isDragging = false; };
+        
+        // Event listeners
+        document.getElementById('toggle').onclick = toggleUI;
+        document.getElementById('crystalType').onchange = e => crystalType = e.target.value;
+        
+        document.getElementById('growthRate').oninput = e => {
+            growthRate = +e.target.value; document.getElementById('growthVal').textContent = growthRate.toFixed(1);
+        };
+        document.getElementById('crystalSize').oninput = e => {
+            crystalSize = +e.target.value; document.getElementById('sizeVal').textContent = crystalSize.toFixed(1); init();
+        };
+        document.getElementById('rotationSpeed').oninput = e => {
+            rotationSpeed = +e.target.value; document.getElementById('rotationVal').textContent = rotationSpeed.toFixed(1);
+        };
+        document.getElementById('resonance').oninput = e => {
+            resonance = +e.target.value; document.getElementById('resonanceVal').textContent = resonance.toFixed(1);
+        };
+        document.getElementById('energyField').oninput = e => {
+            energyField = +e.target.value; document.getElementById('energyVal').textContent = energyField.toFixed(1);
+        };
+        
+        document.getElementById('healingBtn').onclick = () => {
+            healingActive = true; setTimeout(() => healingActive = false, 5000);
+        };
+        document.getElementById('purifyBtn').onclick = () => {
+            purifyActive = true; setTimeout(() => purifyActive = false, 4000);
+        };
+        document.getElementById('manifestBtn').onclick = () => {
+            manifestActive = true; setTimeout(() => manifestActive = false, 6000);
+        };
+        document.getElementById('resetBtn').onclick = () => {
+            healingActive = purifyActive = manifestActive = false; time = 0; init();
+        };
+        
+        window.onresize = resize;
+        resize(); animate();
+    </script>
+</body>
+</html>

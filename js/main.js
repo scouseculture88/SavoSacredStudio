@@ -923,25 +923,38 @@ function initializeDynamicBackground() {
         console.log('🏔️ Static mountain background activated');
     }
     
-    // Rotation disabled to reduce resource usage
-    // Original rotating code commented out to preserve for future use
-    /*
+    // Smooth rotating sacred images - NO GREY FLASH
     let currentIndex = 0;
     if (heroImages.length <= 1) return;
     
     function rotateBackground() {
-        heroImages[currentIndex].classList.remove('active');
-        currentIndex = (currentIndex + 1) % heroImages.length;
-        setTimeout(() => {
-            heroImages[currentIndex].classList.add('active');
-        }, 100);
-        console.log(`🌄 Switched to nature scene ${currentIndex + 1}/${heroImages.length}`);
+        // Preload next image to prevent flash
+        const nextIndex = (currentIndex + 1) % heroImages.length;
+        const nextImage = heroImages[nextIndex];
+        
+        // Ensure next image is ready
+        if (nextImage.complete || nextImage.readyState === 4) {
+            // Smooth crossfade - no delay, no grey flash
+            heroImages[currentIndex].classList.remove('active');
+            nextImage.classList.add('active');
+            currentIndex = nextIndex;
+            console.log(`🌄 Switched to sacred image ${currentIndex + 1}/${heroImages.length} (no flash)`);
+        } else {
+            // Wait for image to load
+            nextImage.onload = () => {
+                heroImages[currentIndex].classList.remove('active');
+                nextImage.classList.add('active');
+                currentIndex = nextIndex;
+            };
+        }
     }
     
-    setTimeout(() => {
-        setInterval(rotateBackground, 5000);
-    }, 3000);
-    */
+    // Start rotation after initial load (only if more than 1 image)
+    if (heroImages.length > 1) {
+        setTimeout(() => {
+            setInterval(rotateBackground, 5000);
+        }, 2000);
+    }
 }
 
 // Initialize all functionality when DOM is loaded
@@ -957,4 +970,113 @@ document.addEventListener('DOMContentLoaded', function() {
     // Console log for verification
     console.log('🏔️ Savo Mode website initialized successfully');
     console.log('🏔️ Static mountain background activated');
-});
+
+    // Secret Easter Egg System
+    let secretClickCount = 0;
+    let secretTimer = null;
+    let particleInterval = null;
+
+    function initSecretFeatures() {
+        const heroTitle = document.getElementById('heroTitle');
+        const heroBackground = document.getElementById('heroBackground');
+        const consciousnessParticles = document.getElementById('consciousnessParticles');
+        
+        if (heroTitle) {
+            heroTitle.addEventListener('click', function() {
+                secretClickCount++;
+                
+                if (secretTimer) clearTimeout(secretTimer);
+                
+                if (secretClickCount === 3) {
+                    // Triple click detected - activate secret mode!
+                    activateSecretMode();
+                    secretClickCount = 0;
+                } else {
+                    // Reset counter after 2 seconds
+                    secretTimer = setTimeout(() => {
+                        secretClickCount = 0;
+                    }, 2000);
+                }
+            });
+        }
+        
+        function activateSecretMode() {
+            console.log('🌟 SECRET CONSCIOUSNESS MODE ACTIVATED! 🌟');
+            
+            // Transform background
+            if (heroBackground) heroBackground.classList.add('secret-mode');
+            
+            // Start consciousness particle system
+            if (consciousnessParticles) {
+                consciousnessParticles.classList.add('active');
+                startConsciousnessParticles();
+            }
+            
+            // Change title temporarily
+            const titleMain = document.querySelector('.hero-title-main');
+            const titleSub = document.querySelector('.hero-title-sub');
+            const titleEmphasis = document.querySelector('.hero-title-emphasis');
+            
+            const originalTexts = {
+                main: titleMain ? titleMain.textContent : '',
+                sub: titleSub ? titleSub.textContent : '',
+                emphasis: titleEmphasis ? titleEmphasis.textContent : ''
+            };
+            
+            if (titleMain) titleMain.textContent = 'TRANSCEND';
+            if (titleSub) titleSub.textContent = 'YOUR';
+            if (titleEmphasis) titleEmphasis.textContent = 'CONSCIOUSNESS';
+            
+            // Reset after 10 seconds
+            setTimeout(() => {
+                if (heroBackground) heroBackground.classList.remove('secret-mode');
+                if (consciousnessParticles) consciousnessParticles.classList.remove('active');
+                stopConsciousnessParticles();
+                
+                if (titleMain) titleMain.textContent = originalTexts.main;
+                if (titleSub) titleSub.textContent = originalTexts.sub;
+                if (titleEmphasis) titleEmphasis.textContent = originalTexts.emphasis;
+                
+                console.log('🌟 Returning to normal reality... 🌟');
+            }, 10000);
+        }
+        
+        function startConsciousnessParticles() {
+            particleInterval = setInterval(() => {
+                createConsciousnessParticle();
+            }, 200);
+        }
+        
+        function stopConsciousnessParticles() {
+            if (particleInterval) {
+                clearInterval(particleInterval);
+                particleInterval = null;
+            }
+            // Clear existing particles
+            setTimeout(() => {
+                if (consciousnessParticles) consciousnessParticles.innerHTML = '';
+            }, 8000);
+        }
+        
+        function createConsciousnessParticle() {
+            if (!consciousnessParticles) return;
+            
+            const particle = document.createElement('div');
+            particle.className = 'consciousness-particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 2 + 's';
+            particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+            
+            consciousnessParticles.appendChild(particle);
+            
+            // Remove particle after animation
+            setTimeout(() => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
+            }, 10000);
+        }
+    }
+
+    // Initialize secret features
+    initSecretFeatures();

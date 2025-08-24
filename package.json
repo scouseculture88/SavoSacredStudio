@@ -10,13 +10,22 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google-cloud/storage": "^7.17.0",
     "@google/genai": "^1.7.0",
     "@neondatabase/serverless": "^1.0.1",
     "@types/ws": "^8.18.1",
+    "@uppy/aws-s3": "^4.3.2",
+    "@uppy/core": "^4.5.2",
+    "@uppy/dashboard": "^4.4.3",
+    "@uppy/drag-drop": "^4.2.2",
+    "@uppy/file-input": "^4.2.2",
+    "@uppy/progress-bar": "^4.3.2",
+    "@uppy/react": "^4.5.2",
     "drizzle-kit": "^0.31.4",
     "drizzle-orm": "^0.44.2",
     "express": "^5.1.0",
-    "openai": "^5.8.1",
+    "google-auth-library": "^10.2.1",
+    "openai": "^5.10.2",
     "ws": "^8.18.2"
   }
 }

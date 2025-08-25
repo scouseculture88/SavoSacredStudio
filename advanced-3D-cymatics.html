@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced 3D Cymatics - Sacred Geometry & Resonance</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle, #0a0a0a, #000);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            color: white;
+        }
+        
+        #container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        #controls.collapsed {
+            padding: 10px;
+            width: 40px;
+            height: 40px;
+            overflow: hidden;
+        }
+        
+        #controls.collapsed .control-content {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        #toggleControls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        #toggleControls:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .control-content {
+            transition: opacity 0.3s ease;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #ccc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        input[type="range"] {
+            width: 200px;
+            margin-bottom: 5px;
+        }
+        
+        select, button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin: 2px;
+        }
+        
+        button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+        
+        #info {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            font-size: 12px;
+            max-width: 300px;
+        }
+        
+        .glow {
+            text-shadow: 0 0 10px currentColor;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    
+    <div id="controls">
+        <button id="toggleControls">−</button>
+        <div class="control-content">
+            <div class="control-group">
+                <label>Frequency (Hz)</label>
+                <input type="range" id="frequency" min="20" max="2000" value="432" step="1">
+                <span id="freqValue">432 Hz</span>
+            </div>
+            
+            <div class="control-group">
+                <label>Harmonic Resonance</label>
+                <input type="range" id="harmonics" min="1" max="8" value="3" step="1">
+                <span id="harmValue">3</span>
+            </div>
+            
+            <div class="control-group">
+                <label>Wave Pattern</label>
+                <select id="waveType">
+                    <option value="sin">Sine Wave</option>
+                    <option value="cos">Cosine Wave</option>
+                    <option value="tan">Tangent Wave</option>
+                    <option value="complex">Complex Harmonics</option>
+                    <option value="interference">Wave Interference</option>
+                    <option value="standing">Standing Waves</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Geometry Mode</label>
+                <select id="geometryMode">
+                    <option value="mandala">Sacred Mandala</option>
+                    <option value="flower">Flower of Life</option>
+                    <option value="spiral">Golden Spiral</option>
+                    <option value="platonic">Platonic Solids</option>
+                    <option value="water">Water Surface</option>
+                    <option value="crystal">Crystal Lattice</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Amplitude</label>
+                <input type="range" id="amplitude" min="0.1" max="3.0" value="1.0" step="0.1">
+                <span id="ampValue">1.0</span>
+            </div>
+            
+            <div class="control-group">
+                <label>Resolution</label>
+                <input type="range" id="resolution" min="50" max="200" value="100" step="10">
+                <span id="resValue">100</span>
+            </div>
+            
+            <div class="control-group">
+                <button id="playPause">▶ Play Audio</button>
+                <button id="reset">Reset</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="info">
+        <div class="glow">
+            <strong>Cymatics Visualization</strong><br>
+            Sound made visible through mathematical beauty<br><br>
+            <span id="currentMode">Sacred Mandala Mode</span><br>
+            <span id="patternInfo">Resonance patterns based on harmonic frequencies</span>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        let scene, camera, renderer, geometry, material, mesh;
+        let animationId;
+        let time = 0;
+        let audioContext, oscillator, gainNode;
+        let isPlaying = false;
+        
+        // Control elements
+        const controlsPanel = document.getElementById('controls');
+        const toggleBtn = document.getElementById('toggleControls');
+        const frequencySlider = document.getElementById('frequency');
+        const harmonicsSlider = document.getElementById('harmonics');
+        const waveTypeSelect = document.getElementById('waveType');
+        const geometryModeSelect = document.getElementById('geometryMode');
+        const amplitudeSlider = document.getElementById('amplitude');
+        const resolutionSlider = document.getElementById('resolution');
+        const playPauseBtn = document.getElementById('playPause');
+        const resetBtn = document.getElementById('reset');
+        
+        // Value displays
+        const freqValue = document.getElementById('freqValue');
+        const harmValue = document.getElementById('harmValue');
+        const ampValue = document.getElementById('ampValue');
+        const resValue = document.getElementById('resValue');
+        const currentMode = document.getElementById('currentMode');
+        const patternInfo = document.getElementById('patternInfo');
+        
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0);
+            document.getElementById('container').appendChild(renderer.domElement);
+            
+            // Camera position
+            camera.position.set(0, 0, 5);
+            
+            // Initial geometry
+            createCymaticsGeometry();
+            
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+            scene.add(ambientLight);
+            
+            const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+            pointLight.position.set(0, 0, 10);
+            scene.add(pointLight);
+            
+            // Event listeners
+            setupEventListeners();
+            
+            // Start animation
+            animate();
+        }
+        
+        function createCymaticsGeometry() {
+            if (mesh) {
+                scene.remove(mesh);
+                geometry.dispose();
+                material.dispose();
+            }
+            
+            const resolution = parseInt(resolutionSlider.value);
+            const geometryMode = geometryModeSelect.value;
+            
+            geometry = new THREE.PlaneGeometry(4, 4, resolution, resolution);
+            
+            // Create dynamic material with shader
+            material = new THREE.ShaderMaterial({
+                uniforms: {
+                    time: { value: 0 },
+                    frequency: { value: parseFloat(frequencySlider.value) },
+                    amplitude: { value: parseFloat(amplitudeSlider.value) },
+                    harmonics: { value: parseInt(harmonicsSlider.value) },
+                    waveType: { value: getWaveTypeValue() },
+                    geometryMode: { value: getGeometryModeValue() }
+                },
+                vertexShader: `
+                    uniform float time;
+                    uniform float frequency;
+                    uniform float amplitude;
+                    uniform int harmonics;
+                    uniform int waveType;
+                    uniform int geometryMode;
+                    
+                    varying vec3 vPosition;
+                    varying float vElevation;
+                    
+                    float goldenRatio = 1.618033988749;
+                    
+                    float sineWave(vec2 pos, float freq) {
+                        return sin(length(pos) * freq - time * 2.0);
+                    }
+                    
+                    float cosineWave(vec2 pos, float freq) {
+                        return cos(length(pos) * freq - time * 2.0);
+                    }
+                    
+                    float tangentWave(vec2 pos, float freq) {
+                        return tanh(sin(length(pos) * freq - time * 2.0));
+                    }
+                    
+                    float complexHarmonics(vec2 pos, float freq, int harms) {
+                        float result = 0.0;
+                        for(int i = 1; i <= 8; i++) {
+                            if(i > harms) break;
+                            float harmonic = float(i);
+                            result += sin(length(pos) * freq * harmonic - time * harmonic) / harmonic;
+                        }
+                        return result;
+                    }
+                    
+                    float waveInterference(vec2 pos, float freq) {
+                        float wave1 = sin(pos.x * freq - time);
+                        float wave2 = sin(pos.y * freq - time);
+                        return wave1 + wave2;
+                    }
+                    
+                    float standingWaves(vec2 pos, float freq) {
+                        return sin(pos.x * freq) * cos(pos.y * freq) * cos(time);
+                    }
+                    
+                    float sacredMandala(vec2 pos, float freq) {
+                        float angle = atan(pos.y, pos.x);
+                        float radius = length(pos);
+                        float pattern = 0.0;
+                        
+                        for(int i = 1; i <= 6; i++) {
+                            float n = float(i);
+                            pattern += sin(radius * freq * n + angle * n - time) / n;
+                        }
+                        return pattern;
+                    }
+                    
+                    float flowerOfLife(vec2 pos, float freq) {
+                        float pattern = 0.0;
+                        for(int i = 0; i < 6; i++) {
+                            float angle = float(i) * 3.14159 / 3.0;
+                            vec2 center = vec2(cos(angle), sin(angle)) * 0.5;
+                            float dist = length(pos - center);
+                            pattern += sin(dist * freq - time);
+                        }
+                        return pattern;
+                    }
+                    
+                    float goldenSpiral(vec2 pos, float freq) {
+                        float angle = atan(pos.y, pos.x);
+                        float radius = length(pos);
+                        float spiral = log(radius) * goldenRatio + angle;
+                        return sin(spiral * freq - time);
+                    }
+                    
+                    float platonicSolids(vec2 pos, float freq) {
+                        float x = pos.x * freq;
+                        float y = pos.y * freq;
+                        return sin(x - time) * cos(y - time) + 
+                               sin(x * goldenRatio - time) * cos(y * goldenRatio - time);
+                    }
+                    
+                    float waterSurface(vec2 pos, float freq) {
+                        float ripple1 = sin(length(pos - vec2(0.5, 0.0)) * freq - time * 3.0);
+                        float ripple2 = sin(length(pos - vec2(-0.5, 0.0)) * freq - time * 3.0);
+                        return (ripple1 + ripple2) * 0.5;
+                    }
+                    
+                    float crystalLattice(vec2 pos, float freq) {
+                        float x = pos.x * freq;
+                        float y = pos.y * freq;
+                        return sin(x - time) + sin(y - time) + 
+                               sin((x + y) * 0.707 - time) + sin((x - y) * 0.707 - time);
+                    }
+                    
+                    void main() {
+                        vPosition = position;
+                        
+                        float elevation = 0.0;
+                        vec2 pos = position.xy;
+                        
+                        if(geometryMode == 0) { // Sacred Mandala
+                            elevation = sacredMandala(pos, frequency * 0.01);
+                        } else if(geometryMode == 1) { // Flower of Life
+                            elevation = flowerOfLife(pos, frequency * 0.01);
+                        } else if(geometryMode == 2) { // Golden Spiral
+                            elevation = goldenSpiral(pos, frequency * 0.01);
+                        } else if(geometryMode == 3) { // Platonic Solids
+                            elevation = platonicSolids(pos, frequency * 0.01);
+                        } else if(geometryMode == 4) { // Water Surface
+                            elevation = waterSurface(pos, frequency * 0.01);
+                        } else if(geometryMode == 5) { // Crystal Lattice
+                            elevation = crystalLattice(pos, frequency * 0.01);
+                        }
+                        
+                        // Apply wave type modulation
+                        if(waveType == 0) { // Sine
+                            elevation *= sineWave(pos, frequency * 0.005);
+                        } else if(waveType == 1) { // Cosine
+                            elevation *= cosineWave(pos, frequency * 0.005);
+                        } else if(waveType == 2) { // Tangent
+                            elevation *= tangentWave(pos, frequency * 0.005);
+                        } else if(waveType == 3) { // Complex Harmonics
+                            elevation = complexHarmonics(pos, frequency * 0.01, harmonics);
+                        } else if(waveType == 4) { // Wave Interference
+                            elevation = waveInterference(pos, frequency * 0.01);
+                        } else if(waveType == 5) { // Standing Waves
+                            elevation = standingWaves(pos, frequency * 0.01);
+                        }
+                        
+                        elevation *= amplitude;
+                        vElevation = elevation;
+                        
+                        vec3 newPosition = position;
+                        newPosition.z = elevation;
+                        
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    varying vec3 vPosition;
+                    varying float vElevation;
+                    uniform float time;
+                    
+                    void main() {
+                        float intensity = abs(vElevation);
+                        
+                        // Create color based on elevation and position
+                        vec3 color1 = vec3(0.1, 0.0, 0.5); // Deep blue
+                        vec3 color2 = vec3(0.8, 0.3, 1.0); // Purple
+                        vec3 color3 = vec3(1.0, 0.8, 0.0); // Gold
+                        vec3 color4 = vec3(1.0, 1.0, 1.0); // White
+                        
+                        vec3 finalColor;
+                        if(intensity < 0.25) {
+                            finalColor = mix(color1, color2, intensity * 4.0);
+                        } else if(intensity < 0.5) {
+                            finalColor = mix(color2, color3, (intensity - 0.25) * 4.0);
+                        } else {
+                            finalColor = mix(color3, color4, (intensity - 0.5) * 2.0);
+                        }
+                        
+                        // Add pulsing glow
+                        float glow = 1.0 + sin(time * 3.0) * 0.3;
+                        finalColor *= glow;
+                        
+                        // Add transparency based on elevation
+                        float alpha = 0.7 + intensity * 0.3;
+                        
+                        gl_FragColor = vec4(finalColor, alpha);
+                    }
+                `,
+                transparent: true,
+                side: THREE.DoubleSide
+            });
+            
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+        }
+        
+        function getWaveTypeValue() {
+            const types = ['sin', 'cos', 'tan', 'complex', 'interference', 'standing'];
+            return types.indexOf(waveTypeSelect.value);
+        }
+        
+        function getGeometryModeValue() {
+            const modes = ['mandala', 'flower', 'spiral', 'platonic', 'water', 'crystal'];
+            return modes.indexOf(geometryModeSelect.value);
+        }
+        
+        function setupEventListeners() {
+            // Toggle controls
+            toggleBtn.addEventListener('click', () => {
+                controlsPanel.classList.toggle('collapsed');
+                toggleBtn.textContent = controlsPanel.classList.contains('collapsed') ? '+' : '−';
+            });
+            
+            frequencySlider.addEventListener('input', (e) => {
+                freqValue.textContent = e.target.value + ' Hz';
+                updateUniforms();
+            });
+            
+            harmonicsSlider.addEventListener('input', (e) => {
+                harmValue.textContent = e.target.value;
+                updateUniforms();
+            });
+            
+            amplitudeSlider.addEventListener('input', (e) => {
+                ampValue.textContent = e.target.value;
+                updateUniforms();
+            });
+            
+            resolutionSlider.addEventListener('input', (e) => {
+                resValue.textContent = e.target.value;
+                createCymaticsGeometry();
+            });
+            
+            waveTypeSelect.addEventListener('change', () => {
+                updateUniforms();
+                updateInfo();
+            });
+            
+            geometryModeSelect.addEventListener('change', () => {
+                createCymaticsGeometry();
+                updateInfo();
+            });
+            
+            playPauseBtn.addEventListener('click', toggleAudio);
+            resetBtn.addEventListener('click', reset);
+            
+            window.addEventListener('resize', onWindowResize);
+        }
+        
+        function updateUniforms() {
+            if (material && material.uniforms) {
+                material.uniforms.frequency.value = parseFloat(frequencySlider.value);
+                material.uniforms.amplitude.value = parseFloat(amplitudeSlider.value);
+                material.uniforms.harmonics.value = parseInt(harmonicsSlider.value);
+                material.uniforms.waveType.value = getWaveTypeValue();
+                material.uniforms.geometryMode.value = getGeometryModeValue();
+            }
+        }
+        
+        function updateInfo() {
+            const modeNames = {
+                'mandala': 'Sacred Mandala Mode',
+                'flower': 'Flower of Life Mode',
+                'spiral': 'Golden Spiral Mode',
+                'platonic': 'Platonic Solids Mode',
+                'water': 'Water Surface Mode',
+                'crystal': 'Crystal Lattice Mode'
+            };
+            
+            const waveInfo = {
+                'sin': 'Pure sine wave resonance',
+                'cos': 'Cosine wave harmonics',
+                'tan': 'Tangent wave distortion',
+                'complex': 'Complex harmonic overtones',
+                'interference': 'Wave interference patterns',
+                'standing': 'Standing wave formations'
+            };
+            
+            currentMode.textContent = modeNames[geometryModeSelect.value] || 'Unknown Mode';
+            patternInfo.textContent = waveInfo[waveTypeSelect.value] || 'Mathematical resonance patterns';
+        }
+        
+        function toggleAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                gainNode = audioContext.createGain();
+                gainNode.connect(audioContext.destination);
+                gainNode.gain.value = 0.1;
+            }
+            
+            if (isPlaying) {
+                if (oscillator) {
+                    oscillator.stop();
+                    oscillator = null;
+                }
+                playPauseBtn.textContent = '▶ Play Audio';
+                isPlaying = false;
+            } else {
+                oscillator = audioContext.createOscillator();
+                oscillator.connect(gainNode);
+                oscillator.frequency.value = parseFloat(frequencySlider.value);
+                oscillator.type = waveTypeSelect.value === 'sin' ? 'sine' : 
+                                 waveTypeSelect.value === 'cos' ? 'sine' : 
+                                 waveTypeSelect.value === 'tan' ? 'sawtooth' : 'sine';
+                oscillator.start();
+                playPauseBtn.textContent = '⏸ Pause Audio';
+                isPlaying = true;
+            }
+        }
+        
+        function reset() {
+            time = 0;
+            frequencySlider.value = 432;
+            harmonicsSlider.value = 3;
+            amplitudeSlider.value = 1.0;
+            resolutionSlider.value = 100;
+            waveTypeSelect.value = 'sin';
+            geometryModeSelect.value = 'mandala';
+            
+            freqValue.textContent = '432 Hz';
+            harmValue.textContent = '3';
+            ampValue.textContent = '1.0';
+            resValue.textContent = '100';
+            
+            createCymaticsGeometry();
+            updateInfo();
+            
+            if (isPlaying) {
+                toggleAudio();
+            }
+        }
+        
+        function animate() {
+            animationId = requestAnimationFrame(animate);
+            
+            time += 0.016;
+            
+            if (material && material.uniforms) {
+                material.uniforms.time.value = time;
+            }
+            
+            // Gentle rotation
+            if (mesh) {
+                mesh.rotation.z += 0.002;
+            }
+            
+            // Update audio frequency if playing
+            if (isPlaying && oscillator) {
+                oscillator.frequency.value = parseFloat(frequencySlider.value);
+            }
+            
+            renderer.render(scene, camera);
+        }
+        
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        // Initialize the application
+        init();
+        updateInfo();
+    </script>
+</body>
+</html>

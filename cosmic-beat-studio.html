@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Beat Studio - Psychedelic Animation Creator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --cosmic-purple: #6b46c1;
+            --cosmic-pink: #ec4899;
+            --cosmic-blue: #3b82f6;
+            --cosmic-cyan: #06b6d4;
+            --cosmic-orange: #f59e0b;
+            --cosmic-green: #10b981;
+            --bg-dark: #0a0118;
+            --bg-card: #1a0b2e;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border: #374151;
+        }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: radial-gradient(ellipse at center, #1a0b2e 0%, #0a0118 70%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(107, 70, 193, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(59, 130, 246, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(107, 70, 193, 0.2), rgba(236, 72, 153, 0.2));
+            border-radius: 25px;
+            border: 2px solid rgba(107, 70, 193, 0.3);
+            box-shadow: 0 20px 60px rgba(107, 70, 193, 0.2);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(107, 70, 193, 0.1), transparent);
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--cosmic-purple), var(--cosmic-pink), var(--cosmic-cyan), var(--cosmic-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            text-shadow: 0 0 30px rgba(107, 70, 193, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr 320px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .control-panel {
+            background: linear-gradient(135deg, rgba(26, 11, 46, 0.8), rgba(10, 1, 24, 0.9));
+            border-radius: 20px;
+            border: 2px solid rgba(107, 70, 193, 0.3);
+            padding: 30px;
+            height: fit-content;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+        }
+        
+        .control-section {
+            margin-bottom: 35px;
+        }
+        
+        .control-section h3 {
+            color: var(--cosmic-cyan);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .beat-controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .beat-btn {
+            padding: 18px;
+            background: linear-gradient(135deg, rgba(107, 70, 193, 0.2), rgba(236, 72, 153, 0.2));
+            border: 2px solid rgba(107, 70, 193, 0.4);
+            border-radius: 15px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .beat-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .beat-btn:hover::before {
+            left: 100%;
+        }
+        
+        .beat-btn:hover {
+            background: linear-gradient(135deg, rgba(107, 70, 193, 0.4), rgba(236, 72, 153, 0.4));
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(107, 70, 193, 0.3);
+        }
+        
+        .beat-btn.active {
+            background: linear-gradient(135deg, var(--cosmic-purple), var(--cosmic-pink));
+            border-color: var(--cosmic-cyan);
+            box-shadow: 0 0 30px rgba(107, 70, 193, 0.6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .slider-group {
+            margin-bottom: 25px;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .slider-label span {
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .slider-value {
+            background: linear-gradient(135deg, var(--cosmic-purple), var(--cosmic-pink));
+            padding: 6px 15px;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 4px 15px rgba(107, 70, 193, 0.3);
+        }
+        
+        .slider {
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: linear-gradient(to right, rgba(107, 70, 193, 0.3), rgba(236, 72, 153, 0.3));
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cosmic-cyan), var(--cosmic-orange));
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+            transition: all 0.3s;
+        }
+        
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.6);
+        }
+        
+        .canvas-area {
+            background: linear-gradient(135deg, rgba(26, 11, 46, 0.6), rgba(10, 1, 24, 0.8));
+            border-radius: 20px;
+            border: 2px solid rgba(107, 70, 193, 0.3);
+            padding: 30px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            position: relative;
+        }
+        
+        .canvas-container {
+            position: relative;
+            text-align: center;
+        }
+        
+        .main-canvas {
+            width: 100%;
+            max-width: 800px;
+            height: 500px;
+            border: 3px solid rgba(107, 70, 193, 0.4);
+            border-radius: 20px;
+            background: radial-gradient(ellipse at center, rgba(10, 1, 24, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                inset 0 0 50px rgba(107, 70, 193, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .main-canvas:hover {
+            box-shadow: 
+                0 25px 80px rgba(107, 70, 193, 0.3),
+                inset 0 0 50px rgba(107, 70, 193, 0.2);
+        }
+        
+        .canvas-overlay {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            color: var(--cosmic-cyan);
+            font-weight: 600;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+        
+        .info-panel {
+            background: linear-gradient(135deg, rgba(26, 11, 46, 0.8), rgba(10, 1, 24, 0.9));
+            border-radius: 20px;
+            border: 2px solid rgba(107, 70, 193, 0.3);
+            padding: 30px;
+            height: fit-content;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+        }
+        
+        .pattern-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .pattern-btn {
+            padding: 15px 10px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.2));
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .pattern-btn:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(16, 185, 129, 0.4));
+            transform: translateY(-2px);
+        }
+        
+        .pattern-btn.active {
+            background: linear-gradient(135deg, var(--cosmic-blue), var(--cosmic-green));
+            border-color: var(--cosmic-cyan);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(107, 70, 193, 0.1), rgba(236, 72, 153, 0.1));
+            border-radius: 15px;
+            border: 1px solid rgba(107, 70, 193, 0.3);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--cosmic-cyan), var(--cosmic-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .action-btn {
+            padding: 18px 25px;
+            background: linear-gradient(135deg, var(--cosmic-orange), var(--cosmic-pink));
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-family: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .action-btn:hover::before {
+            left: 100%;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.4);
+        }
+        
+        .tempo-display {
+            text-align: center;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(16, 185, 129, 0.2));
+            border-radius: 20px;
+            border: 2px solid rgba(6, 182, 212, 0.4);
+            margin-bottom: 25px;
+        }
+        
+        .tempo-value {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--cosmic-cyan), var(--cosmic-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+        }
+        
+        .tempo-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(107, 70, 193, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(107, 70, 193, 0.6); }
+        }
+        
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .beat-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .pattern-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌌 COSMIC BEAT STUDIO</h1>
+            <p>Create psychedelic animations driven by cosmic rhythms</p>
+        </div>
+
+        <div class="main-grid">
+            <div class="control-panel">
+                <div class="control-section">
+                    <h3>🎵 Beat Engine</h3>
+                    <div class="beat-controls">
+                        <button class="beat-btn active" onclick="setBeatPattern('kick')">KICK</button>
+                        <button class="beat-btn" onclick="setBeatPattern('snare')">SNARE</button>
+                        <button class="beat-btn" onclick="setBeatPattern('hihat')">HI-HAT</button>
+                        <button class="beat-btn" onclick="setBeatPattern('bass')">BASS</button>
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Tempo</span>
+                            <div class="slider-value" id="tempoDisplay">120 BPM</div>
+                        </div>
+                        <input type="range" class="slider" id="tempoSlider" min="60" max="200" value="120" oninput="updateTempo()">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Intensity</span>
+                            <div class="slider-value" id="intensityDisplay">75%</div>
+                        </div>
+                        <input type="range" class="slider" id="intensitySlider" min="0" max="100" value="75" oninput="updateIntensity()">
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>🎨 Visual Effects</h3>
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Particle Count</span>
+                            <div class="slider-value" id="particleDisplay">500</div>
+                        </div>
+                        <input type="range" class="slider" id="particleSlider" min="100" max="1000" value="500" oninput="updateParticles()">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Color Shift</span>
+                            <div class="slider-value" id="colorDisplay">50%</div>
+                        </div>
+                        <input type="range" class="slider" id="colorSlider" min="0" max="100" value="50" oninput="updateColors()">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Warp Factor</span>
+                            <div class="slider-value" id="warpDisplay">30%</div>
+                        </div>
+                        <input type="range" class="slider" id="warpSlider" min="0" max="100" value="30" oninput="updateWarp()">
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>⚡ Actions</h3>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="startAnimation()">🚀 START TRIP</button>
+                        <button class="action-btn" onclick="stopAnimation()">⏹️ STOP</button>
+                        <button class="action-btn" onclick="randomizeAll()">🎲 COSMIC CHAOS</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-area">
+                <div class="canvas-container">
+                    <canvas class="main-canvas" id="mainCanvas"></canvas>
+                    <div class="canvas-overlay" id="canvasInfo">READY TO LAUNCH</div>
+                </div>
+            </div>
+
+            <div class="info-panel">
+                <div class="tempo-display">
+                    <span class="tempo-value" id="liveTempo">120</span>
+                    <div class="tempo-label">BPM LIVE</div>
+                </div>
+
+                <div class="control-section">
+                    <h3>🌈 Pattern Mode</h3>
+                    <div class="pattern-selector">
+                        <button class="pattern-btn active" onclick="setPattern('spiral')">SPIRAL</button>
+                        <button class="pattern-btn" onclick="setPattern('burst')">BURST</button>
+                        <button class="pattern-btn" onclick="setPattern('wave')">WAVE</button>
+                        <button class="pattern-btn" onclick="setPattern('tunnel')">TUNNEL</button>
+                        <button class="pattern-btn" onclick="setPattern('fractal')">FRACTAL</button>
+                        <button class="pattern-btn" onclick="setPattern('plasma')">PLASMA</button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-value" id="fpsCounter">60</span>
+                        <div class="stat-label">FPS</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="particleCount">500</span>
+                        <div class="stat-label">PARTICLES</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="beatCount">0</span>
+                        <div class="stat-label">BEATS</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animation engine variables
+        let canvas, ctx;
+        let animationId;
+        let isAnimating = false;
+        let particles = [];
+        let beatPattern = 'kick';
+        let currentPattern = 'spiral';
+        let tempo = 120;
+        let intensity = 75;
+        let particleCount = 500;
+        let colorShift = 50;
+        let warpFactor = 30;
+        let beatCounter = 0;
+        let lastBeatTime = 0;
+        let time = 0;
+        
+        // Cosmic color palettes
+        const cosmicColors = [
+            '#6b46c1', '#ec4899', '#3b82f6', '#06b6d4', 
+            '#f59e0b', '#10b981', '#ef4444', '#8b5cf6'
+        ];
+        
+        // Initialize
+        window.onload = function() {
+            setupCanvas();
+            initializeParticles();
+            updateDisplay();
+        };
+        
+        function setupCanvas() {
+            canvas = document.getElementById('mainCanvas');
+            ctx = canvas.getContext('2d');
+            canvas.width = 800;
+            canvas.height = 500;
+        }
+        
+        function initializeParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    size: Math.random() * 3 + 1,
+                    color: cosmicColors[Math.floor(Math.random() * cosmicColors.length)],
+                    life: 1,
+                    angle: Math.random() * Math.PI * 2,
+                    speed: Math.random() * 2 + 1
+                });
+            }
+        }
+        
+        function setBeatPattern(pattern) {
+            document.querySelectorAll('.beat-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            beatPattern = pattern;
+        }
+        
+        function setPattern(pattern) {
+            document.querySelectorAll('.pattern-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            currentPattern = pattern;
+        }
+        
+        function updateTempo() {
+            tempo = document.getElementById('tempoSlider').value;
+            document.getElementById('tempoDisplay').textContent = tempo + ' BPM';
+            document.getElementById('liveTempo').textContent = tempo;
+        }
+        
+        function updateIntensity() {
+            intensity = document.getElementById('intensitySlider').value;
+            document.getElementById('intensityDisplay').textContent = intensity + '%';
+        }
+        
+        function updateParticles() {
+            particleCount = document.getElementById('particleSlider').value;
+            document.getElementById('particleDisplay').textContent = particleCount;
+            document.getElementById('particleCount').textContent = particleCount;
+            initializeParticles();
+        }
+        
+        function updateColors() {
+            colorShift = document.getElementById('colorSlider').value;
+            document.getElementById('colorDisplay').textContent = colorShift + '%';
+        }
+        
+        function updateWarp() {
+            warpFactor = document.getElementById('warpSlider').value;
+            document.getElementById('warpDisplay').textContent = warpFactor + '%';
+        }
+        
+        function updateDisplay() {
+            document.getElementById('tempoDisplay').textContent = tempo + ' BPM';
+            document.getElementById('liveTempo').textContent = tempo;
+            document.getElementById('intensityDisplay').textContent = intensity + '%';
+            document.getElementById('particleDisplay').textContent = particleCount;
+            document.getElementById('colorDisplay').textContent = colorShift + '%';
+            document.getElementById('warpDisplay').textContent = warpFactor + '%';
+        }
+        
+        function startAnimation() {
+            if (!isAnimating) {
+                isAnimating = true;
+                document.getElementById('canvasInfo').textContent = 'COSMIC JOURNEY ACTIVE';
+                animate();
+            }
+        }
+        
+        function stopAnimation() {
+            isAnimating = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+            document.getElementById('canvasInfo').textContent = 'JOURNEY PAUSED';
+        }
+        
+        function randomizeAll() {
+            document.getElementById('tempoSlider').value = 80 + Math.random() * 120;
+            document.getElementById('intensitySlider').value = 50 + Math.random() * 50;
+            document.getElementById('particleSlider').value = 300 + Math.random() * 700;
+            document.getElementById('colorSlider').value = Math.random() * 100;
+            document.getElementById('warpSlider').value = Math.random() * 100;
+            
+            updateTempo();
+            updateIntensity();
+            updateParticles();
+            updateColors();
+            updateWarp();
+            
+            // Random pattern
+            const patterns = ['spiral', 'burst', 'wave', 'tunnel', 'fractal', 'plasma'];
+            const randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
+            document.querySelectorAll('.pattern-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[onclick="setPattern('${randomPattern}')"]`).classList.add('active');
+            currentPattern = randomPattern;
+        }
+        
+        function animate() {
+            if (!isAnimating) return;
+            
+            time += 0.016; // ~60fps
+            
+            // Beat detection
+            const beatInterval = 60 / tempo;
+            if (time - lastBeatTime > beatInterval) {
+                lastBeatTime = time;
+                beatCounter++;
+                document.getElementById('beatCount').textContent = beatCounter;
+                triggerBeatEffect();
+            }
+            
+            // Clear canvas with cosmic background
+            const gradient = ctx.createRadialGradient(
+                canvas.width/2, canvas.height/2, 0,
+                canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)/2
+            );
+            gradient.addColorStop(0, `rgba(10, 1, 24, ${0.1 + intensity/1000})`);
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0.95)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw pattern based on current selection
+            drawPattern();
+            
+            // Update and draw particles
+            updateParticleSystem();
+            
+            // FPS counter (simplified)
+            document.getElementById('fpsCounter').textContent = '60';
+            
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        function triggerBeatEffect() {
+            // Add beat-responsive effects
+            const beatIntensity = intensity / 100;
+            
+            // Create beat particles
+            for (let i = 0; i < 10 * beatIntensity; i++) {
+                particles.push({
+                    x: canvas.width/2,
+                    y: canvas.height/2,
+                    vx: (Math.random() - 0.5) * 10 * beatIntensity,
+                    vy: (Math.random() - 0.5) * 10 * beatIntensity,
+                    size: Math.random() * 5 + 2,
+                    color: cosmicColors[Math.floor(Math.random() * cosmicColors.length)],
+                    life: 1,
+                    angle: Math.random() * Math.PI * 2,
+                    speed: Math.random() * 5 + 2,
+                    isBeat: true
+                });
+            }
+        }
+        
+        function drawPattern() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const beatPulse = Math.sin(time * tempo / 10) * intensity / 100;
+            
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            
+            switch (currentPattern) {
+                case 'spiral':
+                    drawSpiral(beatPulse);
+                    break;
+                case 'burst':
+                    drawBurst(beatPulse);
+                    break;
+                case 'wave':
+                    drawWave(beatPulse);
+                    break;
+                case 'tunnel':
+                    drawTunnel(beatPulse);
+                    break;
+                case 'fractal':
+                    drawFractal(beatPulse);
+                    break;
+                case 'plasma':
+                    drawPlasma(beatPulse);
+                    break;
+            }
+            
+            ctx.restore();
+        }
+        
+        function drawSpiral(pulse) {
+            const spirals = 3;
+            for (let s = 0; s < spirals; s++) {
+                ctx.beginPath();
+                ctx.strokeStyle = cosmicColors[(s + Math.floor(time * colorShift/10)) % cosmicColors.length];
+                ctx.lineWidth = 2 + pulse * 3;
+                
+                for (let i = 0; i < 200; i++) {
+                    const angle = (i * 0.1) + (time * 2) + (s * Math.PI * 2 / spirals);
+                    const radius = i * (1 + pulse) + warpFactor;
+                    const x = Math.cos(angle) * radius;
+                    const y = Math.sin(angle) * radius;
+                    
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+        }
+        
+        function drawBurst(pulse) {
+            const rays = 16;
+            for (let i = 0; i < rays; i++) {
+                const angle = (i / rays) * Math.PI * 2 + time;
+                const length = 100 + pulse * 100 + warpFactor;
+                
+                ctx.beginPath();
+                ctx.strokeStyle = cosmicColors[i % cosmicColors.length];
+                ctx.lineWidth = 1 + pulse * 4;
+                ctx.moveTo(0, 0);
+                ctx.lineTo(Math.cos(angle) * length, Math.sin(angle) * length);
+                ctx.stroke();
+            }
+        }
+        
+        function drawWave(pulse) {
+            ctx.beginPath();
+            ctx.strokeStyle = cosmicColors[Math.floor(time * colorShift/10) % cosmicColors.length];
+            ctx.lineWidth = 3 + pulse * 5;
+            
+            for (let x = -canvas.width/2; x < canvas.width/2; x += 2) {
+                const y = Math.sin(x * 0.01 + time * 3) * (50 + pulse * 50) + 
+                         Math.sin(x * 0.005 + time * 2) * (warpFactor + pulse * 30);
+                if (x === -canvas.width/2) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
+        
+        function drawTunnel(pulse) {
+            const rings = 10;
+            for (let i = 0; i < rings; i++) {
+                const radius = (i + 1) * (20 + pulse * 20) + warpFactor;
+                const alpha = 1 - (i / rings);
+                
+                ctx.beginPath();
+                ctx.strokeStyle = cosmicColors[i % cosmicColors.length] + Math.floor(alpha * 255).toString(16).padStart(2, '0');
+                ctx.lineWidth = 2 + pulse * 3;
+                ctx.arc(0, 0, radius, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+        
+        function drawFractal(pulse) {
+            const branches = 6;
+            const depth = 4;
+            
+            function drawBranch(x, y, angle, length, level) {
+                if (level <= 0) return;
+                
+                const endX = x + Math.cos(angle) * length;
+                const endY = y + Math.sin(angle) * length;
+                
+                ctx.beginPath();
+                ctx.strokeStyle = cosmicColors[level % cosmicColors.length];
+                ctx.lineWidth = level + pulse * 2;
+                ctx.moveTo(x, y);
+                ctx.lineTo(endX, endY);
+                ctx.stroke();
+                
+                const newLength = length * (0.7 + pulse * 0.2);
+                drawBranch(endX, endY, angle - 0.5, newLength, level - 1);
+                drawBranch(endX, endY, angle + 0.5, newLength, level - 1);
+            }
+            
+            for (let i = 0; i < branches; i++) {
+                const angle = (i / branches) * Math.PI * 2 + time * 0.5;
+                drawBranch(0, 0, angle, 50 + warpFactor, depth);
+            }
+        }
+        
+        function drawPlasma(pulse) {
+            const imageData = ctx.createImageData(canvas.width, canvas.height);
+            const data = imageData.data;
+            
+            for (let x = 0; x < canvas.width; x += 4) {
+                for (let y = 0; y < canvas.height; y += 4) {
+                    const value = Math.sin(x * 0.01 + time) + 
+                                 Math.sin(y * 0.01 + time * 1.3) + 
+                                 Math.sin((x + y) * 0.01 + time * 0.7) + 
+                                 Math.sin(Math.sqrt(x*x + y*y) * 0.01 + time * 2);
+                    
+                    const colorIndex = Math.floor((value + 4) * colorShift / 100) % cosmicColors.length;
+                    const color = hexToRgb(cosmicColors[colorIndex]);
+                    
+                    const index = (y * canvas.width + x) * 4;
+                    if (index < data.length) {
+                        data[index] = color.r * (pulse + 0.5);
+                        data[index + 1] = color.g * (pulse + 0.5);
+                        data[index + 2] = color.b * (pulse + 0.5);
+                        data[index + 3] = 255;
+                    }
+                }
+            }
+            
+            ctx.putImageData(imageData, 0, 0);
+        }
+        
+        function updateParticleSystem() {
+            // Update particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.01;
+                
+                // Beat particles have special behavior
+                if (p.isBeat) {
+                    p.size *= 0.98;
+                    p.life -= 0.02;
+                }
+                
+                // Apply warp effect
+                const warp = warpFactor / 100;
+                p.vx += (Math.random() - 0.5) * warp;
+                p.vy += (Math.random() - 0.5) * warp;
+                
+                // Boundary wrapping
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+                
+                // Remove dead particles
+                if (p.life <= 0 || p.size <= 0.1) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+                
+                // Draw particle
+                ctx.save();
+                ctx.globalAlpha = p.life;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+            
+            // Maintain particle count
+            while (particles.length < particleCount) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    size: Math.random() * 3 + 1,
+                    color: cosmicColors[Math.floor(Math.random() * cosmicColors.length)],
+                    life: 1,
+                    angle: Math.random() * Math.PI * 2,
+                    speed: Math.random() * 2 + 1
+                });
+            }
+        }
+        
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9751bc2c44851b7e',t:'MTc1NjE5NDU5Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

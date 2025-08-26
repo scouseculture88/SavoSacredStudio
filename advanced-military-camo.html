@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Military Camouflage Studio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #2d5016;
+            --primary-light: #4a7c59;
+            --primary-dark: #1a2e0a;
+            --accent: #7cb342;
+            --bg-dark: #0f1419;
+            --bg-card: #1a1f2e;
+            --text-primary: #e8f4f8;
+            --text-secondary: #a0aec0;
+            --border: #2d3748;
+            --success: #48bb78;
+            --warning: #ed8936;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #0a0e13 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--bg-card) 0%, #252a3a 100%);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), #9ccc65);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            text-shadow: 0 0 30px rgba(124, 179, 66, 0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr 300px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .control-panel {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 25px;
+            height: fit-content;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        
+        .control-section {
+            margin-bottom: 30px;
+        }
+        
+        .control-section h3 {
+            color: var(--accent);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .pattern-btn {
+            padding: 14px 12px;
+            background: rgba(124, 179, 66, 0.1);
+            border: 2px solid rgba(124, 179, 66, 0.3);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pattern-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(124, 179, 66, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .pattern-btn:hover::before {
+            left: 100%;
+        }
+        
+        .pattern-btn:hover {
+            background: rgba(124, 179, 66, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 179, 66, 0.2);
+        }
+        
+        .pattern-btn.active {
+            background: linear-gradient(135deg, rgba(124, 179, 66, 0.3), rgba(156, 204, 101, 0.3));
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(124, 179, 66, 0.4);
+        }
+        
+        .slider-group {
+            margin-bottom: 20px;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .slider-label span {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .slider-value {
+            background: rgba(124, 179, 66, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+        
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, var(--border), rgba(124, 179, 66, 0.3));
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), #9ccc65);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(124, 179, 66, 0.4);
+            transition: all 0.2s;
+        }
+        
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(124, 179, 66, 0.6);
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .action-btn {
+            padding: 14px 20px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .action-btn:hover::before {
+            left: 100%;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(45, 80, 22, 0.4);
+        }
+        
+        .action-btn.secondary {
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+        }
+        
+        .canvas-area {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        
+        .canvas-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            background: rgba(124, 179, 66, 0.1);
+            padding: 4px;
+            border-radius: 12px;
+        }
+        
+        .canvas-tab {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .canvas-tab.active {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 4px 12px rgba(124, 179, 66, 0.3);
+        }
+        
+        .canvas-container {
+            position: relative;
+            text-align: center;
+        }
+        
+        .camo-canvas {
+            width: 100%;
+            max-width: 600px;
+            height: 450px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--primary-dark);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+        
+        .camo-canvas:hover {
+            box-shadow: 0 12px 40px rgba(124, 179, 66, 0.2);
+        }
+        
+        .canvas-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .info-panel {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 25px;
+            height: fit-content;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        
+        .pattern-info {
+            margin-bottom: 25px;
+        }
+        
+        .pattern-info h4 {
+            color: var(--accent);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .info-card {
+            background: rgba(124, 179, 66, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent);
+            margin-bottom: 15px;
+        }
+        
+        .info-card h5 {
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        
+        .info-card p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .color-palette {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .color-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: 2px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(124, 179, 66, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(124, 179, 66, 0.2);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        
+        .export-options {
+            margin-top: 20px;
+        }
+        
+        .export-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .export-btn {
+            padding: 10px;
+            background: rgba(124, 179, 66, 0.1);
+            border: 1px solid rgba(124, 179, 66, 0.3);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .export-btn:hover {
+            background: rgba(124, 179, 66, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .pattern-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌲 Advanced Camouflage Studio</h1>
+            <p>Professional military camouflage pattern generator with real-time preview and advanced controls</p>
+        </div>
+
+        <div class="main-grid">
+            <div class="control-panel">
+                <div class="control-section">
+                    <h3>🎯 Pattern Selection</h3>
+                    <div class="pattern-grid">
+                        <button class="pattern-btn active" onclick="switchPattern('woodland')">US Woodland</button>
+                        <button class="pattern-btn" onclick="switchPattern('flecktarn')">Flecktarn</button>
+                        <button class="pattern-btn" onclick="switchPattern('dpm')">British DPM</button>
+                        <button class="pattern-btn" onclick="switchPattern('flora')">Russian Flora</button>
+                        <button class="pattern-btn" onclick="switchPattern('m90')">Swedish M90</button>
+                        <button class="pattern-btn" onclick="switchPattern('cadpat')">CADPAT</button>
+                        <button class="pattern-btn" onclick="switchPattern('multicam')">MultiCam</button>
+                        <button class="pattern-btn" onclick="switchPattern('marpat')">MARPAT</button>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>🎨 Pattern Controls</h3>
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Scale</span>
+                            <div class="slider-value" id="scaleDisplay">100%</div>
+                        </div>
+                        <input type="range" class="slider" id="scaleSlider" min="25" max="300" value="100" oninput="updatePattern()">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Density</span>
+                            <div class="slider-value" id="densityDisplay">100%</div>
+                        </div>
+                        <input type="range" class="slider" id="densitySlider" min="25" max="250" value="100" oninput="updatePattern()">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Contrast</span>
+                            <div class="slider-value" id="contrastDisplay">100%</div>
+                        </div>
+                        <input type="range" class="slider" id="contrastSlider" min="50" max="200" value="100" oninput="updatePattern()">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Variation</span>
+                            <div class="slider-value" id="variationDisplay">50%</div>
+                        </div>
+                        <input type="range" class="slider" id="variationSlider" min="0" max="100" value="50" oninput="updatePattern()">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Animation</span>
+                            <div class="slider-value" id="animSpeedDisplay">25%</div>
+                        </div>
+                        <input type="range" class="slider" id="animSpeedSlider" min="0" max="100" value="25" oninput="updateAnimation()">
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>⚡ Actions</h3>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="generateNew()">🔄 Generate New</button>
+                        <button class="action-btn" onclick="randomizeAll()">🎲 Randomize All</button>
+                        <button class="action-btn secondary" onclick="resetDefaults()">↩️ Reset Defaults</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-area">
+                <div class="canvas-tabs">
+                    <button class="canvas-tab active" onclick="switchTab('preview')">Preview</button>
+                    <button class="canvas-tab" onclick="switchTab('animated')">Animated</button>
+                    <button class="canvas-tab" onclick="switchTab('tiled')">Tiled View</button>
+                </div>
+                
+                <div class="canvas-container">
+                    <canvas class="camo-canvas" id="mainCanvas"></canvas>
+                    <div class="canvas-overlay" id="canvasInfo">Static Preview</div>
+                </div>
+            </div>
+
+            <div class="info-panel">
+                <div class="pattern-info">
+                    <h4>📋 Pattern Details</h4>
+                    <div class="info-card">
+                        <h5 id="patternName">US M81 Woodland</h5>
+                        <p id="patternDesc">Large organic shapes designed for temperate woodland environments.</p>
+                        <div class="color-palette" id="colorPalette"></div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h5>Military Usage</h5>
+                        <p id="patternUsage">US Army, NATO forces, widely adopted worldwide</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-value" id="shapeCount">0</span>
+                        <div class="stat-label">Shapes</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="colorCount">4</span>
+                        <div class="stat-label">Colors</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="complexity">Medium</span>
+                        <div class="stat-label">Complexity</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="effectiveness">85%</span>
+                        <div class="stat-label">Effectiveness</div>
+                    </div>
+                </div>
+
+                <div class="export-options">
+                    <h4>💾 Export Options</h4>
+                    <div class="export-grid">
+                        <button class="export-btn" onclick="downloadImage('png')">PNG Image</button>
+                        <button class="export-btn" onclick="downloadImage('jpg')">JPG Image</button>
+                        <button class="export-btn" onclick="downloadTiled()">Tiled Pattern</button>
+                        <button class="export-btn" onclick="downloadHighRes()">High Resolution</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced pattern definitions
+        const patterns = {
+            woodland: {
+                name: "US M81 Woodland",
+                desc: "Large organic shapes designed for temperate woodland environments.",
+                colors: ["#4a5d23", "#3d2914", "#1a1a0e", "#8b7355"],
+                usage: "US Army, NATO forces, widely adopted worldwide",
+                type: "organic",
+                complexity: "Medium",
+                effectiveness: 85
+            },
+            flecktarn: {
+                name: "German Flecktarn",
+                desc: "Small irregular spots creating effective visual disruption.",
+                colors: ["#4a5c2a", "#2d3d1a", "#7a6b47", "#1a1a0a"],
+                usage: "German Bundeswehr, various European forces",
+                type: "spots",
+                complexity: "High",
+                effectiveness: 92
+            },
+            dpm: {
+                name: "British DPM",
+                desc: "Angular brush-stroke patterns breaking up human silhouette.",
+                colors: ["#4a5c23", "#2d3d14", "#8b7d55", "#1a1a0a"],
+                usage: "British Army, Commonwealth forces",
+                type: "angular",
+                complexity: "Medium",
+                effectiveness: 88
+            },
+            flora: {
+                name: "Russian Flora",
+                desc: "Vertical flow patterns mimicking forest vegetation.",
+                colors: ["#3d4a1a", "#2a3314", "#6b5d3a", "#1a1a0a"],
+                usage: "Russian Armed Forces, Eastern European militaries",
+                type: "vertical",
+                complexity: "High",
+                effectiveness: 90
+            },
+            m90: {
+                name: "Swedish M90",
+                desc: "Splinter-like geometric patterns for Scandinavian forests.",
+                colors: ["#4a5c2a", "#3d4a1a", "#7a6b47", "#1a1a0a"],
+                usage: "Swedish Defence Forces, Nordic countries",
+                type: "splinter",
+                complexity: "Medium",
+                effectiveness: 87
+            },
+            cadpat: {
+                name: "Canadian CADPAT",
+                desc: "First military digital camouflage using fractal mathematics.",
+                colors: ["#4a5c23", "#3d4a1a", "#6b5d3a", "#1a1a0a"],
+                usage: "Canadian Armed Forces, influenced modern digital patterns",
+                type: "digital",
+                complexity: "High",
+                effectiveness: 94
+            },
+            multicam: {
+                name: "MultiCam",
+                desc: "Multi-environment pattern effective across various terrains.",
+                colors: ["#5a6b3a", "#4a4a2a", "#7a6b4a", "#2a2a1a"],
+                usage: "US Army, Special Forces, NATO operations",
+                type: "organic",
+                complexity: "High",
+                effectiveness: 96
+            },
+            marpat: {
+                name: "MARPAT Woodland",
+                desc: "Marine digital pattern with enhanced depth perception.",
+                colors: ["#4a5c23", "#3d4a1a", "#6b5d3a", "#2a2a1a"],
+                usage: "US Marine Corps, specialized operations",
+                type: "digital",
+                complexity: "High",
+                effectiveness: 93
+            }
+        };
+
+        let currentPattern = 'woodland';
+        let currentTab = 'preview';
+        let canvas, ctx;
+        let animationId;
+        let isAnimating = false;
+        let shapeCount = 0;
+
+        // Initialize
+        window.onload = function() {
+            setupCanvas();
+            updateInfo();
+            updatePattern();
+            startAnimation();
+        };
+
+        function setupCanvas() {
+            canvas = document.getElementById('mainCanvas');
+            ctx = canvas.getContext('2d');
+            canvas.width = 600;
+            canvas.height = 450;
+        }
+
+        function switchPattern(patternType) {
+            document.querySelectorAll('.pattern-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            currentPattern = patternType;
+            updateInfo();
+            updatePattern();
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.canvas-tab').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            currentTab = tab;
+            updateCanvasInfo();
+            updatePattern();
+        }
+
+        function updateInfo() {
+            const pattern = patterns[currentPattern];
+            document.getElementById('patternName').textContent = pattern.name;
+            document.getElementById('patternDesc').textContent = pattern.desc;
+            document.getElementById('patternUsage').textContent = pattern.usage;
+            document.getElementById('colorCount').textContent = pattern.colors.length;
+            document.getElementById('complexity').textContent = pattern.complexity;
+            document.getElementById('effectiveness').textContent = pattern.effectiveness + '%';
+            
+            // Update color palette
+            const palette = document.getElementById('colorPalette');
+            palette.innerHTML = '';
+            pattern.colors.forEach(color => {
+                const swatch = document.createElement('div');
+                swatch.className = 'color-swatch';
+                swatch.style.backgroundColor = color;
+                palette.appendChild(swatch);
+            });
+        }
+
+        function updateCanvasInfo() {
+            const info = document.getElementById('canvasInfo');
+            switch(currentTab) {
+                case 'preview':
+                    info.textContent = 'Static Preview';
+                    break;
+                case 'animated':
+                    info.textContent = 'Animated View';
+                    break;
+                case 'tiled':
+                    info.textContent = 'Tiled Pattern';
+                    break;
+            }
+        }
+
+        function updatePattern() {
+            const pattern = patterns[currentPattern];
+            const scale = document.getElementById('scaleSlider').value / 100;
+            const density = document.getElementById('densitySlider').value / 100;
+            const contrast = document.getElementById('contrastSlider').value / 100;
+            const variation = document.getElementById('variationSlider').value / 100;
+            
+            // Update display values
+            document.getElementById('scaleDisplay').textContent = Math.round(scale * 100) + '%';
+            document.getElementById('densityDisplay').textContent = Math.round(density * 100) + '%';
+            document.getElementById('contrastDisplay').textContent = Math.round(contrast * 100) + '%';
+            document.getElementById('variationDisplay').textContent = Math.round(variation * 100) + '%';
+            
+            drawCamouflage(pattern, scale, density, contrast, variation);
+        }
+
+        function drawCamouflage(pattern, scale, density, contrast, variation) {
+            const width = canvas.width;
+            const height = canvas.height;
+            shapeCount = 0;
+            
+            // Clear canvas
+            ctx.fillStyle = pattern.colors[0];
+            ctx.fillRect(0, 0, width, height);
+            
+            const baseSize = Math.max(15, Math.min(80, 40 * scale));
+            const spacing = Math.max(20, baseSize * (2.5 - density));
+            const maxShapes = Math.min(200, Math.floor(density * 150));
+            
+            // Draw pattern layers
+            for (let i = 1; i < pattern.colors.length && shapeCount < maxShapes; i++) {
+                let color = adjustColor(pattern.colors[i], contrast);
+                ctx.fillStyle = color;
+                
+                const layerSize = baseSize * (0.4 + i * 0.3 + variation * 0.2);
+                const layerSpacing = spacing * (0.6 + i * 0.4);
+                
+                drawPatternLayer(pattern.type, layerSize, layerSpacing, variation, width, height, maxShapes);
+            }
+            
+            document.getElementById('shapeCount').textContent = shapeCount;
+        }
+
+        function drawPatternLayer(type, size, spacing, variation, width, height, maxShapes) {
+            const rows = Math.ceil(height / spacing) + 2;
+            const cols = Math.ceil(width / spacing) + 2;
+            
+            for (let row = 0; row < rows && shapeCount < maxShapes; row++) {
+                for (let col = 0; col < cols && shapeCount < maxShapes; col++) {
+                    const x = col * spacing + (Math.random() - 0.5) * spacing * variation;
+                    const y = row * spacing + (Math.random() - 0.5) * spacing * variation;
+                    
+                    let finalX = x;
+                    let finalY = y;
+                    
+                    if (currentTab === 'animated' && isAnimating) {
+                        const time = Date.now() * 0.001;
+                        const animSpeed = document.getElementById('animSpeedSlider').value / 100;
+                        finalX += Math.sin(time * animSpeed + x * 0.01) * 3;
+                        finalY += Math.cos(time * animSpeed + y * 0.01) * 3;
+                    }
+                    
+                    drawShape(type, finalX, finalY, size, variation);
+                    shapeCount++;
+                }
+            }
+        }
+
+        function drawShape(type, x, y, size, variation) {
+            ctx.beginPath();
+            
+            const actualSize = size * (0.8 + variation * 0.4);
+            
+            switch (type) {
+                case 'organic':
+                    drawOrganicShape(x, y, actualSize);
+                    break;
+                case 'spots':
+                    drawSpots(x, y, actualSize);
+                    break;
+                case 'angular':
+                    drawAngularShape(x, y, actualSize);
+                    break;
+                case 'vertical':
+                    drawVerticalShape(x, y, actualSize);
+                    break;
+                case 'splinter':
+                    drawSplinterShape(x, y, actualSize);
+                    break;
+                case 'digital':
+                    drawDigitalShape(x, y, actualSize);
+                    break;
+            }
+            
+            ctx.fill();
+        }
+
+        function drawOrganicShape(x, y, size) {
+            const points = 6 + Math.floor(Math.random() * 6);
+            for (let i = 0; i < points; i++) {
+                const angle = (i / points) * Math.PI * 2;
+                const radius = size * (0.3 + Math.random() * 0.7);
+                const px = x + Math.cos(angle) * radius;
+                const py = y + Math.sin(angle) * radius;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+        }
+
+        function drawSpots(x, y, size) {
+            const spotCount = 2 + Math.floor(Math.random() * 4);
+            for (let i = 0; i < spotCount; i++) {
+                const spotX = x + (Math.random() - 0.5) * size;
+                const spotY = y + (Math.random() - 0.5) * size;
+                const spotSize = size * (0.1 + Math.random() * 0.4);
+                ctx.beginPath();
+                ctx.arc(spotX, spotY, spotSize, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawAngularShape(x, y, size) {
+            const corners = 3 + Math.floor(Math.random() * 4);
+            for (let i = 0; i < corners; i++) {
+                const angle = (i / corners) * Math.PI * 2 + Math.random() * 0.5;
+                const radius = size * (0.4 + Math.random() * 0.6);
+                const px = x + Math.cos(angle) * radius;
+                const py = y + Math.sin(angle) * radius;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+        }
+
+        function drawVerticalShape(x, y, size) {
+            const width = size * (0.2 + Math.random() * 0.4);
+            const height = size * (0.8 + Math.random() * 1.2);
+            const rotation = Math.random() * 0.6 - 0.3;
+            
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rotation);
+            ctx.ellipse(0, 0, width, height, 0, 0, Math.PI * 2);
+            ctx.restore();
+        }
+
+        function drawSplinterShape(x, y, size) {
+            const length = size * (0.6 + Math.random() * 1.0);
+            const width = size * (0.1 + Math.random() * 0.3);
+            const angle = Math.random() * Math.PI;
+            
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(angle);
+            ctx.rect(-length/2, -width/2, length, width);
+            ctx.restore();
+        }
+
+        function drawDigitalShape(x, y, size) {
+            const pixelSize = size * 0.25;
+            const gridSize = Math.floor(size / pixelSize);
+            
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    if (Math.random() > 0.4) {
+                        const px = x - size/2 + i * pixelSize;
+                        const py = y - size/2 + j * pixelSize;
+                        ctx.rect(px, py, pixelSize, pixelSize);
+                    }
+                }
+            }
+        }
+
+        function adjustColor(color, contrast) {
+            const r = parseInt(color.substr(1, 2), 16);
+            const g = parseInt(color.substr(3, 2), 16);
+            const b = parseInt(color.substr(5, 2), 16);
+            
+            const factor = contrast;
+            const newR = Math.max(0, Math.min(255, Math.floor(r * factor)));
+            const newG = Math.max(0, Math.min(255, Math.floor(g * factor)));
+            const newB = Math.max(0, Math.min(255, Math.floor(b * factor)));
+            
+            return `rgb(${newR}, ${newG}, ${newB})`;
+        }
+
+        function startAnimation() {
+            function animate() {
+                if (currentTab === 'animated') {
+                    isAnimating = true;
+                    updatePattern();
+                } else {
+                    isAnimating = false;
+                }
+                animationId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function updateAnimation() {
+            const speed = document.getElementById('animSpeedSlider').value;
+            document.getElementById('animSpeedDisplay').textContent = speed + '%';
+        }
+
+        function generateNew() {
+            updatePattern();
+        }
+
+        function randomizeAll() {
+            document.getElementById('scaleSlider').value = 50 + Math.random() * 200;
+            document.getElementById('densitySlider').value = 50 + Math.random() * 150;
+            document.getElementById('contrastSlider').value = 75 + Math.random() * 100;
+            document.getElementById('variationSlider').value = Math.random() * 100;
+            updatePattern();
+        }
+
+        function resetDefaults() {
+            document.getElementById('scaleSlider').value = 100;
+            document.getElementById('densitySlider').value = 100;
+            document.getElementById('contrastSlider').value = 100;
+            document.getElementById('variationSlider').value = 50;
+            document.getElementById('animSpeedSlider').value = 25;
+            updatePattern();
+            updateAnimation();
+        }
+
+        function downloadImage(format) {
+            const link = document.createElement('a');
+            link.download = `${currentPattern}_camouflage.${format}`;
+            if (format === 'jpg') {
+                // Convert to JPG by drawing on white background
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = canvas.width;
+                tempCanvas.height = canvas.height;
+                tempCtx.fillStyle = 'white';
+                tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+                tempCtx.drawImage(canvas, 0, 0);
+                link.href = tempCanvas.toDataURL('image/jpeg', 0.9);
+            } else {
+                link.href = canvas.toDataURL('image/png');
+            }
+            link.click();
+        }
+
+        function downloadTiled() {
+            const tileCanvas = document.createElement('canvas');
+            const tileCtx = tileCanvas.getContext('2d');
+            tileCanvas.width = canvas.width * 2;
+            tileCanvas.height = canvas.height * 2;
+            
+            // Draw 4 tiles
+            for (let x = 0; x < 2; x++) {
+                for (let y = 0; y < 2; y++) {
+                    tileCtx.drawImage(canvas, x * canvas.width, y * canvas.height);
+                }
+            }
+            
+            const link = document.createElement('a');
+            link.download = `${currentPattern}_tiled_camouflage.png`;
+            link.href = tileCanvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadHighRes() {
+            const highResCanvas = document.createElement('canvas');
+            const highResCtx = highResCanvas.getContext('2d');
+            highResCanvas.width = canvas.width * 2;
+            highResCanvas.height = canvas.height * 2;
+            
+            // Scale up the current canvas
+            highResCtx.imageSmoothingEnabled = false;
+            highResCtx.drawImage(canvas, 0, 0, highResCanvas.width, highResCanvas.height);
+            
+            const link = document.createElement('a');
+            link.download = `${currentPattern}_highres_camouflage.png`;
+            link.href = highResCanvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9751baca03451b7e',t:'MTc1NjE5NDUzNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

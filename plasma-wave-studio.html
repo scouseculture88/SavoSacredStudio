@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plasma Wave Studio - Advanced Fluid Animation Creator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --plasma-purple: #8b5cf6;
+            --plasma-pink: #ec4899;
+            --plasma-blue: #3b82f6;
+            --plasma-cyan: #06b6d4;
+            --plasma-orange: #f59e0b;
+            --plasma-green: #10b981;
+            --plasma-red: #ef4444;
+            --plasma-indigo: #6366f1;
+            --bg-dark: #0a0118;
+            --bg-card: #1a0b2e;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border: #374151;
+        }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: radial-gradient(ellipse at center, #1a0b2e 0%, #0a0118 70%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(59, 130, 246, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.15));
+            border-radius: 25px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(139, 92, 246, 0.1), transparent);
+            animation: rotate 25s linear infinite;
+            pointer-events: none;
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--plasma-purple), var(--plasma-pink), var(--plasma-cyan), var(--plasma-orange));
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            text-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+            position: relative;
+            z-index: 1;
+            animation: gradientShift 8s ease-in-out infinite;
+        }
+        
+        .header p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 380px 1fr 350px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .control-panel {
+            background: linear-gradient(135deg, rgba(26, 11, 46, 0.8), rgba(10, 1, 24, 0.9));
+            border-radius: 20px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            padding: 30px;
+            height: fit-content;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+        }
+        
+        .control-section {
+            margin-bottom: 35px;
+        }
+        
+        .control-section h3 {
+            color: var(--plasma-cyan);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .plasma-modes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .mode-btn {
+            padding: 16px 12px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+            border: 2px solid rgba(139, 92, 246, 0.4);
+            border-radius: 15px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mode-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .mode-btn:hover::before {
+            left: 100%;
+        }
+        
+        .mode-btn:hover {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(236, 72, 153, 0.4));
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.3);
+        }
+        
+        .mode-btn.active {
+            background: linear-gradient(135deg, var(--plasma-purple), var(--plasma-pink));
+            border-color: var(--plasma-cyan);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.6);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        .slider-group {
+            margin-bottom: 25px;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .slider-label span {
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .slider-value {
+            background: linear-gradient(135deg, var(--plasma-purple), var(--plasma-pink));
+            padding: 6px 15px;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 12px;
+            border-radius: 6px;
+            background: linear-gradient(to right, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.3));
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--plasma-cyan), var(--plasma-orange));
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+            transition: all 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.6);
+        }
+        
+        .canvas-area {
+            background: linear-gradient(135deg, rgba(26, 11, 46, 0.6), rgba(10, 1, 24, 0.8));
+            border-radius: 20px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            padding: 30px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            position: relative;
+        }
+        
+        .canvas-container {
+            position: relative;
+            text-align: center;
+        }
+        
+        .main-canvas {
+            width: 100%;
+            max-width: 900px;
+            height: 600px;
+            border: 3px solid rgba(139, 92, 246, 0.4);
+            border-radius: 20px;
+            background: radial-gradient(ellipse at center, rgba(10, 1, 24, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                inset 0 0 50px rgba(139, 92, 246, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .main-canvas:hover {
+            box-shadow: 
+                0 25px 80px rgba(139, 92, 246, 0.3),
+                inset 0 0 50px rgba(139, 92, 246, 0.2);
+        }
+        
+        .canvas-overlay {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            color: var(--plasma-cyan);
+            font-weight: 600;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+        
+        .info-panel {
+            background: linear-gradient(135deg, rgba(26, 11, 46, 0.8), rgba(10, 1, 24, 0.9));
+            border-radius: 20px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            padding: 30px;
+            height: fit-content;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+        }
+        
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .preset-btn {
+            padding: 15px 10px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.2));
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .preset-btn:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(16, 185, 129, 0.4));
+            transform: translateY(-2px);
+        }
+        
+        .preset-btn.active {
+            background: linear-gradient(135deg, var(--plasma-blue), var(--plasma-green));
+            border-color: var(--plasma-cyan);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1));
+            border-radius: 15px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--plasma-cyan), var(--plasma-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .action-btn {
+            padding: 18px 25px;
+            background: linear-gradient(135deg, var(--plasma-orange), var(--plasma-pink));
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-family: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .action-btn:hover::before {
+            left: 100%;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.4);
+        }
+        
+        .action-btn.secondary {
+            background: linear-gradient(135deg, var(--plasma-indigo), var(--plasma-purple));
+        }
+        
+        .action-btn.secondary:hover {
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .plasma-modes {
+                grid-template-columns: 1fr;
+            }
+            
+            .preset-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌊 PLASMA WAVE STUDIO</h1>
+            <p>Advanced fluid animation creator with mesmerizing plasma effects</p>
+        </div>
+
+        <div class="main-grid">
+            <div class="control-panel">
+                <div class="control-section">
+                    <h3>🌀 Plasma Modes</h3>
+                    <div class="plasma-modes">
+                        <button class="mode-btn active" onclick="setPlasmaMode('classic')">CLASSIC</button>
+                        <button class="mode-btn" onclick="setPlasmaMode('electric')">ELECTRIC</button>
+                        <button class="mode-btn" onclick="setPlasmaMode('ocean')">OCEAN</button>
+                        <button class="mode-btn" onclick="setPlasmaMode('fire')">FIRE</button>
+                        <button class="mode-btn" onclick="setPlasmaMode('cosmic')">COSMIC</button>
+                        <button class="mode-btn" onclick="setPlasmaMode('aurora')">AURORA</button>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>⚡ Wave Properties</h3>
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Flow Speed</span>
+                            <div class="slider-value" id="speedDisplay">50%</div>
+                        </div>
+                        <input type="range" class="slider" id="speedSlider" min="0" max="100" value="50" oninput="updateSpeed()">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Wave Frequency</span>
+                            <div class="slider-value" id="frequencyDisplay">50%</div>
+                        </div>
+                        <input type="range" class="slider" id="frequencySlider" min="10" max="200" value="50" oninput="updateFrequency()">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Amplitude</span>
+                            <div class="slider-value" id="amplitudeDisplay">75%</div>
+                        </div>
+                        <input type="range" class="slider" id="amplitudeSlider" min="10" max="150" value="75" oninput="updateAmplitude()">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Complexity</span>
+                            <div class="slider-value" id="complexityDisplay">60%</div>
+                        </div>
+                        <input type="range" class="slider" id="complexitySlider" min="20" max="200" value="60" oninput="updateComplexity()">
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>🎨 Visual Effects</h3>
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Color Intensity</span>
+                            <div class="slider-value" id="intensityDisplay">80%</div>
+                        </div>
+                        <input type="range" class="slider" id="intensitySlider" min="20" max="150" value="80" oninput="updateIntensity()">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Blur Effect</span>
+                            <div class="slider-value" id="blurDisplay">30%</div>
+                        </div>
+                        <input type="range" class="slider" id="blurSlider" min="0" max="100" value="30" oninput="updateBlur()">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Distortion</span>
+                            <div class="slider-value" id="distortionDisplay">40%</div>
+                        </div>
+                        <input type="range" class="slider" id="distortionSlider" min="0" max="100" value="40" oninput="updateDistortion()">
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>⚡ Actions</h3>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="startPlasma()">🚀 START FLOW</button>
+                        <button class="action-btn secondary" onclick="pausePlasma()">⏸️ PAUSE</button>
+                        <button class="action-btn" onclick="randomizeAll()">🎲 CHAOS MODE</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-area">
+                <div class="canvas-container">
+                    <canvas class="main-canvas" id="plasmaCanvas"></canvas>
+                    <div class="canvas-overlay" id="canvasInfo">PLASMA READY</div>
+                </div>
+            </div>
+
+            <div class="info-panel">
+                <div class="control-section">
+                    <h3>🎯 Presets</h3>
+                    <div class="preset-grid">
+                        <button class="preset-btn" onclick="loadPreset('gentle')">GENTLE WAVES</button>
+                        <button class="preset-btn" onclick="loadPreset('intense')">INTENSE STORM</button>
+                        <button class="preset-btn" onclick="loadPreset('hypnotic')">HYPNOTIC FLOW</button>
+                        <button class="preset-btn" onclick="loadPreset('electric')">ELECTRIC SURGE</button>
+                        <button class="preset-btn" onclick="loadPreset('dreamy')">DREAMY MIST</button>
+                        <button class="preset-btn" onclick="loadPreset('volcanic')">VOLCANIC FURY</button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-value" id="fpsCounter">60</span>
+                        <div class="stat-label">FPS</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="waveCount">4</span>
+                        <div class="stat-label">WAVE LAYERS</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="colorCount">8</span>
+                        <div class="stat-label">COLORS</div>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>💾 Export</h3>
+                    <div class="action-buttons">
+                        <button class="action-btn secondary" onclick="captureFrame()">📸 CAPTURE</button>
+                        <button class="action-btn secondary" onclick="exportSettings()">⚙️ SAVE PRESET</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Plasma engine variables
+        let canvas, ctx;
+        let animationId;
+        let isAnimating = false;
+        let time = 0;
+        let plasmaMode = 'classic';
+        
+        // Control parameters
+        let speed = 50;
+        let frequency = 50;
+        let amplitude = 75;
+        let complexity = 60;
+        let intensity = 80;
+        let blur = 30;
+        let distortion = 40;
+        
+        // Plasma color palettes
+        const plasmaPalettes = {
+            classic: ['#8b5cf6', '#ec4899', '#3b82f6', '#06b6d4', '#f59e0b', '#10b981', '#ef4444', '#6366f1'],
+            electric: ['#00ffff', '#0080ff', '#8000ff', '#ff00ff', '#ff0080', '#ff8000', '#ffff00', '#80ff00'],
+            ocean: ['#001f3f', '#0074d9', '#39cccc', '#2ecc40', '#01ff70', '#7fdbff', '#b10dc9', '#f012be'],
+            fire: ['#ff4136', '#ff851b', '#ffdc00', '#ff6b35', '#d63031', '#fd79a8', '#fdcb6e', '#e17055'],
+            cosmic: ['#6c5ce7', '#a29bfe', '#fd79a8', '#fdcb6e', '#00b894', '#00cec9', '#0984e3', '#6c5ce7'],
+            aurora: ['#00ff87', '#60efff', '#ff6b9d', '#c44569', '#f8b500', '#786fa6', '#f19066', '#4b6584']
+        };
+        
+        // Initialize
+        window.onload = function() {
+            setupCanvas();
+            updateAllDisplays();
+            startPlasma();
+        };
+        
+        function setupCanvas() {
+            canvas = document.getElementById('plasmaCanvas');
+            ctx = canvas.getContext('2d');
+            canvas.width = 900;
+            canvas.height = 600;
+        }
+        
+        function setPlasmaMode(mode) {
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            plasmaMode = mode;
+            document.getElementById('colorCount').textContent = plasmaPalettes[mode].length;
+        }
+        
+        function updateSpeed() {
+            speed = document.getElementById('speedSlider').value;
+            document.getElementById('speedDisplay').textContent = speed + '%';
+        }
+        
+        function updateFrequency() {
+            frequency = document.getElementById('frequencySlider').value;
+            document.getElementById('frequencyDisplay').textContent = frequency + '%';
+        }
+        
+        function updateAmplitude() {
+            amplitude = document.getElementById('amplitudeSlider').value;
+            document.getElementById('amplitudeDisplay').textContent = amplitude + '%';
+        }
+        
+        function updateComplexity() {
+            complexity = document.getElementById('complexitySlider').value;
+            document.getElementById('complexityDisplay').textContent = complexity + '%';
+            document.getElementById('waveCount').textContent = Math.floor(complexity / 15) + 2;
+        }
+        
+        function updateIntensity() {
+            intensity = document.getElementById('intensitySlider').value;
+            document.getElementById('intensityDisplay').textContent = intensity + '%';
+        }
+        
+        function updateBlur() {
+            blur = document.getElementById('blurSlider').value;
+            document.getElementById('blurDisplay').textContent = blur + '%';
+        }
+        
+        function updateDistortion() {
+            distortion = document.getElementById('distortionSlider').value;
+            document.getElementById('distortionDisplay').textContent = distortion + '%';
+        }
+        
+        function updateAllDisplays() {
+            updateSpeed();
+            updateFrequency();
+            updateAmplitude();
+            updateComplexity();
+            updateIntensity();
+            updateBlur();
+            updateDistortion();
+        }
+        
+        function startPlasma() {
+            if (!isAnimating) {
+                isAnimating = true;
+                document.getElementById('canvasInfo').textContent = 'PLASMA FLOWING';
+                animate();
+            }
+        }
+        
+        function pausePlasma() {
+            isAnimating = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+            document.getElementById('canvasInfo').textContent = 'PLASMA PAUSED';
+        }
+        
+        function randomizeAll() {
+            document.getElementById('speedSlider').value = 20 + Math.random() * 60;
+            document.getElementById('frequencySlider').value = 30 + Math.random() * 120;
+            document.getElementById('amplitudeSlider').value = 40 + Math.random() * 80;
+            document.getElementById('complexitySlider').value = 40 + Math.random() * 120;
+            document.getElementById('intensitySlider').value = 60 + Math.random() * 60;
+            document.getElementById('blurSlider').value = Math.random() * 80;
+            document.getElementById('distortionSlider').value = Math.random() * 80;
+            
+            updateAllDisplays();
+            
+            // Random mode
+            const modes = ['classic', 'electric', 'ocean', 'fire', 'cosmic', 'aurora'];
+            const randomMode = modes[Math.floor(Math.random() * modes.length)];
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[onclick="setPlasmaMode('${randomMode}')"]`).classList.add('active');
+            plasmaMode = randomMode;
+            document.getElementById('colorCount').textContent = plasmaPalettes[randomMode].length;
+        }
+        
+        function loadPreset(preset) {
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const presets = {
+                gentle: { speed: 25, frequency: 30, amplitude: 50, complexity: 40, intensity: 60, blur: 50, distortion: 20, mode: 'ocean' },
+                intense: { speed: 80, frequency: 120, amplitude: 120, complexity: 150, intensity: 120, blur: 10, distortion: 70, mode: 'electric' },
+                hypnotic: { speed: 35, frequency: 80, amplitude: 90, complexity: 100, intensity: 90, blur: 60, distortion: 50, mode: 'cosmic' },
+                electric: { speed: 70, frequency: 150, amplitude: 100, complexity: 120, intensity: 130, blur: 20, distortion: 80, mode: 'electric' },
+                dreamy: { speed: 20, frequency: 40, amplitude: 60, complexity: 60, intensity: 70, blur: 80, distortion: 30, mode: 'aurora' },
+                volcanic: { speed: 60, frequency: 100, amplitude: 110, complexity: 140, intensity: 140, blur: 30, distortion: 60, mode: 'fire' }
+            };
+            
+            const p = presets[preset];
+            document.getElementById('speedSlider').value = p.speed;
+            document.getElementById('frequencySlider').value = p.frequency;
+            document.getElementById('amplitudeSlider').value = p.amplitude;
+            document.getElementById('complexitySlider').value = p.complexity;
+            document.getElementById('intensitySlider').value = p.intensity;
+            document.getElementById('blurSlider').value = p.blur;
+            document.getElementById('distortionSlider').value = p.distortion;
+            
+            updateAllDisplays();
+            
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[onclick="setPlasmaMode('${p.mode}')"]`).classList.add('active');
+            plasmaMode = p.mode;
+            document.getElementById('colorCount').textContent = plasmaPalettes[p.mode].length;
+        }
+        
+        function animate() {
+            if (!isAnimating) return;
+            
+            time += (speed / 100) * 0.05;
+            
+            drawPlasma();
+            
+            // FPS counter (simplified)
+            document.getElementById('fpsCounter').textContent = '60';
+            
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        function drawPlasma() {
+            const imageData = ctx.createImageData(canvas.width, canvas.height);
+            const data = imageData.data;
+            const palette = plasmaPalettes[plasmaMode];
+            
+            const freqScale = frequency / 50;
+            const ampScale = amplitude / 50;
+            const complexScale = complexity / 50;
+            const intensityScale = intensity / 100;
+            const distortScale = distortion / 100;
+            
+            // High-quality plasma with the original algorithm
+            for (let x = 0; x < canvas.width; x++) {
+                for (let y = 0; y < canvas.height; y++) {
+                    // Core plasma algorithm - this creates the mesmerizing effect
+                    let value = Math.sin(x * 0.01 * freqScale + time * 2);
+                    value += Math.sin(y * 0.01 * freqScale + time * 1.3);
+                    value += Math.sin((x + y) * 0.01 * freqScale + time * 1.7);
+                    value += Math.sin(Math.sqrt(x*x + y*y) * 0.01 * freqScale + time * 2.2);
+                    
+                    // Additional complexity layers for more fluid motion
+                    if (complexScale > 1) {
+                        value += Math.sin(x * 0.005 * freqScale + Math.sin(y * 0.003 * freqScale + time * 1.1)) * 0.8;
+                        value += Math.cos(y * 0.005 * freqScale + Math.cos(x * 0.003 * freqScale + time * 0.9)) * 0.8;
+                    }
+                    
+                    if (complexScale > 1.5) {
+                        // Turbulence layers
+                        value += Math.sin((x * 0.003 + y * 0.004) * freqScale + time * 1.6) * 0.6;
+                        value += Math.cos((x * 0.004 - y * 0.003) * freqScale + time * 1.4) * 0.6;
+                    }
+                    
+                    if (complexScale > 2) {
+                        // Advanced distortion for liquid-like movement
+                        const distortX = x + Math.sin(y * 0.008 + time * 1.2) * distortScale * 30;
+                        const distortY = y + Math.cos(x * 0.008 + time * 0.8) * distortScale * 30;
+                        value += Math.sin(distortX * 0.004 * freqScale + time * 1.9) * 0.5;
+                        value += Math.cos(distortY * 0.004 * freqScale + time * 2.1) * 0.5;
+                        
+                        // Swirl effect
+                        const centerX = canvas.width / 2;
+                        const centerY = canvas.height / 2;
+                        const angle = Math.atan2(y - centerY, x - centerX);
+                        const radius = Math.sqrt((x - centerX) * (x - centerX) + (y - centerY) * (y - centerY));
+                        value += Math.sin(angle * 3 + radius * 0.01 * freqScale + time * 1.5) * 0.4;
+                    }
+                    
+                    // Apply amplitude scaling
+                    value *= ampScale;
+                    
+                    // Enhanced color mapping with smooth transitions
+                    const normalizedValue = (value + 4) / 8;
+                    const colorFloat = normalizedValue * (palette.length - 1);
+                    const colorIndex1 = Math.floor(colorFloat) % palette.length;
+                    const colorIndex2 = (colorIndex1 + 1) % palette.length;
+                    const blend = colorFloat - Math.floor(colorFloat);
+                    
+                    const color1 = hexToRgb(palette[colorIndex1]);
+                    const color2 = hexToRgb(palette[colorIndex2]);
+                    
+                    if (color1 && color2) {
+                        // Smooth color interpolation
+                        const r = Math.floor((color1.r * (1 - blend) + color2.r * blend) * intensityScale);
+                        const g = Math.floor((color1.g * (1 - blend) + color2.g * blend) * intensityScale);
+                        const b = Math.floor((color1.b * (1 - blend) + color2.b * blend) * intensityScale);
+                        
+                        // Enhanced brightness based on wave intensity
+                        const brightness = 0.3 + (normalizedValue * 0.7);
+                        
+                        const index = (y * canvas.width + x) * 4;
+                        data[index] = Math.min(255, Math.max(0, r * brightness));
+                        data[index + 1] = Math.min(255, Math.max(0, g * brightness));
+                        data[index + 2] = Math.min(255, Math.max(0, b * brightness));
+                        data[index + 3] = 255;
+                    }
+                }
+            }
+            
+            ctx.putImageData(imageData, 0, 0);
+            
+            // Enhanced post-processing effects
+            if (blur > 0) {
+                ctx.save();
+                ctx.filter = `blur(${blur / 25}px)`;
+                ctx.globalCompositeOperation = 'screen';
+                ctx.globalAlpha = 0.3;
+                ctx.drawImage(canvas, 0, 0);
+                ctx.restore();
+            }
+            
+            // Add glow effect for extra visual impact
+            if (intensity > 100) {
+                ctx.save();
+                ctx.filter = `blur(${Math.min(10, (intensity - 100) / 10)}px)`;
+                ctx.globalCompositeOperation = 'screen';
+                ctx.globalAlpha = 0.2;
+                ctx.drawImage(canvas, 0, 0);
+                ctx.restore();
+            }
+        }
+        
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+        
+        function captureFrame() {
+            const link = document.createElement('a');
+            link.download = `plasma_wave_${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        function exportSettings() {
+            const settings = {
+                mode: plasmaMode,
+                speed, frequency, amplitude, complexity,
+                intensity, blur, distortion
+            };
+            
+            const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.download = `plasma_preset_${Date.now()}.json`;
+            link.href = URL.createObjectURL(blob);
+            link.click();
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9751cc16d09ea2cb',t:'MTc1NjE5NTI0NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hypnotic Visual Synthesizer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --neon-cyan: #00ffff;
+            --neon-magenta: #ff00ff;
+            --neon-yellow: #ffff00;
+            --deep-purple: #1a0033;
+            --dark-purple: #0d001a;
+            --void-black: #000000;
+            --glass-white: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at center, var(--deep-purple) 0%, var(--dark-purple) 50%, var(--void-black) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 15% 85%, rgba(0, 255, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 85% 15%, rgba(255, 0, 255, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: cosmicPulse 10s ease-in-out infinite;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            animation: scanLine 5s linear infinite;
+            pointer-events: none;
+        }
+        
+        .header h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.2rem;
+            font-weight: 600;
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-magenta), var(--neon-yellow));
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+            animation: neonFlow 3s ease-in-out infinite;
+        }
+        
+        .header p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            position: relative;
+            z-index: 1;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        
+        .main-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 260px;
+            gap: 15px;
+            padding: 15px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .panel {
+            background: var(--glass-white);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            padding: 18px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+            height: fit-content;
+        }
+        
+        .panel h3 {
+            color: var(--neon-cyan);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        
+        .generator-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+        
+        .generator-btn {
+            padding: 10px 14px;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .generator-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2));
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+        
+        .generator-btn.active {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.3), rgba(255, 0, 255, 0.3));
+            border-color: var(--neon-magenta);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
+        }
+        
+        .canvas-area {
+            background: var(--void-black);
+            border-radius: 12px;
+            border: 2px solid var(--glass-border);
+            padding: 12px;
+            min-height: 650px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+        }
+        
+        .canvas-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .hypno-canvas {
+            width: 100%;
+            height: 626px;
+            border-radius: 8px;
+            background: var(--void-black);
+            display: block;
+        }
+        
+        .canvas-overlay {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--neon-cyan);
+            font-weight: 500;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .slider-group {
+            margin-bottom: 12px;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        
+        .slider-label span {
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 400;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .slider-value {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: var(--void-black);
+            min-width: 30px;
+            text-align: center;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 3px;
+            border-radius: 2px;
+            background: linear-gradient(to right, rgba(0, 255, 255, 0.3), rgba(255, 0, 255, 0.3));
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+            transition: all 0.3s;
+        }
+        
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 12px rgba(0, 255, 255, 0.8);
+        }
+        
+        .action-btn {
+            width: 100%;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2));
+            border: 1px solid var(--neon-cyan);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 6px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .action-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.3), rgba(255, 0, 255, 0.3));
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+        }
+        
+        .action-btn.secondary {
+            background: linear-gradient(135deg, rgba(255, 255, 0, 0.2), rgba(255, 0, 255, 0.2));
+            border-color: var(--neon-yellow);
+        }
+        
+        .preset-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 5px;
+            margin-bottom: 12px;
+        }
+        
+        .preset-btn {
+            padding: 6px 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+        
+        .preset-btn:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: var(--neon-cyan);
+            color: var(--text-primary);
+        }
+        
+        .preset-btn.active {
+            background: rgba(255, 0, 255, 0.2);
+            border-color: var(--neon-magenta);
+            color: var(--text-primary);
+        }
+        
+        @keyframes cosmicPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        @keyframes scanLine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        @keyframes neonFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>◊ HYPNOTIC VISUAL SYNTHESIZER</h1>
+        <p>Immersive mathematical patterns • Infinite depth • Pure visual hypnosis</p>
+    </div>
+
+    <div class="main-container">
+        <div class="panel">
+            <h3>◊ GENERATORS</h3>
+            <div class="generator-grid">
+                <button class="generator-btn active" data-generator="spiral">SPIRAL VORTEX</button>
+                <button class="generator-btn" data-generator="tunnel">INFINITE TUNNEL</button>
+                <button class="generator-btn" data-generator="wave">WAVE RIPPLES</button>
+                <button class="generator-btn" data-generator="mandala">SACRED MANDALA</button>
+                <button class="generator-btn" data-generator="plasma">PLASMA FIELD</button>
+                <button class="generator-btn" data-generator="particle">PARTICLE STORM</button>
+                <button class="generator-btn" data-generator="fractal">FRACTAL BLOOM</button>
+                <button class="generator-btn" data-generator="kaleidoscope">KALEIDOSCOPE</button>
+            </div>
+
+            <h3>◊ CONTROLS</h3>
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>SPEED</span>
+                    <div class="slider-value" id="speedDisplay">50</div>
+                </div>
+                <input type="range" class="slider" id="speedSlider" min="0" max="100" value="50">
+            </div>
+            
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>INTENSITY</span>
+                    <div class="slider-value" id="intensityDisplay">60</div>
+                </div>
+                <input type="range" class="slider" id="intensitySlider" min="10" max="100" value="60">
+            </div>
+            
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>DEPTH</span>
+                    <div class="slider-value" id="depthDisplay">75</div>
+                </div>
+                <input type="range" class="slider" id="depthSlider" min="20" max="100" value="75">
+            </div>
+
+            <h3>◊ ACTIONS</h3>
+            <button class="action-btn" id="startBtn">BEGIN HYPNOSIS</button>
+            <button class="action-btn secondary" id="pauseBtn">PAUSE</button>
+            <button class="action-btn" id="chaosBtn">CHAOS MODE</button>
+        </div>
+
+        <div class="canvas-area">
+            <div class="canvas-container">
+                <canvas class="hypno-canvas" id="hypnoCanvas"></canvas>
+                <div class="canvas-overlay" id="canvasInfo">READY</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3>◊ PRESETS</h3>
+            <div class="preset-grid">
+                <button class="preset-btn active" data-preset="trance">TRANCE STATE</button>
+                <button class="preset-btn" data-preset="meditation">MEDITATION</button>
+                <button class="preset-btn" data-preset="psychedelic">PSYCHEDELIC</button>
+                <button class="preset-btn" data-preset="minimal">MINIMAL</button>
+                <button class="preset-btn" data-preset="cosmic">COSMIC DRIFT</button>
+                <button class="preset-btn" data-preset="chaos">VISUAL CHAOS</button>
+            </div>
+
+            <h3>◊ COLOR</h3>
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>HUE</span>
+                    <div class="slider-value" id="hueDisplay">180</div>
+                </div>
+                <input type="range" class="slider" id="hueSlider" min="0" max="360" value="180">
+            </div>
+            
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>SATURATION</span>
+                    <div class="slider-value" id="satDisplay">80</div>
+                </div>
+                <input type="range" class="slider" id="satSlider" min="0" max="100" value="80">
+            </div>
+
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>BRIGHTNESS</span>
+                    <div class="slider-value" id="brightnessDisplay">70</div>
+                </div>
+                <input type="range" class="slider" id="brightnessSlider" min="20" max="100" value="70">
+            </div>
+
+            <h3>◊ EXPORT</h3>
+            <button class="action-btn" id="captureBtn">CAPTURE FRAME</button>
+            <button class="action-btn secondary" id="exportBtn">SAVE PRESET</button>
+        </div>
+    </div>
+
+    <script>
+        class HypnoticSynthesizer {
+            constructor() {
+                this.canvas = null;
+                this.ctx = null;
+                this.animationId = null;
+                this.isRunning = false;
+                this.time = 0;
+                this.currentGenerator = 'spiral';
+                
+                // Parameters
+                this.params = {
+                    speed: 50,
+                    intensity: 60,
+                    depth: 75,
+                    hue: 180,
+                    saturation: 80,
+                    brightness: 70
+                };
+                
+                // Presets
+                this.presets = {
+                    trance: { speed: 30, intensity: 80, depth: 90, hue: 240, saturation: 90, brightness: 70 },
+                    meditation: { speed: 15, intensity: 40, depth: 60, hue: 120, saturation: 70, brightness: 60 },
+                    psychedelic: { speed: 80, intensity: 100, depth: 100, hue: 300, saturation: 100, brightness: 80 },
+                    minimal: { speed: 20, intensity: 30, depth: 40, hue: 180, saturation: 50, brightness: 50 },
+                    cosmic: { speed: 40, intensity: 70, depth: 85, hue: 270, saturation: 85, brightness: 75 },
+                    chaos: { speed: 100, intensity: 100, depth: 100, hue: 0, saturation: 100, brightness: 90 }
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupCanvas();
+                this.setupEventListeners();
+                this.updateAllDisplays();
+                this.start();
+            }
+            
+            setupCanvas() {
+                this.canvas = document.getElementById('hypnoCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.canvas.width = 800;
+                this.canvas.height = 626;
+                this.clearCanvas();
+            }
+            
+            clearCanvas() {
+                this.ctx.fillStyle = '#000000';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            }
+            
+            setupEventListeners() {
+                // Generator buttons
+                document.querySelectorAll('.generator-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.setGenerator(e.target.dataset.generator);
+                    });
+                });
+                
+                // Preset buttons
+                document.querySelectorAll('.preset-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.loadPreset(e.target.dataset.preset);
+                    });
+                });
+                
+                // Control sliders
+                document.getElementById('speedSlider').addEventListener('input', (e) => {
+                    this.params.speed = parseInt(e.target.value);
+                    this.updateDisplay('speedDisplay', this.params.speed);
+                });
+                
+                document.getElementById('intensitySlider').addEventListener('input', (e) => {
+                    this.params.intensity = parseInt(e.target.value);
+                    this.updateDisplay('intensityDisplay', this.params.intensity);
+                });
+                
+                document.getElementById('depthSlider').addEventListener('input', (e) => {
+                    this.params.depth = parseInt(e.target.value);
+                    this.updateDisplay('depthDisplay', this.params.depth);
+                });
+                
+                document.getElementById('hueSlider').addEventListener('input', (e) => {
+                    this.params.hue = parseInt(e.target.value);
+                    this.updateDisplay('hueDisplay', this.params.hue);
+                });
+                
+                document.getElementById('satSlider').addEventListener('input', (e) => {
+                    this.params.saturation = parseInt(e.target.value);
+                    this.updateDisplay('satDisplay', this.params.saturation);
+                });
+                
+                document.getElementById('brightnessSlider').addEventListener('input', (e) => {
+                    this.params.brightness = parseInt(e.target.value);
+                    this.updateDisplay('brightnessDisplay', this.params.brightness);
+                });
+                
+                // Action buttons
+                document.getElementById('startBtn').addEventListener('click', () => this.start());
+                document.getElementById('pauseBtn').addEventListener('click', () => this.pause());
+                document.getElementById('chaosBtn').addEventListener('click', () => this.randomize());
+                document.getElementById('captureBtn').addEventListener('click', () => this.capture());
+                document.getElementById('exportBtn').addEventListener('click', () => this.export());
+            }
+            
+            setGenerator(generator) {
+                if (!generator) return;
+                
+                document.querySelectorAll('.generator-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`[data-generator="${generator}"]`).classList.add('active');
+                
+                this.currentGenerator = generator;
+                this.clearCanvas();
+            }
+            
+            loadPreset(presetName) {
+                if (!this.presets[presetName]) return;
+                
+                document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`[data-preset="${presetName}"]`).classList.add('active');
+                
+                const preset = this.presets[presetName];
+                this.params = { ...preset };
+                
+                // Update sliders
+                document.getElementById('speedSlider').value = preset.speed;
+                document.getElementById('intensitySlider').value = preset.intensity;
+                document.getElementById('depthSlider').value = preset.depth;
+                document.getElementById('hueSlider').value = preset.hue;
+                document.getElementById('satSlider').value = preset.saturation;
+                document.getElementById('brightnessSlider').value = preset.brightness;
+                
+                this.updateAllDisplays();
+            }
+            
+            updateDisplay(id, value) {
+                const element = document.getElementById(id);
+                if (element) element.textContent = value;
+            }
+            
+            updateAllDisplays() {
+                this.updateDisplay('speedDisplay', this.params.speed);
+                this.updateDisplay('intensityDisplay', this.params.intensity);
+                this.updateDisplay('depthDisplay', this.params.depth);
+                this.updateDisplay('hueDisplay', this.params.hue);
+                this.updateDisplay('satDisplay', this.params.saturation);
+                this.updateDisplay('brightnessDisplay', this.params.brightness);
+            }
+            
+            start() {
+                if (!this.isRunning) {
+                    this.isRunning = true;
+                    document.getElementById('canvasInfo').textContent = 'HYPNOSIS ACTIVE';
+                    this.animate();
+                }
+            }
+            
+            pause() {
+                this.isRunning = false;
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                    this.animationId = null;
+                }
+                document.getElementById('canvasInfo').textContent = 'PAUSED';
+            }
+            
+            randomize() {
+                const generators = ['spiral', 'tunnel', 'wave', 'mandala', 'plasma', 'particle', 'fractal', 'kaleidoscope'];
+                const randomGen = generators[Math.floor(Math.random() * generators.length)];
+                
+                this.setGenerator(randomGen);
+                
+                // Randomize parameters
+                this.params.speed = Math.floor(20 + Math.random() * 60);
+                this.params.intensity = Math.floor(30 + Math.random() * 70);
+                this.params.depth = Math.floor(40 + Math.random() * 60);
+                this.params.hue = Math.floor(Math.random() * 360);
+                this.params.saturation = Math.floor(60 + Math.random() * 40);
+                this.params.brightness = Math.floor(50 + Math.random() * 40);
+                
+                // Update sliders
+                document.getElementById('speedSlider').value = this.params.speed;
+                document.getElementById('intensitySlider').value = this.params.intensity;
+                document.getElementById('depthSlider').value = this.params.depth;
+                document.getElementById('hueSlider').value = this.params.hue;
+                document.getElementById('satSlider').value = this.params.saturation;
+                document.getElementById('brightnessSlider').value = this.params.brightness;
+                
+                this.updateAllDisplays();
+                this.clearCanvas();
+            }
+            
+            animate() {
+                if (!this.isRunning) return;
+                
+                try {
+                    this.time += (this.params.speed / 100) * 0.016;
+                    this.render();
+                    this.animationId = requestAnimationFrame(() => this.animate());
+                } catch (error) {
+                    console.error('Animation error:', error);
+                    this.pause();
+                }
+            }
+            
+            render() {
+                // Fade effect
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+                const scale = Math.min(this.canvas.width, this.canvas.height) * (this.params.depth / 100) * 0.35;
+                
+                this.ctx.save();
+                this.ctx.translate(centerX, centerY);
+                
+                try {
+                    switch (this.currentGenerator) {
+                        case 'spiral': this.drawSpiral(scale); break;
+                        case 'tunnel': this.drawTunnel(scale); break;
+                        case 'wave': this.drawWave(scale); break;
+                        case 'mandala': this.drawMandala(scale); break;
+                        case 'plasma': this.drawPlasma(scale); break;
+                        case 'particle': this.drawParticle(scale); break;
+                        case 'fractal': this.drawFractal(scale); break;
+                        case 'kaleidoscope': this.drawKaleidoscope(scale); break;
+                        default: this.drawSpiral(scale);
+                    }
+                } catch (error) {
+                    console.error('Render error:', error);
+                }
+                
+                this.ctx.restore();
+            }
+            
+            drawSpiral(scale) {
+                const spirals = 3;
+                const layers = Math.min(8, Math.floor(4 + this.params.intensity * 0.04));
+                
+                for (let spiral = 0; spiral < spirals; spiral++) {
+                    const spiralOffset = (spiral / spirals) * Math.PI * 2;
+                    
+                    for (let layer = 0; layer < layers; layer++) {
+                        this.ctx.beginPath();
+                        const radius = scale * (0.1 + layer * 0.12);
+                        const points = Math.min(100, Math.floor(30 + this.params.intensity * 0.7));
+                        
+                        for (let i = 0; i <= points; i++) {
+                            const t = i / points;
+                            const angle = t * Math.PI * 6 + this.time + spiralOffset;
+                            const r = radius * t * (1 + Math.sin(angle * 0.5 + this.time) * 0.2);
+                            const x = Math.cos(angle) * r;
+                            const y = Math.sin(angle) * r;
+                            
+                            if (i === 0) this.ctx.moveTo(x, y);
+                            else this.ctx.lineTo(x, y);
+                        }
+                        
+                        const hue = (this.params.hue + layer * 30 + spiral * 60 + this.time * 50) % 360;
+                        const alpha = Math.max(0.1, 0.6 - layer * 0.05);
+                        this.ctx.strokeStyle = `hsla(${hue}, ${this.params.saturation}%, ${this.params.brightness}%, ${alpha})`;
+                        this.ctx.lineWidth = Math.max(0.5, 2 - layer * 0.15);
+                        this.ctx.stroke();
+                    }
+                }
+            }
+            
+            drawTunnel(scale) {
+                const rings = Math.min(25, Math.floor(10 + this.params.intensity * 0.15));
+                const segments = 20;
+                
+                for (let ring = 0; ring < rings; ring++) {
+                    const ringDepth = ring / rings;
+                    const ringRadius = scale * (1 - ringDepth) * (1 + Math.sin(this.time + ring * 0.2) * 0.1);
+                    
+                    if (ringRadius > 2) {
+                        this.ctx.beginPath();
+                        for (let seg = 0; seg <= segments; seg++) {
+                            const segAngle = (seg / segments) * Math.PI * 2 + this.time + ring * 0.1;
+                            const x = Math.cos(segAngle) * ringRadius;
+                            const y = Math.sin(segAngle) * ringRadius;
+                            
+                            if (seg === 0) this.ctx.moveTo(x, y);
+                            else this.ctx.lineTo(x, y);
+                        }
+                        this.ctx.closePath();
+                        
+                        const hue = (this.params.hue + ring * 15 + this.time * 30) % 360;
+                        const alpha = (1 - ringDepth) * 0.8;
+                        this.ctx.strokeStyle = `hsla(${hue}, ${this.params.saturation}%, ${this.params.brightness}%, ${alpha})`;
+                        this.ctx.lineWidth = Math.max(0.5, 1 + (1 - ringDepth) * 2);
+                        this.ctx.stroke();
+                    }
+                }
+            }
+            
+            drawWave(scale) {
+                const sources = 4;
+                const resolution = Math.max(4, 10 - Math.floor(this.params.intensity * 0.06));
+                
+                for (let x = -this.canvas.width/2; x < this.canvas.width/2; x += resolution) {
+                    for (let y = -this.canvas.height/2; y < this.canvas.height/2; y += resolution) {
+                        let totalWave = 0;
+                        
+                        for (let source = 0; source < sources; source++) {
+                            const sourceAngle = (source / sources) * Math.PI * 2 + this.time * 0.5;
+                            const sourceX = Math.cos(sourceAngle) * scale * 0.5;
+                            const sourceY = Math.sin(sourceAngle) * scale * 0.5;
+                            
+                            const distance = Math.sqrt((x - sourceX)**2 + (y - sourceY)**2);
+                            const wave = Math.sin((distance * 0.02 + this.time * 2) * Math.PI);
+                            totalWave += wave / Math.max(1, 1 + distance * 0.001);
+                        }
+                        
+                        const waveIntensity = Math.abs(totalWave);
+                        if (waveIntensity > 0.2) {
+                            const hue = (this.params.hue + totalWave * 180 + this.time * 50) % 360;
+                            const alpha = Math.min(0.6, waveIntensity * 0.4);
+                            this.ctx.fillStyle = `hsla(${hue}, ${this.params.saturation}%, ${this.params.brightness}%, ${alpha})`;
+                            this.ctx.fillRect(x, y, resolution, resolution);
+                        }
+                    }
+                }
+            }
+            
+            drawMandala(scale) {
+                const petals = Math.min(12, Math.floor(6 + this.params.intensity * 0.06));
+                const layers = Math.min(6, Math.floor(3 + this.params.intensity * 0.03));
+                
+                for (let layer = 0; layer < layers; layer++) {
+                    const layerRadius = scale * (0.2 + layer * 0.15);
+                    const layerRotation = this.time * (0.5 + layer * 0.2);
+                    
+                    this.ctx.save();
+                    this.ctx.rotate(layerRotation);
+                    
+                    this.ctx.beginPath();
+                    for (let i = 0; i <= petals; i++) {
+                        const angle = (i / petals) * Math.PI * 2;
+                        const radius = layerRadius * (1 + Math.sin(this.time + i * 0.5) * 0.1);
+                        const x = Math.cos(angle) * radius;
+                        const y = Math.sin(angle) * radius;
+                        
+                        if (i === 0) this.ctx.moveTo(x, y);
+                        else this.ctx.lineTo(x, y);
+                    }
+                    this.ctx.closePath();
+                    
+                    const hue = (this.params.hue + layer * 45 + this.time * 40) % 360;
+                    const alpha = Math.max(0.1, 0.7 - layer * 0.1);
+                    this.ctx.strokeStyle = `hsla(${hue}, ${this.params.saturation}%, ${this.params.brightness}%, ${alpha})`;
+                    this.ctx.lineWidth = Math.max(0.5, 2.5 - layer * 0.3);
+                    this.ctx.stroke();
+                    
+                    this.ctx.restore();
+                }
+            }
+            
+            drawPlasma(scale) {
+                const resolution = Math.max(3, 8 - Math.floor(this.params.intensity * 0.05));
+                const plasmaScale = 0.008 + this.params.intensity * 0.00008;
+                
+                for (let x = -this.canvas.width/2; x < this.canvas.width/2; x += resolution) {
+                    for (let y = -this.canvas.height/2; y < this.canvas.height/2; y += resolution) {
+                        const plasma1 = Math.sin(x * plasmaScale + this.time);
+                        const plasma2 = Math.sin(y * plasmaScale + this.time * 1.3);
+                        const plasma3 = Math.sin((x + y) * plasmaScale * 0.5 + this.time * 0.7);
+                        const plasma4 = Math.sin(Math.sqrt(x*x + y*y) * plasmaScale + this.time * 0.5);
+                        
+                        const plasmaValue = (plasma1 + plasma2 + plasma3 + plasma4) / 4;
+                        const plasmaIntensity = (plasmaValue + 1) / 2;
+                        
+                        if (plasmaIntensity > 0.3) {
+                            const hue = (this.params.hue + plasmaValue * 180 + this.time * 30) % 360;
+                            const alpha = Math.min(0.7, plasmaIntensity * 0.5);
+                            this.ctx.fillStyle = `hsla(${hue}, ${this.params.saturation}%, ${this.params.brightness}%, ${alpha})`;
+                            this.ctx.fillRect(x, y, resolution, resolution);
+                        }
+                    }
+                }
+            }
+            
+            drawParticle(scale) {
+                const particles = Math.min(150, Math.floor(50 + this.params.intensity * 1));
+                
+                for (let i = 0; i < particles; i++) {
+                    const t = i / particles;
+                    const angle = t * Math.PI * 2 + this.time * 0.5;
+                    const radius = scale * (0.2 + Math.sin(this.time + i * 0.1) * 0.4);
+                    const flowAngle = angle + Math.sin(this.time + i * 0.05) * 0.5;
+                    
+                    const x = Math.cos(flowAngle) * radius;
+                    const y = Math.sin(flowAngle) * radius;
+                    
+                    const size = Math.max(0.5, 1 + Math.sin(this.time * 2 + i * 0.2) * 2);
+                    const hue = (this.params.hue + i * 2 + this.time * 100) % 360;
+                    const alpha = 0.8;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = `hsla(${hue}, ${this.params.saturation}%, ${this.params.brightness}%, ${alpha})`;
+                    this.ctx.fill();
+                }
+            }
+            
+            drawFractal(scale) {
+                const branches = 5;
+                const iterations = Math.min(6, Math.floor(3 + this.params.intensity * 0.03));
+                
+                for (let branch = 0; branch < branches; branch++) {
+                    const branchAngle = (branch / branches) * Math.PI * 2 + this.time;
+                    
+                    this.ctx.save();
+                    this.ctx.rotate(branchAngle);
+                    
+                    for (let iter = 0; iter < iterations; iter++) {
+                        const iterScale = scale * Math.pow(0.7, iter);
+                        const iterAngle = this.time * (1 + iter * 0.3);
+                        
+                        this.ctx.save();
+                        this.ctx.rotate(iterAngle);
+                        
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(0, 0);
+                        this.ctx.lineTo(iterScale, 0);
+                        
+                        const hue = (this.params.hue + iter * 60 + branch * 40 + this.time * 50) % 360;
+                        const alpha = Math.max(0.1, 0.9 - iter * 0.15);
+                        this.ctx.strokeStyle = `hsla(${hue}, ${this.params.saturation}%, ${this.params.brightness}%, ${alpha})`;
+                        this.ctx.lineWidth = Math.max(0.5, 3 - iter * 0.4);
+                        this.ctx.stroke();
+                        
+                        this.ctx.translate(iterScale, 0);
+                        this.ctx.restore();
+                    }
+                    
+                    this.ctx.restore();
+                }
+            }
+            
+            drawKaleidoscope(scale) {
+                const segments = Math.min(8, Math.floor(4 + this.params.intensity * 0.04));
+                
+                for (let segment = 0; segment < segments; segment++) {
+                    this.ctx.save();
+                    this.ctx.rotate((segment / segments) * Math.PI * 2);
+                    
+                    const elements = Math.min(25, Math.floor(10 + this.params.intensity * 0.15));
+                    for (let i = 0; i < elements; i++) {
+                        const radius = scale * (0.1 + (i / elements) * 0.8);
+                        const angle = (i / elements) * Math.PI * 4 + this.time;
+                        const x = Math.cos(angle) * radius;
+                        const y = Math.sin(angle) * radius * 0.5;
+                        
+                        const size = Math.max(0.5, 2 + Math.sin(this.time + i * 0.3) * 3);
+                        const hue = (this.params.hue + i * 20 + segment * 30 + this.time * 60) % 360;
+                        const alpha = 0.8;
+                        
+                        this.ctx.beginPath();
+                        this.ctx.arc(x, y, size, 0, Math.PI * 2);
+                        this.ctx.fillStyle = `hsla(${hue}, ${this.params.saturation}%, ${this.params.brightness}%, ${alpha})`;
+                        this.ctx.fill();
+                    }
+                    
+                    this.ctx.restore();
+                }
+            }
+            
+            capture() {
+                try {
+                    const link = document.createElement('a');
+                    link.download = `hypnotic_${this.currentGenerator}_${Date.now()}.png`;
+                    link.href = this.canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    const btn = document.getElementById('captureBtn');
+                    const originalText = btn.textContent;
+                    btn.textContent = 'CAPTURED!';
+                    btn.style.background = 'linear-gradient(135deg, rgba(0, 255, 0, 0.3), rgba(0, 255, 255, 0.3))';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.style.background = '';
+                    }, 1500);
+                } catch (error) {
+                    console.error('Capture error:', error);
+                }
+            }
+            
+            export() {
+                try {
+                    const settings = {
+                        generator: this.currentGenerator,
+                        parameters: this.params,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+                    const link = document.createElement('a');
+                    link.download = `hypnotic_preset_${Date.now()}.json`;
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                } catch (error) {
+                    console.error('Export error:', error);
+                }
+            }
+        }
+        
+        // Initialize the synthesizer when the page loads
+        window.addEventListener('load', () => {
+            new HypnoticSynthesizer();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9751b30ea46a074f',t:'MTc1NjE5NDIxOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

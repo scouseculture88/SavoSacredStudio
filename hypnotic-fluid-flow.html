@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hypnotic Plasma Flow</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            user-select: none;
+        }
+        
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000000;
+            cursor: crosshair;
+        }
+        
+        .header {
+            position: fixed;
+            top: 15px;
+            left: 20px;
+            z-index: 100;
+            transition: opacity 0.5s ease;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .header.hidden { opacity: 0; }
+        
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff0080;
+            margin-bottom: 3px;
+            text-shadow: 0 0 10px #ff0080;
+        }
+        
+        .subtitle {
+            font-size: 10px;
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+        }
+        
+        .controls {
+            position: fixed;
+            top: 80px;
+            right: 15px;
+            width: 180px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #ff0080;
+            border-radius: 6px;
+            padding: 10px;
+            transition: transform 0.5s ease;
+            z-index: 100;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+        
+        .controls.hidden {
+            transform: translateX(200px);
+        }
+        
+        .control-group {
+            margin-bottom: 8px;
+        }
+        
+        .control-label {
+            font-size: 8px;
+            color: #00ffff;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        
+        select, input[type="range"] {
+            width: 100%;
+            background: #000;
+            color: #ff0080;
+            border: 1px solid #ff0080;
+            border-radius: 3px;
+            font-size: 8px;
+        }
+        
+        select { padding: 3px; }
+        
+        input[type="range"] {
+            height: 14px;
+            -webkit-appearance: none;
+            background: rgba(255, 0, 128, 0.2);
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ff0080;
+            cursor: pointer;
+            box-shadow: 0 0 5px #ff0080;
+        }
+        
+        .value-display {
+            font-size: 7px;
+            color: #ffff00;
+            text-align: center;
+            margin-top: 2px;
+        }
+        
+        .button {
+            width: 100%;
+            padding: 5px;
+            margin: 2px 0;
+            background: linear-gradient(45deg, rgba(255, 0, 128, 0.3), rgba(0, 255, 255, 0.3));
+            border: 1px solid #ff0080;
+            border-radius: 3px;
+            color: #ff0080;
+            cursor: pointer;
+            font-size: 7px;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .button:hover {
+            box-shadow: 0 0 10px #ff0080;
+        }
+        
+        .toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff0080;
+            border-radius: 50%;
+            color: #ff0080;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            z-index: 200;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle:hover {
+            box-shadow: 0 0 15px #ff0080;
+        }
+        
+        .status {
+            position: fixed;
+            top: 15px;
+            right: 80px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ffff;
+            border-radius: 12px;
+            padding: 5px 10px;
+            font-size: 8px;
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+            z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+        
+        .status.hidden { opacity: 0; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div class="header" id="header">
+        <div class="title">HYPNOTIC PLASMA</div>
+        <div class="subtitle">Flowing liquid consciousness patterns</div>
+    </div>
+    
+    <div class="status" id="status">HYPNOSIS ACTIVE</div>
+    
+    <div class="toggle" id="toggle">~</div>
+    
+    <div class="controls" id="controls">
+        <div class="control-group">
+            <div class="control-label">Flow Pattern</div>
+            <select id="pattern">
+                <option value="spiral">Hypnotic Spiral</option>
+                <option value="waves">Plasma Waves</option>
+                <option value="vortex">Energy Vortex</option>
+                <option value="ripples">Liquid Ripples</option>
+            </select>
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Flow Speed</div>
+            <input type="range" id="speed" min="0.1" max="3" value="1" step="0.1">
+            <div class="value-display" id="speedVal">1.0</div>
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Glow Intensity</div>
+            <input type="range" id="glow" min="0.5" max="3" value="1.5" step="0.1">
+            <div class="value-display" id="glowVal">1.5</div>
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Plasma Density</div>
+            <input type="range" id="density" min="0.1" max="2" value="0.8" step="0.1">
+            <div class="value-display" id="densityVal">0.8</div>
+        </div>
+        
+        <div class="control-group">
+            <div class="control-label">Color Shift</div>
+            <input type="range" id="colorShift" min="0" max="10" value="3" step="0.5">
+            <div class="value-display" id="colorVal">3.0</div>
+        </div>
+        
+        <div class="control-group">
+            <button class="button" id="hyperBtn">Hyper Mode</button>
+            <button class="button" id="pulseBtn">Pulse Wave</button>
+            <button class="button" id="resetBtn">Reset</button>
+        </div>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height, centerX, centerY;
+        let time = 0;
+        let hidden = false;
+        
+        let pattern = 'spiral';
+        let flowSpeed = 1;
+        let glowIntensity = 1.5;
+        let plasmaDensity = 0.8;
+        let colorShift = 3;
+        let hyperMode = false;
+        let pulseWave = false;
+        
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            centerX = width / 2;
+            centerY = height / 2;
+        }
+        
+        function getPlasmaColor(distance, angle, t) {
+            const hue = (distance * 0.5 + angle * 57.29578 + t * colorShift) % 360;
+            const sat = 80 + Math.sin(distance * 0.01 + t * 0.1) * 20;
+            const light = 60 + Math.sin(angle * 3 + t * 0.2) * 30;
+            return `hsl(${hue}, ${sat}%, ${light}%)`;
+        }
+        
+        function drawHypnoticSpiral() {
+            const spiralTurns = 8;
+            const maxRadius = Math.max(width, height);
+            
+            for (let radius = 0; radius < maxRadius; radius += 3) {
+                const angle = (radius * spiralTurns / maxRadius) * Math.PI * 2 + time * flowSpeed * 0.02;
+                const waveOffset = Math.sin(radius * 0.02 + time * flowSpeed * 0.1) * 20;
+                
+                const x = centerX + Math.cos(angle) * (radius + waveOffset);
+                const y = centerY + Math.sin(angle) * (radius + waveOffset);
+                
+                if (x >= 0 && x < width && y >= 0 && y < height) {
+                    const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+                    const intensity = Math.sin(distance * 0.02 + time * flowSpeed * 0.15) * 0.5 + 0.5;
+                    
+                    const size = (3 + intensity * 4) * plasmaDensity * glowIntensity;
+                    const color = getPlasmaColor(distance, angle, time * flowSpeed);
+                    
+                    // Glow effect
+                    const gradient = ctx.createRadialGradient(x, y, 0, x, y, size * 2);
+                    gradient.addColorStop(0, color);
+                    gradient.addColorStop(0.5, color.replace(')', ', 0.5)').replace('hsl', 'hsla'));
+                    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size * 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Core brightness
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+        
+        function drawPlasmaWaves() {
+            for (let x = 0; x < width; x += 4) {
+                for (let y = 0; y < height; y += 4) {
+                    const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+                    const angle = Math.atan2(y - centerY, x - centerX);
+                    
+                    const wave1 = Math.sin(distance * 0.02 + time * flowSpeed * 0.1);
+                    const wave2 = Math.cos(angle * 4 + time * flowSpeed * 0.08);
+                    const intensity = (wave1 * wave2 + 1) * 0.5;
+                    
+                    if (intensity > 0.3) {
+                        const size = intensity * 6 * plasmaDensity;
+                        const color = getPlasmaColor(distance, angle, time * flowSpeed);
+                        
+                        const gradient = ctx.createRadialGradient(x, y, 0, x, y, size * glowIntensity);
+                        gradient.addColorStop(0, color);
+                        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                        
+                        ctx.fillStyle = gradient;
+                        ctx.beginPath();
+                        ctx.arc(x, y, size * glowIntensity, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+        }
+        
+        function drawEnergyVortex() {
+            const vortexLayers = 20;
+            
+            for (let layer = 0; layer < vortexLayers; layer++) {
+                const layerRadius = (layer / vortexLayers) * Math.min(width, height) * 0.8;
+                const points = Math.floor(layerRadius * 0.5);
+                
+                for (let i = 0; i < points; i++) {
+                    const angle = (i / points) * Math.PI * 2 + time * flowSpeed * 0.05 * (layer + 1);
+                    const spiralOffset = Math.sin(angle * 3 + time * flowSpeed * 0.1) * layerRadius * 0.1;
+                    
+                    const x = centerX + Math.cos(angle) * (layerRadius + spiralOffset);
+                    const y = centerY + Math.sin(angle) * (layerRadius + spiralOffset);
+                    
+                    const intensity = Math.sin(angle * 2 + time * flowSpeed * 0.2) * 0.5 + 0.5;
+                    const size = (2 + intensity * 3) * plasmaDensity;
+                    const color = getPlasmaColor(layerRadius, angle, time * flowSpeed);
+                    
+                    const gradient = ctx.createRadialGradient(x, y, 0, x, y, size * glowIntensity * 2);
+                    gradient.addColorStop(0, color);
+                    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size * glowIntensity * 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+        
+        function drawLiquidRipples() {
+            const rippleCount = 15;
+            
+            for (let i = 0; i < rippleCount; i++) {
+                const rippleRadius = (i * 30) + ((time * flowSpeed * 2) % 450);
+                const alpha = 1 - (rippleRadius / 500);
+                
+                if (alpha > 0) {
+                    const points = Math.floor(rippleRadius * 0.2);
+                    
+                    for (let j = 0; j < points; j++) {
+                        const angle = (j / points) * Math.PI * 2;
+                        const distortion = Math.sin(angle * 6 + time * flowSpeed * 0.3) * 10;
+                        
+                        const x = centerX + Math.cos(angle) * (rippleRadius + distortion);
+                        const y = centerY + Math.sin(angle) * (rippleRadius + distortion);
+                        
+                        const intensity = Math.sin(j * 0.2 + time * flowSpeed * 0.4) * 0.5 + 0.5;
+                        const size = intensity * 4 * plasmaDensity * alpha;
+                        const color = getPlasmaColor(rippleRadius, angle, time * flowSpeed);
+                        
+                        const gradient = ctx.createRadialGradient(x, y, 0, x, y, size * glowIntensity * 3);
+                        gradient.addColorStop(0, color);
+                        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                        
+                        ctx.fillStyle = gradient;
+                        ctx.beginPath();
+                        ctx.arc(x, y, size * glowIntensity * 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+        }
+        
+        function update() {
+            time += 1;
+            
+            if (hyperMode) {
+                flowSpeed = Math.min(5, flowSpeed * 1.05);
+                glowIntensity = Math.min(4, glowIntensity * 1.02);
+            }
+            
+            if (pulseWave) {
+                const pulse = Math.sin(time * 0.2) * 0.5 + 0.5;
+                glowIntensity = 1 + pulse * 2;
+                colorShift = 2 + pulse * 6;
+            }
+        }
+        
+        function draw() {
+            // Fade background for trail effect
+            ctx.fillStyle = `rgba(0, 0, 0, ${0.02 / plasmaDensity})`;
+            ctx.fillRect(0, 0, width, height);
+            
+            switch(pattern) {
+                case 'spiral':
+                    drawHypnoticSpiral();
+                    break;
+                case 'waves':
+                    drawPlasmaWaves();
+                    break;
+                case 'vortex':
+                    drawEnergyVortex();
+                    break;
+                case 'ripples':
+                    drawLiquidRipples();
+                    break;
+            }
+        }
+        
+        function animate() {
+            update();
+            draw();
+            requestAnimationFrame(animate);
+        }
+        
+        function toggleUI() {
+            hidden = !hidden;
+            ['header', 'controls', 'status'].forEach(id => {
+                document.getElementById(id).classList.toggle('hidden', hidden);
+            });
+            document.getElementById('toggle').textContent = hidden ? '👁' : '~';
+        }
+        
+        // Event listeners
+        document.getElementById('toggle').onclick = toggleUI;
+        document.getElementById('pattern').onchange = e => pattern = e.target.value;
+        
+        document.getElementById('speed').oninput = e => {
+            flowSpeed = +e.target.value;
+            document.getElementById('speedVal').textContent = flowSpeed.toFixed(1);
+        };
+        
+        document.getElementById('glow').oninput = e => {
+            glowIntensity = +e.target.value;
+            document.getElementById('glowVal').textContent = glowIntensity.toFixed(1);
+        };
+        
+        document.getElementById('density').oninput = e => {
+            plasmaDensity = +e.target.value;
+            document.getElementById('densityVal').textContent = plasmaDensity.toFixed(1);
+        };
+        
+        document.getElementById('colorShift').oninput = e => {
+            colorShift = +e.target.value;
+            document.getElementById('colorVal').textContent = colorShift.toFixed(1);
+        };
+        
+        document.getElementById('hyperBtn').onclick = () => {
+            hyperMode = true;
+            setTimeout(() => hyperMode = false, 5000);
+        };
+        
+        document.getElementById('pulseBtn').onclick = () => {
+            pulseWave = true;
+            setTimeout(() => pulseWave = false, 8000);
+        };
+        
+        document.getElementById('resetBtn').onclick = () => {
+            hyperMode = false;
+            pulseWave = false;
+            time = 0;
+            flowSpeed = 1;
+            glowIntensity = 1.5;
+        };
+        
+        canvas.onclick = e => {
+            const rect = canvas.getBoundingClientRect();
+            centerX = e.clientX - rect.left;
+            centerY = e.clientY - rect.top;
+        };
+        
+        canvas.ontouchstart = e => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            centerX = touch.clientX - rect.left;
+            centerY = touch.clientY - rect.top;
+        };
+        
+        window.onresize = resize;
+        resize();
+        animate();
+    </script>
+</body>
+</html>

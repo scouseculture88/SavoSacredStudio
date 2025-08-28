@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectral Mandala Generator - Mathematical Sacred Geometry</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: radial-gradient(circle at center, #0a0012, #000000);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            color: white;
+            height: 100vh;
+        }
+        
+        #container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 100, 255, 0.3);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 30px rgba(255, 100, 255, 0.2);
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        #controls.collapsed {
+            padding: 8px;
+            width: 35px;
+            height: 35px;
+            overflow: hidden;
+        }
+        
+        #controls.collapsed .control-content {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        #toggleControls {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 100, 255, 0.2);
+            border: 1px solid rgba(255, 100, 255, 0.5);
+            color: #ff64ff;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        
+        #toggleControls:hover {
+            background: rgba(255, 100, 255, 0.4);
+            box-shadow: 0 0 15px rgba(255, 100, 255, 0.3);
+        }
+        
+        .control-content {
+            transition: opacity 0.3s ease;
+        }
+        
+        .control-group {
+            margin-bottom: 12px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 11px;
+            color: #ff64ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 100, 255, 0.3);
+        }
+        
+        input[type="range"] {
+            width: 180px;
+            margin-bottom: 3px;
+            accent-color: #ff64ff;
+        }
+        
+        select, button {
+            background: rgba(255, 100, 255, 0.1);
+            border: 1px solid rgba(255, 100, 255, 0.4);
+            color: #ff64ff;
+            padding: 6px 10px;
+            border-radius: 8px;
+            margin: 2px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: rgba(255, 100, 255, 0.2);
+            box-shadow: 0 0 10px rgba(255, 100, 255, 0.2);
+        }
+        
+        .preset-button {
+            background: linear-gradient(45deg, rgba(255, 100, 255, 0.2), rgba(100, 255, 255, 0.2));
+            color: white;
+            font-size: 12px;
+            padding: 8px 12px;
+            margin: 2px;
+        }
+        
+        .preset-button:hover {
+            background: linear-gradient(45deg, rgba(255, 100, 255, 0.4), rgba(100, 255, 255, 0.4));
+            transform: scale(1.05);
+        }
+        
+        #info {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 100, 255, 0.3);
+            font-size: 11px;
+            max-width: 280px;
+            color: #ff64ff;
+            text-shadow: 0 0 10px rgba(255, 100, 255, 0.3);
+        }
+        
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+        
+        @keyframes glow {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        .glow-text {
+            animation: glow 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <canvas id="canvas"></canvas>
+    </div>
+    
+    <div id="controls">
+        <button id="toggleControls">−</button>
+        <div class="control-content">
+            <div class="control-group">
+                <label>🎵 Audio Simulation</label>
+                <button class="preset-button" onclick="loadPreset('voice')">🎤 Voice</button>
+                <button class="preset-button" onclick="loadPreset('music')">🎵 Music</button>
+                <button class="preset-button" onclick="loadPreset('deep')">🔊 Deep Bass</button>
+            </div>
+            
+            <div class="control-group">
+                <label>Frequency (Hz)</label>
+                <input type="range" id="frequency" min="20" max="2000" value="432" step="1">
+                <span id="freqValue">432 Hz</span>
+            </div>
+            
+            <div class="control-group">
+                <label>Harmonic Layers</label>
+                <input type="range" id="harmonics" min="1" max="8" value="3" step="1">
+                <span id="harmonicsValue">3</span>
+            </div>
+            
+            <div class="control-group">
+                <label>Mandala Complexity</label>
+                <input type="range" id="complexity" min="3" max="36" value="12" step="1">
+                <span id="complexityValue">12</span>
+            </div>
+            
+            <div class="control-group">
+                <label>Visual Style</label>
+                <select id="visualStyle">
+                    <option value="sacred">Sacred Geometry</option>
+                    <option value="plasma">Plasma Flow</option>
+                    <option value="neural">Neural Network</option>
+                    <option value="crystal">Crystal Growth</option>
+                    <option value="cosmic">Cosmic Resonance</option>
+                    <option value="dna">DNA Helix</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Amplitude</label>
+                <input type="range" id="amplitude" min="0.1" max="3.0" value="1.0" step="0.1">
+                <span id="amplitudeValue">1.0</span>
+            </div>
+            
+            <div class="control-group">
+                <label>Speed</label>
+                <input type="range" id="speed" min="0.1" max="3.0" value="1.0" step="0.1">
+                <span id="speedValue">1.0</span>
+            </div>
+            
+            <div class="control-group">
+                <button id="playPause">▶ Play Animation</button>
+                <button id="reset">🔄 Reset</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="info">
+        <div class="glow-text">
+            <strong>🌟 Spectral Mandala Generator</strong><br>
+            Mathematical sacred geometry in motion<br><br>
+            <span id="statusText">🎵 Simulating audio-reactive patterns</span><br>
+            <span id="currentFreq">Resonating at 432 Hz</span>
+        </div>
+    </div>
+
+    <script>
+        let canvas, ctx;
+        let time = 0;
+        let isPlaying = true;
+        let animationId;
+        
+        // Control elements
+        const controlsPanel = document.getElementById('controls');
+        const toggleBtn = document.getElementById('toggleControls');
+        const frequencySlider = document.getElementById('frequency');
+        const harmonicsSlider = document.getElementById('harmonics');
+        const complexitySlider = document.getElementById('complexity');
+        const visualStyleSelect = document.getElementById('visualStyle');
+        const amplitudeSlider = document.getElementById('amplitude');
+        const speedSlider = document.getElementById('speed');
+        const playPauseBtn = document.getElementById('playPause');
+        const resetBtn = document.getElementById('reset');
+        
+        // Value displays
+        const freqValue = document.getElementById('freqValue');
+        const harmonicsValue = document.getElementById('harmonicsValue');
+        const complexityValue = document.getElementById('complexityValue');
+        const amplitudeValue = document.getElementById('amplitudeValue');
+        const speedValue = document.getElementById('speedValue');
+        const statusText = document.getElementById('statusText');
+        const currentFreq = document.getElementById('currentFreq');
+        
+        // Audio simulation variables
+        let baseFrequency = 432;
+        let harmonicLayers = 3;
+        let simulatedVolume = 0;
+        let frequencySpectrum = [];
+        
+        function init() {
+            canvas = document.getElementById('canvas');
+            ctx = canvas.getContext('2d');
+            
+            resizeCanvas();
+            generateFrequencySpectrum();
+            setupEventListeners();
+            animate();
+        }
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        function generateFrequencySpectrum() {
+            frequencySpectrum = [];
+            const numBins = 128;
+            
+            for (let i = 0; i < numBins; i++) {
+                // Simulate frequency data with harmonic content
+                let amplitude = 0;
+                const frequency = (i / numBins) * 2000; // 0-2000 Hz range
+                
+                // Add base frequency
+                if (Math.abs(frequency - baseFrequency) < 50) {
+                    amplitude += 100 + Math.sin(time * 0.05) * 50;
+                }
+                
+                // Add harmonics
+                for (let h = 1; h <= harmonicLayers; h++) {
+                    const harmonicFreq = baseFrequency * h;
+                    if (Math.abs(frequency - harmonicFreq) < 30) {
+                        amplitude += (80 / h) + Math.sin(time * 0.03 * h) * (30 / h);
+                    }
+                }
+                
+                // Add some noise for realism
+                amplitude += Math.random() * 10;
+                
+                // Apply some frequency-dependent filtering
+                if (frequency < 100) amplitude *= 1.5; // Bass boost
+                if (frequency > 1000) amplitude *= 0.7; // Treble rolloff
+                
+                frequencySpectrum.push(Math.max(0, Math.min(255, amplitude)));
+            }
+            
+            // Calculate simulated volume
+            simulatedVolume = frequencySpectrum.reduce((a, b) => a + b) / frequencySpectrum.length;
+        }
+        
+        function drawMandala() {
+            // Fade background
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.03)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const complexity = parseInt(complexitySlider.value);
+            const amplitude = parseFloat(amplitudeSlider.value);
+            const style = visualStyleSelect.value;
+            const speed = parseFloat(speedSlider.value);
+            
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            
+            // Draw based on visual style
+            switch(style) {
+                case 'sacred':
+                    drawSacredGeometry(complexity, amplitude, speed);
+                    break;
+                case 'plasma':
+                    drawPlasmaFlow(complexity, amplitude, speed);
+                    break;
+                case 'neural':
+                    drawNeuralNetwork(complexity, amplitude, speed);
+                    break;
+                case 'crystal':
+                    drawCrystalGrowth(complexity, amplitude, speed);
+                    break;
+                case 'cosmic':
+                    drawCosmicResonance(complexity, amplitude, speed);
+                    break;
+                case 'dna':
+                    drawDNAHelix(complexity, amplitude, speed);
+                    break;
+            }
+            
+            ctx.restore();
+        }
+        
+        function drawSacredGeometry(complexity, amplitude, speed) {
+            for (let i = 0; i < complexity; i++) {
+                const angle = (i / complexity) * Math.PI * 2;
+                const freqIndex = Math.floor((i / complexity) * frequencySpectrum.length);
+                const freqAmplitude = frequencySpectrum[freqIndex] || 0;
+                
+                if (freqAmplitude > 10) {
+                    ctx.save();
+                    ctx.rotate(angle + time * 0.002 * speed);
+                    
+                    const radius = (freqAmplitude / 255) * 200 * amplitude + 30;
+                    const hue = (freqIndex / frequencySpectrum.length) * 360 + time * 0.5;
+                    const alpha = (freqAmplitude / 255) * 0.8 + 0.2;
+                    
+                    ctx.strokeStyle = `hsla(${hue}, 80%, 60%, ${alpha})`;
+                    ctx.lineWidth = 2 + (freqAmplitude / 255) * 3;
+                    ctx.shadowBlur = 15 + (freqAmplitude / 255) * 10;
+                    ctx.shadowColor = `hsl(${hue}, 80%, 60%)`;
+                    
+                    // Draw flower of life pattern
+                    ctx.beginPath();
+                    for (let j = 0; j < 8; j++) {
+                        const subAngle = (j / 8) * Math.PI * 2;
+                        const x = Math.cos(subAngle) * radius;
+                        const y = Math.sin(subAngle) * radius;
+                        if (j === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.stroke();
+                    
+                    // Add inner details
+                    ctx.beginPath();
+                    ctx.arc(0, 0, radius * 0.3, 0, Math.PI * 2);
+                    ctx.stroke();
+                    
+                    ctx.restore();
+                }
+            }
+        }
+        
+        function drawPlasmaFlow(complexity, amplitude, speed) {
+            ctx.globalCompositeOperation = 'screen';
+            
+            for (let i = 0; i < complexity * 2; i++) {
+                const t = time * 0.01 * speed + i * 0.2;
+                const freqIndex = i % frequencySpectrum.length;
+                const freqAmplitude = frequencySpectrum[freqIndex] || 0;
+                
+                if (freqAmplitude > 5) {
+                    const flowRadius = (freqAmplitude / 255) * 180 * amplitude;
+                    const x = Math.sin(t + i) * flowRadius + Math.cos(t * 0.7) * 50;
+                    const y = Math.cos(t * 1.3 + i) * flowRadius + Math.sin(t * 0.5) * 50;
+                    
+                    const gradient = ctx.createRadialGradient(x, y, 0, x, y, 60);
+                    const hue = (freqIndex / frequencySpectrum.length) * 360 + time * 0.8;
+                    gradient.addColorStop(0, `hsla(${hue}, 100%, 50%, ${freqAmplitude / 800})`);
+                    gradient.addColorStop(0.5, `hsla(${hue + 60}, 80%, 40%, ${freqAmplitude / 1200})`);
+                    gradient.addColorStop(1, 'transparent');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 60, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            ctx.globalCompositeOperation = 'source-over';
+        }
+        
+        function drawNeuralNetwork(complexity, amplitude, speed) {
+            const nodes = [];
+            
+            // Create nodes
+            for (let i = 0; i < complexity; i++) {
+                const angle = (i / complexity) * Math.PI * 2 + time * 0.001 * speed;
+                const freqIndex = Math.floor((i / complexity) * frequencySpectrum.length);
+                const freqAmplitude = frequencySpectrum[freqIndex] || 0;
+                const radius = 80 + (freqAmplitude / 255) * 150 * amplitude;
+                
+                nodes.push({
+                    x: Math.cos(angle) * radius,
+                    y: Math.sin(angle) * radius,
+                    amplitude: freqAmplitude,
+                    freq: freqIndex,
+                    pulse: Math.sin(time * 0.05 + i) * 0.3 + 0.7
+                });
+            }
+            
+            // Draw connections
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const node1 = nodes[i];
+                    const node2 = nodes[j];
+                    
+                    if (node1.amplitude > 15 && node2.amplitude > 15) {
+                        const distance = Math.sqrt(
+                            Math.pow(node1.x - node2.x, 2) + Math.pow(node1.y - node2.y, 2)
+                        );
+                        
+                        if (distance < 200) {
+                            const strength = (node1.amplitude + node2.amplitude) / 1000;
+                            const hue = ((node1.freq + node2.freq) / 2 / frequencySpectrum.length) * 360;
+                            
+                            ctx.strokeStyle = `hsla(${hue}, 70%, 50%, ${strength * node1.pulse * node2.pulse})`;
+                            ctx.lineWidth = strength * 4;
+                            ctx.shadowBlur = 8;
+                            ctx.shadowColor = `hsl(${hue}, 70%, 50%)`;
+                            ctx.beginPath();
+                            ctx.moveTo(node1.x, node1.y);
+                            ctx.lineTo(node2.x, node2.y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+            
+            // Draw nodes
+            nodes.forEach(node => {
+                if (node.amplitude > 10) {
+                    const size = (node.amplitude / 255) * 12 * amplitude + 3;
+                    const hue = (node.freq / frequencySpectrum.length) * 360;
+                    
+                    ctx.fillStyle = `hsl(${hue}, 80%, 60%)`;
+                    ctx.shadowBlur = 15 * node.pulse;
+                    ctx.shadowColor = `hsl(${hue}, 80%, 60%)`;
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, size * node.pulse, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Add inner glow
+                    ctx.fillStyle = `hsl(${hue}, 100%, 80%)`;
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, size * 0.4 * node.pulse, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+        }
+        
+        function drawCrystalGrowth(complexity, amplitude, speed) {
+            ctx.globalCompositeOperation = 'lighter';
+            
+            for (let layer = 0; layer < 3; layer++) {
+                for (let i = 0; i < complexity; i++) {
+                    const freqIndex = Math.floor((i / complexity) * frequencySpectrum.length);
+                    const freqAmplitude = frequencySpectrum[freqIndex] || 0;
+                    
+                    if (freqAmplitude > 12) {
+                        const growth = (freqAmplitude / 255) * (150 + layer * 50) * amplitude;
+                        const hue = (freqIndex / frequencySpectrum.length) * 360 + layer * 30;
+                        const rotation = time * 0.003 * speed + layer * 0.5;
+                        
+                        ctx.save();
+                        ctx.rotate((i / complexity) * Math.PI * 2 + rotation);
+                        
+                        ctx.strokeStyle = `hsla(${hue}, 90%, 70%, ${(freqAmplitude / 255) * 0.6})`;
+                        ctx.lineWidth = 1 + layer;
+                        ctx.shadowBlur = 12;
+                        ctx.shadowColor = `hsl(${hue}, 90%, 70%)`;
+                        
+                        // Draw crystal facets
+                        for (let j = 0; j < 6; j++) {
+                            const angle1 = (j / 6) * Math.PI * 2;
+                            const angle2 = ((j + 1) / 6) * Math.PI * 2;
+                            
+                            ctx.beginPath();
+                            ctx.moveTo(0, 0);
+                            ctx.lineTo(Math.cos(angle1) * growth, Math.sin(angle1) * growth);
+                            ctx.lineTo(Math.cos(angle2) * growth * 0.7, Math.sin(angle2) * growth * 0.7);
+                            ctx.closePath();
+                            ctx.stroke();
+                        }
+                        
+                        ctx.restore();
+                    }
+                }
+            }
+            
+            ctx.globalCompositeOperation = 'source-over';
+        }
+        
+        function drawCosmicResonance(complexity, amplitude, speed) {
+            // Draw galaxy spiral arms
+            for (let arm = 0; arm < 4; arm++) {
+                ctx.beginPath();
+                
+                for (let i = 0; i <= complexity * 8; i++) {
+                    const t = i / (complexity * 2);
+                    const angle = arm * Math.PI / 2 + t * Math.PI * 4 + time * 0.002 * speed;
+                    const freqIndex = Math.floor((i / (complexity * 8)) * frequencySpectrum.length);
+                    const freqAmplitude = frequencySpectrum[freqIndex] || 0;
+                    
+                    const radius = t * 200 * amplitude + (freqAmplitude / 255) * 50;
+                    const x = Math.cos(angle) * radius;
+                    const y = Math.sin(angle) * radius;
+                    
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                    
+                    // Add stars
+                    if (freqAmplitude > 20 && i % 3 === 0) {
+                        const hue = (freqIndex / frequencySpectrum.length) * 360;
+                        const starSize = (freqAmplitude / 255) * 3 + 1;
+                        
+                        ctx.save();
+                        ctx.fillStyle = `hsl(${hue}, 80%, 80%)`;
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = `hsl(${hue}, 80%, 80%)`;
+                        ctx.beginPath();
+                        ctx.arc(x, y, starSize, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                }
+                
+                const avgAmplitude = frequencySpectrum.reduce((a, b) => a + b) / frequencySpectrum.length;
+                ctx.strokeStyle = `hsla(${arm * 90 + time * 0.3}, 70%, 50%, ${avgAmplitude / 600})`;
+                ctx.lineWidth = 2;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = `hsl(${arm * 90 + time * 0.3}, 70%, 50%)`;
+                ctx.stroke();
+            }
+        }
+        
+        function drawDNAHelix(complexity, amplitude, speed) {
+            const helixHeight = 400;
+            const helixRadius = 80;
+            const steps = complexity * 4;
+            
+            for (let strand = 0; strand < 2; strand++) {
+                ctx.beginPath();
+                
+                for (let i = 0; i <= steps; i++) {
+                    const t = i / steps;
+                    const y = (t - 0.5) * helixHeight;
+                    const angle = t * Math.PI * 8 + time * 0.01 * speed + strand * Math.PI;
+                    const freqIndex = Math.floor(t * frequencySpectrum.length);
+                    const freqAmplitude = frequencySpectrum[freqIndex] || 0;
+                    
+                    const currentRadius = helixRadius + (freqAmplitude / 255) * 30 * amplitude;
+                    const x = Math.cos(angle) * currentRadius;
+                    
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                    
+                    // Add base pairs
+                    if (i % 4 === 0) {
+                        const otherX = Math.cos(angle + Math.PI) * currentRadius;
+                        const hue = (freqIndex / frequencySpectrum.length) * 360;
+                        
+                        ctx.save();
+                        ctx.strokeStyle = `hsla(${hue}, 80%, 60%, ${freqAmplitude / 400})`;
+                        ctx.lineWidth = 2;
+                        ctx.shadowBlur = 8;
+                        ctx.shadowColor = `hsl(${hue}, 80%, 60%)`;
+                        ctx.beginPath();
+                        ctx.moveTo(x, y);
+                        ctx.lineTo(otherX, y);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                }
+                
+                const hue = strand * 180 + time * 0.2;
+                ctx.strokeStyle = `hsla(${hue}, 70%, 60%, 0.8)`;
+                ctx.lineWidth = 3;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = `hsl(${hue}, 70%, 60%)`;
+                ctx.stroke();
+            }
+        }
+        
+        function animate() {
+            if (isPlaying) {
+                time += parseFloat(speedSlider.value);
+                generateFrequencySpectrum();
+                drawMandala();
+                
+                // Update info
+                currentFreq.textContent = `Resonating at ${baseFrequency} Hz`;
+            }
+            
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        function setupEventListeners() {
+            // Toggle controls
+            toggleBtn.addEventListener('click', () => {
+                controlsPanel.classList.toggle('collapsed');
+                toggleBtn.textContent = controlsPanel.classList.contains('collapsed') ? '+' : '−';
+            });
+            
+            // Control updates
+            frequencySlider.addEventListener('input', (e) => {
+                baseFrequency = parseInt(e.target.value);
+                freqValue.textContent = e.target.value + ' Hz';
+            });
+            
+            harmonicsSlider.addEventListener('input', (e) => {
+                harmonicLayers = parseInt(e.target.value);
+                harmonicsValue.textContent = e.target.value;
+            });
+            
+            complexitySlider.addEventListener('input', (e) => {
+                complexityValue.textContent = e.target.value;
+            });
+            
+            amplitudeSlider.addEventListener('input', (e) => {
+                amplitudeValue.textContent = e.target.value;
+            });
+            
+            speedSlider.addEventListener('input', (e) => {
+                speedValue.textContent = e.target.value;
+            });
+            
+            // Play/Pause
+            playPauseBtn.addEventListener('click', () => {
+                isPlaying = !isPlaying;
+                playPauseBtn.textContent = isPlaying ? '⏸ Pause' : '▶ Play Animation';
+            });
+            
+            // Reset
+            resetBtn.addEventListener('click', () => {
+                time = 0;
+                ctx.fillStyle = 'black';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            });
+            
+            // Mouse interaction
+            canvas.addEventListener('mousemove', (e) => {
+                const mouseX = (e.clientX - canvas.width / 2) / canvas.width;
+                const mouseY = (e.clientY - canvas.height / 2) / canvas.height;
+                
+                // Modulate frequency based on mouse position
+                const mouseFreq = 200 + Math.abs(mouseX) * 800 + Math.abs(mouseY) * 1000;
+                if (Math.abs(mouseFreq - baseFrequency) > 50) {
+                    baseFrequency = mouseFreq;
+                    frequencySlider.value = baseFrequency;
+                    freqValue.textContent = Math.round(baseFrequency) + ' Hz';
+                }
+            });
+            
+            // Window resize
+            window.addEventListener('resize', resizeCanvas);
+        }
+        
+        // Preset functions
+        function loadPreset(preset) {
+            switch(preset) {
+                case 'voice':
+                    frequencySlider.value = 400;
+                    harmonicsSlider.value = 4;
+                    complexitySlider.value = 16;
+                    amplitudeSlider.value = 1.2;
+                    speedSlider.value = 0.8;
+                    visualStyleSelect.value = 'sacred';
+                    statusText.textContent = '🎤 Voice simulation active';
+                    break;
+                case 'music':
+                    frequencySlider.value = 440;
+                    harmonicsSlider.value = 6;
+                    complexitySlider.value = 24;
+                    amplitudeSlider.value = 1.5;
+                    speedSlider.value = 1.2;
+                    visualStyleSelect.value = 'plasma';
+                    statusText.textContent = '🎵 Music simulation active';
+                    break;
+                case 'deep':
+                    frequencySlider.value = 60;
+                    harmonicsSlider.value = 8;
+                    complexitySlider.value = 12;
+                    amplitudeSlider.value = 2.0;
+                    speedSlider.value = 0.5;
+                    visualStyleSelect.value = 'cosmic';
+                    statusText.textContent = '🔊 Deep bass simulation active';
+                    break;
+            }
+            
+            // Update all display values
+            baseFrequency = parseInt(frequencySlider.value);
+            harmonicLayers = parseInt(harmonicsSlider.value);
+            freqValue.textContent = frequencySlider.value + ' Hz';
+            harmonicsValue.textContent = harmonicsSlider.value;
+            complexityValue.textContent = complexitySlider.value;
+            amplitudeValue.textContent = amplitudeSlider.value;
+            speedValue.textContent = speedSlider.value;
+        }
+        
+        // Initialize
+        init();
+    </script>
+</body>
+</html>

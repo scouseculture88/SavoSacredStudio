@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sacred Wave Portal - Harmonic Cymatics & Spiral Hypnosis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 300px;
+        }
+
+        .mode-switcher {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .control-input {
+            width: 100%;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            color: white;
+        }
+
+        .frequency-presets {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .preset-btn {
+            padding: 8px 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .preset-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #mainCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .info-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.9rem;
+        }
+
+        .sacred-title {
+            text-align: center;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            background-size: 400% 400%;
+            animation: gradientShift 3s ease infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .play-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .control-panel {
+                position: relative;
+                max-width: 100%;
+                margin: 10px;
+                top: 0;
+                left: 0;
+            }
+            
+            body {
+                overflow-y: auto;
+            }
+            
+            .canvas-container {
+                position: relative;
+                height: 70vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="control-panel">
+        <div class="sacred-title">Sacred Wave Portal</div>
+        
+        <div class="mode-switcher">
+            <button class="mode-btn active" onclick="switchMode('cymatics')">Cymatics</button>
+            <button class="mode-btn" onclick="switchMode('spiral')">Spiral</button>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Frequency (Hz)</label>
+            <input type="range" class="control-input" id="frequency" min="20" max="2000" value="432" oninput="updateVisualization()">
+            <span id="frequencyValue">432 Hz</span>
+        </div>
+
+        <div class="frequency-presets">
+            <button class="preset-btn" onclick="setFrequency(174)">174 Hz</button>
+            <button class="preset-btn" onclick="setFrequency(285)">285 Hz</button>
+            <button class="preset-btn" onclick="setFrequency(396)">396 Hz</button>
+            <button class="preset-btn" onclick="setFrequency(417)">417 Hz</button>
+            <button class="preset-btn" onclick="setFrequency(432)">432 Hz</button>
+            <button class="preset-btn" onclick="setFrequency(528)">528 Hz</button>
+            <button class="preset-btn" onclick="setFrequency(639)">639 Hz</button>
+            <button class="preset-btn" onclick="setFrequency(741)">741 Hz</button>
+            <button class="preset-btn" onclick="setFrequency(852)">852 Hz</button>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Amplitude</label>
+            <input type="range" class="control-input" id="amplitude" min="10" max="100" value="50" oninput="updateVisualization()">
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Complexity</label>
+            <input type="range" class="control-input" id="complexity" min="1" max="20" value="8" oninput="updateVisualization()">
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Speed</label>
+            <input type="range" class="control-input" id="speed" min="0.1" max="5" value="1" step="0.1" oninput="updateVisualization()">
+        </div>
+
+        <button class="play-btn" onclick="toggleAudio()">🎵 Generate Frequency</button>
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="mainCanvas"></canvas>
+    </div>
+
+    <div class="info-panel">
+        <div><strong>Mode:</strong> <span id="currentMode">Cymatics</span></div>
+        <div><strong>Sacred Frequency:</strong> <span id="infoFreq">432 Hz</span></div>
+        <div><strong>Harmonic:</strong> <span id="harmonic">Perfect Fifth</span></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+        let animationId;
+        let currentMode = 'cymatics';
+        let time = 0;
+        let audioContext;
+        let oscillator;
+        let isPlaying = false;
+
+        // Resize canvas
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Sacred frequency mappings
+        const sacredFrequencies = {
+            174: { name: "Foundation", color: "#8B0000" },
+            285: { name: "Quantum", color: "#4B0082" },
+            396: { name: "Liberation", color: "#FF4500" },
+            417: { name: "Transformation", color: "#FF8C00" },
+            432: { name: "Nature's Frequency", color: "#32CD32" },
+            528: { name: "Love & DNA", color: "#00FF7F" },
+            639: { name: "Connection", color: "#00CED1" },
+            741: { name: "Awakening", color: "#1E90FF" },
+            852: { name: "Intuition", color: "#9370DB" }
+        };
+
+        function switchMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('currentMode').textContent = mode === 'cymatics' ? 'Cymatics' : 'Spiral Hypnosis';
+            updateVisualization();
+        }
+
+        function setFrequency(freq) {
+            document.getElementById('frequency').value = freq;
+            updateVisualization();
+        }
+
+        function updateVisualization() {
+            const frequency = parseInt(document.getElementById('frequency').value);
+            const amplitude = parseInt(document.getElementById('amplitude').value);
+            const complexity = parseInt(document.getElementById('complexity').value);
+            const speed = parseFloat(document.getElementById('speed').value);
+
+            document.getElementById('frequencyValue').textContent = frequency + ' Hz';
+            document.getElementById('infoFreq').textContent = frequency + ' Hz';
+            
+            const freqInfo = sacredFrequencies[frequency];
+            if (freqInfo) {
+                document.getElementById('harmonic').textContent = freqInfo.name;
+            } else {
+                document.getElementById('harmonic').textContent = 'Custom Frequency';
+            }
+        }
+
+        function drawCymatics() {
+            const frequency = parseInt(document.getElementById('frequency').value);
+            const amplitude = parseInt(document.getElementById('amplitude').value) / 100;
+            const complexity = parseInt(document.getElementById('complexity').value);
+            const speed = parseFloat(document.getElementById('speed').value);
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const maxRadius = Math.min(canvas.width, canvas.height) * 0.4;
+
+            // Get sacred color
+            const freqInfo = sacredFrequencies[frequency];
+            const baseColor = freqInfo ? freqInfo.color : '#ffffff';
+
+            // Create cymatic patterns based on frequency
+            for (let angle = 0; angle < Math.PI * 2; angle += 0.01) {
+                for (let radius = 10; radius < maxRadius; radius += 5) {
+                    // Complex wave equation for cymatics
+                    const wave1 = Math.sin(frequency * angle * 0.01 + time * speed) * amplitude;
+                    const wave2 = Math.cos(frequency * angle * 0.02 + time * speed * 0.7) * amplitude;
+                    const wave3 = Math.sin(complexity * angle + time * speed * 0.5) * amplitude * 0.5;
+                    
+                    const finalRadius = Math.max(0, radius + (wave1 + wave2 + wave3) * 20);
+                    
+                    if (finalRadius > 0) {
+                        const x = centerX + Math.cos(angle) * finalRadius;
+                        const y = centerY + Math.sin(angle) * finalRadius;
+                        
+                        // Dynamic color based on wave interference
+                        const colorIntensity = (wave1 + wave2 + wave3 + 3) / 6;
+                        const hue = (frequency + angle * 50 + time * 10) % 360;
+                        
+                        ctx.fillStyle = `hsla(${hue}, 80%, ${50 + colorIntensity * 50}%, 0.3)`;
+                        ctx.beginPath();
+                        ctx.arc(x, y, Math.max(0.5, 2), 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+
+            // Add standing wave patterns
+            for (let i = 0; i < complexity; i++) {
+                const waveRadius = maxRadius * (i + 1) / complexity;
+                ctx.strokeStyle = `hsla(${(frequency + i * 30) % 360}, 70%, 60%, 0.4)`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                
+                for (let angle = 0; angle < Math.PI * 2; angle += 0.02) {
+                    const wave = Math.sin(frequency * angle * 0.005 + time * speed + i) * amplitude * 30;
+                    const radius = waveRadius + wave;
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    
+                    if (angle === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.closePath();
+                ctx.stroke();
+            }
+        }
+
+        function drawSpiral() {
+            const frequency = parseInt(document.getElementById('frequency').value);
+            const amplitude = parseInt(document.getElementById('amplitude').value) / 100;
+            const complexity = parseInt(document.getElementById('complexity').value);
+            const speed = parseFloat(document.getElementById('speed').value);
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const maxRadius = Math.min(canvas.width, canvas.height) * 0.45;
+
+            // Golden ratio spiral with frequency modulation
+            const goldenRatio = 1.618033988749;
+            
+            for (let layer = 0; layer < complexity; layer++) {
+                const layerOffset = layer * Math.PI / complexity;
+                
+                for (let angle = 0; angle < Math.PI * 8; angle += 0.02) {
+                    // Logarithmic spiral with frequency modulation
+                    const spiralRadius = (angle / (Math.PI * 2)) * maxRadius / complexity * (layer + 1);
+                    
+                    // Add frequency-based wave modulation
+                    const wave = Math.sin(frequency * angle * 0.01 + time * speed + layerOffset) * amplitude;
+                    const finalRadius = Math.max(0, spiralRadius + wave * 20);
+                    
+                    if (finalRadius > 0 && finalRadius < maxRadius) {
+                        const x = centerX + Math.cos(angle + time * speed * 0.1 + layerOffset) * finalRadius;
+                        const y = centerY + Math.sin(angle + time * speed * 0.1 + layerOffset) * finalRadius;
+                        
+                        // Hypnotic color cycling
+                        const hue = (frequency + angle * 20 + time * 30 + layer * 60) % 360;
+                        const saturation = 70 + Math.sin(time * speed + angle) * 30;
+                        const lightness = 40 + wave * 40 + Math.sin(angle * 0.1 + time * speed) * 20;
+                        
+                        ctx.fillStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, 0.6)`;
+                        
+                        // Variable point size based on frequency and position
+                        const pointSize = Math.max(0.5, 1 + Math.abs(wave) * 3 + Math.sin(angle * frequency * 0.001) * 2);
+                        
+                        ctx.beginPath();
+                        ctx.arc(x, y, pointSize, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+
+            // Add fibonacci spiral overlay
+            for (let i = 0; i < 5; i++) {
+                ctx.strokeStyle = `hsla(${(frequency + i * 72) % 360}, 80%, 60%, 0.3)`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                
+                for (let angle = 0; angle < Math.PI * 4; angle += 0.05) {
+                    const radius = Math.max(5, Math.pow(goldenRatio, angle / Math.PI) * 5 + i * 20);
+                    const x = centerX + Math.cos(angle + time * speed * 0.2 + i) * radius;
+                    const y = centerY + Math.sin(angle + time * speed * 0.2 + i) * radius;
+                    
+                    if (angle === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+            }
+        }
+
+        function animate() {
+            time += 0.05;
+            
+            if (currentMode === 'cymatics') {
+                drawCymatics();
+            } else {
+                drawSpiral();
+            }
+            
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function toggleAudio() {
+            if (!isPlaying) {
+                startAudio();
+            } else {
+                stopAudio();
+            }
+        }
+
+        function startAudio() {
+            const frequency = parseInt(document.getElementById('frequency').value);
+            
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                
+                document.querySelector('.play-btn').textContent = '🔇 Stop Frequency';
+                isPlaying = true;
+            } catch (error) {
+                console.log('Audio not supported');
+            }
+        }
+
+        function stopAudio() {
+            if (oscillator) {
+                oscillator.stop();
+                oscillator = null;
+            }
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+            document.querySelector('.play-btn').textContent = '🎵 Generate Frequency';
+            isPlaying = false;
+        }
+
+        // Initialize
+        updateVisualization();
+        animate();
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+            stopAudio();
+        });
+    </script>
+</body>
+</html>

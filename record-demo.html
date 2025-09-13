@@ -221,10 +221,19 @@
             <div class="control-group">
                 <label>Video Quality</label>
                 <select id="recordQuality">
+                    <option value="ultramax">ULTRA MAX (32 Mbps)</option>
                     <option value="ultra">Ultra (16 Mbps)</option>
                     <option value="high">High (8 Mbps)</option>
                     <option value="medium">Medium (4 Mbps)</option>
                     <option value="low">Low (2 Mbps)</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Recording Format</label>
+                <select id="recordFormat">
+                    <option value="webm">WebM (Best Quality)</option>
+                    <option value="mp4">MP4 (Compatible)</option>
                 </select>
             </div>
         </div>
@@ -269,6 +278,7 @@
         const recordBtn = document.getElementById('recordBtn');
         const recordLength = document.getElementById('recordLength');
         const recordQuality = document.getElementById('recordQuality');
+        const recordFormat = document.getElementById('recordFormat');
         const modeInfo = document.getElementById('modeInfo');
         const recordStatus = document.getElementById('recordStatus');
         
@@ -363,26 +373,36 @@
                 recordingDuration = parseInt(recordLength.value);
                 
                 try {
-                    const stream = canvas.captureStream(60); // 60 FPS
+                    const stream = canvas.captureStream(120); // ULTRA MAX: 120 FPS!
                     
-                    // Quality settings
+                    // ULTRA MAX Quality settings
                     const qualitySettings = {
-                        low: 2000000,     // 2 Mbps
-                        medium: 4000000,  // 4 Mbps  
-                        high: 8000000,    // 8 Mbps
-                        ultra: 16000000   // 16 Mbps
+                        low: 2000000,       // 2 Mbps
+                        medium: 4000000,    // 4 Mbps  
+                        high: 8000000,      // 8 Mbps
+                        ultra: 16000000,    // 16 Mbps
+                        ultramax: 32000000  // 32 Mbps - INSANE QUALITY!
                     };
                     
-                    const bitrate = qualitySettings[recordQuality.value] || 8000000;
+                    const bitrate = qualitySettings[recordQuality.value] || 16000000;
+                    const format = recordFormat.value === 'mp4' ? 'mp4' : 'webm';
                     
-                    let options = { 
-                        mimeType: 'video/webm;codecs=vp9',
-                        videoBitsPerSecond: bitrate
-                    };
-                    
-                    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                    // Try different codecs for maximum quality
+                    let options;
+                    if (format === 'webm') {
                         options = { 
-                            mimeType: 'video/webm',
+                            mimeType: 'video/webm;codecs=vp9',
+                            videoBitsPerSecond: bitrate
+                        };
+                        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                            options = { 
+                                mimeType: 'video/webm;codecs=vp8',
+                                videoBitsPerSecond: bitrate
+                            };
+                        }
+                    } else {
+                        options = { 
+                            mimeType: 'video/mp4;codecs=avc1',
                             videoBitsPerSecond: bitrate
                         };
                         if (!MediaRecorder.isTypeSupported(options.mimeType)) {
@@ -390,10 +410,11 @@
                                 mimeType: 'video/mp4',
                                 videoBitsPerSecond: bitrate
                             };
-                            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                                options = { videoBitsPerSecond: bitrate };
-                            }
                         }
+                    }
+                    
+                    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                        options = { videoBitsPerSecond: bitrate }; // Fallback
                     }
                     
                     mediaRecorder = new MediaRecorder(stream, options);
@@ -405,11 +426,13 @@
                     };
                     
                     mediaRecorder.onstop = () => {
-                        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                        const mimeType = format === 'mp4' ? 'video/mp4' : 'video/webm';
+                        const extension = format === 'mp4' ? 'mp4' : 'webm';
+                        const blob = new Blob(recordedChunks, { type: mimeType });
                         const url = URL.createObjectURL(blob);
                         const a = document.createElement('a');
                         a.href = url;
-                        a.download = `plasma_consciousness_${recordQuality.value}_${Date.now()}.webm`;
+                        a.download = `plasma_consciousness_${recordQuality.value}_${Date.now()}.${extension}`;
                         a.style.display = 'none';
                         document.body.appendChild(a);
                         

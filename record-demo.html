@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plasma Consciousness Field</title>
+    <title>Plasma Consciousness Field - Video Recorder</title>
     <style>
         body {
             margin: 0;
@@ -24,19 +24,20 @@
             top: 20px;
             left: 20px;
             color: #00ffff;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.85);
             padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #00ffff;
+            border-radius: 12px;
+            border: 2px solid #00ffff;
             backdrop-filter: blur(10px);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
             z-index: 100;
             transition: all 0.3s ease;
-            max-width: 180px;
+            max-width: 220px;
         }
         
         .controls.minimized {
             padding: 10px 12px;
-            max-width: 120px;
+            max-width: 140px;
         }
         
         .controls.minimized .control-content {
@@ -47,7 +48,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             cursor: pointer;
         }
         
@@ -56,24 +57,24 @@
         }
         
         .title {
-            text-align: center;
             font-weight: bold;
-            text-shadow: 0 0 10px #00ffff;
-            font-size: 14px;
+            text-shadow: 0 0 15px #00ffff;
+            font-size: 13px;
         }
         
         .minimize-btn {
             background: none;
-            border: 1px solid #00ffff;
+            border: 2px solid #00ffff;
             color: #00ffff;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             cursor: pointer;
             font-size: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s ease;
         }
         
         .minimize-btn:hover {
@@ -88,17 +89,43 @@
         .control-group label {
             display: block;
             margin-bottom: 5px;
-            font-size: 12px;
-            text-shadow: 0 0 5px #00ffff;
+            font-size: 11px;
+            text-shadow: 0 0 8px #00ffff;
+            font-weight: 500;
         }
         
-        select, input[type="range"] {
-            background: rgba(0, 0, 0, 0.8);
+        select, input[type="range"], button {
+            background: rgba(0, 20, 40, 0.9);
             color: #00ffff;
             border: 1px solid #00ffff;
-            border-radius: 5px;
-            padding: 3px;
-            width: 140px;
+            border-radius: 6px;
+            padding: 5px;
+            width: 160px;
+            font-size: 11px;
+            transition: all 0.2s ease;
+        }
+        
+        button {
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        button:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+        
+        button.recording {
+            background: rgba(255, 0, 0, 0.3);
+            border-color: #ff0000;
+            color: #ff0000;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
         
         input[type="range"] {
@@ -111,13 +138,33 @@
             bottom: 20px;
             left: 20px;
             color: #00ffff;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #00ffff;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #00ffff;
             backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            font-size: 11px;
+            max-width: 350px;
+        }
+        
+        .record-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #00ffff;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #00ffff;
             font-size: 12px;
-            max-width: 300px;
+            text-align: center;
+        }
+        
+        .record-status.recording {
+            border-color: #ff0000;
+            color: #ff0000;
+            animation: pulse 1s infinite;
         }
     </style>
 </head>
@@ -126,7 +173,7 @@
     
     <div class="controls" id="controls">
         <div class="controls-header" onclick="toggleControls()">
-            <div class="title">PLASMA CONSCIOUSNESS FIELD</div>
+            <div class="title">🧠 PLASMA CONSCIOUSNESS</div>
             <button class="minimize-btn" id="minimizeBtn">−</button>
         </div>
         <div class="control-content">
@@ -168,10 +215,23 @@
                     <option value="60">1 Minute</option>
                     <option value="120">2 Minutes</option>
                     <option value="300">5 Minutes</option>
-                    <option value="custom">Custom</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Video Quality</label>
+                <select id="recordQuality">
+                    <option value="ultra">Ultra (16 Mbps)</option>
+                    <option value="high">High (8 Mbps)</option>
+                    <option value="medium">Medium (4 Mbps)</option>
+                    <option value="low">Low (2 Mbps)</option>
                 </select>
             </div>
         </div>
+    </div>
+    
+    <div class="record-status" id="recordStatus">
+        Ready to Record
     </div>
     
     <div class="mode-info" id="modeInfo">
@@ -196,6 +256,7 @@
         let isRecording = false;
         let recordingTimer = 0;
         let recordingDuration = 30;
+        let recordingInterval;
         
         const particles = [];
         const maxParticles = 800;
@@ -205,9 +266,11 @@
         const intensitySlider = document.getElementById('intensity');
         const speedSlider = document.getElementById('speed');
         const depthSlider = document.getElementById('depth');
-        const modeInfo = document.getElementById('modeInfo');
         const recordBtn = document.getElementById('recordBtn');
         const recordLength = document.getElementById('recordLength');
+        const recordQuality = document.getElementById('recordQuality');
+        const modeInfo = document.getElementById('modeInfo');
+        const recordStatus = document.getElementById('recordStatus');
         
         // Mode descriptions
         const modeDescriptions = {
@@ -224,113 +287,6 @@
             
             controls.classList.toggle('minimized');
             minimizeBtn.textContent = controls.classList.contains('minimized') ? '+' : '−';
-        }
-        
-        // Recording functions
-        function checkRecordingSupport() {
-            if (!('MediaRecorder' in window)) {
-                alert('Video recording not supported on this device. Try using screen recording instead.');
-                return false;
-            }
-            return true;
-        }
-        
-        function startRecording() {
-            if (!checkRecordingSupport()) return;
-            
-            if (!isRecording) {
-                recordedChunks = [];
-                recordingTimer = 0;
-                recordingDuration = parseInt(recordLength.value);
-                
-                try {
-                    const stream = canvas.captureStream(30); // 30 FPS
-                    
-                    // Try different formats for better compatibility
-                    let options = { mimeType: 'video/webm;codecs=vp9' };
-                    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                        options = { mimeType: 'video/webm' };
-                        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                            options = { mimeType: 'video/mp4' };
-                            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                                options = {}; // Use default
-                            }
-                        }
-                    }
-                    
-                    mediaRecorder = new MediaRecorder(stream, options);
-                    
-                    mediaRecorder.ondataavailable = (event) => {
-                        if (event.data.size > 0) {
-                            recordedChunks.push(event.data);
-                        }
-                    };
-                    
-                    mediaRecorder.onstop = () => {
-                        const blob = new Blob(recordedChunks, { type: 'video/webm' });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `plasma_consciousness_${Date.now()}.webm`;
-                        a.style.display = 'none';
-                        document.body.appendChild(a);
-                        
-                        // Force download
-                        setTimeout(() => {
-                            a.click();
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(url);
-                            
-                            // Show success message
-                            recordBtn.textContent = '✅ Downloaded!';
-                            setTimeout(() => {
-                                recordBtn.textContent = '🎥 Start Recording';
-                            }, 2000);
-                        }, 100);
-                    };
-                    
-                    mediaRecorder.onerror = (event) => {
-                        console.error('Recording error:', event);
-                        alert('Recording failed. Try screen recording your device instead.');
-                        stopRecording();
-                    };
-                    
-                    mediaRecorder.start();
-                    isRecording = true;
-                    recordBtn.textContent = `⏹️ Recording... (${recordingDuration}s)`;
-                    recordBtn.style.background = 'rgba(255, 0, 0, 0.3)';
-                    
-                    // Auto-stop after duration
-                    setTimeout(() => {
-                        if (isRecording) stopRecording();
-                    }, recordingDuration * 1000);
-                    
-                } catch (error) {
-                    console.error('Failed to start recording:', error);
-                    alert('Recording not supported. Use your device\'s screen recording feature instead.');
-                }
-            } else {
-                stopRecording();
-            }
-        }
-        
-        function stopRecording() {
-            if (isRecording && mediaRecorder) {
-                mediaRecorder.stop();
-                isRecording = false;
-                recordBtn.textContent = '🎥 Start Recording';
-                recordBtn.style.background = 'rgba(0, 0, 0, 0.8)';
-            }
-        }
-        
-        function updateRecordingTimer() {
-            if (isRecording) {
-                recordingTimer++;
-                const remaining = recordingDuration - Math.floor(recordingTimer / 60);
-                if (remaining > 0) {
-                    recordBtn.textContent = `⏹️ Recording... (${remaining}s)`;
-                }
-            }
         }
         
         // Initialize particles
@@ -389,6 +345,138 @@
             }
         }
         
+        // Recording functions
+        function checkRecordingSupport() {
+            if (!('MediaRecorder' in window)) {
+                recordStatus.textContent = 'Recording not supported on this device';
+                return false;
+            }
+            return true;
+        }
+        
+        function startRecording() {
+            if (!checkRecordingSupport()) return;
+            
+            if (!isRecording) {
+                recordedChunks = [];
+                recordingTimer = 0;
+                recordingDuration = parseInt(recordLength.value);
+                
+                try {
+                    const stream = canvas.captureStream(60); // 60 FPS
+                    
+                    // Quality settings
+                    const qualitySettings = {
+                        low: 2000000,     // 2 Mbps
+                        medium: 4000000,  // 4 Mbps  
+                        high: 8000000,    // 8 Mbps
+                        ultra: 16000000   // 16 Mbps
+                    };
+                    
+                    const bitrate = qualitySettings[recordQuality.value] || 8000000;
+                    
+                    let options = { 
+                        mimeType: 'video/webm;codecs=vp9',
+                        videoBitsPerSecond: bitrate
+                    };
+                    
+                    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                        options = { 
+                            mimeType: 'video/webm',
+                            videoBitsPerSecond: bitrate
+                        };
+                        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                            options = { 
+                                mimeType: 'video/mp4',
+                                videoBitsPerSecond: bitrate
+                            };
+                            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                                options = { videoBitsPerSecond: bitrate };
+                            }
+                        }
+                    }
+                    
+                    mediaRecorder = new MediaRecorder(stream, options);
+                    
+                    mediaRecorder.ondataavailable = (event) => {
+                        if (event.data.size > 0) {
+                            recordedChunks.push(event.data);
+                        }
+                    };
+                    
+                    mediaRecorder.onstop = () => {
+                        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `plasma_consciousness_${recordQuality.value}_${Date.now()}.webm`;
+                        a.style.display = 'none';
+                        document.body.appendChild(a);
+                        
+                        setTimeout(() => {
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                            
+                            recordBtn.textContent = '✅ Downloaded!';
+                            recordStatus.textContent = 'Video Downloaded Successfully';
+                            recordStatus.className = 'record-status';
+                            
+                            setTimeout(() => {
+                                recordBtn.textContent = '🎥 Start Recording';
+                                recordStatus.textContent = 'Ready to Record';
+                            }, 3000);
+                        }, 100);
+                    };
+                    
+                    mediaRecorder.onerror = (event) => {
+                        console.error('Recording error:', event);
+                        recordStatus.textContent = 'Recording failed - try screen recording';
+                        stopRecording();
+                    };
+                    
+                    mediaRecorder.start();
+                    isRecording = true;
+                    recordBtn.textContent = `⏹️ Stop Recording`;
+                    recordBtn.classList.add('recording');
+                    recordStatus.textContent = `Recording... (${recordingDuration}s)`;
+                    recordStatus.classList.add('recording');
+                    
+                    // Countdown timer
+                    recordingInterval = setInterval(() => {
+                        recordingTimer++;
+                        const remaining = recordingDuration - recordingTimer;
+                        if (remaining > 0) {
+                            recordStatus.textContent = `Recording... (${remaining}s remaining)`;
+                        } else {
+                            stopRecording();
+                        }
+                    }, 1000);
+                    
+                } catch (error) {
+                    console.error('Failed to start recording:', error);
+                    recordStatus.textContent = 'Recording failed - use screen recording instead';
+                }
+            } else {
+                stopRecording();
+            }
+        }
+        
+        function stopRecording() {
+            if (isRecording && mediaRecorder) {
+                mediaRecorder.stop();
+                isRecording = false;
+                recordBtn.textContent = '🎥 Start Recording';
+                recordBtn.classList.remove('recording');
+                recordStatus.textContent = 'Processing video...';
+                recordStatus.classList.remove('recording');
+                
+                if (recordingInterval) {
+                    clearInterval(recordingInterval);
+                }
+            }
+        }
+        
         function updateParticle(particle) {
             const mode = modeSelect.value;
             const intensity = intensitySlider.value / 100;
@@ -400,20 +488,17 @@
             particle.vx += flow.vx * intensity * speed;
             particle.vy += flow.vy * intensity * speed;
             
-            // Add some damping
             particle.vx *= 0.98;
             particle.vy *= 0.98;
             
             particle.x += particle.vx;
             particle.y += particle.vy;
             
-            // Wrap around screen
             if (particle.x < 0) particle.x = canvas.width;
             if (particle.x > canvas.width) particle.x = 0;
             if (particle.y < 0) particle.y = canvas.height;
             if (particle.y > canvas.height) particle.y = 0;
             
-            // Update particle properties
             particle.life += speed * 0.5;
             if (particle.life > particle.maxLife) {
                 particle.life = 0;
@@ -423,7 +508,6 @@
                 particle.vy = 0;
             }
             
-            // Color cycling based on consciousness depth
             particle.hue = (particle.hue + depth * 0.5 + Math.sin(time * 0.001 + particle.energy * 10) * 20) % 360;
         }
         
@@ -433,7 +517,6 @@
             
             ctx.save();
             
-            // Create glow effect
             const glowSize = particle.size * 3 * intensity;
             const gradient = ctx.createRadialGradient(
                 particle.x, particle.y, 0,
@@ -449,7 +532,6 @@
             ctx.arc(particle.x, particle.y, glowSize, 0, Math.PI * 2);
             ctx.fill();
             
-            // Core particle
             ctx.fillStyle = `hsla(${particle.hue}, 100%, 80%, ${alpha * intensity})`;
             ctx.beginPath();
             ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
@@ -465,7 +547,6 @@
             ctx.save();
             ctx.globalCompositeOperation = 'screen';
             
-            // Draw flowing energy lines to center
             for (let i = 0; i < particles.length; i += 8) {
                 const particle = particles[i];
                 const dx = centerX - particle.x;
@@ -506,7 +587,7 @@
                 const hue = (time * 0.5 + r * 2) % 360;
                 
                 const gradient = ctx.createRadialGradient(
-                    centerX, centerY, r - 5,
+                    centerX, centerY, Math.max(0, r - 5),
                     centerX, centerY, r + 5
                 );
                 
@@ -524,48 +605,34 @@
         }
         
         function animate() {
-            // Dark fade instead of clear for trailing effect
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             time++;
             
-            // Update recording timer
-            updateRecordingTimer();
-            
-            // Update and draw particles
             particles.forEach(particle => {
                 updateParticle(particle);
                 drawParticle(particle);
             });
             
-            // Draw connection field
             drawConnectionField();
-            
-            // Draw center vortex
             drawCenterVortex();
             
             animationId = requestAnimationFrame(animate);
         }
         
         // Event listeners
+        recordBtn.addEventListener('click', startRecording);
+        
         canvas.addEventListener('click', (e) => {
             centerX = e.clientX;
             centerY = e.clientY;
         });
         
         canvas.addEventListener('mousemove', (e) => {
-            if (e.buttons === 1) { // Left mouse button held
+            if (e.buttons === 1) {
                 centerX = e.clientX;
                 centerY = e.clientY;
-            }
-        });
-        
-        recordBtn.addEventListener('click', startRecording);
-        
-        recordLength.addEventListener('change', () => {
-            if (!isRecording) {
-                recordingDuration = parseInt(recordLength.value);
             }
         });
         
@@ -583,6 +650,16 @@
         
         depthSlider.addEventListener('input', () => {
             document.getElementById('depthValue').textContent = depthSlider.value;
+        });
+        
+        recordQuality.addEventListener('change', () => {
+            const qualityInfo = {
+                low: "Low quality - smaller files for quick sharing",
+                medium: "Medium quality - good for social media", 
+                high: "High quality - great balance for most uses",
+                ultra: "Ultra quality - maximum quality for YouTube"
+            };
+            recordStatus.textContent = qualityInfo[recordQuality.value];
         });
         
         window.addEventListener('resize', () => {

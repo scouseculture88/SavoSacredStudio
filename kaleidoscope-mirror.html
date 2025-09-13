@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaleidoscope Mirror Chamber</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+        
+        canvas {
+            display: block;
+            background: #000;
+        }
+        
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #ff6b9d;
+            background: rgba(20, 0, 20, 0.9);
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #ff6b9d;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 25px rgba(255, 107, 157, 0.4);
+            z-index: 100;
+            transition: all 0.3s ease;
+            max-width: 200px;
+        }
+        
+        .controls.minimized {
+            padding: 10px 12px;
+            max-width: 120px;
+        }
+        
+        .controls.minimized .control-content {
+            display: none;
+        }
+        
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+        
+        .controls.minimized .controls-header {
+            margin-bottom: 0;
+        }
+        
+        .title {
+            font-weight: bold;
+            text-shadow: 0 0 15px #ff6b9d;
+            font-size: 13px;
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .minimize-btn {
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(255, 107, 157, 0.5);
+        }
+        
+        .minimize-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 107, 157, 0.8);
+        }
+        
+        .control-group {
+            margin-bottom: 12px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 11px;
+            text-shadow: 0 0 8px #ff6b9d;
+        }
+        
+        select, input[type="range"] {
+            background: rgba(40, 0, 40, 0.8);
+            color: #ff6b9d;
+            border: 1px solid #ff6b9d;
+            border-radius: 6px;
+            padding: 4px;
+            width: 140px;
+            font-size: 11px;
+        }
+        
+        input[type="range"] {
+            background: linear-gradient(to right, #3d1a78, #ff6b9d);
+            height: 6px;
+        }
+        
+        .mode-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: #ff6b9d;
+            background: rgba(20, 0, 20, 0.9);
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #ff6b9d;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+            font-size: 12px;
+            max-width: 350px;
+        }
+        
+        .clear-btn {
+            background: linear-gradient(45deg, #c44569, #8e44ad);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            margin-top: 10px;
+            width: 100%;
+            box-shadow: 0 0 10px rgba(196, 69, 105, 0.4);
+        }
+        
+        .clear-btn:hover {
+            background: linear-gradient(45deg, #8e44ad, #c44569);
+            box-shadow: 0 0 15px rgba(196, 69, 105, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div class="controls" id="controls">
+        <div class="controls-header" onclick="toggleControls()">
+            <div class="title">🔮 KALEIDOSCOPE</div>
+            <button class="minimize-btn" id="minimizeBtn">−</button>
+        </div>
+        <div class="control-content">
+            <div class="control-group">
+                <label>Mirror Pattern</label>
+                <select id="mode">
+                    <option value="6">Hexagonal (6-way)</option>
+                    <option value="8">Octagonal (8-way)</option>
+                    <option value="4">Square (4-way)</option>
+                    <option value="12">Dodecagon (12-way)</option>
+                    <option value="3">Triangle (3-way)</option>
+                    <option value="16">Complex (16-way)</option>
+                    <option value="5">Pentagon (5-way)</option>
+                    <option value="24">Ultra (24-way)</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Brush Size: <span id="brushValue">15</span>px</label>
+                <input type="range" id="brush" min="3" max="50" value="15">
+            </div>
+            
+            <div class="control-group">
+                <label>Color Shift: <span id="colorValue">60</span>%</label>
+                <input type="range" id="color" min="0" max="100" value="60">
+            </div>
+            
+            <div class="control-group">
+                <label>Fade Rate: <span id="fadeValue">100</span>%</label>
+                <input type="range" id="fade" min="95" max="100" value="100">
+            </div>
+            
+            <div class="control-group">
+                <button id="recordBtn">🎥 Start Recording</button>
+            </div>
+            
+            <div class="control-group">
+                <label>Recording Length</label>
+                <select id="recordLength">
+                    <option value="30">30 Seconds</option>
+                    <option value="60">1 Minute</option>
+                    <option value="120">2 Minutes</option>
+                    <option value="300">5 Minutes</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Video Quality</label>
+                <select id="recordQuality">
+                    <option value="ultramax">ULTRA MAX (32 Mbps)</option>
+                    <option value="ultra">Ultra (16 Mbps)</option>
+                    <option value="high">High (8 Mbps)</option>
+                    <option value="medium">Medium (4 Mbps)</option>
+                </select>
+            </div>
+            
+            <button class="clear-btn" onclick="clearCanvas()">✨ Clear Canvas</button>
+        </div>
+    </div>
+    
+    <div class="mode-info" id="modeInfo">
+        Click and drag to paint symmetrical patterns. Watch as your strokes multiply across mirror planes to create infinite mandala art...
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let hue = 0;
+        let time = 0;
+        
+        // Recording variables
+        let mediaRecorder;
+        let recordedChunks = [];
+        let isRecording = false;
+        let recordingTimer = 0;
+        let recordingDuration = 30;
+        let recordingInterval;
+        
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        
+        // Control elements
+        const modeSelect = document.getElementById('mode');
+        const brushSlider = document.getElementById('brush');
+        const colorSlider = document.getElementById('color');
+        const fadeSlider = document.getElementById('fade');
+        const modeInfo = document.getElementById('modeInfo');
+        const recordBtn = document.getElementById('recordBtn');
+        const recordLength = document.getElementById('recordLength');
+        const recordQuality = document.getElementById('recordQuality');
+        
+        function toggleControls() {
+            const controls = document.getElementById('controls');
+            const minimizeBtn = document.getElementById('minimizeBtn');
+            
+            controls.classList.toggle('minimized');
+            minimizeBtn.textContent = controls.classList.contains('minimized') ? '+' : '−';
+        }
+        
+        // Recording functions
+        function startRecording() {
+            if (!('MediaRecorder' in window)) {
+                alert('Recording not supported on this device');
+                return;
+            }
+            
+            if (!isRecording) {
+                recordedChunks = [];
+                recordingTimer = 0;
+                recordingDuration = parseInt(recordLength.value);
+                
+                try {
+                    const stream = canvas.captureStream(120); // ULTRA MAX: 120 FPS
+                    
+                    const qualitySettings = {
+                        medium: 4000000,
+                        high: 8000000,
+                        ultra: 16000000,
+                        ultramax: 32000000
+                    };
+                    
+                    const bitrate = qualitySettings[recordQuality.value] || 16000000;
+                    
+                    let options = {
+                        mimeType: 'video/webm;codecs=vp9',
+                        videoBitsPerSecond: bitrate
+                    };
+                    
+                    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                        options = {
+                            mimeType: 'video/webm',
+                            videoBitsPerSecond: bitrate
+                        };
+                    }
+                    
+                    mediaRecorder = new MediaRecorder(stream, options);
+                    
+                    mediaRecorder.ondataavailable = (event) => {
+                        if (event.data.size > 0) {
+                            recordedChunks.push(event.data);
+                        }
+                    };
+                    
+                    mediaRecorder.onstop = () => {
+                        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `kaleidoscope_${recordQuality.value}_${Date.now()}.webm`;
+                        a.style.display = 'none';
+                        document.body.appendChild(a);
+                        
+                        setTimeout(() => {
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                            
+                            recordBtn.textContent = '✅ Downloaded!';
+                            setTimeout(() => {
+                                recordBtn.textContent = '🎥 Start Recording';
+                            }, 3000);
+                        }, 100);
+                    };
+                    
+                    mediaRecorder.start();
+                    isRecording = true;
+                    recordBtn.textContent = '⏹️ Stop Recording';
+                    recordBtn.style.background = 'rgba(255, 0, 0, 0.3)';
+                    recordBtn.style.color = '#ff0000';
+                    
+                    // Auto-stop after duration
+                    setTimeout(() => {
+                        if (isRecording) stopRecording();
+                    }, recordingDuration * 1000);
+                    
+                } catch (error) {
+                    console.error('Recording failed:', error);
+                    alert('Recording failed - try screen recording instead');
+                }
+            } else {
+                stopRecording();
+            }
+        }
+        
+        function stopRecording() {
+            if (isRecording && mediaRecorder) {
+                mediaRecorder.stop();
+                isRecording = false;
+                recordBtn.textContent = '🎥 Start Recording';
+                recordBtn.style.background = '';
+                recordBtn.style.color = '';
+            }
+        }
+        
+        function clearCanvas() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        function drawMirroredPoint(x, y, size, color) {
+            const mirrors = parseInt(modeSelect.value);
+            const angleStep = (Math.PI * 2) / mirrors;
+            
+            // Convert to relative coordinates from center
+            const relX = x - centerX;
+            const relY = y - centerY;
+            
+            ctx.save();
+            
+            // Draw at each mirror position
+            for (let i = 0; i < mirrors; i++) {
+                const angle = i * angleStep;
+                const cos = Math.cos(angle);
+                const sin = Math.sin(angle);
+                
+                // Rotate the point
+                const rotatedX = relX * cos - relY * sin;
+                const rotatedY = relX * sin + relY * cos;
+                
+                // Convert back to canvas coordinates
+                const finalX = rotatedX + centerX;
+                const finalY = rotatedY + centerY;
+                
+                // Create radial gradient for each point
+                const gradient = ctx.createRadialGradient(
+                    finalX, finalY, 0,
+                    finalX, finalY, size
+                );
+                gradient.addColorStop(0, color);
+                gradient.addColorStop(0.7, color.replace(/[\d.]+\)$/g, '0.5)'));
+                gradient.addColorStop(1, 'transparent');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(finalX, finalY, size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Also draw the mirrored version (flip across the angle bisector)
+                const mirroredX = -relX * cos - relY * sin;
+                const mirroredY = -relX * sin + relY * cos;
+                
+                const finalMirrorX = mirroredX + centerX;
+                const finalMirrorY = mirroredY + centerY;
+                
+                const mirrorGradient = ctx.createRadialGradient(
+                    finalMirrorX, finalMirrorY, 0,
+                    finalMirrorX, finalMirrorY, size
+                );
+                mirrorGradient.addColorStop(0, color);
+                mirrorGradient.addColorStop(0.7, color.replace(/[\d.]+\)$/g, '0.5)'));
+                mirrorGradient.addColorStop(1, 'transparent');
+                
+                ctx.fillStyle = mirrorGradient;
+                ctx.beginPath();
+                ctx.arc(finalMirrorX, finalMirrorY, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            ctx.restore();
+        }
+        
+        function drawMirroredLine(x1, y1, x2, y2) {
+            const mirrors = parseInt(modeSelect.value);
+            const angleStep = (Math.PI * 2) / mirrors;
+            const brushSize = parseInt(brushSlider.value);
+            const colorShift = colorSlider.value / 100;
+            
+            // Calculate line properties
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const steps = Math.max(1, Math.floor(distance / 2));
+            
+            // Update hue based on movement and time
+            hue += distance * colorShift * 0.5 + time * 0.1;
+            
+            for (let step = 0; step <= steps; step++) {
+                const t = step / steps;
+                const x = x1 + dx * t;
+                const y = y1 + dy * t;
+                
+                // Create dynamic color
+                const currentHue = (hue + step * colorShift * 10) % 360;
+                const saturation = 70 + Math.sin(time * 0.02 + step * 0.1) * 30;
+                const lightness = 50 + Math.cos(time * 0.015 + step * 0.2) * 20;
+                const alpha = 0.8 - (step / steps) * 0.3;
+                
+                const color = `hsla(${currentHue}, ${saturation}%, ${lightness}%, ${alpha})`;
+                
+                drawMirroredPoint(x, y, brushSize * (1 - t * 0.3), color);
+            }
+        }
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            lastX = e.clientX;
+            lastY = e.clientY;
+            
+            // Draw initial point
+            const brushSize = parseInt(brushSlider.value);
+            const currentHue = hue % 360;
+            const color = `hsla(${currentHue}, 80%, 60%, 0.8)`;
+            drawMirroredPoint(lastX, lastY, brushSize, color);
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            drawMirroredLine(lastX, lastY, e.clientX, e.clientY);
+            
+            lastX = e.clientX;
+            lastY = e.clientY;
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        function animate() {
+            time++;
+            
+            // Apply fade effect
+            const fadeAmount = fadeSlider.value / 100;
+            ctx.save();
+            ctx.globalCompositeOperation = 'multiply';
+            ctx.fillStyle = `rgba(0, 0, 0, ${1 - fadeAmount})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.restore();
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // Event listeners
+        recordBtn.addEventListener('click', startRecording);
+        
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        
+        // Touch events for mobile
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        });
+        
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            const mouseEvent = new MouseEvent('mouseup', {});
+            canvas.dispatchEvent(mouseEvent);
+        });
+        
+        modeSelect.addEventListener('change', () => {
+            const mirrors = parseInt(modeSelect.value);
+            modeInfo.textContent = `${mirrors}-way symmetry creates ${mirrors * 2} reflected copies of every stroke. Paint in one sector and watch the magic unfold...`;
+        });
+        
+        brushSlider.addEventListener('input', () => {
+            document.getElementById('brushValue').textContent = brushSlider.value;
+        });
+        
+        colorSlider.addEventListener('input', () => {
+            document.getElementById('colorValue').textContent = colorSlider.value;
+        });
+        
+        fadeSlider.addEventListener('input', () => {
+            document.getElementById('fadeValue').textContent = fadeSlider.value;
+        });
+        
+        window.addEventListener('resize', () => {
+            const oldCanvas = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            ctx.putImageData(oldCanvas, 0, 0);
+        });
+        
+        // Initialize
+        clearCanvas();
+        modeInfo.textContent = `${modeSelect.value}-way symmetry creates ${parseInt(modeSelect.value) * 2} reflected copies of every stroke. Paint in one sector and watch the magic unfold...`;
+        animate();
+    </script>
+</body>
+</html>

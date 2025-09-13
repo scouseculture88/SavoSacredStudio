@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plasma Consciousness Field</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+        
+        canvas {
+            display: block;
+            background: radial-gradient(circle, #001122 0%, #000000 100%);
+        }
+        
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #00ffff;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #00ffff;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            transition: all 0.3s ease;
+            max-width: 180px;
+        }
+        
+        .controls.minimized {
+            padding: 10px 12px;
+            max-width: 120px;
+        }
+        
+        .controls.minimized .control-content {
+            display: none;
+        }
+        
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .controls.minimized .controls-header {
+            margin-bottom: 0;
+        }
+        
+        .title {
+            text-align: center;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ffff;
+            font-size: 14px;
+        }
+        
+        .minimize-btn {
+            background: none;
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .minimize-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        .control-group {
+            margin-bottom: 12px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            text-shadow: 0 0 5px #00ffff;
+        }
+        
+        select, input[type="range"] {
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ffff;
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+            padding: 3px;
+            width: 140px;
+        }
+        
+        input[type="range"] {
+            background: linear-gradient(to right, #001122, #00ffff);
+            height: 6px;
+        }
+        
+        .mode-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: #00ffff;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #00ffff;
+            backdrop-filter: blur(10px);
+            font-size: 12px;
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div class="controls" id="controls">
+        <div class="controls-header" onclick="toggleControls()">
+            <div class="title">PLASMA CONSCIOUSNESS FIELD</div>
+            <button class="minimize-btn" id="minimizeBtn">−</button>
+        </div>
+        <div class="control-content">
+            <div class="control-group">
+                <label>Consciousness Mode</label>
+                <select id="mode">
+                    <option value="neural">Neural Network</option>
+                    <option value="quantum">Quantum Field</option>
+                    <option value="fractal">Fractal Mind</option>
+                    <option value="stellar">Stellar Nexus</option>
+                    <option value="dream">Dream State</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Plasma Intensity: <span id="intensityValue">75</span>%</label>
+                <input type="range" id="intensity" min="20" max="100" value="75">
+            </div>
+            
+            <div class="control-group">
+                <label>Flow Speed: <span id="speedValue">50</span>%</label>
+                <input type="range" id="speed" min="10" max="100" value="50">
+            </div>
+            
+            <div class="control-group">
+                <label>Consciousness Depth: <span id="depthValue">60</span>%</label>
+                <input type="range" id="depth" min="10" max="100" value="60">
+            </div>
+        </div>
+    </div>
+    
+    <div class="mode-info" id="modeInfo">
+        Click anywhere to shift the consciousness focal point and watch reality bend around your awareness...
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let centerX = canvas.width / 2;
+        let centerY = canvas.height / 2;
+        let time = 0;
+        let animationId;
+        
+        const particles = [];
+        const maxParticles = 800;
+        
+        // Control elements
+        const modeSelect = document.getElementById('mode');
+        const intensitySlider = document.getElementById('intensity');
+        const speedSlider = document.getElementById('speed');
+        const depthSlider = document.getElementById('depth');
+        const modeInfo = document.getElementById('modeInfo');
+        
+        // Mode descriptions
+        const modeDescriptions = {
+            neural: "Neural pathways pulse with electric thoughts, synapses firing in hypnotic patterns of consciousness...",
+            quantum: "Quantum fields fluctuate between dimensions, probability waves collapsing into luminous reality...",
+            fractal: "Fractal geometries spiral into infinite complexity, each layer revealing deeper mathematical truths...",
+            stellar: "Stellar plasma flows like cosmic rivers, channeling the energy of distant supernovas...",
+            dream: "Dream logic weaves impossible patterns, where time flows backward and space curves inward..."
+        };
+        
+        function toggleControls() {
+            const controls = document.getElementById('controls');
+            const minimizeBtn = document.getElementById('minimizeBtn');
+            
+            controls.classList.toggle('minimized');
+            minimizeBtn.textContent = controls.classList.contains('minimized') ? '+' : '−';
+        }
+        
+        // Initialize particles
+        for (let i = 0; i < maxParticles; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: 0,
+                vy: 0,
+                life: Math.random(),
+                maxLife: Math.random() * 100 + 50,
+                size: Math.random() * 3 + 1,
+                hue: Math.random() * 360,
+                energy: Math.random()
+            });
+        }
+        
+        function getFlowField(x, y, mode, t) {
+            const dx = x - centerX;
+            const dy = y - centerY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx);
+            
+            switch (mode) {
+                case 'neural':
+                    return {
+                        vx: Math.sin(t * 0.01 + dist * 0.005) * Math.cos(angle * 3) * 2,
+                        vy: Math.cos(t * 0.01 + dist * 0.005) * Math.sin(angle * 3) * 2
+                    };
+                    
+                case 'quantum':
+                    return {
+                        vx: Math.sin(x * 0.01 + t * 0.02) + Math.cos(y * 0.008 + t * 0.03) * 1.5,
+                        vy: Math.cos(x * 0.008 + t * 0.025) + Math.sin(y * 0.01 + t * 0.02) * 1.5
+                    };
+                    
+                case 'fractal':
+                    const spiral = t * 0.005 + dist * 0.003;
+                    return {
+                        vx: Math.cos(spiral) * Math.sin(angle * 5) * 2.5,
+                        vy: Math.sin(spiral) * Math.cos(angle * 5) * 2.5
+                    };
+                    
+                case 'stellar':
+                    const vortex = angle + t * 0.01;
+                    return {
+                        vx: -dy / dist * Math.sin(vortex) * 3 + Math.cos(t * 0.008) * 0.5,
+                        vy: dx / dist * Math.sin(vortex) * 3 + Math.sin(t * 0.008) * 0.5
+                    };
+                    
+                case 'dream':
+                    return {
+                        vx: Math.sin(t * 0.007 + x * 0.003) * Math.cos(y * 0.004 + t * 0.009) * 2.8,
+                        vy: Math.cos(t * 0.006 + y * 0.003) * Math.sin(x * 0.004 + t * 0.008) * 2.8
+                    };
+            }
+        }
+        
+        function updateParticle(particle) {
+            const mode = modeSelect.value;
+            const intensity = intensitySlider.value / 100;
+            const speed = speedSlider.value / 100;
+            const depth = depthSlider.value / 100;
+            
+            const flow = getFlowField(particle.x, particle.y, mode, time);
+            
+            particle.vx += flow.vx * intensity * speed;
+            particle.vy += flow.vy * intensity * speed;
+            
+            // Add some damping
+            particle.vx *= 0.98;
+            particle.vy *= 0.98;
+            
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+            
+            // Wrap around screen
+            if (particle.x < 0) particle.x = canvas.width;
+            if (particle.x > canvas.width) particle.x = 0;
+            if (particle.y < 0) particle.y = canvas.height;
+            if (particle.y > canvas.height) particle.y = 0;
+            
+            // Update particle properties
+            particle.life += speed * 0.5;
+            if (particle.life > particle.maxLife) {
+                particle.life = 0;
+                particle.x = Math.random() * canvas.width;
+                particle.y = Math.random() * canvas.height;
+                particle.vx = 0;
+                particle.vy = 0;
+            }
+            
+            // Color cycling based on consciousness depth
+            particle.hue = (particle.hue + depth * 0.5 + Math.sin(time * 0.001 + particle.energy * 10) * 20) % 360;
+        }
+        
+        function drawParticle(particle) {
+            const alpha = Math.sin(particle.life / particle.maxLife * Math.PI);
+            const intensity = intensitySlider.value / 100;
+            
+            ctx.save();
+            
+            // Create glow effect
+            const glowSize = particle.size * 3 * intensity;
+            const gradient = ctx.createRadialGradient(
+                particle.x, particle.y, 0,
+                particle.x, particle.y, glowSize
+            );
+            
+            gradient.addColorStop(0, `hsla(${particle.hue}, 90%, 70%, ${alpha * intensity})`);
+            gradient.addColorStop(0.3, `hsla(${particle.hue + 30}, 80%, 60%, ${alpha * intensity * 0.7})`);
+            gradient.addColorStop(1, `hsla(${particle.hue + 60}, 70%, 50%, 0)`);
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, glowSize, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Core particle
+            ctx.fillStyle = `hsla(${particle.hue}, 100%, 80%, ${alpha * intensity})`;
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
+        }
+        
+        function drawConnectionField() {
+            const intensity = intensitySlider.value / 100;
+            const depth = depthSlider.value / 100;
+            
+            ctx.save();
+            ctx.globalCompositeOperation = 'screen';
+            
+            // Draw flowing energy lines to center
+            for (let i = 0; i < particles.length; i += 8) {
+                const particle = particles[i];
+                const dx = centerX - particle.x;
+                const dy = centerY - particle.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < 300) {
+                    const alpha = (1 - dist / 300) * intensity * depth * 0.3;
+                    const gradient = ctx.createLinearGradient(
+                        particle.x, particle.y,
+                        centerX, centerY
+                    );
+                    
+                    gradient.addColorStop(0, `hsla(${particle.hue}, 80%, 60%, ${alpha})`);
+                    gradient.addColorStop(1, `hsla(${(particle.hue + 60) % 360}, 70%, 50%, 0)`);
+                    
+                    ctx.strokeStyle = gradient;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(particle.x, particle.y);
+                    ctx.lineTo(centerX, centerY);
+                    ctx.stroke();
+                }
+            }
+            
+            ctx.restore();
+        }
+        
+        function drawCenterVortex() {
+            const intensity = intensitySlider.value / 100;
+            const depth = depthSlider.value / 100;
+            
+            ctx.save();
+            ctx.globalCompositeOperation = 'screen';
+            
+            for (let r = 10; r < 150; r += 15) {
+                const alpha = (1 - r / 150) * intensity * depth * 0.8;
+                const hue = (time * 0.5 + r * 2) % 360;
+                
+                const gradient = ctx.createRadialGradient(
+                    centerX, centerY, r - 5,
+                    centerX, centerY, r + 5
+                );
+                
+                gradient.addColorStop(0, `hsla(${hue}, 90%, 70%, 0)`);
+                gradient.addColorStop(0.5, `hsla(${hue}, 80%, 60%, ${alpha})`);
+                gradient.addColorStop(1, `hsla(${hue}, 70%, 50%, 0)`);
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            ctx.restore();
+        }
+        
+        function animate() {
+            // Dark fade instead of clear for trailing effect
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            time++;
+            
+            // Update and draw particles
+            particles.forEach(particle => {
+                updateParticle(particle);
+                drawParticle(particle);
+            });
+            
+            // Draw connection field
+            drawConnectionField();
+            
+            // Draw center vortex
+            drawCenterVortex();
+            
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        // Event listeners
+        canvas.addEventListener('click', (e) => {
+            centerX = e.clientX;
+            centerY = e.clientY;
+        });
+        
+        canvas.addEventListener('mousemove', (e) => {
+            if (e.buttons === 1) { // Left mouse button held
+                centerX = e.clientX;
+                centerY = e.clientY;
+            }
+        });
+        
+        modeSelect.addEventListener('change', () => {
+            modeInfo.textContent = modeDescriptions[modeSelect.value];
+        });
+        
+        intensitySlider.addEventListener('input', () => {
+            document.getElementById('intensityValue').textContent = intensitySlider.value;
+        });
+        
+        speedSlider.addEventListener('input', () => {
+            document.getElementById('speedValue').textContent = speedSlider.value;
+        });
+        
+        depthSlider.addEventListener('input', () => {
+            document.getElementById('depthValue').textContent = depthSlider.value;
+        });
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            centerX = canvas.width / 2;
+            centerY = canvas.height / 2;
+        });
+        
+        // Initialize
+        modeInfo.textContent = modeDescriptions[modeSelect.value];
+        animate();
+    </script>
+</body>
+</html>

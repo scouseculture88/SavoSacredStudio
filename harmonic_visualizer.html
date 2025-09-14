@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harmonic Series Visualizer</title>
+    <title>Harmonic Series</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
-        
         * {
             margin: 0;
             padding: 0;
@@ -14,181 +12,172 @@
         }
         
         body {
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(ellipse at center, #1a0a2e 0%, #0f0520 100%);
-            color: #fff;
+            background: linear-gradient(135deg, #0f0f23, #1a1a2e, #16213e);
+            color: #e0e0e0;
+            font-family: 'Arial', sans-serif;
             overflow: hidden;
             height: 100vh;
-            user-select: none;
         }
         
         .container {
             position: relative;
             width: 100vw;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
+        }
+        
+        canvas {
+            display: block;
+            background: radial-gradient(circle at center, rgba(26, 10, 46, 0.1), rgba(15, 5, 32, 0.1));
         }
         
         .header {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 20px;
+            left: 20px;
             z-index: 100;
-            padding: 15px 20px;
-            background: linear-gradient(180deg, rgba(26, 10, 46, 0.95) 0%, rgba(26, 10, 46, 0) 100%);
-            backdrop-filter: blur(15px);
         }
         
         .title {
-            font-size: 24px;
+            color: #ff6496;
+            font-size: 32px;
             font-weight: 300;
-            margin-bottom: 4px;
-            background: linear-gradient(135deg, #ff6b9d, #c44569, #f8b500, #feca57);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 100, 150, 0.5);
         }
         
         .subtitle {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
             font-weight: 300;
-        }
-        
-        #canvas {
-            width: 100%;
-            height: 100%;
-            background: transparent;
-            cursor: crosshair;
         }
         
         .controls {
             position: absolute;
-            top: 70px;
-            right: 10px;
-            width: 180px;
+            top: 20px;
+            right: 20px;
+            background: rgba(20, 20, 40, 0.95);
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 280px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            transform: translateX(0);
+        }
+        
+        .controls.hidden {
+            transform: translateX(320px);
+        }
+        
+        .toggle-icon {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 100, 150, 0.9);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            z-index: 100;
-            max-height: calc(100vh - 100px);
-            overflow-y: auto;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(255, 100, 150, 0.4);
+        }
+        
+        .toggle-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(255, 100, 150, 0.6);
         }
         
         .control-group {
-            background: rgba(26, 10, 46, 0.9);
-            border: 1px solid rgba(255, 107, 157, 0.3);
-            border-radius: 6px;
-            padding: 10px;
-            backdrop-filter: blur(20px);
+            margin-bottom: 15px;
         }
         
         .control-label {
-            font-size: 10px;
-            color: rgba(255, 255, 255, 0.8);
+            display: block;
             margin-bottom: 5px;
-            font-weight: 500;
+            color: #ff6496;
+            font-weight: bold;
+            font-size: 12px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         
-        select, input[type="range"] {
+        .slider {
             width: 100%;
-            background: rgba(15, 5, 32, 0.8);
-            border: 1px solid rgba(255, 107, 157, 0.3);
-            border-radius: 4px;
-            color: #ff6b9d;
-            font-size: 10px;
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #333, #666);
             outline: none;
-        }
-        
-        select {
-            padding: 5px;
-        }
-        
-        input[type="range"] {
-            height: 3px;
-            -webkit-appearance: none;
-            background: rgba(255, 107, 157, 0.2);
-        }
-        
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff6b9d, #f8b500);
             cursor: pointer;
-            box-shadow: 0 0 8px rgba(255, 107, 157, 0.6);
+        }
+        
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6496, #ffb347);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 100, 150, 0.5);
         }
         
         .value-display {
-            font-size: 8px;
-            color: rgba(248, 181, 0, 0.8);
-            margin-top: 2px;
-            text-align: center;
+            color: #ffb347;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+        
+        select {
+            width: 100%;
+            padding: 8px;
+            background: rgba(30, 30, 60, 0.8);
+            border: 1px solid rgba(255, 100, 150, 0.3);
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 12px;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #ff6496;
+            box-shadow: 0 0 10px rgba(255, 100, 150, 0.3);
         }
         
         .button {
-            background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(248, 181, 0, 0.2));
-            border: 1px solid rgba(255, 107, 157, 0.4);
-            border-radius: 4px;
-            color: #ff6b9d;
-            padding: 6px 10px;
-            font-size: 9px;
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(45deg, #ff6496, #ffb347);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
             cursor: pointer;
+            margin: 5px 0;
             transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif;
-            margin: 1px 0;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 11px;
         }
         
         .button:hover {
-            background: linear-gradient(135deg, rgba(255, 107, 157, 0.3), rgba(248, 181, 0, 0.3));
-            box-shadow: 0 0 15px rgba(255, 107, 157, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 100, 150, 0.4);
         }
         
         .note-info {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
-            background: rgba(26, 10, 46, 0.9);
-            border: 1px solid rgba(255, 107, 157, 0.3);
-            border-radius: 6px;
-            padding: 8px;
-            backdrop-filter: blur(20px);
-            font-size: 9px;
-            color: rgba(255, 255, 255, 0.7);
-            max-width: 200px;
+            bottom: 20px;
+            left: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
         }
         
         .frequency-display {
-            color: #f8b500;
-            font-weight: 500;
-        }
-        
-        @media (max-width: 768px) {
-            .controls {
-                width: 160px;
-                top: 65px;
-            }
-            
-            .title {
-                font-size: 20px;
-            }
-            
-            .header {
-                padding: 12px 15px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .controls {
-                width: 140px;
-            }
+            color: #ff6496;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -201,59 +190,61 @@
         
         <canvas id="canvas"></canvas>
         
-        <div class="controls">
-            <div class="control-group">
-                <div class="control-label">Base Note</div>
-                <select id="baseNote">
-                    <option value="C">C (261.63 Hz)</option>
-                    <option value="D">D (293.66 Hz)</option>
-                    <option value="E">E (329.63 Hz)</option>
-                    <option value="F">F (349.23 Hz)</option>
-                    <option value="G">G (392.00 Hz)</option>
-                    <option value="A" selected>A (440.00 Hz)</option>
-                    <option value="B">B (493.88 Hz)</option>
-                </select>
-            </div>
-            
-            <div class="control-group">
-                <div class="control-label">Harmonics</div>
-                <input type="range" id="harmonics" min="3" max="32" value="16" step="1">
-                <div class="value-display" id="harmonicsValue">16</div>
-            </div>
-            
-            <div class="control-group">
-                <div class="control-label">Speed</div>
-                <input type="range" id="speed" min="0.1" max="3" value="1" step="0.1">
-                <div class="value-display" id="speedValue">1.0</div>
-            </div>
-            
-            <div class="control-group">
-                <div class="control-label">Radius Scale</div>
-                <input type="range" id="radiusScale" min="0.5" max="2" value="1" step="0.1">
-                <div class="value-display" id="radiusValue">1.0</div>
-            </div>
-            
-            <div class="control-group">
-                <div class="control-label">Visual Mode</div>
-                <select id="visualMode">
-                    <option value="circles">Concentric Circles</option>
-                    <option value="spirals">Harmonic Spirals</option>
-                    <option value="mandala">Sacred Mandala</option>
-                    <option value="waveform">Circular Waveform</option>
-                </select>
-            </div>
-            
-            <div class="control-group">
-                <div class="control-label">Color Scheme</div>
-                <select id="colorScheme">
-                    <option value="warm">Warm Spectrum</option>
-                    <option value="cool">Cool Spectrum</option>
-                    <option value="rainbow">Rainbow</option>
-                    <option value="golden">Golden Ratio</option>
-                </select>
-            </div>
-            
-            <div class="control-group">
+        <button class="toggle-icon" onclick="document.getElementById('controls').classList.toggle('hidden')">🌸</button>
+        
+        <div class="controls hidden" id="controls">
+            <div class="control-content">
+                <div class="control-group">
+                    <div class="control-label">Base Note</div>
+                    <select id="baseNote">
+                        <option value="C">C (261.63 Hz)</option>
+                        <option value="D">D (293.66 Hz)</option>
+                        <option value="E">E (329.63 Hz)</option>
+                        <option value="F">F (349.23 Hz)</option>
+                        <option value="G">G (392.00 Hz)</option>
+                        <option value="A" selected>A (440.00 Hz)</option>
+                        <option value="B">B (493.88 Hz)</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <div class="control-label">Harmonics</div>
+                    <input type="range" class="slider" id="harmonics" min="3" max="32" value="16" step="1">
+                    <div class="value-display" id="harmonicsValue">16</div>
+                </div>
+                
+                <div class="control-group">
+                    <div class="control-label">Speed</div>
+                    <input type="range" class="slider" id="speed" min="0.1" max="3" step="0.1" value="1">
+                    <div class="value-display" id="speedValue">1.0</div>
+                </div>
+                
+                <div class="control-group">
+                    <div class="control-label">Radius Scale</div>
+                    <input type="range" class="slider" id="radiusScale" min="0.5" max="2" step="0.1" value="1">
+                    <div class="value-display" id="radiusValue">1.0</div>
+                </div>
+                
+                <div class="control-group">
+                    <div class="control-label">Visual Mode</div>
+                    <select id="visualMode">
+                        <option value="circles">Concentric Circles</option>
+                        <option value="spirals">Harmonic Spirals</option>
+                        <option value="mandala">Sacred Mandala</option>
+                        <option value="waveform" selected>Circular Waveform</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <div class="control-label">Color Scheme</div>
+                    <select id="colorScheme">
+                        <option value="warm" selected>Warm Spectrum</option>
+                        <option value="cool">Cool Spectrum</option>
+                        <option value="rainbow">Rainbow</option>
+                        <option value="golden">Golden Ratio</option>
+                    </select>
+                </div>
+                
                 <button class="button" id="playBtn">Play Chord</button>
                 <button class="button" id="resetBtn">Reset View</button>
             </div>
@@ -265,7 +256,7 @@
             <div>Mathematical beauty in sound</div>
         </div>
     </div>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone.js/14.8.49/Tone.min.js"></script>
     <script>
         const canvas = document.getElementById('canvas');
@@ -291,7 +282,7 @@
         let numHarmonics = 16;
         let speed = 1;
         let radiusScale = 1;
-        let visualMode = 'circles';
+        let visualMode = 'waveform';
         let colorScheme = 'warm';
         
         // Audio setup
@@ -344,8 +335,8 @@
                     return `hsla(${hue}, ${sat}%, ${light}%, ${alpha})`;
                 },
                 golden: (h) => {
-                    const phi = 1.618033988749;
-                    const hue = (30 + h * 137.5 / phi) % 60 + 30; // Golden section in warm range
+                    const phi = 1.6180339887;
+                    const hue = (30 + h * 137.5 / phi) % 60 + 30;
                     const sat = 65 + (h % 2) * 15;
                     const light = 45 + (h % 2) * 20;
                     return `hsla(${hue}, ${sat}%, ${light}%, ${alpha})`;
@@ -411,20 +402,18 @@
                 const intensity = 1 / Math.sqrt(h);
                 const alpha = intensity * (0.4 + 0.3 * Math.abs(Math.sin(time * 0.01 * h)));
                 
-                ctx.beginPath();
                 ctx.strokeStyle = getColorForHarmonic(h, alpha);
                 ctx.lineWidth = 1 + intensity * 2;
                 
                 const spiralTightness = h * 0.5;
                 const points = 200;
                 
-                for (let i = 0; i <= points; i++) {
+                for (let i = 0; i < points; i++) {
                     const t = (i / points) * Math.PI * 4;
                     const spiralRadius = (maxRadius / numHarmonics) * h * (1 - i / points);
-                    const angle = t * spiralTightness + time * 0.02 * h;
                     
-                    const x = centerX + Math.cos(angle) * spiralRadius;
-                    const y = centerY + Math.sin(angle) * spiralRadius;
+                    const x = centerX + Math.cos(t * spiralTightness + time * 0.01 * h) * spiralRadius;
+                    const y = centerY + Math.sin(t * spiralTightness + time * 0.01 * h) * spiralRadius;
                     
                     if (i === 0) {
                         ctx.moveTo(x, y);
@@ -459,7 +448,7 @@
                     ctx.lineWidth = 1 + intensity;
                     
                     // Draw petal shape
-                    const petalRadius = Math.max(5, radius * (0.3 + 0.7 * (1 + oscillation)));
+                    const petalRadius = Math.max(5, radius * (0.3 + 0.7 * oscillation));
                     
                     for (let i = 0; i <= 20; i++) {
                         const t = (i / 20) * Math.PI * 2;
@@ -492,13 +481,12 @@
                 const intensity = 1 / Math.sqrt(h);
                 const alpha = intensity * (0.6 + 0.4 * Math.abs(Math.sin(time * 0.01 * h)));
                 
-                ctx.beginPath();
                 ctx.strokeStyle = getColorForHarmonic(h, alpha);
                 ctx.lineWidth = 1 + intensity * 2;
                 
                 const points = 360;
                 
-                for (let i = 0; i <= points; i++) {
+                for (let i = 0; i < points; i++) {
                     const angle = (i / points) * Math.PI * 2;
                     const waveValue = Math.sin(angle * h + time * frequency * 0.001);
                     const radius = Math.max(10, baseRadius + waveValue * (maxRadius - baseRadius) * intensity);
@@ -507,6 +495,7 @@
                     const y = centerY + Math.sin(angle) * radius;
                     
                     if (i === 0) {
+                        ctx.beginPath();
                         ctx.moveTo(x, y);
                     } else {
                         ctx.lineTo(x, y);
@@ -601,6 +590,32 @@
             }, 3000);
         }
         
+        function updateDisplay() {
+            document.getElementById('harmonicsValue').textContent = document.getElementById('harmonics').value;
+            document.getElementById('speedValue').textContent = parseFloat(document.getElementById('speed').value).toFixed(1);
+            document.getElementById('radiusValue').textContent = parseFloat(document.getElementById('radiusScale').value).toFixed(1);
+            
+            numHarmonics = parseInt(document.getElementById('harmonics').value);
+            speed = parseFloat(document.getElementById('speed').value);
+            radiusScale = parseFloat(document.getElementById('radiusScale').value);
+            
+            updateNoteInfo();
+        }
+        
+        function resetView() {
+            time = 0;
+            if (isPlaying) {
+                synth.releaseAll();
+                isPlaying = false;
+                document.getElementById('playBtn').textContent = 'Play Chord';
+            }
+        }
+        
+        // Initialize
+        resizeCanvas();
+        updateNoteInfo();
+        animate();
+        
         // Event listeners
         document.getElementById('baseNote').addEventListener('change', (e) => {
             baseNote = e.target.value;
@@ -608,21 +623,9 @@
             updateNoteInfo();
         });
         
-        document.getElementById('harmonics').addEventListener('input', (e) => {
-            numHarmonics = parseInt(e.target.value);
-            document.getElementById('harmonicsValue').textContent = numHarmonics;
-            updateNoteInfo();
-        });
-        
-        document.getElementById('speed').addEventListener('input', (e) => {
-            speed = parseFloat(e.target.value);
-            document.getElementById('speedValue').textContent = speed.toFixed(1);
-        });
-        
-        document.getElementById('radiusScale').addEventListener('input', (e) => {
-            radiusScale = parseFloat(e.target.value);
-            document.getElementById('radiusValue').textContent = radiusScale.toFixed(1);
-        });
+        document.getElementById('harmonics').addEventListener('input', updateDisplay);
+        document.getElementById('speed').addEventListener('input', updateDisplay);
+        document.getElementById('radiusScale').addEventListener('input', updateDisplay);
         
         document.getElementById('visualMode').addEventListener('change', (e) => {
             visualMode = e.target.value;
@@ -633,22 +636,9 @@
         });
         
         document.getElementById('playBtn').addEventListener('click', playHarmonicChord);
-        
-        document.getElementById('resetBtn').addEventListener('click', () => {
-            time = 0;
-            if (isPlaying) {
-                synth.releaseAll();
-                isPlaying = false;
-                document.getElementById('playBtn').textContent = 'Play Chord';
-            }
-        });
+        document.getElementById('resetBtn').addEventListener('click', resetView);
         
         window.addEventListener('resize', resizeCanvas);
-        
-        // Initialize
-        resizeCanvas();
-        updateNoteInfo();
-        animate();
     </script>
 </body>
 </html>

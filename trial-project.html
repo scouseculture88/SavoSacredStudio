@@ -163,38 +163,26 @@ function startRecord(){
     if(!isRecording){
         recordedChunks=[];
         
-        // Create audio destination for recording
-        const audioDestination = audioContext ? audioContext.createMediaStreamDestination() : null;
-        const canvasStream = canvas.captureStream(60);
+        // Create recording audio destination if audio is enabled
+        if(audioContext && soundEnabled){
+            recordingDestination = audioContext.createMediaStreamDestination();
+        }
         
-        let combinedStream;
-        if(audioDestination && soundEnabled){
-            // Combine video and audio streams
-            const audioStream = audioDestination.stream;
+        const canvasStream = canvas.captureStream(60);
+        let combinedStream = canvasStream;
+        
+        // Combine video and audio if audio recording is available
+        if(recordingDestination && soundEnabled){
+            const audioStream = recordingDestination.stream;
             combinedStream = new MediaStream([
                 ...canvasStream.getVideoTracks(),
                 ...audioStream.getAudioTracks()
             ]);
-            
-            // Redirect audio to recording destination
-            if(audioContext.destination.disconnect){
-                // Note: This is a simplified approach - in practice you'd need to manage connections more carefully
-            }
-        } else {
-            combinedStream = canvasStream;
         }
         
         const quality={ultramax:8000000,cinematic:6000000,professional:4000000,high:3000000,standard:2000000};
         
-        try{
-            mediaRecorder=new MediaRecorder(combinedStream,{
-                videoBitsPerSecond:quality[recordQuality.value]||4000000,
-                mimeType: 'video/webm;codecs=vp8,opus'
-            });
-        }catch(e){
-            // Fallback if opus not supported
-            mediaRecorder=new MediaRecorder(combinedStream,{videoBitsPerSecond:quality[recordQuality.value]||4000000});
-        }
+        mediaRecorder=new MediaRecorder(combinedStream,{videoBitsPerSecond:quality[recordQuality.value]||4000000});
         
         mediaRecorder.ondataavailable=e=>{if(e.data.size>0)recordedChunks.push(e.data);};
         
@@ -203,15 +191,17 @@ function startRecord(){
             const url=URL.createObjectURL(blob);
             const a=document.createElement('a');
             a.style.display='none';a.href=url;
-            a.download=`kaleidoscope_${recordQuality.value}_${Date.now()}.webm`;
+            a.download=`kaleidoscope_${soundEnabled ? 'with_audio' : 'video_only'}_${Date.now()}.webm`;
             document.body.appendChild(a);a.click();document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            
+            // Clean up recording destination
+            recordingDestination = null;
         };
         
         mediaRecorder.start();isRecording=true;recordBtn.textContent='Stop Recording';
         recordBtn.classList.add('recording');
         
-        // Show recording status
         statusInfo.textContent = soundEnabled ? 'Recording with Audio' : 'Recording Video Only';
         
     }else{
@@ -248,12 +238,21 @@ function playSound(colorValue){
         if(audioContext.state==='suspended')audioContext.resume();
         const vol=volume.value/100*0.15;
         
+        // Create master gain for this sound
+        const masterGain = audioContext.createGain();
+        masterGain.connect(audioContext.destination);
+        
+        // If recording, also connect to recording destination
+        if(isRecording && recordingDestination){
+            masterGain.connect(recordingDestination);
+        }
+        
         switch(soundMode.value){
             case 'solfeggio':
                 const frequencies=[174,285,396,417,528,639,741,852,963];
                 const freq=frequencies[Math.floor((colorValue/360)*frequencies.length)]||528;
                 const osc=audioContext.createOscillator(),gain=audioContext.createGain();
-                osc.connect(gain);gain.connect(audioContext.destination);
+                osc.connect(gain);gain.connect(masterGain);
                 osc.type='sine';osc.frequency.setValueAtTime(freq,audioContext.currentTime);
                 gain.gain.setValueAtTime(0,audioContext.currentTime);
                 gain.gain.linearRampToValueAtTime(vol*0.6,audioContext.currentTime+0.1);
@@ -263,7 +262,7 @@ function playSound(colorValue){
             case 'waterdrops':
                 const osc1=audioContext.createOscillator(),osc2=audioContext.createOscillator();
                 const gain1=audioContext.createGain(),filter=audioContext.createBiquadFilter();
-                osc1.connect(filter);osc2.connect(filter);filter.connect(gain1);gain1.connect(audioContext.destination);
+                osc1.connect(filter);osc2.connect(filter);filter.connect(gain1);gain1.connect(masterGain);
                 osc1.frequency.setValueAtTime(800,audioContext.currentTime);
                 osc1.frequency.exponentialRampToValueAtTime(200,audioContext.currentTime+0.1);
                 osc2.frequency.setValueAtTime(400,audioContext.currentTime);

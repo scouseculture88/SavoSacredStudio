@@ -104,7 +104,8 @@ let currentMode='manual',isDrawing=false,isGenerating=false;
 let lastX=0,lastY=0,aiX=canvas.width/2,aiY=canvas.height/2;
 let hue=0,time=0,audioContext=null,soundEnabled=false,lastSoundTime=0;
 let phaseProgress=0,generationInterval=null;
-let mediaRecorder=null,recordedChunks=[],isRecording=false,recordingDestination=null;
+let mediaRecorder=null,recordedChunks=[],isRecording=false;
+let audioRecorder=null,audioChunks=[],recordingDestination=null;
 
 const centerX=canvas.width/2,centerY=canvas.height/2;
 const modeBtn=document.getElementById('modeBtn');
@@ -162,54 +163,74 @@ function saveImage(){
 function startRecord(){
     if(!isRecording){
         recordedChunks=[];
+        audioChunks=[];
         
-        // Create recording audio destination if audio is enabled
-        if(audioContext && soundEnabled){
-            recordingDestination = audioContext.createMediaStreamDestination();
-        }
-        
+        // Start video recording
         const canvasStream = canvas.captureStream(60);
-        let combinedStream = canvasStream;
-        
-        // Combine video and audio if audio recording is available
-        if(recordingDestination && soundEnabled){
-            const audioStream = recordingDestination.stream;
-            combinedStream = new MediaStream([
-                ...canvasStream.getVideoTracks(),
-                ...audioStream.getAudioTracks()
-            ]);
-        }
-        
         const quality={ultramax:8000000,cinematic:6000000,professional:4000000,high:3000000,standard:2000000};
         
-        mediaRecorder=new MediaRecorder(combinedStream,{videoBitsPerSecond:quality[recordQuality.value]||4000000});
-        
+        mediaRecorder=new MediaRecorder(canvasStream,{videoBitsPerSecond:quality[recordQuality.value]||4000000});
         mediaRecorder.ondataavailable=e=>{if(e.data.size>0)recordedChunks.push(e.data);};
         
+        // Start audio recording if sounds enabled
+        if(audioContext && soundEnabled){
+            recordingDestination = audioContext.createMediaStreamDestination();
+            audioRecorder = new MediaRecorder(recordingDestination.stream);
+            audioRecorder.ondataavailable = e => {if(e.data.size>0)audioChunks.push(e.data);};
+        }
+        
+        const timestamp = Date.now();
+        const qualityName = recordQuality.value;
+        
         mediaRecorder.onstop=()=>{
-            const blob=new Blob(recordedChunks,{type:'video/webm'});
-            const url=URL.createObjectURL(blob);
-            const a=document.createElement('a');
-            a.style.display='none';a.href=url;
-            a.download=`kaleidoscope_${soundEnabled ? 'with_audio' : 'video_only'}_${Date.now()}.webm`;
-            document.body.appendChild(a);a.click();document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            // Clean up recording destination
-            recordingDestination = null;
+            const videoBlob=new Blob(recordedChunks,{type:'video/webm'});
+            const videoUrl=URL.createObjectURL(videoBlob);
+            const videoLink=document.createElement('a');
+            videoLink.style.display='none';videoLink.href=videoUrl;
+            videoLink.download=`kaleidoscope_video_${qualityName}_${timestamp}.webm`;
+            document.body.appendChild(videoLink);videoLink.click();
+            document.body.removeChild(videoLink);
+            URL.revokeObjectURL(videoUrl);
         };
         
-        mediaRecorder.start();isRecording=true;recordBtn.textContent='Stop Recording';
-        recordBtn.classList.add('recording');
+        if(audioRecorder){
+            audioRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks, {type: 'audio/webm'});
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audioLink = document.createElement('a');
+                audioLink.style.display = 'none';
+                audioLink.href = audioUrl;
+                audioLink.download = `kaleidoscope_audio_${qualityName}_${timestamp}.webm`;
+                document.body.appendChild(audioLink);
+                audioLink.click();
+                document.body.removeChild(audioLink);
+                URL.revokeObjectURL(audioUrl);
+            };
+        }
         
-        statusInfo.textContent = soundEnabled ? 'Recording with Audio' : 'Recording Video Only';
+        // Start both recordings
+        mediaRecorder.start();
+        if(audioRecorder) audioRecorder.start();
+        
+        isRecording=true;
+        recordBtn.textContent='Stop Recording';
+        recordBtn.classList.add('recording');
+        statusInfo.textContent = soundEnabled ? 'Recording Video + Audio (2 files)' : 'Recording Video Only';
         
     }else{
-        if(mediaRecorder)mediaRecorder.stop();
-        isRecording=false;recordBtn.textContent='Record Video';
+        // Stop both recordings
+        if(mediaRecorder) mediaRecorder.stop();
+        if(audioRecorder) audioRecorder.stop();
+        
+        isRecording=false;
+        recordBtn.textContent='Record Video';
         recordBtn.classList.remove('recording');
         statusInfo.textContent = currentMode === 'manual' ? 'Manual Mode' : 
                                 currentMode === 'auto' ? 'Auto Mode' : 'Hybrid Mode';
+        
+        // Clean up
+        recordingDestination = null;
+        audioRecorder = null;
     }
 }
 

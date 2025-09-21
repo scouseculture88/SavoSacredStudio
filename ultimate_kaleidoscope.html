@@ -299,16 +299,18 @@
                 <button id="soundBtn" onclick="toggleSound()">🔊 Enable Sounds</button>
             </div>
             
-            <div class="control-group">
-                <label>Sound Mode</label>
                 <select id="soundMode">
-                    <option value="harmonics">Harmonic Frequencies</option>
-                    <option value="chakra">Chakra Healing</option>
-                    <option value="cosmic">Cosmic Space</option>
-                    <option value="meditation">Meditation</option>
-                </select>
-            </div>
-            
+    <option value="harmonics">Harmonic Frequencies</option>
+    <option value="chakra">Chakra Healing Tones</option>
+    <option value="crystal">Crystal Bowl Resonance</option>
+    <option value="nature">Nature Soundscapes</option>
+    <option value="solfeggio">Solfeggio Sacred Frequencies</option>
+    <option value="binaural">Binaural Beat Therapy</option>
+    <option value="pentatonic">Pentatonic Scale Magic</option>
+    <option value="ethereal">Ethereal Ambient Tones</option>
+    <option value="cosmic">Cosmic Space Frequencies</option>
+    <option value="meditation">Deep Meditation Bowls</option>
+              </select>
             <div class="control-group">
                 <label>Volume: <span id="volVal">60</span>%</label>
                 <input type="range" id="volume" min="0" max="100" value="60">
@@ -484,30 +486,104 @@
                 document.getElementById('soundBtn').textContent = '🔊 Enable Sounds';
                 document.getElementById('soundBtn').classList.remove('active');
             }
-        }
         
-        function playSound(color) {
-            if (!soundEnabled || !audioContext) return;
-            try {
-                const [r, g, b] = color;
-                const freq = 220 + ((r + g + b) / 765) * 440;
-                const vol = document.getElementById('volume').value / 100;
-                const osc = audioContext.createOscillator();
-                const gain = audioContext.createGain();
-                osc.connect(gain);
-                gain.connect(audioContext.destination);
+        function getFrequency(color, mode) {
+    const [r, g, b] = color;
+    const brightness = (r + g + b) / 3;
+    const hue = Math.atan2(Math.sqrt(3) * (g - b), 2 * r - g - b) * 180 / Math.PI;
+    const normalizedHue = ((hue % 360) + 360) % 360;
+    
+    let baseFreq;
+    switch(mode) {
+        case 'harmonics':
+            baseFreq = 220 + (normalizedHue / 360) * 660;
+            break;
+        case 'chakra':
+            const chakraFreqs = [194.18, 210.42, 226.32, 341.3, 384, 426.7, 480];
+            baseFreq = chakraFreqs[Math.floor((normalizedHue / 360) * chakraFreqs.length)];
+            break;
+        case 'crystal':
+            baseFreq = 528 + (brightness / 255) * 300;
+            break;
+        case 'nature':
+            baseFreq = 80 + (normalizedHue / 360) * 400;
+            break;
+        case 'solfeggio':
+            const solfFreqs = [174, 285, 396, 417, 528, 639, 741, 852, 963];
+            baseFreq = solfFreqs[Math.floor((normalizedHue / 360) * solfFreqs.length)];
+            break;
+        case 'binaural':
+            baseFreq = 200 + (normalizedHue / 360) * 200 + Math.sin(time * 0.01) * 10;
+            break;
+        case 'pentatonic':
+            const pentRatios = [1, 9/8, 5/4, 3/2, 27/16];
+            baseFreq = 220 * pentRatios[Math.floor((normalizedHue / 360) * pentRatios.length)];
+            break;
+        case 'ethereal':
+            baseFreq = 100 + (brightness / 255) * 400 + Math.sin(normalizedHue / 57.3) * 50;
+            break;
+        case 'cosmic':
+            baseFreq = 55 + (normalizedHue / 360) * 880;
+            break;
+        case 'meditation':
+            baseFreq = 136.1 + (brightness / 255) * 100;
+            break;
+        default:
+            baseFreq = 220 + (normalizedHue / 360) * 440;
+    }
+    
+    return baseFreq * (0.7 + (brightness / 255) * 0.6);
+}
+
+function playSound(color) {
+    if (!soundEnabled || !audioContext) return;
+    
+    try {
+        const freq = getFrequency(color, document.getElementById('soundMode').value);
+        const vol = document.getElementById('volume').value / 100;
+        
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        
+        const mode = document.getElementById('soundMode').value;
+        switch(mode) {
+            case 'harmonics':
+            case 'crystal':
+            case 'solfeggio':
+            case 'binaural':
+            case 'ethereal':
+            case 'meditation':
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioContext.currentTime);
-                gain.gain.setValueAtTime(0, audioContext.currentTime);
-                gain.gain.linearRampToValueAtTime(vol * 0.08, audioContext.currentTime + 0.1);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.8);
-                osc.start(audioContext.currentTime);
-                osc.stop(audioContext.currentTime + 0.8);
-                oscillators.push(osc);
-                if (oscillators.length > 12) oscillators = oscillators.slice(-6);
-            } catch(e) {}
+                break;
+            case 'chakra':
+            case 'pentatonic':
+                osc.type = 'triangle';
+                break;
+            case 'nature':
+            case 'cosmic':
+                osc.type = 'sawtooth';
+                break;
+            default:
+                osc.type = 'sine';
         }
         
+        osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+        gain.gain.setValueAtTime(0, audioContext.currentTime);
+        gain.gain.linearRampToValueAtTime(vol * 0.05, audioContext.currentTime + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.4);
+        
+        osc.start(audioContext.currentTime);
+        osc.stop(audioContext.currentTime + 0.5);
+        
+        oscillators.push(osc);
+        if (oscillators.length > 8) {
+            oscillators = oscillators.slice(-4);
+        }
+    } catch(e) {}
+}
         function drawMirror(x, y, size, color) {
             const mirrors = parseInt(document.getElementById('mode').value);
             const angleStep = (Math.PI * 2) / mirrors;

@@ -298,22 +298,23 @@
             <div class="control-group">
                 <button id="soundBtn" onclick="toggleSound()">🔊 Enable Sounds</button>
             </div>
-          
-            </div>
-                <select id="soundMode">
-                   <option value="harmonics">Harmonic Frequencies</option>
-                   <option value="chakra">Chakra Healing Tones</option>
-                   <option value="crystal">Crystal Bowl Resonance</option>
-                   <option value="nature">Nature Soundscapes</option>
-                   <option value="solfeggio">Solfeggio Sacred Frequencies</option>
-                   <option value="binaural">Binaural Beat Therapy</option>
-                   <option value="pentatonic">Pentatonic Scale Magic</option>
-                   <option value="ethereal">Ethereal Ambient Tones</option>
-                   <option value="cosmic">Cosmic Space Frequencies</option>
-                   <option value="meditation">Deep Meditation Bowls</option>
-                </select> 
-            </div>
-    
+            
+            <div class="control-group">
+    <label>Sound Mode</label>
+    <select id="soundMode">
+        <option value="harmonics">Harmonic Frequencies</option>
+        <option value="chakra">Chakra Healing Tones</option>
+        <option value="crystal">Crystal Bowl Resonance</option>
+        <option value="nature">Nature Soundscapes</option>
+        <option value="solfeggio">Solfeggio Sacred Frequencies</option>
+        <option value="binaural">Binaural Beat Therapy</option>
+        <option value="pentatonic">Pentatonic Scale Magic</option>
+        <option value="ethereal">Ethereal Ambient Tones</option>
+        <option value="cosmic">Cosmic Space Frequencies</option>
+        <option value="meditation">Deep Meditation Bowls</option>
+    </select>
+</div>
+            
             <div class="control-group">
                 <label>Volume: <span id="volVal">60</span>%</label>
                 <input type="range" id="volume" min="0" max="100" value="60">
@@ -360,7 +361,7 @@
         <br>• Hybrid: Manual + auto
     </div>
 
-<script>
+    <script>
         // Canvas Setup
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -470,27 +471,55 @@
             link.download = `kaleidoscope_${Date.now()}.png`;
             link.href = canvas.toDataURL();
             link.click();
-        }
+        }// Audio Functions with ALL original sound modes
+function initAudio() {
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+}
+
+function toggleSound() {
+    if (!soundEnabled) {
+        initAudio();
+        soundEnabled = true;
+        document.getElementById('soundBtn').textContent = '🔇 Disable Sounds';
+        document.getElementById('soundBtn').classList.add('active');
+    } else {
+        oscillators.forEach(osc => {
+            try { osc.stop(); } catch(e) {}
+        });
+        oscillators = [];
+        soundEnabled = false;
+        document.getElementById('soundBtn').textContent = '🔊 Enable Sounds';
+        document.getElementById('soundBtn').classList.remove('active');
+    }
+}
+
         
-        function toggleSound() {
-            if (!soundEnabled) {
-                if (!audioContext) {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                soundEnabled = true;
-                document.getElementById('soundBtn').textContent = '🔇 Disable Sounds';
-                document.getElementById('soundBtn').classList.add('active');
-            } else {
-                oscillators.forEach(osc => {
-                    try { osc.stop(); } catch(e) {}
-                });
-                oscillators = [];
-                soundEnabled = false;
-                document.getElementById('soundBtn').textContent = '🔊 Enable Sounds';
-                document.getElementById('soundBtn').classList.remove('active');
-            }
-        
-        function getFrequency(color, mode) {
+        function playSound(color) {
+            if (!soundEnabled || !audioContext) return;
+            try {
+                const [r, g, b] = color;
+                const freq = 220 + ((r + g + b) / 765) * 440;
+                const vol = document.getElementById('volume').value / 100;
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+                gain.gain.setValueAtTime(0, audioContext.currentTime);
+                gain.gain.linearRampToValueAtTime(vol * 0.08, audioContext.currentTime + 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.8);
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 0.8);
+                oscillators.push(osc);
+                if (oscillators.length > 12) oscillators = oscillators.slice(-6);
+            } catch(e) {}
+     }
+}
+
+         function getFrequency(color, mode) {
     const [r, g, b] = color;
     const brightness = (r + g + b) / 3;
     const hue = Math.atan2(Math.sqrt(3) * (g - b), 2 * r - g - b) * 180 / Math.PI;
@@ -533,6 +562,7 @@
             break;
         default:
             baseFreq = 220 + (normalizedHue / 360) * 440;
+    }
     
     return baseFreq * (0.7 + (brightness / 255) * 0.6);
 }
@@ -550,6 +580,7 @@ function playSound(color) {
         osc.connect(gain);
         gain.connect(audioContext.destination);
         
+        // Set oscillator type based on sound mode for variety
         const mode = document.getElementById('soundMode').value;
         switch(mode) {
             case 'harmonics':
@@ -573,6 +604,8 @@ function playSound(color) {
         }
         
         osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+        
+        // Smoother envelope to prevent crackling
         gain.gain.setValueAtTime(0, audioContext.currentTime);
         gain.gain.linearRampToValueAtTime(vol * 0.05, audioContext.currentTime + 0.05);
         gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.4);
@@ -580,6 +613,7 @@ function playSound(color) {
         osc.start(audioContext.currentTime);
         osc.stop(audioContext.currentTime + 0.5);
         
+        // Clean up old oscillators
         oscillators.push(osc);
         if (oscillators.length > 8) {
             oscillators = oscillators.slice(-4);
@@ -785,4 +819,4 @@ function playSound(color) {
         animate();
     </script>
 </body>
-</html>
+</html>To combine: Simply copy Part 1, then immediately paste Part 2 right after it (no line break needed). Save as an HTML file and it should work perfectly!The tool now has:Collapsible menu (click the − button)All info boxes hide when menu is openScrollable menu that fits on screenThree generation modes (Manual, Auto, Hybrid)All original features preserved

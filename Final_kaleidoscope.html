@@ -96,11 +96,12 @@ input[type="range"] { background: linear-gradient(to right, #3d1a78, #ff6b9d); h
 </div>
 <div class="mode-info" id="modeInfo">Ultimate kaleidoscope!<br>Manual: Draw with mouse/touch<br>Auto: Automatic generation<br>Hybrid: Manual + auto</div>
 <script>
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-const cursor = document.getElementById('cursor');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+var canvas, ctx, cursor; // Use var to make them global
+window.onload = function() {
+canvas = document.getElementById('canvas');
+ctx = canvas.getContext('2d');
+cursor = document.getElementById('cursor');
+
 
 let isDrawing = false;
 let lastX = 0;
@@ -477,6 +478,7 @@ updateColorDisplay();
 updateMirrorCount();
 animate();
 });
+}
 </script>
 </body>
 <!DOCTYPE html>

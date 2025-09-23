@@ -509,10 +509,10 @@
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(freq, audioContext.currentTime);
                 gain.gain.setValueAtTime(0, audioContext.currentTime);
-                gain.gain.linearRampToValueAtTime(vol * 0.03, audioContext.currentTime + 0.1);
+                gain.gain.linearRampToValueAtTime(vol * 0.02, audioContext.currentTime + 0.5);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.8);
                 osc.start(audioContext.currentTime);
-                osc.stop(audioContext.currentTime + 0.8);
+                osc.stop(audioContext.currentTime + 0.3);
                 oscillators.push(osc);
                 if (oscillators.length > 12) oscillators = oscillators.slice(-6);
             } catch(e) {}

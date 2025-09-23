@@ -506,10 +506,10 @@
                 const gain = audioContext.createGain();
                 osc.connect(gain);
                 gain.connect(audioContext.destination);
-                osc.type = 'sine';
+                osc.type = (mode === 'meditation' || mode === 'chakra') ? 'sine' : 'triangle';
                 osc.frequency.setValueAtTime(freq, audioContext.currentTime);
                 gain.gain.setValueAtTime(0, audioContext.currentTime);
-                gain.gain.linearRampToValueAtTime(vol * 0.02, audioContext.currentTime + 0.5);
+                gain.gain.linearRampToValueAtTime(vol * 0.01, audioContext.currentTime + 0.5);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.8);
                 osc.start(audioContext.currentTime);
                 osc.stop(audioContext.currentTime + 0.3);

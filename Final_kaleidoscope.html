@@ -96,11 +96,44 @@ input[type="range"] { background: linear-gradient(to right, #3d1a78, #ff6b9d); h
 </div>
 <div class="mode-info" id="modeInfo">Ultimate kaleidoscope!<br>Manual: Draw with mouse/touch<br>Auto: Automatic generation<br>Hybrid: Manual + auto</div>
 <script>
-var canvas, ctx, cursor; // Use var to make them global
-window.onload = function() {
-canvas = document.getElementById('canvas');
-ctx = canvas.getContext('2d');
-cursor = document.getElementById('cursor');
+// Fix for buttons - add this block right after <script>
+function toggleControls() {
+    var controls = document.getElementById('controls');
+    var btn = document.getElementById('minimizeBtn');
+    controls.classList.toggle('minimized');
+    btn.textContent = controls.classList.contains('minimized') ? '+' : '-';
+}
+
+function clearCanvas() {
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function toggleSound() {
+    alert('Sound button clicked!');
+}
+
+function saveImage() {
+    var canvas = document.getElementById('canvas');
+    var link = document.createElement('a');
+    link.download = 'kaleidoscope.png';
+    link.href = canvas.toDataURL();
+    link.click();
+}
+
+function randomColors() {
+    alert('Random colors clicked!');
+}
+
+function startRecord() {
+    alert('Record clicked!');
+}
+
+function setGenerationMode(mode) {
+    alert('Mode: ' + mode);
+}
 
 
 let isDrawing = false;

@@ -484,39 +484,40 @@
             }
         }
         
-        function playSound(color) {
-            if (!soundEnabled || !audioContext) return;
-            try {
-                const [r, g, b] = color;
-                const mode = document.getElementById('soundMode').value;
-                let freq;
-                if (mode === 'harmonics') {
-                freq = 220 + ((r + g + b) / 765) * 440;  // Original range
-              } else if (mode === 'chakra') {
-                 freq = 400 + ((r + g + b) / 765) * 200;  // Higher, narrower range
-               } else if (mode === 'cosmic') {
-                 freq = 100 + ((r + g + b) / 765) * 600;  // Lower, wider range
-               } else if (mode === 'meditation') {
-                 freq = 150 + ((r + g + b) / 765) * 100;  // Low, narrow range
-               } else {
-                 freq = 300;  // Default
-                 }
-                const vol = document.getElementById('volume').value / 100;
-                const osc = audioContext.createOscillator();
-                const gain = audioContext.createGain();
-                osc.connect(gain);
-                gain.connect(audioContext.destination);
-                osc.type = (mode === 'meditation' || mode === 'chakra') ? 'sine' : 'triangle';
-                osc.frequency.setValueAtTime(freq, audioContext.currentTime);
-                gain.gain.setValueAtTime(0, audioContext.currentTime);
-                gain.gain.linearRampToValueAtTime(vol * 0.01, audioContext.currentTime + 0.5);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.8);
-                osc.start(audioContext.currentTime);
-                osc.stop(audioContext.currentTime + 0.3);
-                oscillators.push(osc);
-                if (oscillators.length > 12) oscillators = oscillators.slice(-6);
-            } catch(e) {}
-        }
+          function playSound(color) {
+    if (!soundEnabled || !audioContext) return;
+    try {
+        const [r, g, b] = color;
+        const mode = document.getElementById('soundMode').value;
+        
+        // Much simpler frequency calculation
+        let baseFreq;
+        if (mode === 'harmonics') baseFreq = 300;
+        else if (mode === 'chakra') baseFreq = 400;
+        else if (mode === 'cosmic') baseFreq = 200;
+        else if (mode === 'meditation') baseFreq = 150;
+        else baseFreq = 250;
+        
+        // Add small variation based on color
+        const freq = baseFreq + ((r + g + b) / 765) * 100;
+        
+        const vol = document.getElementById('volume').value / 100;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.type = 'triangle'; // Softer than sine
+        osc.frequency.value = freq;
+        
+        // Very simple envelope - just set and go
+        gain.gain.value = vol * 0.01;
+        
+        osc.start();
+        osc.stop(audioContext.currentTime + 0.1); // Very short
+        
+    } catch(e) {}
+          }
         
         function drawMirror(x, y, size, color) {
             const mirrors = parseInt(document.getElementById('mode').value);

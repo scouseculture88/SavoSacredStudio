@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cymatics Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+        
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .controls {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: #0ff;
+            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(0,20,40,0.9));
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,255,255,0.3);
+            box-shadow: 0 0 30px rgba(0,255,255,0.2);
+            max-width: 280px;
+            transition: all 0.3s ease;
+        }
+        
+        .controls.minimized {
+            padding: 10px;
+            max-width: 50px;
+        }
+        
+        .controls.minimized .control-content {
+            display: none;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .controls.minimized .header {
+            margin-bottom: 0;
+        }
+        
+        .title {
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+        }
+        
+        .controls.minimized .title {
+            display: none;
+        }
+        
+        .toggle-btn {
+            background: rgba(0,255,255,0.1);
+            border: 1px solid rgba(0,255,255,0.4);
+            color: #0ff;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .control-group {
+            margin-bottom: 12px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 10px;
+            color: rgba(0,255,255,0.8);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        select, button, input[type="range"], input[type="number"] {
+            width: 100%;
+            padding: 6px;
+            background: rgba(0,40,60,0.6);
+            border: 1px solid rgba(0,255,255,0.3);
+            color: #0ff;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        
+        input[type="range"] {
+            height: 4px;
+            padding: 0;
+        }
+        
+        button:hover {
+            background: rgba(0,255,255,0.2);
+            transform: translateY(-1px);
+        }
+        
+        button.active {
+            background: rgba(0,255,255,0.3);
+            box-shadow: 0 0 15px rgba(0,255,255,0.5);
+        }
+        
+        .frequency-display {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(0,255,255,0.8);
+            font-family: monospace;
+            font-size: 24px;
+            text-shadow: 0 0 20px rgba(0,255,255,0.5);
+            letter-spacing: 2px;
+        }
+        
+        .multi-freq {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .multi-freq input {
+            width: 60px;
+            text-align: center;
+        }
+        
+        .info {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: rgba(0,255,255,0.6);
+            font-size: 10px;
+            text-align: right;
+            max-width: 200px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div class="controls" id="controls">
+        <div class="header">
+            <div class="title">Cymatics</div>
+            <button class="toggle-btn" onclick="toggleControls()">≡</button>
+        </div>
+        
+        <div class="control-content">
+            <div class="control-group">
+                <label>Visualization Mode</label>
+                <select id="mode">
+                    <option value="ripples">Water Ripples</option>
+                    <option value="nodes">Nodal Lines</option>
+                    <option value="sand">Sand Patterns</option>
+                    <option value="interference">Wave Interference</option>
+                    <option value="3d">3D Surface</option>
+                    <option value="lines">Flow Lines</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Primary Freq: <span id="freq1Val">432</span> Hz</label>
+                <input type="range" id="frequency1" min="20" max="2000" value="432">
+            </div>
+            
+            <div class="control-group">
+                <label>Secondary Freq: <span id="freq2Val">528</span> Hz</label>
+                <input type="range" id="frequency2" min="20" max="2000" value="528">
+            </div>
+            
+            <div class="control-group">
+                <label>Multi-Frequency Mode</label>
+                <button id="multiBtn" onclick="toggleMulti()">Enable Multi</button>
+                <div class="multi-freq" id="multiFreq" style="display: none;">
+                    <input type="number" id="f1" value="174" min="20" max="2000">
+                    <input type="number" id="f2" value="285" min="20" max="2000">
+                    <input type="number" id="f3" value="396" min="20" max="2000">
+                    <input type="number" id="f4" value="528" min="20" max="2000">
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label>Wave Sources: <span id="sourcesVal">2</span></label>
+                <input type="range" id="sources" min="1" max="5" value="2">
+            </div>
+            
+            <div class="control-group">
+                <label>Amplitude: <span id="ampVal">50</span></label>
+                <input type="range" id="amplitude" min="10" max="100" value="50">
+            </div>
+            
+            <div class="control-group">
+                <label>Damping: <span id="dampVal">95</span>%</label>
+                <input type="range" id="damping" min="80" max="99" value="95">
+            </div>
+            
+            <div class="control-group">
+                <label>Line Thickness: <span id="thicknessVal">2</span>px</label>
+                <input type="range" id="thickness" min="1" max="10" value="2">
+            </div>
+            
+            <div class="control-group">
+                <button id="soundBtn" onclick="toggleSound()">🔊 Enable Audio</button>
+            </div>
+            
+            <div class="control-group">
+                <button onclick="clearCanvas()">Clear Canvas</button>
+            </div>
+            
+            <div class="control-group">
+                <button onclick="saveImage()">📷 Save Pattern</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="frequency-display" id="freqDisplay">432 Hz + 528 Hz</div>
+    
+    <div class="info">
+        Cymatics: Sound made visible through wave interference patterns
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let time = 0;
+        let audioContext = null;
+        let oscillators = [];
+        let gainNodes = [];
+        let soundEnabled = false;
+        let multiMode = false;
+        let waveField = [];
+        let prevWaveField = [];
+        
+        // Initialize wave field
+        function initWaveField() {
+            const gridSize = 100;
+            waveField = [];
+            prevWaveField = [];
+            for (let i = 0; i < gridSize; i++) {
+                waveField[i] = [];
+                prevWaveField[i] = [];
+                for (let j = 0; j < gridSize; j++) {
+                    waveField[i][j] = 0;
+                    prevWaveField[i][j] = 0;
+                }
+            }
+        }
+        
+        initWaveField();
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        function toggleControls() {
+            const controls = document.getElementById('controls');
+            controls.classList.toggle('minimized');
+        }
+        
+        function toggleMulti() {
+            multiMode = !multiMode;
+            const btn = document.getElementById('multiBtn');
+            const multiFreq = document.getElementById('multiFreq');
+            
+            if (multiMode) {
+                btn.textContent = 'Disable Multi';
+                btn.classList.add('active');
+                multiFreq.style.display = 'flex';
+                updateFrequencyDisplay();
+            } else {
+                btn.textContent = 'Enable Multi';
+                btn.classList.remove('active');
+                multiFreq.style.display = 'none';
+                updateFrequencyDisplay();
+            }
+        }
+        
+        function clearCanvas() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            initWaveField();
+        }
+        
+        function saveImage() {
+            const link = document.createElement('a');
+            link.download = `cymatics_${Date.now()}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        function updateFrequencyDisplay() {
+            const display = document.getElementById('freqDisplay');
+            if (multiMode) {
+                const f1 = document.getElementById('f1').value;
+                const f2 = document.getElementById('f2').value;
+                const f3 = document.getElementById('f3').value;
+                const f4 = document.getElementById('f4').value;
+                display.textContent = `${f1} + ${f2} + ${f3} + ${f4} Hz`;
+            } else {
+                const freq1 = document.getElementById('frequency1').value;
+                const freq2 = document.getElementById('frequency2').value;
+                display.textContent = `${freq1} Hz + ${freq2} Hz`;
+            }
+        }
+        
+        function toggleSound() {
+            const btn = document.getElementById('soundBtn');
+            
+            if (!soundEnabled) {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                
+                // Clear any existing oscillators
+                oscillators.forEach(osc => osc.stop());
+                oscillators = [];
+                gainNodes = [];
+                
+                const frequencies = multiMode ? 
+                    [
+                        parseInt(document.getElementById('f1').value),
+                        parseInt(document.getElementById('f2').value),
+                        parseInt(document.getElementById('f3').value),
+                        parseInt(document.getElementById('f4').value)
+                    ] : [
+                        parseInt(document.getElementById('frequency1').value),
+                        parseInt(document.getElementById('frequency2').value)
+                    ];
+                
+                frequencies.forEach(freq => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    
+                    osc.frequency.value = freq;
+                    osc.type = 'sine';
+                    gain.gain.value = 0.02; // Very low volume
+                    
+                    osc.start();
+                    oscillators.push(osc);
+                    gainNodes.push(gain);
+                });
+                
+                soundEnabled = true;
+                btn.textContent = '🔇 Disable Audio';
+                btn.classList.add('active');
+            } else {
+                oscillators.forEach(osc => osc.stop());
+                oscillators = [];
+                gainNodes = [];
+                soundEnabled = false;
+                btn.textContent = '🔊 Enable Audio';
+                btn.classList.remove('active');
+            }
+        }
+        
+        // Update frequencies when sliders change
+        document.getElementById('frequency1').addEventListener('input', (e) => {
+            document.getElementById('freq1Val').textContent = e.target.value;
+            updateFrequencyDisplay();
+            if (soundEnabled && oscillators[0]) {
+                oscillators[0].frequency.value = parseInt(e.target.value);
+            }
+        });
+        
+        document.getElementById('frequency2').addEventListener('input', (e) => {
+            document.getElementById('freq2Val').textContent = e.target.value;
+            updateFrequencyDisplay();
+            if (soundEnabled && oscillators[1]) {
+                oscillators[1].frequency.value = parseInt(e.target.value);
+            }
+        });
+        
+        document.getElementById('sources').addEventListener('input', (e) => {
+            document.getElementById('sourcesVal').textContent = e.target.value;
+        });
+        
+        document.getElementById('amplitude').addEventListener('input', (e) => {
+            document.getElementById('ampVal').textContent = e.target.value;
+        });
+        
+        document.getElementById('damping').addEventListener('input', (e) => {
+            document.getElementById('dampVal').textContent = e.target.value;
+        });
+        
+        document.getElementById('thickness').addEventListener('input', (e) => {
+            document.getElementById('thicknessVal').textContent = e.target.value;
+        });
+        
+        function drawRipples() {
+            const frequencies = multiMode ? 
+                [
+                    parseInt(document.getElementById('f1').value),
+                    parseInt(document.getElementById('f2').value),
+                    parseInt(document.getElementById('f3').value),
+                    parseInt(document.getElementById('f4').value)
+                ] : [
+                    parseInt(document.getElementById('frequency1').value),
+                    parseInt(document.getElementById('frequency2').value)
+                ];
+            
+            const sources = parseInt(document.getElementById('sources').value);
+            const amplitude = parseInt(document.getElementById('amplitude').value);
+            const thickness = parseInt(document.getElementById('thickness').value);
+            
+            ctx.strokeStyle = 'rgba(0, 255, 255, 0.8)';
+            ctx.lineWidth = thickness;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            // Position wave sources
+            const sourcePositions = [];
+            for (let i = 0; i < sources; i++) {
+                const angle = (Math.PI * 2 * i) / sources;
+                sourcePositions.push({
+                    x: centerX + Math.cos(angle) * 200,
+                    y: centerY + Math.sin(angle) * 200
+                });
+            }
+            
+            // Draw wave circles from each source
+            frequencies.forEach((freq, freqIndex) => {
+                sourcePositions.forEach((source, sourceIndex) => {
+                    const wavelength = 20000 / freq;
+                    const maxRadius = Math.sqrt(canvas.width * canvas.width + canvas.height * canvas.height);
+                    
+                    for (let r = 0; r < maxRadius; r += wavelength) {
+                        const radius = r + (time * freq / 100) % wavelength;
+                        const opacity = Math.max(0, 0.5 - radius / maxRadius);
+                        
+                        ctx.strokeStyle = `rgba(0, ${255 - freqIndex * 50}, 255, ${opacity})`;
+                        ctx.beginPath();
+                        ctx.arc(source.x, source.y, radius, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                });
+            });
+        }
+        
+        function drawNodes() {
+            const freq1 = parseInt(document.getElementById('frequency1').value);
+            const freq2 = parseInt(document.getElementById('frequency2').value);
+            const amplitude = parseInt(document.getElementById('amplitude').value);
+            const thickness = parseInt(document.getElementById('thickness').value);
+            
+            ctx.lineWidth = thickness;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const scale = 0.5;
+            
+            // Draw nodal line patterns
+            for (let x = 0; x < canvas.width; x += 5) {
+                for (let y = 0; y < canvas.height; y += 5) {
+                    const dx = (x - centerX) * scale;
+                    const dy = (y - centerY) * scale;
+                    const r = Math.sqrt(dx * dx + dy * dy);
+                    
+                    const wave1 = Math.sin(r * freq1 / 1000 + time * 0.1);
+                    const wave2 = Math.sin(r * freq2 / 1000 - time * 0.1);
+                    const combined = wave1 + wave2;
+                    
+                    if (Math.abs(combined) < 0.1) { // Nodal points
+                        const brightness = 255 - Math.abs(combined) * 2550;
+                        ctx.fillStyle = `rgba(0, ${brightness}, 255, 0.8)`;
+                        ctx.fillRect(x, y, 3, 3);
+                    }
+                }
+            }
+        }
+        
+        function drawSandPatterns() {
+            const freq1 = parseInt(document.getElementById('frequency1').value);
+            const freq2 = parseInt(document.getElementById('frequency2').value);
+            const amplitude = parseInt(document.getElementById('amplitude').value);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            // Simulate sand accumulation at standing wave nodes
+            for (let angle = 0; angle < Math.PI * 2; angle += 0.01) {
+                for (let r = 0; r < Math.min(canvas.width, canvas.height) / 2; r += 2) {
+                    const x = centerX + Math.cos(angle) * r;
+                    const y = centerY + Math.sin(angle) * r;
+                    
+                    const pattern1 = Math.sin(r * freq1 / 5000) * Math.cos(angle * freq1 / 100);
+                    const pattern2 = Math.sin(r * freq2 / 5000) * Math.sin(angle * freq2 / 100);
+                    const combined = pattern1 + pattern2 + Math.sin(time * 0.05);
+                    
+                    if (Math.abs(combined) > 1.5) {
+                        const intensity = Math.abs(combined) * 100;
+                        ctx.fillStyle = `rgba(0, ${100 + intensity}, 255, 0.6)`;
+                        ctx.fillRect(x, y, 2, 2);
+                    }
+                }
+            }
+        }
+        
+        function drawFlowLines() {
+            const freq1 = parseInt(document.getElementById('frequency1').value);
+            const freq2 = parseInt(document.getElementById('frequency2').value);
+            const thickness = parseInt(document.getElementById('thickness').value);
+            
+            ctx.lineWidth = thickness;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            // Create flowing line patterns similar to your kaleidoscope at 2px
+            for (let i = 0; i < 12; i++) {
+                const angle = (Math.PI * 2 * i) / 12 + time * 0.01;
+                
+                ctx.strokeStyle = `hsla(${180 + Math.sin(time * 0.02 + i) * 30}, 100%, 50%, 0.3)`;
+                ctx.beginPath();
+                
+                for (let t = 0; t < 100; t++) {
+                    const r = t * 5;
+                    const wave = Math.sin(t * freq1 / 1000 + time * 0.1) * 
+                               Math.cos(t * freq2 / 1000 - time * 0.05);
+                    const x = centerX + Math.cos(angle + wave * 0.5) * r;
+                    const y = centerY + Math.sin(angle + wave * 0.5) * r;
+                    
+                    if (t === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+        }
+        
+        function draw3DSurface() {
+            const freq1 = parseInt(document.getElementById('frequency1').value);
+            const freq2 = parseInt(document.getElementById('frequency2').value);
+            const amplitude = parseInt(document.getElementById('amplitude').value);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const gridSize = 40;
+            const cellSize = 10;
+            
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    const x = (i - gridSize / 2) * cellSize;
+                    const y = (j - gridSize / 2) * cellSize;
+                    
+                    const wave1 = Math.sin(Math.sqrt(x * x + y * y) * freq1 / 10000 + time * 0.1);
+                    const wave2 = Math.cos(Math.sqrt(x * x) * freq2 / 10000 - time * 0.05);
+                    const height = (wave1 + wave2) * amplitude / 50;
+                    
+                    const brightness = Math.floor((height + 2) * 63);
+                    ctx.fillStyle = `rgba(0, ${brightness}, ${200 + brightness}, 0.8)`;
+                    
+                    const px = centerX + x + y * 0.5;
+                    const py = centerY + y * 0.5 - height * 10;
+                    
+                    ctx.fillRect(px, py, cellSize, cellSize);
+                }
+            }
+        }
+        
+        function animate() {
+            const damping = parseInt(document.getElementById('damping').value) / 100;
+            const mode = document.getElementById('mode').value;
+            
+            // Fade effect
+            ctx.fillStyle = `rgba(0, 0, 0, ${1 - damping})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            time++;
+            
+            switch(mode) {
+                case 'ripples':
+                    drawRipples();
+                    break;
+                case 'nodes':
+                    drawNodes();
+                    break;
+                case 'sand':
+                    drawSandPatterns();
+                    break;
+                case 'lines':
+                    drawFlowLines();
+                    break;
+                case '3d':
+                    draw3DSurface();
+                    break;
+                case 'interference':
+                default:
+                    drawRipples(); // Default to ripples with interference
+                    break;
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // Initialize
+        updateFrequencyDisplay();
+        animate();
+    </script>
+</body>
+</html>

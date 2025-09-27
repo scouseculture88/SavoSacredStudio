@@ -2536,3 +2536,29 @@ Timestamp: Fri Jun 27 06:07:15 AM UTC 2025
         font-size: 2rem;
     }
 }
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  animation: slide 24s infinite;
+}
+@keyframes slide {
+  0% {
+    background-image: url('/attached_images/Aurora_consciousness_arctic_camo_b19346c8.png');
+  }
+  8% {
+    background-image: url('/attached_images/Cosmic_consciousness_background_b24006fe.png');
+  }
+  16% {
+    background-image: url('/attached_images/Cosmic_consciousness_mountain_landscape_ee0351ce.png');
+  }
+  ... 
+  100% {
+    background-image: url('/attached_images/Neural_network_a7f50bec.png');
+  }
+}

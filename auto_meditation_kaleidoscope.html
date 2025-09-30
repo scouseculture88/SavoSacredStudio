@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto-Generating Kaleidoscope</title>
+<style>
+body{margin:0;padding:0;background:#000;font-family:'Courier New',monospace;overflow:hidden}
+canvas{display:block;background:#000}
+.controls{position:absolute;top:10px;left:10px;color:#ff6b9d;z-index:100;background:rgba(30,10,30,0.95);padding:8px;border-radius:8px;border:1px solid #ff6b9d;backdrop-filter:blur(10px);box-shadow:0 0 20px rgba(255,107,157,0.3);font-size:11px;max-width:280px}
+.controls.minimized{padding:6px 8px;max-width:120px}
+.controls-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;cursor:pointer}
+.controls.minimized .controls-header{margin-bottom:0}
+.title{font-weight:bold;text-shadow:0 0 10px #ff6b9d;font-size:11px;background:linear-gradient(45deg,#ff6b9d,#c44569);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.minimize-btn{background:linear-gradient(45deg,#ff6b9d,#c44569);border:none;color:white;border-radius:50%;width:18px;height:18px;cursor:pointer;font-weight:bold;text-align:center;box-shadow:0 0 10px rgba(255,107,157,0.5);font-size:10px;line-height:18px;flex-shrink:0}
+.control-group{margin-bottom:6px}
+.control-group label{display:block;margin-bottom:3px;font-size:10px;text-shadow:0 0 5px #ff6b9d;font-weight:500}
+select,input[type="range"],button{background:rgba(40,20,40,0.9);color:#ff6b9d;border:1px solid #ff6b9d;border-radius:4px;padding:2px 4px;font-size:10px}
+button{cursor:pointer;font-weight:bold;text-align:center;padding:4px 8px}
+button:hover{background:rgba(255,107,157,0.25);box-shadow:0 0 8px rgba(255,107,157,0.4)}
+button.active{background:rgba(255,107,157,0.4);box-shadow:0 0 10px rgba(255,107,157,0.6)}
+.play-btn{background:linear-gradient(45deg,#00ff00,#00aa00);color:white}
+.pause-btn{background:linear-gradient(45deg,#ff6600,#cc4400);color:white}
+input[type="range"]{width:100%;height:4px}
+.status-info{position:absolute;top:10px;right:10px;color:#ff6b9d;background:rgba(30,10,30,0.95);padding:6px 10px;border-radius:6px;backdrop-filter:blur(10px);box-shadow:0 0 15px rgba(255,107,157,0.3);z-index:100;font-size:10px}
+.mode-info{position:absolute;bottom:10px;right:10px;color:#ff6b9d;background:rgba(30,10,30,0.95);padding:6px 10px;border-radius:6px;backdrop-filter:blur(10px);box-shadow:0 0 15px rgba(255,107,157,0.3);max-width:300px;font-size:10px;line-height:1.3}
+.control-content{display:block}
+.controls.minimized .control-content{display:none}
+</style></head><body>
+<canvas id="canvas"></canvas>
+<div class="controls" id="controls">
+<div class="controls-header" onclick="toggleControls()">
+<div class="title">AUTO KALEIDOSCOPE</div>
+<button class="minimize-btn" id="minimizeBtn">-</button>
+</div>
+<div class="control-content">
+<div class="control-group">
+<button id="playBtn" class="play-btn">START GENERATION</button>
+</div>
+<div class="control-group"><label>AI Behavior</label>
+<select id="aiMode">
+<option value="geometric">Geometric Precision</option>
+<option value="organic">Organic Flow</option>
+<option value="chaotic">Chaotic Energy</option>
+<option value="spiral">Spiral Dancer</option>
+<option value="mandala">Mandala Builder</option>
+<option value="fractal">Fractal Explorer</option>
+<option value="waves">Wave Patterns</option>
+<option value="random">Pure Randomness</option>
+</select></div>
+<div class="control-group"><label>Mirror Pattern</label>
+<select id="mode">
+<option value="3">Triangle (3-way)</option>
+<option value="4">Square (4-way)</option>
+<option value="6">Hexagonal (6-way)</option>
+<option value="8">Octagonal (8-way)</option>
+<option value="12">Dodecagon (12-way)</option>
+<option value="16">16-way Advanced</option>
+<option value="24">24-way Ultra</option>
+<option value="36">36-way LEGENDARY</option>
+<option value="60">60-way INFINITE</option>
+</select></div>
+<div class="control-group"><label>Generation Speed: <span id="speedVal">50</span>%</label><input type="range" id="speed" min="1" max="100" value="50"></div>
+<div class="control-group"><label>Brush Size: <span id="brushVal">25</span>px</label><input type="range" id="brush" min="2" max="100" value="25"></div>
+<div class="control-group"><label>Color Speed: <span id="colorVal">75</span>%</label><input type="range" id="colorSpeed" min="0" max="200" value="75"></div>
+<div class="control-group"><label>Glow: <span id="glowVal">80</span>%</label><input type="range" id="glow" min="20" max="150" value="80"></div>
+<div class="control-group">
+<button id="soundBtn">Enable Sounds</button></div>
+<div class="control-group"><label>Sound Mode</label><select id="soundMode">
+<option value="solfeggio">Solfeggio Frequencies</option>
+<option value="waterdrops">Water Drops</option>
+<option value="rain">Gentle Rain</option>
+<option value="waves">Ocean Waves</option>
+<option value="waterfall">Waterfall Flow</option>
+<option value="birds">Forest Birds</option>
+<option value="wind">Wind Through Trees</option>
+<option value="chimes">Wind Chimes</option>
+<option value="bells">Tibetan Bells</option>
+<option value="piano">Soft Piano</option>
+</select></div>
+<div class="control-group"><label>Volume: <span id="volVal">80</span>%</label><input type="range" id="volume" min="0" max="100" value="80"></div>
+<div class="control-group">
+<button onclick="clearCanvas()">Clear Canvas</button>
+</div>
+<div class="control-group">
+<button onclick="saveImage()">Save PNG</button>
+</div>
+</div></div>
+
+<div class="status-info" id="statusInfo">AI Idle</div>
+<div class="mode-info">AI-driven kaleidoscope that draws like a human artist. Each behavior mode creates unique patterns automatically. Click start to watch the magic unfold!</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let isGenerating = false;
+let aiX = canvas.width / 2;
+let aiY = canvas.height / 2;
+let aiTargetX = canvas.width / 2;
+let aiTargetY = canvas.height / 2;
+let hue = 0;
+let time = 0;
+let audioContext = null;
+let soundEnabled = false;
+let lastSoundTime = 0;
+let currentPhase = 'center';
+let phaseProgress = 0;
+let generationInterval = null;
+
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 2;
+
+const playBtn = document.getElementById('playBtn');
+const aiMode = document.getElementById('aiMode');
+const mode = document.getElementById('mode');
+const speed = document.getElementById('speed');
+const brush = document.getElementById('brush');
+const colorSpeed = document.getElementById('colorSpeed');
+const glow = document.getElementById('glow');
+const soundBtn = document.getElementById('soundBtn');
+const soundMode = document.getElementById('soundMode');
+const volume = document.getElementById('volume');
+const statusInfo = document.getElementById('statusInfo');
+
+function toggleControls() {
+    const c = document.getElementById('controls');
+    const b = document.getElementById('minimizeBtn');
+    c.classList.toggle('minimized');
+    b.textContent = c.classList.contains('minimized') ? '+' : '-';
+}
+
+function clearCanvas() {
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function saveImage() {
+    const link = document.createElement('a');
+    link.download = `auto_kaleidoscope_${Date.now()}.png`;
+    link.href = canvas.toDataURL();
+    link.click();
+}
+
+function initAudio() {
+    if (!audioContext) {
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+            console.log('Audio not supported');
+        }
+    }
+}
+
+function toggleSound() {
+    if (!soundEnabled) {
+        initAudio();
+        if (audioContext) {
+            soundEnabled = true;
+            soundBtn.textContent = 'Disable Sounds';
+            soundBtn.classList.add('active');
+        }
+    } else {
+        soundEnabled = false;
+        soundBtn.textContent = 'Enable Sounds';
+        soundBtn.classList.remove('active');
+    }
+}
+
+function playSound(colorValue) {
+    if (!soundEnabled || !audioContext) return;
+    
+    const now = Date.now();
+    if (now - lastSoundTime < 50) return;
+    lastSoundTime = now;
+    
+    try {
+        if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+        
+        const mode = soundMode.value;
+        const vol = volume.value / 100 * 0.15;
+        
+        switch(mode) {
+            case 'solfeggio':
+                playSolfeggioFrequency(colorValue, vol);
+                break;
+            case 'waterdrops':
+                playWaterDrop(vol);
+                break;
+            case 'rain':
+                playRain(vol);
+                break;
+            case 'waves':
+                playWaves(vol);
+                break;
+            case 'waterfall':
+                playWaterfall(vol);
+                break;
+            case 'birds':
+                playBirds(colorValue, vol);
+                break;
+            case 'wind':
+                playWind(vol);
+                break;
+            case 'chimes':
+                playChimes(colorValue, vol);
+                break;
+            case 'bells':
+                playBells(colorValue, vol);
+                break;
+            case 'piano':
+                playPiano(colorValue, vol);
+                break;
+        }
+        
+    } catch (e) {
+        console.log('Audio error:', e);
+    }
+}
+
+function playSolfeggioFrequency(colorValue, vol) {
+    // Original Solfeggio frequencies
+    const frequencies = [174, 285, 396, 417, 528, 639, 741, 852, 963];
+    const hueIndex = Math.floor((colorValue / 360) * frequencies.length);
+    const frequency = frequencies[hueIndex] || 528;
+    
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(frequency, audioContext.currentTime);
+    
+    gain.gain.setValueAtTime(0, audioContext.currentTime);
+    gain.gain.linearRampToValueAtTime(vol * 0.6, audioContext.currentTime + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1.2);
+    
+    osc.start(audioContext.currentTime);
+    osc.stop(audioContext.currentTime + 1.2);
+}
+
+function playWaterDrop(vol) {
+    // Create realistic water drop sound using filtered noise and resonance
+    const osc1 = audioContext.createOscillator();
+    const osc2 = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    const filter = audioContext.createBiquadFilter();
+    
+    osc1.connect(filter);
+    osc2.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    // Two frequencies for the "plop" sound
+    osc1.frequency.setValueAtTime(800, audioContext.currentTime);
+    osc1.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.1);
+    osc2.frequency.setValueAtTime(400, audioContext.currentTime);
+    osc2.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.15);
+    
+    osc1.type = 'sine';
+    osc2.type = 'triangle';
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(1200, audioContext.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(300, audioContext.currentTime + 0.2);
+    
+    gain.gain.setValueAtTime(0, audioContext.currentTime);
+    gain.gain.linearRampToValueAtTime(vol, audioContext.currentTime + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
+    
+    osc1.start(audioContext.currentTime);
+    osc1.stop(audioContext.currentTime + 0.3);
+    osc2.start(audioContext.currentTime);
+    osc2.stop(audioContext.currentTime + 0.3);
+}
+
+function playRain(vol) {
+    // Filtered noise for rain sound
+    const bufferSize = audioContext.sampleRate * 0.5;
+    const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+    }
+    
+    const noiseSource = audioContext.createBufferSource();
+    const filter = audioContext.createBiquadFilter();
+    const gain = audioContext.createGain();
+    
+    noiseSource.buffer = noiseBuffer;
+    noiseSource.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(8000, audioContext.currentTime);
+    
+    gain.gain.setValueAtTime(0, audioContext.currentTime);
+    gain.gain.linearRampToValueAtTime(vol * 0.3, audioContext.currentTime + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.4);
+    
+    noiseSource.start(audioContext.currentTime);
+    noiseSource.stop(audioContext.currentTime + 0.4);
+}
+
+function playWaves(vol) {
+    // Ocean wave sound using filtered noise and LFO
+    const osc = audioContext.createOscillator();
+    const lfo = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    const lfoGain = audioContext.createGain();
+    const filter = audioContext.createBiquadFilter();
+    
+    lfo.connect(lfoGain);
+    lfoGain.connect(filter.frequency);
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(60, audioContext.currentTime);
+    
+    lfo.type = 'sine';
+    lfo.frequency.setValueAtTime(0.5, audioContext.currentTime);
+    lfoGain.gain.setValueAtTime(200, audioContext.currentTime);
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(400, audioContext.currentTime);
+    filter.Q.setValueAtTime(2, audioContext.currentTime);
+    
+    gain.gain.setValueAtTime(0, audioContext.currentTime);
+    gain.gain.linearRampToValueAtTime(vol * 0.4, audioContext.currentTime + 0.2);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1.5);
+    
+    osc.start(audioContext.currentTime);
+    osc.stop(audioContext.currentTime + 1.5);
+    lfo.start(audioContext.currentTime);
+    lfo.stop(audioContext.currentTime + 1.5);
+}
+
+function playWaterfall(vol) {
+    // Waterfall using filtered noise
+    const bufferSize = audioContext.sampleRate * 0.8;
+    const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+    }
+    
+    const noiseSource = audioContext.createBufferSource();
+    const filter1 = audioContext.createBiquadFilter();
+    const filter2 = audioContext.createBiquadFilter();
+    const gain = audioContext.createGain();
+    
+    noiseSource.buffer = noiseBuffer;
+    noiseSource.connect(filter1);
+    filter1.connect(filter2);
+    filter2.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    filter1.type = 'bandpass';
+    filter1.frequency.setValueAtTime(2000, audioContext.currentTime);
+    filter1.Q.setValueAtTime(1, audioContext.currentTime);
+    
+    filter2.type = 'highpass';
+    filter2.frequency.setValueAtTime(1000, audioContext.currentTime);
+    
+    gain.gain.setValueAtTime(0, audioContext.currentTime);
+    gain.gain.linearRampToValueAtTime(vol * 0.5, audioContext.currentTime + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1.0);
+    
+    noiseSource.start(audioContext.currentTime);
+    noiseSource.stop(audioContext.currentTime + 1.0);
+}
+
+function playBirds(colorValue, vol) {
+    // Bird chirps with varying frequencies
+    const baseFreq = 800 + (colorValue / 360) * 1200;
+    
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    const filter = audioContext.createBiquadFilter();
+    
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(baseFreq, audioContext.currentTime);
+    osc.frequency.linearRampToValueAtTime(baseFreq * 1.5, audioContext.currentTime + 0.05);
+    osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.8, audioContext.currentTime + 0.2);
+    
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(baseFreq, audioContext.currentTime);
+    filter.Q.setValueAtTime(5, audioContext.currentTime);
+    
+    gain.gain.setValueAtTime(0, audioContext.currentTime);
+    gain.gain.linearRampToValueAtTime(vol * 0.6, audioContext.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
+    
+    osc.start(audioContext.currentTime);
+    osc.stop(audioContext.currentTime + 0.3);
+}
+
+function playWind(vol) {
+    // Wind through trees using filtered noise
+    const bufferSize = audioContext.sampleRate * 1.2;
+    const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+    }
+    
+    const noiseSource = audioContext.createBufferSource();
+    const filter = audioContext.createBiquadFilter();
+    const gain = audioContext.createGain();
+    const lfo = audioContext.createOscillator();
+    const lfoGain = audioContext.createGain();
+    
+    lfo.connect(lfoGain);
+    lfoGain.connect(gain.gain);
+    noiseSource.buffer = noiseBuffer;
+    noiseSource.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(600, audioContext.currentTime);
+    
+    lfo.type = 'sine';
+    lfo.frequency.setValueAtTime(0.3, audioContext.currentTime);
+    lfoGain.gain.setValueAtTime(vol * 0.3, audioContext.currentTime);
+    
+    gain.gain.setValueAtTime(vol * 0.2, audioContext.currentTime);
+    
+    noiseSource.start(audioContext.currentTime);
+    noiseSource.stop(audioContext.currentTime + 1.2);
+    lfo.start(audioContext.currentTime);
+    lfo.stop(audioContext.currentTime + 1.2);
+}
+
+function playChimes(colorValue, vol) {
+    // Wind chimes with metallic resonance
+    const frequencies = [523, 659, 784, 1047, 1319]; // C major pentatonic
+    const freq = frequencies[Math.floor((colorValue / 360) * frequencies.length)];
+    
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    const filter = audioContext.createBiquadFilter();
+    
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+    
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(200, audioContext.currentTime);
+    
+    gain.gain.setValueAtTime(0, audioContext.currentTime);
+    gain.gain.linearRampToValueAtTime(vol * 0.7, audioContext.currentTime + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 2.0);
+    
+    osc.start(audioContext.currentTime);
+    osc.stop(audioContext.currentTime + 2.0);
+}
+
+function playBells(colorValue, vol) {
+    // Tibetan singing bowls
+    const baseFreq = 200 + (colorValue / 360) * 300;
+    
+    const osc1 = audioContext.createOscillator();
+    const osc2 = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(baseFreq, audioContext.currentTime);
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(baseFreq * 1.5, audioContext.currentTime);
+    
+    gain.gain.setValueAtTime(0, audioContext.currentTime);
+    gain.gain.linearRampToValueAtTime(vol * 0.5, audioContext.currentTime + 0.2);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 3.0);
+    
+    osc1.start(audioContext.currentTime);
+    osc1.stop(audioContext.currentTime + 3.0);
+    osc2.start(audioContext.currentTime);
+    osc2.stop(audioContext.currentTime + 3.0);
+}
+
+function playPiano(colorValue, vol) {
+    // Soft piano notes
+    const notes = [261, 294, 330, 349, 392, 440, 494]; // C major scale
+    const freq = notes[Math.floor((colorValue / 360) * notes.length)];
+    
+    const osc1 = audioContext.createOscillator();
+    const osc2 = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    const filter = audioContext.createBiquadFilter();
+    
+    osc1.connect(filter);
+    osc2.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    osc1.type = 'triangle';
+    osc1.frequency.setValueAtTime(freq, audioContext.currentTime);
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(freq * 2, audioContext.currentTime);
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(2000, audioContext.currentTime);
+    
+    gain.gain.setValueAtTime(0, audioContext.currentTime);
+    gain.gain.linearRampToValueAtTime(vol * 0.4, audioContext.currentTime + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1.5);
+    
+    osc1.start(audioContext.currentTime);
+    osc1.stop(audioContext.currentTime + 1.5);
+    osc2.start(audioContext.currentTime);
+    osc2.stop(audioContext.currentTime + 1.5);
+}
+
+function getFrequency(h, brightness) {
+    const baseFreqs = {
+        harmonics: 220,
+        chakra: 256,
+        crystal: 528,
+        nature: 110,
+        cosmic: 55
+    };
+    
+    const base = baseFreqs[soundMode.value] || 220;
+    const hueMultiplier = (h / 360) * 3 + 0.5;
+    const brightnessMultiplier = (brightness / 255) * 0.8 + 0.2;
+    
+    return base * hueMultiplier * brightnessMultiplier;
+}
+
+function drawMirrorPoint(x, y, size, color) {
+    const mirrors = parseInt(mode.value);
+    const angleStep = (Math.PI * 2) / mirrors;
+    const relX = x - centerX;
+    const relY = y - centerY;
+    const glowInt = glow.value / 100;
+    
+    ctx.save();
+    
+    for (let i = 0; i < mirrors; i++) {
+        const angle = i * angleStep;
+        const cos = Math.cos(angle);
+        const sin = Math.sin(angle);
+        
+        const rx = (relX * cos - relY * sin) + centerX;
+        const ry = (relX * sin + relY * cos) + centerY;
+        
+        const mx = (relX * cos + relY * sin) + centerX;
+        const my = (-relX * sin + relY * cos) + centerY;
+        
+        [rx, ry, mx, my].forEach((coord, idx) => {
+            if (idx % 2 === 1) return;
+            
+            const px = coord;
+            const py = (idx < 2) ? ry : my;
+            
+            const outerGrad = ctx.createRadialGradient(px, py, 0, px, py, size * 2.5);
+            outerGrad.addColorStop(0, `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.9)`);
+            outerGrad.addColorStop(0.4, `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.5)`);
+            outerGrad.addColorStop(1, 'transparent');
+            
+            ctx.fillStyle = outerGrad;
+            ctx.shadowBlur = 25 * glowInt;
+            ctx.shadowColor = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.8)`;
+            ctx.beginPath();
+            ctx.arc(px, py, size * 1.5, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.95)`;
+            ctx.shadowBlur = 15 * glowInt;
+            ctx.beginPath();
+            ctx.arc(px, py, size * 0.7, 0, Math.PI * 2);
+            ctx.fill();
+        });
+    }
+    
+    ctx.shadowBlur = 0;
+    ctx.restore();
+}
+
+function getColor() {
+    const currentHue = (hue + time * colorSpeed.value * 0.01) % 360;
+    const saturation = 85 + Math.sin(time * 0.02) * 15;
+    const lightness = 55 + Math.cos(time * 0.03) * 20;
+    
+    const h = currentHue / 60;
+    const c = (1 - Math.abs(2 * lightness / 100 - 1)) * saturation / 100;
+    const x_val = c * (1 - Math.abs(h % 2 - 1));
+    const m = lightness / 100 - c / 2;
+    
+    let r, g, b;
+    if (h < 1) { r = c; g = x_val; b = 0; }
+    else if (h < 2) { r = x_val; g = c; b = 0; }
+    else if (h < 3) { r = 0; g = c; b = x_val; }
+    else if (h < 4) { r = 0; g = x_val; b = c; }
+    else if (h < 5) { r = x_val; g = 0; b = c; }
+    else { r = c; g = 0; b = x_val; }
+    
+    return [
+        Math.round((r + m) * 255),
+        Math.round((g + m) * 255),
+        Math.round((b + m) * 255)
+    ];
+}
+
+function getAITarget() {
+    const behavior = aiMode.value;
+    const radius = Math.min(canvas.width, canvas.height) * 0.4;
+    
+    switch(behavior) {
+        case 'geometric':
+            // Creates precise geometric patterns
+            const sides = parseInt(mode.value);
+            const angle = (phaseProgress * Math.PI * 2) % (Math.PI * 2 / sides);
+            const distance = radius * (0.3 + Math.sin(phaseProgress * 4) * 0.4);
+            return {
+                x: centerX + Math.cos(angle * sides) * distance,
+                y: centerY + Math.sin(angle * sides) * distance
+            };
+            
+        case 'organic':
+            // Smooth flowing movements
+            const flowAngle = phaseProgress * Math.PI * 4;
+            const flowRadius = radius * (0.5 + Math.sin(phaseProgress * 6) * 0.3);
+            return {
+                x: centerX + Math.cos(flowAngle) * flowRadius * Math.cos(phaseProgress * 2),
+                y: centerY + Math.sin(flowAngle) * flowRadius * Math.sin(phaseProgress * 3)
+            };
+            
+        case 'spiral':
+            // Spiral outward and inward
+            const spiralAngle = phaseProgress * Math.PI * 8;
+            const spiralRadius = radius * Math.abs(Math.sin(phaseProgress * 2));
+            return {
+                x: centerX + Math.cos(spiralAngle) * spiralRadius,
+                y: centerY + Math.sin(spiralAngle) * spiralRadius
+            };
+            
+        case 'mandala':
+            // Builds mandala patterns layer by layer
+            const layer = Math.floor(phaseProgress * 5);
+            const layerAngle = (phaseProgress * 20) % (Math.PI * 2);
+            const layerRadius = radius * (0.2 + layer * 0.15);
+            return {
+                x: centerX + Math.cos(layerAngle) * layerRadius,
+                y: centerY + Math.sin(layerAngle) * layerRadius
+            };
+            
+        case 'chaotic':
+            // Chaotic but controlled movements
+            return {
+                x: centerX + (Math.random() - 0.5) * radius * 1.5,
+                y: centerY + (Math.random() - 0.5) * radius * 1.5
+            };
+            
+        case 'fractal':
+            // Self-similar patterns at different scales
+            const scale = 0.5 + Math.sin(phaseProgress * 3) * 0.4;
+            const fractalAngle = phaseProgress * Math.PI * 6;
+            return {
+                x: centerX + Math.cos(fractalAngle) * radius * scale + Math.cos(fractalAngle * 3) * radius * scale * 0.3,
+                y: centerY + Math.sin(fractalAngle) * radius * scale + Math.sin(fractalAngle * 3) * radius * scale * 0.3
+            };
+            
+        case 'waves':
+            // Wave-like patterns
+            const waveX = phaseProgress * Math.PI * 4;
+            return {
+                x: centerX + Math.sin(waveX) * radius * 0.8,
+                y: centerY + Math.cos(waveX * 2) * radius * 0.6
+            };
+            
+        default: // random
+            return {
+                x: centerX + (Math.random() - 0.5) * radius * 2,
+                y: centerY + (Math.random() - 0.5) * radius * 2
+            };
+    }
+}
+
+function generateStep() {
+    if (!isGenerating) return;
+    
+    const target = getAITarget();
+    aiTargetX = target.x;
+    aiTargetY = target.y;
+    
+    // AI movement with some smoothing
+    const moveSpeed = 0.15 + (speed.value / 100) * 0.3;
+    aiX += (aiTargetX - aiX) * moveSpeed;
+    aiY += (aiTargetY - aiY) * moveSpeed;
+    
+    // Add some human-like jitter
+    aiX += (Math.random() - 0.5) * 3;
+    aiY += (Math.random() - 0.5) * 3;
+    
+    const color = getColor();
+    const size = parseInt(brush.value);
+    
+    drawMirrorPoint(aiX, aiY, size, color);
+    
+    playSound(hue);
+    
+    phaseProgress += 0.005 * (speed.value / 50);
+    if (phaseProgress > 1) phaseProgress = 0;
+    
+    hue = (hue + colorSpeed.value * 0.1) % 360;
+    time += 1;
+    
+    // Update status
+    statusInfo.textContent = `AI Drawing: ${aiMode.value} - ${Math.floor(phaseProgress * 100)}%`;
+}
+
+function toggleGeneration() {
+    if (!isGenerating) {
+        isGenerating = true;
+        playBtn.textContent = 'STOP GENERATION';
+        playBtn.className = 'pause-btn';
+        
+        generationInterval = setInterval(generateStep, 16);
+        
+    } else {
+        isGenerating = false;
+        playBtn.textContent = 'START GENERATION';
+        playBtn.className = 'play-btn';
+        
+        if (generationInterval) {
+            clearInterval(generationInterval);
+            generationInterval = null;
+        }
+        
+        statusInfo.textContent = 'AI Paused';
+    }
+}
+
+// Event handlers
+playBtn.addEventListener('click', toggleGeneration);
+soundBtn.addEventListener('click', toggleSound);
+
+speed.addEventListener('input', () => {
+    document.getElementById('speedVal').textContent = speed.value;
+});
+
+brush.addEventListener('input', () => {
+    document.getElementById('brushVal').textContent = brush.value;
+});
+
+colorSpeed.addEventListener('input', () => {
+    document.getElementById('colorVal').textContent = colorSpeed.value;
+});
+
+glow.addEventListener('input', () => {
+    document.getElementById('glowVal').textContent = glow.value;
+});
+
+volume.addEventListener('input', () => {
+    document.getElementById('volVal').textContent = volume.value;
+});
+
+// Initialize
+clearCanvas();
+</script>
+</body></html>

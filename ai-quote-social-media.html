@@ -1,0 +1,354 @@
+!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Savo Studio AI Visualizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Raleway:wght@300;400;600&family=Playfair+Display:wght@700&family=Montserrat:wght@600&family=Cormorant+Garamond:wght@700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              'sans': ['Raleway', 'sans-serif'],
+              'display': ['Orbitron', 'sans-serif'],
+              'serif': ['Playfair Display', 'serif'],
+              'montserrat': ['Montserrat', 'sans-serif'],
+              'garamond': ['Cormorant Garamond', 'serif'],
+            },
+            colors: {
+              'brand-dark': '#0D0C1D',
+              'brand-light': '#F0F0F0',
+              'brand-primary': '#4A90E2',
+              'brand-secondary': '#8E44AD',
+              'brand-accent': '#FFD700',
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.5s ease-in-out',
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: 0 },
+                '100%': { opacity: 1 },
+              },
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/client": "https://aistudiocdn.com/react-dom@^19.1.1/client",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.21.0",
+    "react": "https://aistudiocdn.com/react@^19.1.1"
+  }
+}
+</script>
+</head>
+  <body class="bg-brand-dark">
+    <div id="root"></div>
+    <script type="module">
+      import React, { useState, useCallback } from 'react';
+      import ReactDOM from 'react-dom/client';
+      import { GoogleGenAI } from "@google/genai";
+
+      // --- Constants ---
+      const INSPIRATION_PROMPTS = [
+        "Fractal patterns on a lotus flower",
+        "Solfeggio frequencies as light waves",
+        "The universe as binary code",
+        "A city built with sacred geometry",
+      ];
+      const QUOTES = [
+        { author: "Nikola Tesla", text: "If you want to find the secrets of the universe, think in terms of energy, frequency and vibration." },
+        { author: "Albert Einstein", text: "Imagination is more important than knowledge. For knowledge is limited, whereas imagination embraces the entire world." },
+        { author: "Alan Watts", text: "The only way to make sense out of change is to plunge into it, move with it, and join the dance." },
+        { author: "Neville Goddard", text: "Assume the feeling of your wish fulfilled and continue in that assumption until that which you assumed is objectified." },
+        { author: "Carl Sagan", text: "We are a way for the cosmos to know itself." },
+      ];
+      const FORMULAS = [
+        { name: "Euler's Identity", formula: "e^(iπ) + 1 = 0" },
+        { name: "Golden Ratio", formula: "φ = (1 + √5) / 2" },
+        { name: "Mass-Energy Equivalence", formula: "E = mc²" },
+        { name: "Fractal Dimension (Mandelbrot)", formula: "Z_n+1 = Z_n² + c" },
+      ];
+
+      // --- Gemini Service ---
+      const THEMATIC_KEYWORDS = "sacred geometry, vibrant cosmic colors, 4k detail, ethereal light, hyper-realistic, bioluminescence, intricate patterns, meditative, healing energy";
+      const generateImages = async (prompt) => {
+        const API_KEY = process.env.API_KEY;
+        if (!API_KEY) {
+          throw new Error("API_KEY environment variable not set.");
+        }
+        const ai = new GoogleGenAI({ apiKey: API_KEY });
+        const fullPrompt = `${prompt}, ${THEMATIC_KEYWORDS}`;
+
+        try {
+          const response = await ai.models.generateImages({
+            model: 'imagen-4.0-generate-001',
+            prompt: fullPrompt,
+            config: {
+              numberOfImages: 4,
+              outputMimeType: 'image/jpeg',
+              aspectRatio: '9:16',
+            },
+          });
+
+          if (!response.generatedImages || response.generatedImages.length === 0) {
+            throw new Error("The AI did not return any images. Please try a different prompt.");
+          }
+
+          const imageUrls = response.generatedImages.map(img => {
+            const base64ImageBytes = img.image.imageBytes;
+            return `data:image/jpeg;base64,${base64ImageBytes}`;
+          });
+          
+          return imageUrls;
+
+        } catch (error) {
+          console.error("Error generating images with Gemini:", error);
+          throw new Error("Failed to generate images. The prompt might have been blocked or the service is unavailable.");
+        }
+      };
+
+      // --- Helper Functions ---
+      const addTextOverlay = (imageUrl, text) => {
+        return new Promise((resolve, reject) => {
+          const FONT_CHOICES = [
+            { family: 'Orbitron', weight: 'bold' },
+            { family: 'Raleway', weight: '600' },
+            { family: 'Playfair Display', weight: '700' },
+            { family: 'Montserrat', weight: '600' },
+            { family: 'Cormorant Garamond', weight: '700' },
+          ];
+          const selectedFont = FONT_CHOICES[Math.floor(Math.random() * FONT_CHOICES.length)];
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return reject(new Error('Could not get canvas context'));
+            
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            
+            const fontSize = Math.max(20, Math.round(canvas.width / 22));
+            ctx.font = `${selectedFont.weight} ${fontSize}px "${selectedFont.family}", sans-serif`;
+            ctx.fillStyle = '#FFFFFF';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+            ctx.shadowBlur = 15;
+            ctx.shadowOffsetX = 4;
+            ctx.shadowOffsetY = 4;
+            
+            const maxWidth = canvas.width * 0.85;
+            const lineHeight = fontSize * 1.3;
+            const allLines = [];
+            const paragraphs = text.split('\n');
+            
+            paragraphs.forEach(paragraph => {
+              const words = paragraph.split(' ');
+              let currentLine = '';
+              for (const word of words) {
+                const testLine = currentLine + word + ' ';
+                if (ctx.measureText(testLine).width > maxWidth && currentLine !== '') {
+                  allLines.push(currentLine);
+                  currentLine = word + ' ';
+                } else {
+                  currentLine = testLine;
+                }
+              }
+              allLines.push(currentLine);
+            });
+            
+            const totalTextHeight = (allLines.length - 1) * lineHeight;
+            const startY = (canvas.height / 2) - (totalTextHeight / 2);
+            allLines.forEach((line, index) => ctx.fillText(line.trim(), canvas.width / 2, startY + (index * lineHeight)));
+            
+            resolve(canvas.toDataURL('image/jpeg'));
+          };
+          img.onerror = () => reject(new Error('Failed to load image for overlay'));
+          img.src = imageUrl;
+        });
+      };
+      
+      // --- Components ---
+      const Loader = () => React.createElement("div", { className: "flex flex-col items-center justify-center text-center h-full animate-fade-in" },
+        React.createElement("div", { className: "relative w-24 h-24" },
+          React.createElement("div", { className: "absolute inset-0 border-2 border-brand-primary/50 rounded-full animate-pulse-slow" }),
+          React.createElement("div", { className: "absolute inset-2 border-2 border-brand-secondary/50 rounded-full animate-pulse-slow animation-delay-200" }),
+          React.createElement("div", { className: "absolute inset-4 border-2 border-brand-accent/50 rounded-full animate-pulse-slow animation-delay-400" }),
+          React.createElement("div", { className: "absolute inset-0 rounded-full animate-spin" },
+            React.createElement("div", { className: "w-4 h-4 bg-brand-light rounded-full shadow-[0_0_10px_#fff,0_0_20px_#FFD700]" })
+          )
+        ),
+        React.createElement("p", { className: "mt-6 text-lg font-semibold tracking-wider text-brand-light" }, "Crafting your vision..."),
+        React.createElement("p", { className: "text-sm text-brand-light/70" }, "Aligning cosmic energies.")
+      );
+
+      const Footer = () => React.createElement("footer", { className: "text-center py-4 px-4 text-xs text-gray-500 z-10" },
+        React.createElement("p", null, "Powered by Gemini. Designed for Savo Studio.")
+      );
+      
+      const Header = () => React.createElement("header", { className: "text-center w-full animate-fade-in" },
+        React.createElement("h1", { className: "font-display text-4xl sm:text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-brand-secondary to-brand-accent" }, "Savo Studio"),
+        React.createElement("p", { className: "mt-2 text-lg sm:text-xl text-brand-light/80" }, "AI Visualizer"),
+        React.createElement("p", { className: "mt-4 max-w-2xl mx-auto text-base text-brand-light/70" }, "Bridge ancient wisdom and modern technology. Generate stunning visuals inspired by sacred geometry, fractals, and the universe's creative code.")
+      );
+      
+      const ImageDisplay = ({ generatedContent, isLoading, showOverlay }) => {
+        if (isLoading) return React.createElement(Loader, null);
+
+        if (generatedContent.length === 0) {
+          return React.createElement("div", { className: "flex flex-col items-center justify-center h-full text-center text-gray-500 p-8 border-2 border-dashed border-gray-700 rounded-lg" },
+            React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className: "h-12 w-12 mb-4", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", strokeWidth: 1 },
+              React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" })
+            ),
+            React.createElement("h3", { className: "text-xl font-semibold" }, "Your visual creations will appear here."),
+            React.createElement("p", { className: "mt-1" }, "Enter a prompt above and click \"Visualize\" to begin.")
+          );
+        }
+
+        return React.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 animate-fade-in" },
+          generatedContent.map((item, index) => {
+            const src = showOverlay && item.withOverlay ? item.withOverlay : item.original;
+            return React.createElement("div", { key: index, className: "group relative overflow-hidden rounded-lg shadow-lg border-2 border-brand-secondary/20" },
+              React.createElement("img", { src: src, alt: `Generated art ${index + 1}`, className: "w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" }),
+              React.createElement("div", { className: "absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center" },
+                React.createElement("a", { href: src, download: `savo-studio-art-${index + 1}.jpg`, className: "px-4 py-2 bg-brand-light/90 text-brand-dark font-bold rounded-lg hover:bg-brand-light transition-colors" }, "Download")
+              )
+            );
+          })
+        );
+      };
+
+      const PromptForm = ({ onGenerate, isLoading }) => {
+        const [prompt, setPrompt] = useState('');
+        const [overlayEnabled, setOverlayEnabled] = useState(false);
+        const [overlayText, setOverlayText] = useState('');
+
+        const handleInspireClick = (inspiration) => setPrompt(inspiration);
+        const handleRandomQuote = () => {
+          const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+          setOverlayText(`"${quote.text}"\n- ${quote.author}`);
+        };
+        const handleRandomFormula = () => {
+          const formula = FORMULAS[Math.floor(Math.random() * FORMULAS.length)];
+          setOverlayText(`${formula.formula}\n- ${formula.name}`);
+        };
+        const handleSubmit = (e) => {
+          e.preventDefault();
+          if (prompt.trim() && !isLoading) onGenerate(prompt, overlayEnabled ? overlayText : '');
+        };
+
+        return React.createElement("form", { onSubmit: handleSubmit, className: "space-y-4" },
+          React.createElement("textarea", { value: prompt, onChange: (e) => setPrompt(e.target.value), placeholder: "e.g., The Fibonacci sequence as a cosmic nebula...", rows: 3, className: "w-full p-4 bg-gray-800/50 border-2 border-brand-secondary/50 rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-brand-accent transition-all duration-300 placeholder-gray-500 text-brand-light resize-none", disabled: isLoading, "aria-label": "Image generation prompt" }),
+          React.createElement("div", { className: "flex flex-wrap items-center justify-center gap-2" },
+            React.createElement("span", { className: "text-sm text-gray-400 mr-2" }, "Inspiration:"),
+            ...INSPIRATION_PROMPTS.map((item) => React.createElement("button", { key: item, type: "button", onClick: () => handleInspireClick(item), className: "px-3 py-1 text-xs sm:text-sm bg-brand-secondary/30 hover:bg-brand-secondary/60 text-brand-light rounded-full transition-colors duration-200", disabled: isLoading }, item))
+          ),
+          React.createElement("div", { className: "flex items-center justify-center space-x-4 p-2 rounded-lg bg-gray-800/30" },
+            React.createElement("label", { htmlFor: "overlay-toggle", className: "flex items-center cursor-pointer" },
+              React.createElement("input", { id: "overlay-toggle", type: "checkbox", checked: overlayEnabled, onChange: (e) => setOverlayEnabled(e.target.checked), className: "sr-only peer", disabled: isLoading }),
+              React.createElement("div", { className: "relative w-11 h-6 bg-gray-700 rounded-full peer peer-focus:ring-2 peer-focus:ring-brand-accent peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-primary" }),
+              React.createElement("span", { className: "ms-3 text-sm font-medium text-gray-300" }, "Add Text Overlay")
+            )
+          ),
+          overlayEnabled && React.createElement("div", { className: "p-4 space-y-3 bg-gray-800/50 border border-brand-secondary/30 rounded-lg animate-fade-in" },
+            React.createElement("textarea", { value: overlayText, onChange: (e) => setOverlayText(e.target.value), placeholder: "Type your custom text, or select a source...", rows: 3, className: "w-full p-3 bg-gray-900/50 border border-brand-secondary/50 rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-brand-accent transition-all duration-300 placeholder-gray-500 text-brand-light resize-none", disabled: isLoading, "aria-label": "Text to overlay on the image" }),
+            React.createElement("div", { className: "flex flex-wrap items-center justify-center gap-2" },
+              React.createElement("span", { className: "text-sm text-gray-400 mr-2" }, "Sources:"),
+              React.createElement("button", { type: "button", onClick: handleRandomQuote, className: "px-3 py-1 text-xs sm:text-sm bg-brand-primary/50 hover:bg-brand-primary/80 text-brand-light rounded-full transition-colors duration-200", disabled: isLoading }, "Random Quote"),
+              React.createElement("button", { type: "button", onClick: handleRandomFormula, className: "px-3 py-1 text-xs sm:text-sm bg-brand-accent/50 hover:bg-brand-accent/80 text-brand-dark font-semibold rounded-full transition-colors duration-200", disabled: isLoading }, "Random Formula")
+            )
+          ),
+          React.createElement("button", { type: "submit", disabled: isLoading || !prompt.trim(), className: "w-full flex items-center justify-center gap-2 p-4 font-bold text-lg bg-gradient-to-r from-brand-primary to-brand-secondary rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-brand-accent/50" },
+            isLoading ? React.createElement(React.Fragment, null, React.createElement("svg", { className: "animate-spin -ml-1 mr-3 h-5 w-5 text-white", xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24" }, React.createElement("circle", { className: "opacity-25", cx: "12", cy: "12", r: "10", stroke: "currentColor", strokeWidth: "4" }), React.createElement("path", { className: "opacity-75", fill: "currentColor", d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" })), "Generating...") : "Visualize"
+          )
+        );
+      };
+
+      // --- Main App Component ---
+      const App = () => {
+        const [generatedContent, setGeneratedContent] = useState([]);
+        const [showOverlay, setShowOverlay] = useState(true);
+        const [isLoading, setIsLoading] = useState(false);
+        const [error, setError] = useState(null);
+        const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+        const handleGenerate = useCallback(async (prompt, overlayText) => {
+          setIsLoading(true);
+          setError(null);
+          setGeneratedContent([]);
+          setIsMenuOpen(false);
+
+          try {
+            const originalImages = await generateImages(prompt);
+            if (overlayText && overlayText.trim()) {
+              const imagesWithOverlay = await Promise.all(originalImages.map(imgUrl => addTextOverlay(imgUrl, overlayText)));
+              setGeneratedContent(originalImages.map((original, i) => ({ original, withOverlay: imagesWithOverlay[i] })));
+              setShowOverlay(true);
+            } else {
+              setGeneratedContent(originalImages.map(original => ({ original, withOverlay: null })));
+            }
+          } catch (err) {
+            setError(err instanceof Error ? err.message : 'An unknown error occurred.');
+            console.error(err);
+          } finally {
+            setIsLoading(false);
+          }
+        }, []);
+        
+        const canShowOverlayToggle = generatedContent.length > 0 && generatedContent.some(item => item.withOverlay !== null);
+        const asideClasses = `lg:w-2/5 lg:max-w-lg lg:h-screen lg:sticky lg:top-0 lg:flex lg:flex-col lg:z-10 fixed top-0 left-0 h-full w-full max-w-sm bg-brand-dark p-4 sm:p-6 z-40 transition-transform duration-300 ease-in-out ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:relative lg:p-8`;
+
+        return React.createElement("div", { className: "min-h-screen font-sans text-brand-light bg-brand-dark overflow-x-hidden" },
+          React.createElement("div", { className: "absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(142,68,173,0.1),_transparent_40%)] -z-0" }),
+          React.createElement("button", { onClick: () => setIsMenuOpen(!isMenuOpen), className: "lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-brand-dark/50 backdrop-blur-sm text-brand-light focus:outline-none focus:ring-2 focus:ring-brand-accent", "aria-label": "Open menu" },
+            React.createElement("svg", { className: "h-6 w-6", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M4 6h16M4 12h16m-7 6h7" }))
+          ),
+          isMenuOpen && React.createElement("div", { onClick: () => setIsMenuOpen(false), className: "lg:hidden fixed inset-0 bg-black/60 z-30 animate-fade-in" }),
+          React.createElement("div", { className: "relative max-w-screen-2xl mx-auto lg:flex lg:gap-x-8" },
+            React.createElement("aside", { className: asideClasses },
+              React.createElement("button", { onClick: () => setIsMenuOpen(false), className: "lg:hidden absolute top-4 right-4 z-50 p-1 rounded-md text-gray-400 hover:text-white hover:bg-gray-700", "aria-label": "Close menu" },
+                React.createElement("svg", { className: "h-6 w-6", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M6 18L18 6M6 6l12 12" }))
+              ),
+              React.createElement("div", { className: "lg:flex-grow lg:overflow-y-auto lg:pr-4 h-full flex flex-col" },
+                React.createElement(Header, null),
+                React.createElement("div", { className: "w-full mx-auto mt-8 flex-grow" },
+                  React.createElement(PromptForm, { onGenerate: handleGenerate, isLoading: isLoading }),
+                  error && React.createElement("div", { className: "mt-6 p-4 bg-red-900/50 border border-red-700 text-red-300 rounded-lg text-center animate-fade-in" }, React.createElement("p", null, React.createElement("strong", null, "Error: "), error))
+                ),
+                React.createElement("div", { className: "flex-none pt-8" }, React.createElement(Footer, null))
+              )
+            ),
+            React.createElement("main", { className: "flex-1 p-4 sm:p-6 lg:py-8 lg:px-0 z-10" },
+              canShowOverlayToggle && React.createElement("div", { className: "w-full mx-auto mb-6 flex items-center justify-end gap-3 animate-fade-in lg:sticky lg:top-8 lg:z-20" },
+                React.createElement("label", { htmlFor: "overlay-display-toggle", className: "flex items-center cursor-pointer bg-brand-dark/50 backdrop-blur-sm p-2 rounded-lg" },
+                  React.createElement("span", { className: "me-3 text-sm font-medium text-gray-300" }, "Show Text Overlay"),
+                  React.createElement("input", { id: "overlay-display-toggle", type: "checkbox", checked: showOverlay, onChange: (e) => setShowOverlay(e.target.checked), className: "sr-only peer" }),
+                  React.createElement("div", { className: "relative w-11 h-6 bg-gray-700 rounded-full peer peer-focus:ring-2 peer-focus:ring-brand-accent peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-primary" })
+                )
+              ),
+              React.createElement("div", { className: "w-full h-full" }, React.createElement(ImageDisplay, { generatedContent, isLoading, showOverlay }))
+            )
+          )
+        );
+      };
+      
+      // --- Mount Application ---
+      const rootElement = document.getElementById('root');
+      if (!rootElement) throw new Error("Could not find root element to mount to");
+      
+      const root = ReactDOM.createRoot(rootElement);
+      root.render(React.createElement(React.StrictMode, null, React.createElement(App, null)));
+    </script>
+  </body>
+</html>
